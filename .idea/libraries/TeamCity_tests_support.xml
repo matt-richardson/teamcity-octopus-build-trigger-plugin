@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="TeamCity-tests-support">
+    <CLASSES>
+      <root url="jar://$TeamCityDistribution$/devPackage/tests/jmock-1.2.0.jar!/" />
+      <root url="jar://$TeamCityDistribution$/devPackage/tests/junit-3.8.2.jar!/" />
+      <root url="jar://$TeamCityDistribution$/devPackage/tests/patches-test.jar!/" />
+      <root url="jar://$TeamCityDistribution$/devPackage/tests/tests-support.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

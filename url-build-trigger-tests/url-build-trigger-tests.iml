@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="true" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="url-build-trigger-server" />
+    <orderEntry type="library" name="TeamCity-common-api" level="project" />
+    <orderEntry type="library" name="TeamCity-util" level="project" />
+    <orderEntry type="library" name="TeamCity-server-api" level="project" />
+    <orderEntry type="library" name="TeamCity-annotations" level="project" />
+    <orderEntry type="library" name="testng-5.14.10" level="project" />
+    <orderEntry type="library" name="apache-ftpserver-1.0.5" level="project" />
+    <orderEntry type="library" name="TeamCity-tests-support" level="project" />
+    <orderEntry type="library" name="commons-io-2.4" level="project" />
+    <orderEntry type="library" name="jmock-2.5" level="project" />
+    <orderEntry type="library" name="httpcomponents-client-4.3.2" level="project" />
+  </component>
+</module>
+
