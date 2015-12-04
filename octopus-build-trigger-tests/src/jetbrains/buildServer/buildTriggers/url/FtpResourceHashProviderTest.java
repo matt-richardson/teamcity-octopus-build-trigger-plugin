@@ -243,7 +243,7 @@ public class FtpResourceHashProviderTest extends BaseTestCase {
   }
 
   private void assertUnexisting(@NotNull String url) throws Exception {
-    assertEquals(UrlBuildTriggerUtil.UNEXITING_RESOURCE_HASH, getResourceHash(url));
+    assertEquals(OctopusBuildTriggerUtil.UNEXITING_RESOURCE_HASH, getResourceHash(url));
   }
 
   private void write(@NotNull File f, @NotNull String text) throws IOException {

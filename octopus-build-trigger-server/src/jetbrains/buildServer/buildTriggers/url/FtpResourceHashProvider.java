@@ -35,7 +35,7 @@ import java.net.URL;
  * Time: 2:35 PM
  */
 final public class FtpResourceHashProvider implements ResourceHashProvider {
-  private static final Logger LOG = Logger.getLogger(Loggers.VCS_CATEGORY + UrlBuildTrigger.class);
+  private static final Logger LOG = Logger.getLogger(Loggers.VCS_CATEGORY + OctopusBuildTrigger.class);
 
   @NotNull
   public String getResourceHash(@NotNull TriggerParameters triggerParameters) throws ResourceHashProviderException {
@@ -48,7 +48,7 @@ final public class FtpResourceHashProvider implements ResourceHashProvider {
 
   @NotNull
   String getResourceHash(@NotNull String url, @Nullable String user, @Nullable String password) throws IOException, ResourceHashProviderException {
-    return getResourceHash(url, user, password, UrlBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT);
+    return getResourceHash(url, user, password, OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT);
   }
 
   @NotNull
@@ -73,7 +73,7 @@ final public class FtpResourceHashProvider implements ResourceHashProvider {
       // currently raw listing returns smth like ize=1;Modify=20121002101740.067;Type=file; file
       // ize=1 seems to stand instead of Size=1
       // Modify seems to have some incorrect time zone
-      return file == null ? UrlBuildTriggerUtil.UNEXITING_RESOURCE_HASH : file.getRawListing();
+      return file == null ? OctopusBuildTriggerUtil.UNEXITING_RESOURCE_HASH : file.getRawListing();
 
     } finally {
       logoutAndDisconnect(ftp);

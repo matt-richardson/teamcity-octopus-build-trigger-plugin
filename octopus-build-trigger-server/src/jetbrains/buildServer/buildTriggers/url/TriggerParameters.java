@@ -57,7 +57,7 @@ public class TriggerParameters {
 
   @NotNull
   public static TriggerParameters create(@NotNull String url) {
-    return new TriggerParameters(url, null, null, UrlBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT, null);
+    return new TriggerParameters(url, null, null, OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT, null);
   }
 
   @NotNull
@@ -71,7 +71,7 @@ public class TriggerParameters {
 
   @NotNull
   public static TriggerParameters create(@NotNull String url, @Nullable String username, @Nullable String password) {
-    return new TriggerParameters(url, username, password, UrlBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT, null);
+    return new TriggerParameters(url, username, password, OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT, null);
   }
 
   @Nullable

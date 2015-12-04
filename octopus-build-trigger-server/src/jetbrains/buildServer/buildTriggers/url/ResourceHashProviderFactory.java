@@ -78,12 +78,12 @@ final class ResourceHashProviderFactory {
 
   @NotNull
   private static String getEnabledProtocols() {
-    return TeamCityProperties.getProperty(UrlBuildTriggerUtil.ENABLED_PROTOCOLS_PROP, UrlBuildTriggerUtil.DEFAULT_ENABLED_PROTOCOLS).trim();
+    return TeamCityProperties.getProperty(OctopusBuildTriggerUtil.ENABLED_PROTOCOLS_PROP, OctopusBuildTriggerUtil.DEFAULT_ENABLED_PROTOCOLS).trim();
   }
 
   @NotNull
   private static String getProtocolDisabledError(@NotNull String urlStr) {
     return urlStr + ": protocol disabled, currently enabled protocols: " + getEnabledProtocols() +
-           ". To enable protocol edit " + UrlBuildTriggerUtil.ENABLED_PROTOCOLS_PROP + " internal property";
+           ". To enable protocol edit " + OctopusBuildTriggerUtil.ENABLED_PROTOCOLS_PROP + " internal property";
   }
 }

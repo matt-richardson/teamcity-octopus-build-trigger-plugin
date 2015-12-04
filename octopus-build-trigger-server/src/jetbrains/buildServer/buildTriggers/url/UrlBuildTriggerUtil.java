@@ -32,7 +32,7 @@ import java.security.NoSuchAlgorithmException;
  * Date: 06.12.10
  * Time: 13:38
  */
-public final class UrlBuildTriggerUtil {
+public final class OctopusBuildTriggerUtil {
   public static String URL_PARAM = "url.build.trigger.url";
   public static String USERNAME_PARAM = "url.build.trigger.username";
   public static String PASSWORD_PARAM = "url.build.trigger.password";

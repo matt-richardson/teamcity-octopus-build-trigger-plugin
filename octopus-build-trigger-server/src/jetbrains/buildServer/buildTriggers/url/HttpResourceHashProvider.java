@@ -193,7 +193,7 @@ final class HttpResourceHashProvider implements ResourceHashProvider {
     try {
 
       final HttpEntity entity = sendRequest(httpClient, httpGet, uri).getEntity();
-      return entity == null ? UrlBuildTriggerUtil.UNEXITING_RESOURCE_HASH : UrlBuildTriggerUtil.getDigest(entity.getContent());
+      return entity == null ? OctopusBuildTriggerUtil.UNEXITING_RESOURCE_HASH : OctopusBuildTriggerUtil.getDigest(entity.getContent());
 
     } finally {
       httpGet.releaseConnection();

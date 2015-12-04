@@ -44,7 +44,7 @@ final class FileResourceHashProvider implements ResourceHashProvider {
   @NotNull
   String getResourceHash(@NotNull String url) throws MalformedURLException {
     final File file = getFile(url);
-    return file.exists() ? getExistingFileHash(file) : UrlBuildTriggerUtil.UNEXITING_RESOURCE_HASH;
+    return file.exists() ? getExistingFileHash(file) : OctopusBuildTriggerUtil.UNEXITING_RESOURCE_HASH;
   }
 
   @NotNull
@@ -59,6 +59,6 @@ final class FileResourceHashProvider implements ResourceHashProvider {
 
   @NotNull
   private String getExistingFileHash(@NotNull File file) {
-    return UrlBuildTriggerUtil.getResourceHash(file.lastModified(), FileUtils.sizeOf(file));
+    return OctopusBuildTriggerUtil.getResourceHash(file.lastModified(), FileUtils.sizeOf(file));
   }
 }

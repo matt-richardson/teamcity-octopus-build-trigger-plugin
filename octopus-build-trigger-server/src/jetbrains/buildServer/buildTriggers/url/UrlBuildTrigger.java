@@ -29,25 +29,25 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static jetbrains.buildServer.buildTriggers.url.UrlBuildTriggerUtil.*;
+import static jetbrains.buildServer.buildTriggers.url.OctopusBuildTriggerUtil.*;
 
 /**
  * User: vbedrosova
  * Date: 06.12.10
  * Time: 13:19
  */
-public final class UrlBuildTrigger extends BuildTriggerService {
+public final class OctopusBuildTrigger extends BuildTriggerService {
   @NotNull
-  private static final Logger LOG = Logger.getInstance(Loggers.VCS_CATEGORY + UrlBuildTrigger.class);
+  private static final Logger LOG = Logger.getInstance(Loggers.VCS_CATEGORY + OctopusBuildTrigger.class);
 
-  private static final String DISPLAY_NAME = "URL build trigger";
+  private static final String DISPLAY_NAME = "Octopus build trigger";
 
   @NotNull
   private final PluginDescriptor myPluginDescriptor;
   @NotNull
   private final BuildTriggeringPolicy myPolicy;
 
-  public UrlBuildTrigger(@NotNull final PluginDescriptor pluginDescriptor,
+  public OctopusBuildTrigger(@NotNull final PluginDescriptor pluginDescriptor,
                          @NotNull final AsyncBuildTriggerFactory triggerFactory) {
     myPluginDescriptor = pluginDescriptor;
     myPolicy = triggerFactory.createBuildTrigger(Spec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
@@ -56,7 +56,7 @@ public final class UrlBuildTrigger extends BuildTriggerService {
   @NotNull
   @Override
   public String getName() {
-    return "urlBuildTrigger";
+    return "octopusBuildTrigger";
   }
 
   @NotNull
@@ -101,7 +101,7 @@ public final class UrlBuildTrigger extends BuildTriggerService {
 
   @Override
   public String getEditParametersUrl() {
-    return myPluginDescriptor.getPluginResourcesPath("editUrlBuildTrigger.jsp");
+    return myPluginDescriptor.getPluginResourcesPath("editOctopusBuildTrigger.jsp");
   }
 
   @Override
@@ -123,7 +123,7 @@ public final class UrlBuildTrigger extends BuildTriggerService {
       }
 
       public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
-        return UrlBuildTrigger.this.getPollInterval();
+        return OctopusBuildTrigger.this.getPollInterval();
       }
 
       @NotNull

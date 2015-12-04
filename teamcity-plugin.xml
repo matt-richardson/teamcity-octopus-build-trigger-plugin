@@ -19,12 +19,12 @@
                  xsi:noNamespaceSchemaLocation="urn:shemas-jetbrains-com:teamcity-plugin-v1-xml">
     <info>
         <name>octopus-build-trigger</name>
-        <display-name>Url build trigger</display-name>
+        <display-name>Octopus build trigger</display-name>
         <version>@Plugin_Version@</version>
-        <description>Support for triggering build on detecting changes for some url.</description>
+        <description>Support for triggering build on detecting changes for in Octopus Deploy.</description>
         <vendor>
-            <name>JetBrains, s.r.o.</name>
-            <url>http://www.jetbrains.com</url>
+            <name>Matt Richardson</name>
+            <url>http://mjrichardson.com</url>
         </vendor>
     </info>
     <deployment use-separate-classloader="true"/>

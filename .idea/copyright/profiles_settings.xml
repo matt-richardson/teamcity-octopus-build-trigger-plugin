@@ -1,5 +1,3 @@
 <component name="CopyrightManager">
-  <settings default="octopus-build-trigger">
-    <module2copyright />
-  </settings>
+  <settings default="octopus-build-trigger" />
 </component>

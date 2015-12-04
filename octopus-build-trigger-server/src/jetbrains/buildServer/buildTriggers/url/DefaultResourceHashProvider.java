@@ -29,7 +29,7 @@ final class DefaultResourceHashProvider implements ResourceHashProvider {
   @NotNull
   public String getResourceHash(@NotNull TriggerParameters triggerParameters) throws ResourceHashProviderException {
     try {
-      return UrlBuildTriggerUtil.getDigest(triggerParameters);
+      return Util.getDigest(triggerParameters);
     } catch (Throwable e) {
       throw new ResourceHashProviderException("URL " + triggerParameters.getURL() + ": " + e.getMessage(), e);
     }

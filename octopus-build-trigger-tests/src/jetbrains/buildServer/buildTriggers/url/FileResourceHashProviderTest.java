@@ -105,7 +105,7 @@ public class FileResourceHashProviderTest extends BaseTestCase {
 
   private void assertUnexisting(@NotNull String url) throws Exception {
     final String hash = getResourceHash(url);
-    assertEquals(hash, UrlBuildTriggerUtil.UNEXITING_RESOURCE_HASH, hash);
+    assertEquals(hash, OctopusBuildTriggerUtil.UNEXITING_RESOURCE_HASH, hash);
   }
 
   @NotNull
