@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="url-build-trigger-server" />
+    <orderEntry type="module" module-name="octopus-build-trigger-server" />
     <orderEntry type="library" name="TeamCity-common-api" level="project" />
     <orderEntry type="library" name="TeamCity-util" level="project" />
     <orderEntry type="library" name="TeamCity-server-api" level="project" />

@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact name="url-build-trigger-plugin-unpacked">
+  <artifact name="octopus-build-trigger-plugin-unpacked">
     <output-path>$PROJECT_DIR$/out/artifacts/url_build_trigger_plugin_unpacked</output-path>
     <properties id="ant-postprocessing">
       <options enabled="true">
@@ -9,13 +9,13 @@
     </properties>
     <root id="root">
       <element id="directory" name="server">
-        <element id="archive" name="url-build-trigger.jar">
-          <element id="module-output" name="url-build-trigger-server" />
+        <element id="archive" name="octopus-build-trigger.jar">
+          <element id="module-output" name="octopus-build-trigger-server" />
           <element id="directory" name="buildServerResources">
-            <element id="dir-copy" path="$PROJECT_DIR$/url-build-trigger-server/resource/buildServerResources" />
+            <element id="dir-copy" path="$PROJECT_DIR$/octopus-build-trigger-server/resource/buildServerResources" />
           </element>
         </element>
-        <element id="dir-copy" path="$PROJECT_DIR$/url-build-trigger-server/lib" />
+        <element id="dir-copy" path="$PROJECT_DIR$/octopus-build-trigger-server/lib" />
         <element id="library" level="project" name="async-trigger" />
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/teamcity-plugin.xml" output-file-name="teamcity-plugin.xml" />

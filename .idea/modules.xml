@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/url-build-trigger.iml" filepath="$PROJECT_DIR$/url-build-trigger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/url-build-trigger-server/url-build-trigger-server.iml" filepath="$PROJECT_DIR$/url-build-trigger-server/url-build-trigger-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/url-build-trigger-tests/url-build-trigger-tests.iml" filepath="$PROJECT_DIR$/url-build-trigger-tests/url-build-trigger-tests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/octopus-build-trigger.iml" filepath="$PROJECT_DIR$/octopus-build-trigger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/octopus-build-trigger-server/octopus-build-trigger-server.iml" filepath="$PROJECT_DIR$/octopus-build-trigger-server/octopus-build-trigger-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/octopus-build-trigger-tests/octopus-build-trigger-tests.iml" filepath="$PROJECT_DIR$/octopus-build-trigger-tests/octopus-build-trigger-tests.iml" />
     </modules>
   </component>
 </project>

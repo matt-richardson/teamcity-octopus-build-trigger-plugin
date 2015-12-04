@@ -5,8 +5,8 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="url-build-trigger-server" />
-    <orderEntry type="module" module-name="url-build-trigger-tests" />
+    <orderEntry type="module" module-name="octopus-build-trigger-server" />
+    <orderEntry type="module" module-name="octopus-build-trigger-tests" />
   </component>
 </module>
 

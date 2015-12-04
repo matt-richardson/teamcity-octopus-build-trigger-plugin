@@ -30,7 +30,7 @@
     <td>
        <props:textProperty name="<%=UrlBuildTriggerUtil.URL_PARAM%>" className="longField"/>
       <span class="smallNote">
-          e.g. http://svn.jetbrains.org/teamcity/plugins/url-build-trigger/trunk/build.xml,<br/>
+          e.g. http://svn.jetbrains.org/teamcity/plugins/octopus-build-trigger/trunk/build.xml,<br/>
           ftp://admin:admin@172.168.0.2:2121/dir/artifact.zip. <br/>
       </span>
         <span class="error" id="error_<%=UrlBuildTriggerUtil.URL_PARAM%>"></span>

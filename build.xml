@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<project name="url-build-trigger" default="replace-tokens-in-teamcity-plugin-xml" basedir=".">
+<project name="octopus-build-trigger" default="replace-tokens-in-teamcity-plugin-xml" basedir=".">
 
     <target name="replace-tokens-in-teamcity-plugin-xml" depends="define.version">
         <property name="home" value="${artifact.output.path}"/>

@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact name="url-build-trigger-plugin-zip">
+  <artifact name="octopus-build-trigger-plugin-zip">
     <output-path>$PROJECT_DIR$/out/artifacts/url_build_trigger_plugin_zip</output-path>
     <properties id="ant-postprocessing">
       <options>
@@ -8,8 +8,8 @@
       </options>
     </properties>
     <root id="root">
-      <element id="archive" name="url-build-trigger.zip">
-        <element id="artifact" artifact-name="url-build-trigger-plugin-unpacked" />
+      <element id="archive" name="octopus-build-trigger.zip">
+        <element id="artifact" artifact-name="octopus-build-trigger-plugin-unpacked" />
       </element>
     </root>
   </artifact>
