@@ -1,0 +1,88 @@
+/*
+ * Copyright 2000-2013 JetBrains s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package jetbrains.buildServer.buildTriggers.url;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HttpContext;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.net.ssl.SSLContext;
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.URI;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
+
+public class HttpContentProviderImpl implements HttpContentProvider {
+  CloseableHttpClient httpClient;
+
+  public void init(@NotNull URI uri, @Nullable String apiKey, @NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    final RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(connectionTimeout).setConnectionRequestTimeout(connectionTimeout).setSocketTimeout(connectionTimeout).build();
+
+    final SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build();
+    SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+
+    final HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(requestConfig).setSSLSocketFactory(sslConnectionFactory);
+
+    httpClient = builder.build();
+  }
+
+  public void close(@Nullable Closeable closeable) {
+    if (closeable == null) return;
+    try {
+      closeable.close();
+    } catch (IOException e) {
+      //
+    }
+  }
+
+  @NotNull
+  public String getContent(@NotNull URI uri) throws ResourceHashProviderException, IOException {
+    final HttpGet httpGet = new HttpGet(uri);
+
+    try {
+
+      final HttpContext httpContext = HttpClientContext.create();
+      final CloseableHttpResponse response = httpClient.execute(httpGet, httpContext);
+
+      final int statusCode = response.getStatusLine().getStatusCode();
+      if (statusCode >= 300) {
+        throw new UnexpectedResponseCode(statusCode, response.getStatusLine().getReasonPhrase());
+      }
+
+      final HttpEntity entity = response.getEntity();
+      return entity.getContent().toString();
+
+    } finally {
+      httpGet.releaseConnection();
+    }
+  }
+
+}

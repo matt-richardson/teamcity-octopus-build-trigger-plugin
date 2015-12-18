@@ -68,7 +68,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
   @NotNull
   @Override
   public String describeTrigger(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-    return "Wait for a change at " + buildTriggerDescriptor.getProperties().get(URL_PARAM) + " URL";
+    return "Wait for a new deployment at " + buildTriggerDescriptor.getProperties().get(OCTOPUS_URL) + " URL";
   }
 
   @NotNull
@@ -86,13 +86,17 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
     return new PropertiesProcessor() {
       public Collection<InvalidProperty> process(Map<String, String> properties) {
         final ArrayList<InvalidProperty> invalidProps = new ArrayList<InvalidProperty>();
-        final String url = properties.get(URL_PARAM);
+        final String url = properties.get(OCTOPUS_URL);
         if (StringUtil.isEmptyOrSpaces(url)) {
-          invalidProps.add(new InvalidProperty(URL_PARAM, "URL must be specified"));
+          invalidProps.add(new InvalidProperty(OCTOPUS_URL, "URL must be specified"));
         }
-        final String err = ResourceHashProviderFactory.checkUrl(url);
+        final String apiKey = properties.get(OCTOPUS_APIKEY);
+        if (StringUtil.isEmptyOrSpaces(url)) {
+          invalidProps.add(new InvalidProperty(OCTOPUS_APIKEY, "API Key must be specified"));
+        }
+        final String err = (new OctopusDeploymentsProvider()).checkOctopusConnectivity(url, apiKey);
         if (StringUtil.isNotEmpty(err)) {
-          invalidProps.add(new InvalidProperty(URL_PARAM, err));
+          invalidProps.add(new InvalidProperty(OCTOPUS_URL, err));
         }
         return invalidProps;
       }
@@ -133,36 +137,46 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
           public CheckResult<Spec> perform() {
             final Map<String, String> props = asyncTriggerParameters.getTriggerDescriptor().getProperties();
 
-            final String urlStr = props.get(URL_PARAM);
+            final String octopusUrl = props.get(OCTOPUS_URL);
+            final String octopusApiKey = props.get(OCTOPUS_APIKEY);
+            final String octopusProject = props.get(OCTOPUS_PROJECT);
 
-            if (StringUtil.isEmptyOrSpaces(urlStr)) {
-              return createErrorResult(getDisplayName() + " settings are invalid in build configuration " + asyncTriggerParameters.getBuildType());
+            if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
+              return createErrorResult(getDisplayName() + " settings are invalid (empty url) in build configuration " + asyncTriggerParameters.getBuildType());
+            }
+            if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
+              return createErrorResult(getDisplayName() + " settings are invalid (empty api key) in build configuration " + asyncTriggerParameters.getBuildType());
+            }
+            if (StringUtil.isEmptyOrSpaces(octopusProject)) {
+              return createErrorResult(getDisplayName() + " settings are invalid (empty project) in build configuration " + asyncTriggerParameters.getBuildType());
             }
 
-            LOG.debug(getDisplayName() + " checks if resource changed " + urlStr);
+            LOG.debug(getDisplayName() + " checks for new deployments for project " + octopusProject + " on server " + octopusUrl);
 
-            final Spec spec = new Spec(urlStr);
+            final String dataStorageKey = (octopusUrl + "|" + octopusProject).toLowerCase();
+            final Spec spec = new Spec(octopusUrl);
 
             try {
-              final String oldHash = asyncTriggerParameters.getCustomDataStorage().getValue(urlStr);
-              final String newHash = ResourceHashProviderFactory.createResourceHashProvider(urlStr)
-                .getResourceHash(TriggerParameters.create(
-                  urlStr, props.get(USERNAME_PARAM), props.get(PASSWORD_PARAM), TeamCityProperties.getInteger(CONNECTION_TIMEOUT_PROP, DEFAULT_CONNECTION_TIMEOUT), oldHash
-                ));
+              final String oldStoredData = asyncTriggerParameters.getCustomDataStorage().getValue(dataStorageKey);
+              final Deployments oldDeployments = new Deployments(oldStoredData);
+              final Deployments newDeployments = new OctopusDeploymentsProvider().getDeployments(octopusUrl, octopusApiKey, octopusProject, oldDeployments);
 
-              if (!newHash.equals(oldHash)) {
-                asyncTriggerParameters.getCustomDataStorage().putValue(urlStr, newHash);
+              //todo: fix so that only store that one OD deployment has happened here, not multiple. We could inadvertendly miss deployments
+              final String newStoredData = newDeployments.toString();
 
-                if (oldHash == null) { // do not trigger build after adding trigger (oldHash == null)
-                  LOG.debug(getDisplayName() + " no previous data for resource " + urlStr + ": null" + " -> " + newHash);
+              if (!newDeployments.equals(oldDeployments)) {
+                asyncTriggerParameters.getCustomDataStorage().putValue(dataStorageKey, newStoredData);
+
+                if (oldDeployments.isEmpty()) { // do not trigger build after adding trigger (oldHash == null)
+                  LOG.debug(getDisplayName() + " no previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                   return createEmptyResult();
                 }
 
-                LOG.info(getDisplayName() + " resource changed " + urlStr + ": " + oldHash + " -> " + newHash);
+                LOG.info(getDisplayName() + " new deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
                 return createUpdatedResult(spec);
               }
 
-              LOG.debug(getDisplayName() + " resource not changed " + urlStr + ": " + oldHash + " -> " + newHash);
+              LOG.debug(getDisplayName() + " resource not changed " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
               return createEmptyResult();
 
             } catch (Exception e) {

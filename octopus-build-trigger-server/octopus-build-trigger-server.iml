@@ -17,6 +17,6 @@
     <orderEntry type="library" name="commons-net-3.1" level="project" />
     <orderEntry type="library" name="async-trigger" level="project" />
     <orderEntry type="library" name="httpcomponents-client-4.3.2" level="project" />
+    <orderEntry type="library" name="com.googlecode.json-simple:json-simple:1.1.1" level="project" />
   </component>
 </module>
-

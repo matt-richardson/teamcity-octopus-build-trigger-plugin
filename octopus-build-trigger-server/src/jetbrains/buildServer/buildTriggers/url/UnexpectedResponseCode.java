@@ -16,18 +16,11 @@
 
 package jetbrains.buildServer.buildTriggers.url;
 
-import jetbrains.buildServer.util.TestFor;
-import junit.framework.Assert;
-import org.testng.annotations.Test;
+public class UnexpectedResponseCode extends ResourceHashProviderException {
+  public final int code;
 
-public class ResourceHashProviderFactoryTest {
-
-  @Test
-  @TestFor(issues = "TW-34654")
-  public void testCheckUrlIsNullForParameterReference() throws Exception {
-    Assert.assertNull(ResourceHashProviderFactory.checkUrl("%reference%"));
-//    Next line is fixed in 9.0 EAP 3
-//    Assert.assertNull(ResourceHashProviderFactory.checkUrl("%%"));
-    Assert.assertNotNull(ResourceHashProviderFactory.checkUrl("just test"));
+  public UnexpectedResponseCode(int code, String reason) {
+    super("Server returned " + code + " " + reason);
+    this.code = code;
   }
 }

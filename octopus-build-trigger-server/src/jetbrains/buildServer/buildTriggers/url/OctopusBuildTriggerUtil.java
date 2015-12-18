@@ -33,18 +33,15 @@ import java.security.NoSuchAlgorithmException;
  * Time: 13:38
  */
 public final class OctopusBuildTriggerUtil {
-  public static String URL_PARAM = "url.build.trigger.url";
-  public static String USERNAME_PARAM = "url.build.trigger.username";
-  public static String PASSWORD_PARAM = "url.build.trigger.password";
+  public static String OCTOPUS_URL = "octopus.build.trigger.url";
+  public static String OCTOPUS_APIKEY = "octopus.build.trigger.apikey";
+  public static String OCTOPUS_PROJECT = "octopus.build.trigger.project";
 
-  public static String POLL_INTERVAL_PROP = "url.build.trigger.poll.interval";
+  public static String POLL_INTERVAL_PROP = "octops.build.trigger.poll.interval";
   public static final Integer DEFAULT_POLL_INTERVAL = 30; // seconds
 
-  public static final String CONNECTION_TIMEOUT_PROP = "url.build.trigger.connection.timeout";
+  public static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout";
   public static final Integer DEFAULT_CONNECTION_TIMEOUT = 60 * 1000; // milliseconds
-
-  public static final String ENABLED_PROTOCOLS_PROP = "url.build.trigger.enabled.protocols";
-  public static final String DEFAULT_ENABLED_PROTOCOLS = "ftp,http,ftps,https";
 
   static final String UNEXITING_RESOURCE_HASH = "";
 

@@ -42,15 +42,15 @@ public class TriggerParameters {
     return myURL;
   }
 
-  @Nullable
-  public String getUsername() {
-    return myUsername;
-  }
-
-  @Nullable
-  public String getPassword() {
-    return myPassword;
-  }
+//  @Nullable
+//  public String getUsername() {
+//    return myUsername;
+//  }
+//
+//  @Nullable
+//  public String getPassword() {
+//    return myPassword;
+//  }
 
   @NotNull
   public Integer getConnectionTimeout() { return myConnectionTimeout; }
