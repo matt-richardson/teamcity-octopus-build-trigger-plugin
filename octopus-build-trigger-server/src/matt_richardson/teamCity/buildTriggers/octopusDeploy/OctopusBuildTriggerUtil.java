@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jetbrains.buildServer.buildTriggers.url;
+package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
 import org.jetbrains.annotations.NotNull;
 

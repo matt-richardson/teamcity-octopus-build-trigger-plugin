@@ -19,5 +19,5 @@
 
 <beans default-autowire="constructor">
   <import resource="classpath*:META-INF/spring-server-async-trigger.xml"/>
-  <bean class="jetbrains.buildServer.buildTriggers.url.OctopusBuildTrigger"/>
+  <bean class="matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTrigger"/>
 </beans>

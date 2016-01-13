@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package jetbrains.buildServer.buildTriggers.url;
+package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-public class UnexpectedResponseCode extends ResourceHashProviderException {
-  public final int code;
+import java.util.Date;
 
-  public UnexpectedResponseCode(int code, String reason) {
-    super("Server returned " + code + " " + reason);
-    this.code = code;
+public class NullDeployment extends Deployment {
+  public NullDeployment() {
+    super("", new Date(0), new Date(0));
   }
 }

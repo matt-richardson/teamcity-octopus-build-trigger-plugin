@@ -15,7 +15,7 @@
   --%>
 
 <%@ include file="/include.jsp" %>
-<%@ page import="jetbrains.buildServer.buildTriggers.url.OctopusBuildTriggerUtil" %>
+<%@ page import="matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil" %>
 <%@ taglib prefix="props" tagdir="/WEB-INF/tags/props" %>
 <jsp:useBean id="propertiesBean" type="jetbrains.buildServer.controllers.BasePropertiesBean" scope="request"/>
 

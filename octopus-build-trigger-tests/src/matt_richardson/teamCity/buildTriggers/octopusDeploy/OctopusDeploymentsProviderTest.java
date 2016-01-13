@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package jetbrains.buildServer.buildTriggers.url;
+package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-import jetbrains.buildServer.BaseTestCase;
 import org.jetbrains.annotations.Nullable;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -33,7 +32,7 @@ import java.util.GregorianCalendar;
 
 
 @Test
-public class OctopusDeploymentsProviderTest extends BaseTestCase {
+public class OctopusDeploymentsProviderTest {
   final String octopusUrl = "http://baseUrl";
   final String octopusApiKey = "api-key";
   final String octopusProject = "TestProject";

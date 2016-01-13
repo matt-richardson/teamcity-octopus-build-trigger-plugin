@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jetbrains.buildServer.buildTriggers.url;
+package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;

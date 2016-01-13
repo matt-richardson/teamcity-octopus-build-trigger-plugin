@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jetbrains.buildServer.buildTriggers.url;
+package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.buildTriggers.*;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static jetbrains.buildServer.buildTriggers.url.OctopusBuildTriggerUtil.*;
+import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.*;
 
 /**
  * User: vbedrosova
