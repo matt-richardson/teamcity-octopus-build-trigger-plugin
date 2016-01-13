@@ -17,7 +17,9 @@
 package jetbrains.buildServer.buildTriggers.url;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class Deployment {
   final String environmentId;
@@ -25,7 +27,6 @@ public class Deployment {
   Date latestSuccessfulDeployment;
 
   public Deployment(String environmentId, Date latestDeployment, Date latestSuccessfulDeployment) {
-
     this.environmentId = environmentId;
     this.latestDeployment = latestDeployment;
     this.latestSuccessfulDeployment = latestSuccessfulDeployment;
@@ -37,6 +38,12 @@ public class Deployment {
 
   public boolean isLatestSuccessfulDeploymentOlderThen(Date compareDate) {
     return this.latestSuccessfulDeployment.compareTo(compareDate) < 0;
+  }
+
+  public boolean isSuccessful() {
+    Date testDate = new GregorianCalendar(2000, Calendar.JANUARY, 1).getTime();
+
+    return this.latestSuccessfulDeployment.compareTo(testDate) > 0;
   }
 
   @Override

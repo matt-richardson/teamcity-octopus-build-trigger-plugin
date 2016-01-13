@@ -26,7 +26,6 @@ import java.util.GregorianCalendar;
 @Test
 public class DeploymentTest {
   public void isLatestDeploymentOlderThenReturnsTrueWhenNewerDatePassed() {
-    //new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime(
     Date testDate = new GregorianCalendar(2015, Calendar.DECEMBER, 10).getTime();
     Deployment deployment = new Deployment("env", new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime(), new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime());
     Assert.assertEquals(deployment.isLatestDeploymentOlderThen(testDate), true);

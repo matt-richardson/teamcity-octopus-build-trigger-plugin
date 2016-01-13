@@ -152,4 +152,12 @@ public class Deployments {
       }
     }
   }
+
+  public boolean haveAllDeploymentsFinishedSuccessfully() {
+    boolean result = true;
+    for (Deployment deployment: statusMap) {
+        result = result & deployment.isSuccessful();
+      }
+    return result;
+  }
 }

@@ -103,7 +103,7 @@ final class OctopusDeploymentsProvider {
         Boolean isCompleted = Boolean.parseBoolean(task.get("IsCompleted").toString());
         Boolean finishedSuccessfully = Boolean.parseBoolean(task.get("FinishedSuccessfully").toString());
         result.AddOrUpdate(environmentId, createdDate, isCompleted, finishedSuccessfully);
-        if (finishedSuccessfully)
+        if (result.haveAllDeploymentsFinishedSuccessfully())
           return result; //todo: not yet handling multiple environments
       }
     }
