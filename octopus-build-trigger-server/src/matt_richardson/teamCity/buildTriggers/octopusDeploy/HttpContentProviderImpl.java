@@ -82,7 +82,8 @@ public class HttpContentProviderImpl implements HttpContentProvider {
       }
 
       final HttpEntity entity = response.getEntity();
-      return entity.getContent().toString();
+      final String content = EntityUtils.toString(entity);
+      return content;
 
     } finally {
       httpGet.releaseConnection();
