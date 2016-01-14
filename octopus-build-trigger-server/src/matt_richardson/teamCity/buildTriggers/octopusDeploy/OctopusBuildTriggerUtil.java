@@ -16,22 +16,6 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.net.URL;
-import java.net.URLConnection;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-/**
- * User: vbedrosova
- * Date: 06.12.10
- * Time: 13:38
- */
 public final class OctopusBuildTriggerUtil {
   public static String OCTOPUS_URL = "octopus.build.trigger.url";
   public static String OCTOPUS_APIKEY = "octopus.build.trigger.apikey";
@@ -42,41 +26,4 @@ public final class OctopusBuildTriggerUtil {
 
   public static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout";
   public static final Integer DEFAULT_CONNECTION_TIMEOUT = 60 * 1000; // milliseconds
-
-  static final String UNEXITING_RESOURCE_HASH = "";
-
-  static String getResourceHash(long lastModified, long size) {
-    return lastModified + "#" + size;
-  }
-
-  @NotNull
-  static String getDigest(@NotNull final TriggerParameters parameters) throws IOException {
-    final URLConnection con = new URL(parameters.getURL()).openConnection();
-    con.setConnectTimeout(parameters.getConnectionTimeout());
-    con.setReadTimeout(2 * parameters.getConnectionTimeout());
-    return getDigest(con.getInputStream());
-  }
-
-  @NotNull
-  static String getDigest(@NotNull final InputStream source) throws IOException {
-    try {
-      final MessageDigest digest = MessageDigest.getInstance("MD5");
-      final DigestInputStream dis = new DigestInputStream(source, digest);
-      final byte[] bytes = new byte[32768];
-
-      while (dis.read(bytes) > 0) {
-        // just read
-      }
-
-      return toHex(digest.digest());
-    } catch (NoSuchAlgorithmException e) {
-      throw new IOException("MD5 not installed", e);
-    } finally {
-      source.close();
-    }
-  }
-
-  private static String toHex(byte[] arg) throws IOException {
-    return String.format("%x", new BigInteger(arg));
-  }
 }
