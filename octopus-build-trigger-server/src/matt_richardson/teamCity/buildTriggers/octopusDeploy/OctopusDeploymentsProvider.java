@@ -71,7 +71,7 @@ final class OctopusDeploymentsProvider {
       return ParseDeploymentResponse(contentProvider, octopusUrl, deploymentsResponse, oldDeployments);
 
     } catch (Throwable e) {
-      throw new OctopusDeploymentsProviderException("URL " + octopusUrl + ": " + e.getMessage(), e);
+      throw new OctopusDeploymentsProviderException("URL " + octopusUrl + ": " + e, e);
 
     } finally {
       contentProvider.close(httpClient);
