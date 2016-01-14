@@ -46,14 +46,23 @@ public class HttpContentProviderImpl implements HttpContentProvider {
   @Nullable
   private String apiKey;
 
-    final RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(connectionTimeout).setConnectionRequestTimeout(connectionTimeout).setSocketTimeout(connectionTimeout).build();
   public void init(@Nullable String apiKey, @NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
     this.apiKey = apiKey;
+    final RequestConfig requestConfig = RequestConfig.custom()
+                                                     .setConnectTimeout(connectionTimeout)
+                                                     .setConnectionRequestTimeout(connectionTimeout)
+                                                     .setSocketTimeout(connectionTimeout)
+                                                     .build();
 
-    final SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build();
+    final SSLContext sslContext = SSLContexts.custom()
+                                             .loadTrustMaterial(null, new TrustSelfSignedStrategy())
+                                             .build();
+
     SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
 
-    final HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(requestConfig).setSSLSocketFactory(sslConnectionFactory);
+    final HttpClientBuilder builder = HttpClients.custom()
+                                                 .setDefaultRequestConfig(requestConfig)
+                                                 .setSSLSocketFactory(sslConnectionFactory);
 
     httpClient = builder.build();
   }
