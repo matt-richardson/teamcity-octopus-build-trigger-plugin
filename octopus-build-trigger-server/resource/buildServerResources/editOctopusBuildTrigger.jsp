@@ -21,40 +21,40 @@
 
 <tr class="noBorder" >
     <td colspan="2">
-        <em>URL build trigger will add a build to the queue when changes are detected at the specified URL.</em>
+        <em>Octopus Deploy build trigger will add a build to the queue when a new successful deployment has completed.</em>
     </td>
 </tr>
 
 <tr class="noBorder" >
-    <th><label for="<%=OctopusBuildTriggerUtil.URL_PARAM%>">URL: <l:star/></label></th>
+    <th><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>">Octopus Server Url: <l:star/></label></th>
     <td>
-       <props:textProperty name="<%=OctopusBuildTriggerUtil.URL_PARAM%>" className="longField"/>
+      <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>" className="longField"/>
       <span class="smallNote">
-          e.g. http://svn.jetbrains.org/teamcity/plugins/octopus-build-trigger/trunk/build.xml,<br/>
-          ftp://admin:admin@172.168.0.2:2121/dir/artifact.zip. <br/>
+          e.g. https://example.org
       </span>
-        <span class="error" id="error_<%=OctopusBuildTriggerUtil.URL_PARAM%>"></span>
+       <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>"></span>
     </td>
 </tr>
 
 <tr class="noBorder" >
-    <th><label for="<%=OctopusBuildTriggerUtil.USERNAME_PARAM%>">Username: </label></th>
+    <th><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>">API Key: </label></th>
     <td>
-       <props:textProperty name="<%=OctopusBuildTriggerUtil.USERNAME_PARAM%>"/>
-      <span class="smallNote">
-          Used for HTTP basic authentication and FTP login
-      </span>
-        <span class="error" id="error_<%=OctopusBuildTriggerUtil.USERNAME_PARAM%>"></span>
+       <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>"/>
+       <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>"></span>
     </td>
 </tr>
 
+<!-- TODO: add javascript to query OD and get back project list -->
 <tr class="noBorder" >
-    <th><label for="<%=OctopusBuildTriggerUtil.PASSWORD_PARAM%>">Password: </label></th>
+    <th><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT%>">Project ID: </label></th>
     <td>
-       <props:passwordProperty name="<%=OctopusBuildTriggerUtil.PASSWORD_PARAM%>"/>
+      <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT%>"/>
       <span class="smallNote">
-          Used for HTTP basic authentication and FTP login
+          e.g. projects-22
       </span>
-        <span class="error" id="error_<%=OctopusBuildTriggerUtil.PASSWORD_PARAM%>"></span>
+      <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT%>"></span>
     </td>
 </tr>
+
+
+<!-- TODO: add optional environment dropdown + javascript to query OD and get back list -->
