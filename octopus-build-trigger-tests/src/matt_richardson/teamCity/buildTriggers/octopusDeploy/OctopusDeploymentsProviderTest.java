@@ -131,7 +131,7 @@ public class OctopusDeploymentsProviderTest {
       return null;
     }
 
-    public void init(URI uri, String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    public void init(String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
       //no-op
     }
   }
@@ -172,7 +172,7 @@ public class OctopusDeploymentsProviderTest {
       return null;
     }
 
-    public void init(URI uri, String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    public void init(String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
       //no-op
     }
   }
@@ -205,7 +205,7 @@ public class OctopusDeploymentsProviderTest {
       return null;
     }
 
-    public void init(URI uri, String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    public void init(String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
       //no-op
     }
   }
@@ -241,7 +241,7 @@ public class OctopusDeploymentsProviderTest {
       return null;
     }
 
-    public void init(URI uri, String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    public void init(String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
       //no-op
     }
   }

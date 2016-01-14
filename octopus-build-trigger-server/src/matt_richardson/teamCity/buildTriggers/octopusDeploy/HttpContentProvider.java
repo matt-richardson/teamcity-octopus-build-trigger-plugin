@@ -31,6 +31,6 @@ public interface HttpContentProvider {
 
   String getContent(URI uri) throws IOException, UnexpectedResponseCodeException;
 
-  void init(URI uri, String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException;
+  void init(String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException;
 }
 

@@ -59,7 +59,7 @@ final class OctopusDeploymentsProvider {
       final URI uri = new URL(octopusUrl).toURI();
       final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
-      contentProvider.init(uri, octopusApiKey, connectionTimeout);
+      contentProvider.init(octopusApiKey, connectionTimeout);
 
       final String apiResponse = contentProvider.getContent(new URL(octopusUrl + "/api").toURI());
       final String projectApiLink = parseLink(apiResponse, "Projects");
@@ -142,10 +142,9 @@ final class OctopusDeploymentsProvider {
     CloseableHttpClient httpClient = null;
 
     try {
-      final URI uri = new URL(octopusUrl).toURI();
       final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
-      contentProvider.init(uri, octopusApiKey, connectionTimeout);
+      contentProvider.init(octopusApiKey, connectionTimeout);
 
       final String apiResponse = contentProvider.getContent(new URL(octopusUrl + "/api").toURI());
 
