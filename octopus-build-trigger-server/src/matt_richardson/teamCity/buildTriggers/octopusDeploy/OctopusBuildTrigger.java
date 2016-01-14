@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+//todo: move back under the jetbrains namespace? (https://confluence.jetbrains.com/display/TCD9/Plugin+Development+FAQ)
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
 import com.intellij.openapi.diagnostic.Logger;
-import jetbrains.buildServer.buildTriggers.*;
+import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
+import jetbrains.buildServer.buildTriggers.BuildTriggerException;
+import jetbrains.buildServer.buildTriggers.BuildTriggerService;
+import jetbrains.buildServer.buildTriggers.BuildTriggeringPolicy;
 import jetbrains.buildServer.buildTriggers.async.*;
-import jetbrains.buildServer.log.Loggers;
 import jetbrains.buildServer.serverSide.InvalidProperty;
 import jetbrains.buildServer.serverSide.PropertiesProcessor;
 import jetbrains.buildServer.serverSide.TeamCityProperties;
@@ -27,20 +30,18 @@ import jetbrains.buildServer.util.StringUtil;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.*;
 
-/**
- * User: vbedrosova
- * Date: 06.12.10
- * Time: 13:19
- */
 public final class OctopusBuildTrigger extends BuildTriggerService {
   @NotNull
-  private static final Logger LOG = Logger.getInstance(Loggers.VCS_CATEGORY + OctopusBuildTrigger.class);
-
-  private static final String DISPLAY_NAME = "Octopus build trigger";
+  //private static final Logger LOG = Logger.getInstance(Loggers.VCS_CATEGORY + OctopusBuildTrigger.class);
+  //todo: log to own file, rather than server log
+  private static final Logger LOG = jetbrains.buildServer.log.Loggers.SERVER;
 
   @NotNull
   private final PluginDescriptor myPluginDescriptor;
@@ -48,7 +49,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
   private final BuildTriggeringPolicy myPolicy;
 
   public OctopusBuildTrigger(@NotNull final PluginDescriptor pluginDescriptor,
-                         @NotNull final AsyncBuildTriggerFactory triggerFactory) {
+                             @NotNull final AsyncBuildTriggerFactory triggerFactory) {
     myPluginDescriptor = pluginDescriptor;
     myPolicy = triggerFactory.createBuildTrigger(Spec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
   }
@@ -62,13 +63,14 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
   @NotNull
   @Override
   public String getDisplayName() {
-    return DISPLAY_NAME;
+    return "Octopus Build Trigger";
   }
 
   @NotNull
   @Override
   public String describeTrigger(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-    return "Wait for a new deployment at " + buildTriggerDescriptor.getProperties().get(OCTOPUS_URL) + " URL";
+    return "Wait for a new successful deployment of " + buildTriggerDescriptor.getProperties().get(OCTOPUS_PROJECT) +
+           " on server " + buildTriggerDescriptor.getProperties().get(OCTOPUS_URL) + ".";
   }
 
   @NotNull
@@ -97,6 +99,10 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
         final String err = (new OctopusDeploymentsProvider()).checkOctopusConnectivity(url, apiKey);
         if (StringUtil.isNotEmpty(err)) {
           invalidProps.add(new InvalidProperty(OCTOPUS_URL, err));
+        }
+        final String project = properties.get(OCTOPUS_PROJECT);
+        if (StringUtil.isEmptyOrSpaces(project)) {
+          invalidProps.add(new InvalidProperty(OCTOPUS_PROJECT, "Project ID must be specified")); //todo: change to use dropdown / name
         }
         return invalidProps;
       }
@@ -154,20 +160,21 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
             LOG.debug(getDisplayName() + " checks for new deployments for project " + octopusProject + " on server " + octopusUrl);
 
             final String dataStorageKey = (octopusUrl + "|" + octopusProject).toLowerCase();
-            final Spec spec = new Spec(octopusUrl);
+            final Spec spec = new Spec(octopusUrl, octopusProject);
 
             try {
               final String oldStoredData = asyncTriggerParameters.getCustomDataStorage().getValue(dataStorageKey);
               final Deployments oldDeployments = new Deployments(oldStoredData);
               final Deployments newDeployments = new OctopusDeploymentsProvider().getDeployments(octopusUrl, octopusApiKey, octopusProject, oldDeployments);
 
-              //todo: fix so that only store that one OD deployment has happened here, not multiple. We could inadvertendly miss deployments
+              //todo: fix so that only store that one deployment to one environment has happened here, not multiple environment.
+              //      We could inadvertently miss deployments
               final String newStoredData = newDeployments.toString();
 
               if (!newDeployments.equals(oldDeployments)) {
                 asyncTriggerParameters.getCustomDataStorage().putValue(dataStorageKey, newStoredData);
 
-                if (oldDeployments.isEmpty()) { // do not trigger build after adding trigger (oldHash == null)
+                if (oldDeployments.isEmpty()) { // do not trigger build after adding trigger (oldDeployments == null)
                   LOG.debug(getDisplayName() + " no previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                   return createEmptyResult();
                 }
@@ -230,15 +237,22 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
 
   private static class Spec {
     @NotNull
-    private final String myUrl;
+    private final String url;
+    @NotNull
+    private final String project;
 
-    private Spec(@NotNull String url) {
-      myUrl = url;
+    private Spec(@NotNull String url, String project) {
+      this.url = url;
+      this.project = project;
     }
 
     @NotNull
     private String getUrl() {
-      return myUrl;
+      return this.url;
+    }
+    @NotNull
+    private String getProject() {
+      return this.project;
     }
   }
 }

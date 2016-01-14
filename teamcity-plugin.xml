@@ -19,9 +19,9 @@
                  xsi:noNamespaceSchemaLocation="urn:shemas-jetbrains-com:teamcity-plugin-v1-xml">
     <info>
         <name>octopus-build-trigger</name>
-        <display-name>Octopus build trigger</display-name>
+        <display-name>Octopus Build Trigger</display-name>
         <version>@Plugin_Version@</version>
-        <description>Support for triggering build on detecting changes for in Octopus Deploy.</description>
+        <description>Support for triggering build on detecting changes in Octopus Deploy.</description>
         <vendor>
             <name>Matt Richardson</name>
             <url>http://mjrichardson.com</url>
