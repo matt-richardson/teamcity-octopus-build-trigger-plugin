@@ -44,7 +44,7 @@ final class OctopusDeploymentsProvider {
     this.contentProvider = contentProvider;
   }
 
-  public Deployments getDeployments(String octopusUrl, String octopusApiKey, String octopusProject, Deployments oldDeployments) throws ResourceHashProviderException {
+  public Deployments getDeployments(String octopusUrl, String octopusApiKey, String octopusProject, Deployments oldDeployments) throws OctopusDeploymentsProviderException {
     //get {octopusurl}/api
     //parse out project url
     //parse out progression url
@@ -57,7 +57,7 @@ final class OctopusDeploymentsProvider {
 
     try {
       final URI uri = new URL(octopusUrl).toURI();
-      final Integer connectionTimeout = 10;//triggerParameters.getConnectionTimeout(); //todo:fix
+      final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
       contentProvider.init(uri, octopusApiKey, connectionTimeout);
 
@@ -70,10 +70,8 @@ final class OctopusDeploymentsProvider {
 
       return ParseDeploymentResponse(contentProvider, octopusUrl, deploymentsResponse, oldDeployments);
 
-    } catch (UnexpectedResponseCode e) {
-      throw new ResourceHashProviderException("URL " + octopusUrl + ": " + e.getMessage(), e);
     } catch (Throwable e) {
-      throw new ResourceHashProviderException("URL " + octopusUrl + ": " + e.getMessage(), e);
+      throw new OctopusDeploymentsProviderException("URL " + octopusUrl + ": " + e.getMessage(), e);
 
     } finally {
       contentProvider.close(httpClient);
@@ -81,7 +79,7 @@ final class OctopusDeploymentsProvider {
 
   }
 
-  private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String octopusUrl, String deploymentsResponse, Deployments oldDeployments) throws ParseException, java.text.ParseException, IOException, URISyntaxException, ResourceHashProviderException {
+  private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String octopusUrl, String deploymentsResponse, Deployments oldDeployments) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException {
     Deployments result = new Deployments(oldDeployments.toString());
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(deploymentsResponse);
@@ -145,7 +143,7 @@ final class OctopusDeploymentsProvider {
 
     try {
       final URI uri = new URL(octopusUrl).toURI();
-      final Integer connectionTimeout = 10;//triggerParameters.getConnectionTimeout(); //todo:fix
+      final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
       contentProvider.init(uri, octopusApiKey, connectionTimeout);
 
@@ -153,7 +151,7 @@ final class OctopusDeploymentsProvider {
 
       return null;
 
-    } catch (UnexpectedResponseCode e) {
+    } catch (UnexpectedResponseCodeException e) {
       return e.getMessage();
     } catch (Throwable e) {
       return e.getMessage();
