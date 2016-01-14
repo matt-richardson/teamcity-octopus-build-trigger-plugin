@@ -16,10 +16,10 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-public class UnexpectedResponseCode extends ResourceHashProviderException {
+public class UnexpectedResponseCodeException extends OctopusDeploymentsProviderException {
   public final int code;
 
-  public UnexpectedResponseCode(int code, String reason) {
+  public UnexpectedResponseCodeException(int code, String reason) {
     super("Server returned " + code + " " + reason);
     this.code = code;
   }

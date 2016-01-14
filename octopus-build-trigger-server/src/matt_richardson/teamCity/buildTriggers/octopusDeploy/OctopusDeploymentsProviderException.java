@@ -16,17 +16,12 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-/**
- * User: Victory.Bedrosova
- * Date: 9/28/12
- * Time: 6:13 PM
- */
-class ResourceHashProviderException extends Exception {
-  public ResourceHashProviderException(String message) {
+class OctopusDeploymentsProviderException extends Exception {
+  public OctopusDeploymentsProviderException(String message) {
     super(message);
   }
 
-  public ResourceHashProviderException(String message, Throwable cause) {
+  public OctopusDeploymentsProviderException(String message, Throwable cause) {
     super(message, cause);
   }
 }

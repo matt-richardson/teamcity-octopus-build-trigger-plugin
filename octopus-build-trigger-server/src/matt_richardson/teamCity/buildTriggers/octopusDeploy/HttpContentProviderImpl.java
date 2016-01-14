@@ -64,7 +64,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
   }
 
   @NotNull
-  public String getContent(@NotNull URI uri) throws ResourceHashProviderException, IOException {
+  public String getContent(@NotNull URI uri) throws IOException, UnexpectedResponseCodeException {
     final HttpGet httpGet = new HttpGet(uri);
 
     try {
@@ -74,7 +74,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
 
       final int statusCode = response.getStatusLine().getStatusCode();
       if (statusCode >= 300) {
-        throw new UnexpectedResponseCode(statusCode, response.getStatusLine().getReasonPhrase());
+        throw new UnexpectedResponseCodeException(statusCode, response.getStatusLine().getReasonPhrase());
       }
 
       final HttpEntity entity = response.getEntity();
