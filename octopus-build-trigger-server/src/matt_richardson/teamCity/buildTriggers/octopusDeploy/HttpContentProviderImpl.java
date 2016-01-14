@@ -42,9 +42,12 @@ import java.security.NoSuchAlgorithmException;
 
 public class HttpContentProviderImpl implements HttpContentProvider {
   CloseableHttpClient httpClient;
+  @Nullable
+  private String apiKey;
 
     final RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(connectionTimeout).setConnectionRequestTimeout(connectionTimeout).setSocketTimeout(connectionTimeout).build();
   public void init(@Nullable String apiKey, @NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    this.apiKey = apiKey;
 
     final SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build();
     SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
@@ -70,6 +73,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     try {
 
       final HttpContext httpContext = HttpClientContext.create();
+      httpGet.addHeader("X-Octopus-ApiKey", this.apiKey);
       final CloseableHttpResponse response = httpClient.execute(httpGet, httpContext);
 
       final int statusCode = response.getStatusLine().getStatusCode();
