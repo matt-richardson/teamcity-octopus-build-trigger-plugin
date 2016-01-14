@@ -129,7 +129,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
 
       @NotNull
       public String getRequestorString(@NotNull Spec spec) {
-        return getDisplayName() + " " + spec.getUrl();
+        return "Successful deployment of " + spec.getProject() + " on " + spec.getUrl();
       }
 
       public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
