@@ -129,6 +129,9 @@ final class OctopusDeploymentsProvider {
       if (map.get("Name").toString().equals(projectName)) {
         return map.get("Id").toString();
       }
+      if (map.get("Id").toString().equals(projectName)) {
+        return map.get("Id").toString();
+      }
     };
     throw new Exception("Unable to find project '" + projectName + "'");
   }
