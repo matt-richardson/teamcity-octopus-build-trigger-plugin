@@ -102,6 +102,7 @@ final class OctopusDeploymentsProvider {
         Boolean finishedSuccessfully = Boolean.parseBoolean(task.get("FinishedSuccessfully").toString());
         result.AddOrUpdate(environmentId, createdDate, isCompleted, finishedSuccessfully);
         if (result.haveAllDeploymentsFinishedSuccessfully())
+           //todo: fix bug - doesn't enumerate all environments - if first one found is successful, it doesn't find other environments
           return result;
       }
     }
@@ -117,6 +118,7 @@ final class OctopusDeploymentsProvider {
     return result;
   }
 
+  //todo: figure out if we need this. is the ui going to pass us an id or a name?
   private String getProjectId(String projectResponse, String projectName) throws Exception {
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(projectResponse);
