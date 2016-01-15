@@ -16,6 +16,7 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
+import com.intellij.openapi.diagnostic.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -42,9 +43,15 @@ import java.security.NoSuchAlgorithmException;
 
 
 public class HttpContentProviderImpl implements HttpContentProvider {
+  private final Logger LOG;
   CloseableHttpClient httpClient;
   @Nullable
   private String apiKey;
+
+  public HttpContentProviderImpl(Logger log)
+  {
+    this.LOG = log;
+  }
 
   public void init(@Nullable String apiKey, @NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
     this.apiKey = apiKey;
@@ -81,6 +88,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     final HttpGet httpGet = new HttpGet(uri);
 
     try {
+      LOG.info("Getting response from url " + uri);
 
       final HttpContext httpContext = HttpClientContext.create();
       httpGet.addHeader("X-Octopus-ApiKey", this.apiKey);
@@ -93,6 +101,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
 
       final HttpEntity entity = response.getEntity();
       final String content = EntityUtils.toString(entity);
+      LOG.info("Octopus Deploy: request to " + uri + " returned " + content);
       return content;
 
     } finally {

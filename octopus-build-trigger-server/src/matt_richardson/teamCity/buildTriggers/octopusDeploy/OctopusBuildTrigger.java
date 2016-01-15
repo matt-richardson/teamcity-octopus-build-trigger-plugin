@@ -96,7 +96,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
         if (StringUtil.isEmptyOrSpaces(url)) {
           invalidProps.add(new InvalidProperty(OCTOPUS_APIKEY, "API Key must be specified"));
         }
-        final String err = (new OctopusDeploymentsProvider()).checkOctopusConnectivity(url, apiKey);
+        final String err = (new OctopusDeploymentsProvider(LOG)).checkOctopusConnectivity(url, apiKey);
         if (StringUtil.isNotEmpty(err)) {
           invalidProps.add(new InvalidProperty(OCTOPUS_URL, err));
         }
@@ -165,7 +165,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
             try {
               final String oldStoredData = asyncTriggerParameters.getCustomDataStorage().getValue(dataStorageKey);
               final Deployments oldDeployments = new Deployments(oldStoredData);
-              final Deployments newDeployments = new OctopusDeploymentsProvider().getDeployments(octopusUrl, octopusApiKey, octopusProject, oldDeployments);
+              final Deployments newDeployments = new OctopusDeploymentsProvider(LOG).getDeployments(octopusUrl, octopusApiKey, octopusProject, oldDeployments);
 
               //todo: fix so that only store that one deployment to one environment has happened here, not multiple environment.
               //      We could inadvertently miss deployments

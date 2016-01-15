@@ -16,10 +16,10 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
+import com.intellij.openapi.diagnostic.Logger;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,14 +34,16 @@ final class OctopusDeploymentsProvider {
 
   static final String OCTOPUS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
   private final HttpContentProvider contentProvider;
+  private final Logger LOG;
 
-  public OctopusDeploymentsProvider() {
-    this(new HttpContentProviderImpl());
+  public OctopusDeploymentsProvider(Logger log) {
+    this(new HttpContentProviderImpl(log), log);
   }
 
-  public OctopusDeploymentsProvider(HttpContentProvider contentProvider)
+  public OctopusDeploymentsProvider(HttpContentProvider contentProvider, Logger log)
   {
     this.contentProvider = contentProvider;
+    this.LOG = log;
   }
 
   public Deployments getDeployments(String octopusUrl, String octopusApiKey, String octopusProject, Deployments oldDeployments) throws OctopusDeploymentsProviderException {
@@ -56,9 +58,11 @@ final class OctopusDeploymentsProvider {
     CloseableHttpClient httpClient = null;
 
     try {
+      LOG.debug("OctopusBuildTrigger: Getting deployments from " + octopusUrl + " for project " + octopusProject);
       final URI uri = new URL(octopusUrl).toURI();
       final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
+      LOG.debug("OctopusBuildTrigger: Connecting to uri " + octopusUrl + " with timeout " + connectionTimeout);
       contentProvider.init(octopusApiKey, connectionTimeout);
 
       final String apiResponse = contentProvider.getContent(new URL(octopusUrl + "/api").toURI());
@@ -80,6 +84,7 @@ final class OctopusDeploymentsProvider {
   }
 
   private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String octopusUrl, String deploymentsResponse, Deployments oldDeployments) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException {
+    LOG.debug("OctopusBuildTrigger: parsing deployment response");
     Deployments result = new Deployments(oldDeployments.toString());
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(deploymentsResponse);
@@ -93,17 +98,24 @@ final class OctopusDeploymentsProvider {
       String environmentId = deployment.get("EnvironmentId").toString();
       Date createdDate = dateFormat.parse(deployment.get("Created").toString());
       Deployment lastKnownDeploymentForThisEnvironment = oldDeployments.getDeploymentForEnvironment(environmentId);
+      LOG.debug("Found deployment to environment '" + environmentId + "' created at '" + createdDate + "'");
       if (lastKnownDeploymentForThisEnvironment.isLatestDeploymentOlderThen(createdDate)) {
+        LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "' was newer than the last known deployment to this environment");
         String taskLink = ((Map) (deployment.get("Links"))).get("Task").toString();
         String taskResponse = contentProvider.getContent(new URL(octopusUrl + taskLink).toURI());
         Map task = (Map)parser.parse(taskResponse);
 
         Boolean isCompleted = Boolean.parseBoolean(task.get("IsCompleted").toString());
         Boolean finishedSuccessfully = Boolean.parseBoolean(task.get("FinishedSuccessfully").toString());
+        LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "': isCompleted = '" + isCompleted + "', finishedSuccessfully = '" + finishedSuccessfully + "'");
         result.AddOrUpdate(environmentId, createdDate, isCompleted, finishedSuccessfully);
         if (result.haveAllDeploymentsFinishedSuccessfully())
+          LOG.debug("All deployments have finished succesfully - no need to keep iteration");
            //todo: fix bug - doesn't enumerate all environments - if first one found is successful, it doesn't find other environments
           return result;
+      }
+      else {
+        LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "' was older than the last known deployment to this environment");
       }
     }
 
@@ -120,6 +132,7 @@ final class OctopusDeploymentsProvider {
 
   //todo: figure out if we need this. is the ui going to pass us an id or a name?
   private String getProjectId(String projectResponse, String projectName) throws Exception {
+    LOG.debug("Parsing '" + projectResponse + " to find project with name '" + projectName + "'");
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(projectResponse);
     List items = (List)response.get("Items");
@@ -127,9 +140,11 @@ final class OctopusDeploymentsProvider {
     for (Object item: items) {
       Map map = (Map)item;
       if (map.get("Name").toString().equals(projectName)) {
+        LOG.debug("Found that project id '" + map.get("Id").toString() + " maps to name '" + projectName + "'");
         return map.get("Id").toString();
       }
       if (map.get("Id").toString().equals(projectName)) {
+        LOG.debug("Found that project id '" + map.get("Id").toString() + " equals supplied name '" + projectName + "'");
         return map.get("Id").toString();
       }
     };
@@ -137,10 +152,13 @@ final class OctopusDeploymentsProvider {
   }
 
   private String parseLink(String apiResponse, String linkName) throws ParseException {
+    LOG.debug("Parsing '" + apiResponse + "' for link '" + linkName + "'");
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(apiResponse);
-    String link = (String)((Map)response.get("Links")).get(linkName);
-    return link.replaceAll("\\{.*\\}", ""); //remove all optional params
+    final String link = (String)((Map)response.get("Links")).get(linkName);
+    final String result = link.replaceAll("\\{.*\\}", ""); //remove all optional params
+    LOG.debug("Found link for '" + linkName + "' was '" + result + "'");
+    return result;
   }
 
   public String checkOctopusConnectivity(String octopusUrl, String octopusApiKey) {
@@ -149,6 +167,7 @@ final class OctopusDeploymentsProvider {
     try {
       final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
+      LOG.info("OctopusBuildTrigger: checking connectivity to octopus at " + octopusUrl);
       contentProvider.init(octopusApiKey, connectionTimeout);
 
       final String apiResponse = contentProvider.getContent(new URL(octopusUrl + "/api").toURI());

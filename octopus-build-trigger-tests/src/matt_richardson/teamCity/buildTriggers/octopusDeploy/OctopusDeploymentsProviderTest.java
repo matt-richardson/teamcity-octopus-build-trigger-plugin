@@ -16,6 +16,8 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
+import com.intellij.openapi.diagnostic.Logger;
+import jetbrains.buildServer.log.Loggers;
 import org.jetbrains.annotations.Nullable;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -36,10 +38,11 @@ public class OctopusDeploymentsProviderTest {
   final String octopusUrl = "http://baseUrl";
   final String octopusApiKey = "api-key";
   final String octopusProject = "TestProject";
+  private static final Logger LOG = Logger.getInstance(Loggers.VCS_CATEGORY + OctopusBuildTrigger.class);
 
   public void testGetDeploymentsFromEmptyStart() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider();
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider);
+    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(octopusUrl, octopusApiKey, octopusProject, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -61,7 +64,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsWhenUpToDate() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider();
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider);
+    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(octopusUrl, octopusApiKey, octopusProject, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -72,7 +75,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsWhenNoSuccessfulDeploymentsHaveOccurred() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProviderWithNoSuccessfulDeployments();
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider);
+    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(octopusUrl, octopusApiKey, octopusProject, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -83,7 +86,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsWhenNoSuccessfulDeploymentsOnFirstPageOfResults() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProviderWithTheFirstSuccessfulDeploymentOnTheSecondPage();
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider);
+    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(octopusUrl, octopusApiKey, octopusProject, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -94,7 +97,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsWhenMultipleEnvironments() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProviderWithMultipleEnvironments();
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider);
+    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(octopusUrl, octopusApiKey, octopusProject, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 2);
