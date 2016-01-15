@@ -83,6 +83,7 @@ final class OctopusDeploymentsProvider {
 
   }
 
+  //todo: optimise this, probably via caching the last known release
   private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String octopusUrl, String deploymentsResponse, Deployments oldDeployments) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException {
     LOG.debug("OctopusBuildTrigger: parsing deployment response");
     Deployments result = new Deployments(oldDeployments.toString());

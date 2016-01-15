@@ -137,6 +137,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
       }
 
       @NotNull
+      //todo: this needs tests
       public CheckJob<Spec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
         return new CheckJob<Spec>() {
           @NotNull
