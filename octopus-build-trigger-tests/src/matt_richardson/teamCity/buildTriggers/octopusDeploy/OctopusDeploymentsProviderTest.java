@@ -40,6 +40,15 @@ public class OctopusDeploymentsProviderTest {
   final String octopusProject = "TestProject";
   private static final Logger LOG = Logger.getInstance(Loggers.VCS_CATEGORY + OctopusBuildTrigger.class);
 
+  @Test(enabled = false)
+  public void testGetDeploymentsFromRealServer() throws Exception {
+    HttpContentProvider contentProvider = new HttpContentProviderImpl(LOG);
+    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    Deployments oldDeployments = new Deployments();
+    Deployments newDeployments = deploymentsProvider.getDeployments("http://192.168.213.195/", "API-H3CUOOWJ1XMWBUHSMASYIPAW20", octopusProject, oldDeployments);
+    Assert.assertNotNull(newDeployments);
+  }
+
   public void testGetDeploymentsFromEmptyStart() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider();
     OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
