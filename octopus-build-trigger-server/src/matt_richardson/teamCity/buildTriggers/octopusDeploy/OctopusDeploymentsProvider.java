@@ -112,7 +112,6 @@ final class OctopusDeploymentsProvider {
         result.AddOrUpdate(environmentId, createdDate, isCompleted, finishedSuccessfully);
         if (result.haveAllDeploymentsFinishedSuccessfully())
           LOG.debug("All deployments have finished succesfully - no need to keep iteration");
-           //todo: fix bug - doesn't enumerate all environments - if first one found is successful, it doesn't find other environments
           return result;
       }
       else {
