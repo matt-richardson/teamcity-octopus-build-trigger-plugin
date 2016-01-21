@@ -112,7 +112,7 @@ public class Deployments {
     return statusMap.size();
   }
 
-  public void AddOrUpdate(String environmentId, Date latestDeployment, Boolean isCompleted, Boolean finishedSuccessfully) {
+  public void addOrUpdate(String environmentId, Date latestDeployment, Boolean isCompleted, Boolean finishedSuccessfully) {
     if (!isCompleted)
       return;
 
@@ -131,13 +131,13 @@ public class Deployments {
     }
   }
 
-  public void AddOrUpdate(Deployments moreResults) {
+  public void addOrUpdate(Deployments moreResults) {
     for (Deployment deployment : moreResults.statusMap) {
-      AddOrUpdate(deployment.environmentId, deployment.latestDeployment, deployment.latestSuccessfulDeployment);
+      addOrUpdate(deployment.environmentId, deployment.latestDeployment, deployment.latestSuccessfulDeployment);
     }
   }
 
-  private void AddOrUpdate(String environmentId, Date latestDeployment, Date latestSuccessfulDeployment) {
+  private void addOrUpdate(String environmentId, Date latestDeployment, Date latestSuccessfulDeployment) {
     Deployment targetDeployment = getDeploymentForEnvironment(environmentId);
     if (targetDeployment.getClass().equals(NullDeployment.class)) {
       targetDeployment = new Deployment(environmentId, latestDeployment, latestSuccessfulDeployment);
@@ -159,5 +159,9 @@ public class Deployments {
         result = result & deployment.isSuccessful();
       }
     return result;
+  }
+
+  public void addEnvironment(String environmentId) {
+    addOrUpdate(environmentId, new Date(0), new Date(0));
   }
 }

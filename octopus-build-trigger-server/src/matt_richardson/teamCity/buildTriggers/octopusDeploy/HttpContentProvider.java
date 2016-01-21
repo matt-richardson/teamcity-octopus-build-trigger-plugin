@@ -29,7 +29,7 @@ import java.security.NoSuchAlgorithmException;
 public interface HttpContentProvider {
   void close(@Nullable Closeable closeable);
 
-  String getContent(URI uri) throws IOException, UnexpectedResponseCodeException;
+  String getContent(URI uri) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException;
 
   void init(String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException;
 }

@@ -20,8 +20,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -59,7 +59,6 @@ final class OctopusDeploymentsProvider {
 
     try {
       LOG.debug("OctopusBuildTrigger: Getting deployments from " + octopusUrl + " for project " + octopusProject);
-      final URI uri = new URL(octopusUrl).toURI();
       final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
       LOG.debug("OctopusBuildTrigger: Connecting to uri " + octopusUrl + " with timeout " + connectionTimeout);
@@ -70,11 +69,22 @@ final class OctopusDeploymentsProvider {
       final String deploymentsApiLink = parseLink(apiResponse, "Deployments");
       final String projectResponse = contentProvider.getContent(new URL(octopusUrl + projectApiLink).toURI());
       final String projectId = getProjectId(projectResponse, octopusProject);
-      final String deploymentsResponse = contentProvider.getContent(new URL(octopusUrl + deploymentsApiLink + "?Projects=" + projectId).toURI());
+      final String progressionApiLink = "/api/progression/"; // parseLink(apiResponse, "Progression"); //todo: fix after bug fixed by OD
 
-      return ParseDeploymentResponse(contentProvider, octopusUrl, deploymentsResponse, oldDeployments);
+      final String progressionResponse = contentProvider.getContent(new URL(octopusUrl + progressionApiLink + projectId).toURI());
+      return ParseProgressionResponse(contentProvider, octopusUrl, progressionResponse, oldDeployments, deploymentsApiLink, projectId);
 
-    } catch (Throwable e) {
+    }
+    catch (InvalidOctopusApiKeyException e) {
+      throw e;
+    }
+    catch (InvalidOctopusUrlException e) {
+      throw e;
+    }
+    catch (ProjectNotFoundException e) {
+      throw e;
+    }
+    catch (Throwable e) {
       throw new OctopusDeploymentsProviderException("URL " + octopusUrl + ": " + e, e);
 
     } finally {
@@ -83,10 +93,59 @@ final class OctopusDeploymentsProvider {
 
   }
 
-  //todo: optimise this, probably via caching the last known release
-  private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String octopusUrl, String deploymentsResponse, Deployments oldDeployments) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException {
-    LOG.debug("OctopusBuildTrigger: parsing deployment response");
+  private Deployments ParseProgressionResponse(HttpContentProvider contentProvider, String octopusUrl, String progressionResponse, Deployments oldDeployments, String deploymentsApiLink, String projectId) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, IOException, URISyntaxException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+    LOG.debug("OctopusBuildTrigger: parsing progression response");
     Deployments result = new Deployments(oldDeployments.toString());
+    JSONParser parser = new JSONParser();
+    Map response = (Map)parser.parse(progressionResponse);
+    SimpleDateFormat dateFormat = new SimpleDateFormat(OCTOPUS_DATE_FORMAT);//2015-12-08T08:09:39.624+00:00
+
+    List environments = (List)response.get("Environments");
+    for (Object environment : environments) {
+      Map environmentMap = (Map)environment;
+      result.addEnvironment(environmentMap.get("Id").toString());
+    }
+
+    List releasesAndDeployments = (List)response.get("Releases");
+
+    if (releasesAndDeployments.size() == 0) {
+      LOG.debug("No releases found");
+      return result;
+    }
+
+    Boolean foundDeployment = false;
+
+    for (Object releaseAndDeploymentPair : releasesAndDeployments) {
+      Map releaseAndDeploymentPairMap = (Map) releaseAndDeploymentPair;
+      Map deployments = (Map)releaseAndDeploymentPairMap.get("Deployments");
+      for (Object key : deployments.keySet()) {
+        foundDeployment = true;
+        Map deployment = (Map) deployments.get(key);
+        Date createdDate = dateFormat.parse(deployment.get("Created").toString());
+        Boolean isCompleted = Boolean.parseBoolean(deployment.get("IsCompleted").toString());
+        Boolean isSuccessful = deployment.get("State").toString().equals("Success");
+
+        result.addOrUpdate((String)key, createdDate, isCompleted, isSuccessful);
+      }
+    }
+    if (!foundDeployment) {
+      LOG.debug("No deployments found");
+      return result;
+    }
+
+    if (result.haveAllDeploymentsFinishedSuccessfully()) {
+      LOG.debug("All deployments have finished successfully - no need to parse deployment response");
+      return result;
+    }
+
+    final String deploymentsResponse = contentProvider.getContent(new URL(octopusUrl + deploymentsApiLink + "?Projects=" + projectId).toURI());
+
+    return ParseDeploymentResponse(contentProvider, octopusUrl, deploymentsResponse, oldDeployments, result);
+  }
+
+  //todo: optimise this, probably via caching the last known release
+  private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String octopusUrl, String deploymentsResponse, Deployments oldDeployments, Deployments result) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+    LOG.debug("OctopusBuildTrigger: parsing deployment response");
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(deploymentsResponse);
 
@@ -109,10 +168,11 @@ final class OctopusDeploymentsProvider {
         Boolean isCompleted = Boolean.parseBoolean(task.get("IsCompleted").toString());
         Boolean finishedSuccessfully = Boolean.parseBoolean(task.get("FinishedSuccessfully").toString());
         LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "': isCompleted = '" + isCompleted + "', finishedSuccessfully = '" + finishedSuccessfully + "'");
-        result.AddOrUpdate(environmentId, createdDate, isCompleted, finishedSuccessfully);
-        if (result.haveAllDeploymentsFinishedSuccessfully())
-          LOG.debug("All deployments have finished succesfully - no need to keep iteration");
+        result.addOrUpdate(environmentId, createdDate, isCompleted, finishedSuccessfully);
+        if (result.haveAllDeploymentsFinishedSuccessfully()) {
+          LOG.debug("All deployments have finished successfully - no need to keep iteration");
           return result;
+        }
       }
       else {
         LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "' was older than the last known deployment to this environment");
@@ -122,9 +182,9 @@ final class OctopusDeploymentsProvider {
     Object nextPage = ((Map)response.get("Links")).get("Page.Next");
     if (null != nextPage) {
       final String nextPageResponse = contentProvider.getContent(new URL(octopusUrl + nextPage).toURI());
-      final Deployments moreResults = ParseDeploymentResponse(contentProvider, octopusUrl, nextPageResponse, oldDeployments);
+      final Deployments moreResults = ParseDeploymentResponse(contentProvider, octopusUrl, nextPageResponse, oldDeployments, result);
 
-      result.AddOrUpdate(moreResults);
+      result.addOrUpdate(moreResults);
     }
 
     return result;
@@ -148,7 +208,7 @@ final class OctopusDeploymentsProvider {
         return map.get("Id").toString();
       }
     };
-    throw new Exception("Unable to find project '" + projectName + "'");
+    throw new ProjectNotFoundException("Unable to find project '" + projectName + "'");
   }
 
   private String parseLink(String apiResponse, String linkName) throws ParseException {

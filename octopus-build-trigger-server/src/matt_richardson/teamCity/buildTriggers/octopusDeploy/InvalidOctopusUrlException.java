@@ -16,12 +16,18 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-public class UnexpectedResponseCodeException extends OctopusDeploymentsProviderException {
-  public final int code;
+import java.net.URI;
 
-  public UnexpectedResponseCodeException(int code, String reason) {
-    super("Server returned " + code + " " + reason);
-    this.code = code;
+public class InvalidOctopusUrlException extends OctopusDeploymentsProviderException {
+  public final URI octopusUrl;
+
+  public InvalidOctopusUrlException(URI octopusUrl) {
+    super("Unable to connect to octopus at " + octopusUrl);
+    this.octopusUrl = octopusUrl;
+  }
+
+  public InvalidOctopusUrlException(URI octopusUrl, Exception e) {
+    super("Unable to connect to octopus at " + octopusUrl, e);
+    this.octopusUrl = octopusUrl;
   }
 }
-

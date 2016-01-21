@@ -16,12 +16,12 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-public class UnexpectedResponseCodeException extends OctopusDeploymentsProviderException {
-  public final int code;
+public class ProjectNotFoundException extends OctopusDeploymentsProviderException {
+  public final String projectIdOrName;
 
-  public UnexpectedResponseCodeException(int code, String reason) {
-    super("Server returned " + code + " " + reason);
-    this.code = code;
+  public ProjectNotFoundException(String projectIdOrName) {
+    super("Unable to find project " + projectIdOrName);
+    this.projectIdOrName = projectIdOrName;
   }
 }
 

@@ -84,7 +84,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
   }
 
   @NotNull
-  public String getContent(@NotNull URI uri) throws IOException, UnexpectedResponseCodeException {
+  public String getContent(@NotNull URI uri) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     final HttpGet httpGet = new HttpGet(uri);
 
     try {
@@ -95,6 +95,12 @@ public class HttpContentProviderImpl implements HttpContentProvider {
       final CloseableHttpResponse response = httpClient.execute(httpGet, httpContext);
 
       final int statusCode = response.getStatusLine().getStatusCode();
+      if (statusCode == 401) {
+        throw new InvalidOctopusApiKeyException(statusCode, response.getStatusLine().getReasonPhrase());
+      }
+      if (statusCode == 404) {
+        throw new InvalidOctopusUrlException(uri);
+      }
       if (statusCode >= 300) {
         throw new UnexpectedResponseCodeException(statusCode, response.getStatusLine().getReasonPhrase());
       }
