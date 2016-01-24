@@ -23,7 +23,9 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -36,8 +38,8 @@ final class OctopusDeploymentsProvider {
   private final HttpContentProvider contentProvider;
   private final Logger LOG;
 
-  public OctopusDeploymentsProvider(Logger log) {
-    this(new HttpContentProviderImpl(log), log);
+  public OctopusDeploymentsProvider(String octopusUrl, String apiKey, Integer connectionTimeout, Logger log) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    this(new HttpContentProviderImpl(log, octopusUrl, apiKey, connectionTimeout), log);
   }
 
   public OctopusDeploymentsProvider(HttpContentProvider contentProvider, Logger log)
@@ -46,7 +48,7 @@ final class OctopusDeploymentsProvider {
     this.LOG = log;
   }
 
-  public Deployments getDeployments(String octopusUrl, String octopusApiKey, String octopusProject, Deployments oldDeployments) throws OctopusDeploymentsProviderException {
+  public Deployments getDeployments(String octopusProject, Deployments oldDeployments) throws OctopusDeploymentsProviderException {
     //get {octopusurl}/api
     //parse out project url
     //parse out progression url
@@ -58,21 +60,17 @@ final class OctopusDeploymentsProvider {
     CloseableHttpClient httpClient = null;
 
     try {
-      LOG.debug("OctopusBuildTrigger: Getting deployments from " + octopusUrl + " for project " + octopusProject);
-      final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
+      LOG.debug("OctopusBuildTrigger: Getting deployments from " + contentProvider.getUrl() + " for project " + octopusProject);
 
-      LOG.debug("OctopusBuildTrigger: Connecting to uri " + octopusUrl + " with timeout " + connectionTimeout);
-      contentProvider.init(octopusApiKey, connectionTimeout);
-
-      final String apiResponse = contentProvider.getContent(new URL(octopusUrl + "/api").toURI());
+      final String apiResponse = contentProvider.getContent("/api");
       final String projectApiLink = parseLink(apiResponse, "Projects");
       final String deploymentsApiLink = parseLink(apiResponse, "Deployments");
-      final String projectResponse = contentProvider.getContent(new URL(octopusUrl + projectApiLink).toURI());
+      final String projectResponse = contentProvider.getContent(projectApiLink);
       final String projectId = getProjectId(projectResponse, octopusProject);
       final String progressionApiLink = "/api/progression/"; // parseLink(apiResponse, "Progression"); //todo: fix after bug fixed by OD
 
-      final String progressionResponse = contentProvider.getContent(new URL(octopusUrl + progressionApiLink + projectId).toURI());
-      return ParseProgressionResponse(contentProvider, octopusUrl, progressionResponse, oldDeployments, deploymentsApiLink, projectId);
+      final String progressionResponse = contentProvider.getContent(progressionApiLink + projectId);
+      return ParseProgressionResponse(contentProvider, progressionResponse, oldDeployments, deploymentsApiLink, projectId);
 
     }
     catch (InvalidOctopusApiKeyException e) {
@@ -85,7 +83,7 @@ final class OctopusDeploymentsProvider {
       throw e;
     }
     catch (Throwable e) {
-      throw new OctopusDeploymentsProviderException("URL " + octopusUrl + ": " + e, e);
+      throw new OctopusDeploymentsProviderException("URL " + contentProvider.getUrl() + ": " + e, e);
 
     } finally {
       contentProvider.close(httpClient);
@@ -93,7 +91,7 @@ final class OctopusDeploymentsProvider {
 
   }
 
-  private Deployments ParseProgressionResponse(HttpContentProvider contentProvider, String octopusUrl, String progressionResponse, Deployments oldDeployments, String deploymentsApiLink, String projectId) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, IOException, URISyntaxException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  private Deployments ParseProgressionResponse(HttpContentProvider contentProvider, String progressionResponse, Deployments oldDeployments, String deploymentsApiLink, String projectId) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, IOException, URISyntaxException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     LOG.debug("OctopusBuildTrigger: parsing progression response");
     Deployments result = new Deployments(oldDeployments.toString());
     JSONParser parser = new JSONParser();
@@ -138,13 +136,13 @@ final class OctopusDeploymentsProvider {
       return result;
     }
 
-    final String deploymentsResponse = contentProvider.getContent(new URL(octopusUrl + deploymentsApiLink + "?Projects=" + projectId).toURI());
+    final String deploymentsResponse = contentProvider.getContent(deploymentsApiLink + "?Projects=" + projectId);
 
-    return ParseDeploymentResponse(contentProvider, octopusUrl, deploymentsResponse, oldDeployments, result);
+    return ParseDeploymentResponse(contentProvider, deploymentsResponse, oldDeployments, result);
   }
 
   //todo: optimise this, probably via caching the last known release
-  private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String octopusUrl, String deploymentsResponse, Deployments oldDeployments, Deployments result) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String deploymentsResponse, Deployments oldDeployments, Deployments result) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     LOG.debug("OctopusBuildTrigger: parsing deployment response");
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(deploymentsResponse);
@@ -162,7 +160,7 @@ final class OctopusDeploymentsProvider {
       if (lastKnownDeploymentForThisEnvironment.isLatestDeploymentOlderThen(createdDate)) {
         LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "' was newer than the last known deployment to this environment");
         String taskLink = ((Map) (deployment.get("Links"))).get("Task").toString();
-        String taskResponse = contentProvider.getContent(new URL(octopusUrl + taskLink).toURI());
+        String taskResponse = contentProvider.getContent(taskLink);
         Map task = (Map)parser.parse(taskResponse);
 
         Boolean isCompleted = Boolean.parseBoolean(task.get("IsCompleted").toString());
@@ -181,8 +179,8 @@ final class OctopusDeploymentsProvider {
 
     Object nextPage = ((Map)response.get("Links")).get("Page.Next");
     if (null != nextPage) {
-      final String nextPageResponse = contentProvider.getContent(new URL(octopusUrl + nextPage).toURI());
-      final Deployments moreResults = ParseDeploymentResponse(contentProvider, octopusUrl, nextPageResponse, oldDeployments, result);
+      final String nextPageResponse = contentProvider.getContent(nextPage.toString());
+      final Deployments moreResults = ParseDeploymentResponse(contentProvider, nextPageResponse, oldDeployments, result);
 
       result.addOrUpdate(moreResults);
     }
@@ -221,16 +219,12 @@ final class OctopusDeploymentsProvider {
     return result;
   }
 
-  public String checkOctopusConnectivity(String octopusUrl, String octopusApiKey) {
+  public String checkOctopusConnectivity() {
     CloseableHttpClient httpClient = null;
 
     try {
-      final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
-
-      LOG.info("OctopusBuildTrigger: checking connectivity to octopus at " + octopusUrl);
-      contentProvider.init(octopusApiKey, connectionTimeout);
-
-      final String apiResponse = contentProvider.getContent(new URL(octopusUrl + "/api").toURI());
+      LOG.info("OctopusBuildTrigger: checking connectivity to octopus at " + contentProvider.getUrl());
+      contentProvider.getContent("/api");
 
       return null;
 

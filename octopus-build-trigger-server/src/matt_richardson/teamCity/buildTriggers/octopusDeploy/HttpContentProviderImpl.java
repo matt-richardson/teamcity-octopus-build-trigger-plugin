@@ -37,6 +37,8 @@ import javax.net.ssl.SSLContext;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -44,17 +46,19 @@ import java.security.NoSuchAlgorithmException;
 
 public class HttpContentProviderImpl implements HttpContentProvider {
   private final Logger LOG;
+  private final String octopusUrl;
   CloseableHttpClient httpClient;
-  @Nullable
+  @NotNull
   private String apiKey;
 
-  public HttpContentProviderImpl(Logger log)
-  {
+  public HttpContentProviderImpl(@NotNull Logger log, @NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
     this.LOG = log;
+    this.octopusUrl = octopusUrl;
+    this.apiKey = apiKey;
+    this.init(connectionTimeout);
   }
 
-  public void init(@Nullable String apiKey, @NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-    this.apiKey = apiKey;
+  private void init(@NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
     final RequestConfig requestConfig = RequestConfig.custom()
                                                      .setConnectTimeout(connectionTimeout)
                                                      .setConnectionRequestTimeout(connectionTimeout)
@@ -74,6 +78,10 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     httpClient = builder.build();
   }
 
+  public String getUrl() {
+    return null;
+  }
+
   public void close(@Nullable Closeable closeable) {
     if (closeable == null) return;
     try {
@@ -84,7 +92,8 @@ public class HttpContentProviderImpl implements HttpContentProvider {
   }
 
   @NotNull
-  public String getContent(@NotNull URI uri) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  public String getContent(@NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException {
+    final URI uri = new URL(octopusUrl + uriPath).toURI();
     final HttpGet httpGet = new HttpGet(uri);
 
     try {

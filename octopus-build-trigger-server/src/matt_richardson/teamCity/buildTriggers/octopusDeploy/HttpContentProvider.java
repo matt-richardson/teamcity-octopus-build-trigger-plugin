@@ -20,17 +20,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.URI;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.net.URISyntaxException;
 
 
 public interface HttpContentProvider {
   void close(@Nullable Closeable closeable);
 
-  String getContent(URI uri) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException;
+  String getContent(String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException;
 
-  void init(String octopusApiKey, Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException;
+  String getUrl();
 }
 

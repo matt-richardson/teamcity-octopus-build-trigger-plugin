@@ -96,13 +96,21 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
         if (StringUtil.isEmptyOrSpaces(url)) {
           invalidProps.add(new InvalidProperty(OCTOPUS_APIKEY, "API Key must be specified"));
         }
-        final String err = (new OctopusDeploymentsProvider(LOG)).checkOctopusConnectivity(url, apiKey);
-        if (StringUtil.isNotEmpty(err)) {
-          invalidProps.add(new InvalidProperty(OCTOPUS_URL, err));
-        }
-        final String project = properties.get(OCTOPUS_PROJECT);
-        if (StringUtil.isEmptyOrSpaces(project)) {
-          invalidProps.add(new InvalidProperty(OCTOPUS_PROJECT, "Project ID must be specified")); //todo: change to use dropdown / name
+        final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
+
+        final OctopusDeploymentsProvider provider;
+        try {
+          provider = new OctopusDeploymentsProvider(url, apiKey, connectionTimeout, LOG);
+          final String err = provider.checkOctopusConnectivity();
+          if (StringUtil.isNotEmpty(err)) {
+            invalidProps.add(new InvalidProperty(OCTOPUS_URL, err));
+          }
+          final String project = properties.get(OCTOPUS_PROJECT);
+          if (StringUtil.isEmptyOrSpaces(project)) {
+            invalidProps.add(new InvalidProperty(OCTOPUS_PROJECT, "Project ID must be specified")); //todo: change to use dropdown / name
+          }
+        } catch (Exception e) {
+          invalidProps.add(new InvalidProperty(OCTOPUS_URL, e.toString()));
         }
         return invalidProps;
       }
@@ -166,7 +174,10 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
             try {
               final String oldStoredData = asyncTriggerParameters.getCustomDataStorage().getValue(dataStorageKey);
               final Deployments oldDeployments = new Deployments(oldStoredData);
-              final Deployments newDeployments = new OctopusDeploymentsProvider(LOG).getDeployments(octopusUrl, octopusApiKey, octopusProject, oldDeployments);
+              final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
+
+              OctopusDeploymentsProvider provider = new OctopusDeploymentsProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
+              final Deployments newDeployments = provider.getDeployments(octopusProject, oldDeployments);
 
               //todo: fix so that only store that one deployment to one environment has happened here, not multiple environment.
               //      We could inadvertently miss deployments
