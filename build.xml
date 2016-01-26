@@ -45,9 +45,9 @@
 
     <property name="path.variable.teamcitydistribution" value="octopus-build-trigger-server/lib/TeamCity-815" />
     <property environment="env"/>
-    <!-- <property name="jdk.home.1.6" value="${env.JAVA_HOME}"/> -->
+
 <property environment="env"/>
-<condition property="jdk.home.1.6" value="${env.JAVA_HOME}" else="/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home">
+<condition property="jdk.home.1.8" value="${env.JAVA_HOME}" else="/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home">
     <isset property="env.JAVA_HOME" />
 </condition>
   <!-- Uncomment the following property if no tests compilation is needed -->
@@ -106,9 +106,9 @@
   
   <!-- JDK definitions -->
   
-  <property name="jdk.bin.1.6" value="${jdk.home.1.6}/bin"/>
-  <path id="jdk.classpath.1.6">
-    <fileset dir="${jdk.home.1.6}">
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
       <include name="lib/ant-javafx.jar"/>
       <include name="lib/dt.jar"/>
       <include name="lib/javafx-mx.jar"/>
@@ -140,9 +140,9 @@
     </fileset>
   </path>
   
-  <property name="project.jdk.home" value="${jdk.home.1.6}"/>
-  <property name="project.jdk.bin" value="${jdk.bin.1.6}"/>
-  <property name="project.jdk.classpath" value="jdk.classpath.1.6"/>
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
   
   
   <!-- Project Libraries -->
@@ -236,7 +236,7 @@
   <property name="module.jdk.bin.octopus-build-trigger-server" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.octopus-build-trigger-server" value="${project.jdk.classpath}"/>
   
-  <property name="compiler.args.octopus-build-trigger-server" value="-encoding UTF-8 -source 1.5 -target 1.5 ${compiler.args}"/>
+  <property name="compiler.args.octopus-build-trigger-server" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
   
   <property name="octopus-build-trigger-server.output.dir" value="${module.octopus-build-trigger-server.basedir}/out/production/octopus-build-trigger-server"/>
   <property name="octopus-build-trigger-server.testoutput.dir" value="${module.octopus-build-trigger-server.basedir}/out/test/octopus-build-trigger-server"/>
@@ -361,7 +361,7 @@
   <property name="module.jdk.bin.octopus-build-trigger-tests" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.octopus-build-trigger-tests" value="${project.jdk.classpath}"/>
   
-  <property name="compiler.args.octopus-build-trigger-tests" value="-encoding UTF-8 -source 1.5 -target 1.5 ${compiler.args}"/>
+  <property name="compiler.args.octopus-build-trigger-tests" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
   
   <property name="octopus-build-trigger-tests.output.dir" value="${module.octopus-build-trigger-tests.basedir}/out/production/octopus-build-trigger-tests"/>
   <property name="octopus-build-trigger-tests.testoutput.dir" value="${module.octopus-build-trigger-tests.basedir}/out/test/octopus-build-trigger-tests"/>
@@ -490,7 +490,7 @@
   <property name="module.jdk.bin.octopus-build-trigger" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.octopus-build-trigger" value="${project.jdk.classpath}"/>
   
-  <property name="compiler.args.octopus-build-trigger" value="-encoding UTF-8 -source 1.5 -target 1.5 ${compiler.args}"/>
+  <property name="compiler.args.octopus-build-trigger" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
   
   <property name="octopus-build-trigger.output.dir" value="${module.octopus-build-trigger.basedir}/out/production/octopus-build-trigger"/>
   <property name="octopus-build-trigger.testoutput.dir" value="${module.octopus-build-trigger.basedir}/out/test/octopus-build-trigger"/>
