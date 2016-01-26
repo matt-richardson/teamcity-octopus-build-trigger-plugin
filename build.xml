@@ -324,6 +324,12 @@
   
   <target name="compile.module.octopus-build-trigger-server.production" description="Compile module octopus-build-trigger-server; production classes">
     <mkdir dir="${octopus-build-trigger-server.output.dir}"/>
+
+    <echo message="*** classpath start ***" />
+    <pathconvert property="classpathProp" refid="octopus-build-trigger-server.module.production.classpath"/>
+    <echo>${classpathProp}</echo>
+    <echo message="*** classpath end ***" />
+
     <javac destdir="${octopus-build-trigger-server.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.octopus-build-trigger-server}/javac" includeantruntime="false">
       <compilerarg line="${compiler.args.octopus-build-trigger-server}"/>
       <bootclasspath refid="octopus-build-trigger-server.module.bootclasspath"/>
