@@ -43,8 +43,13 @@
         <property name="plugin.version" value="SNAPSHOT-${current.time}"/>
     </target>
 
-
-  <property file="build.properties"/>
+    <property name="path.variable.teamcitydistribution" value="octopus-build-trigger-server/lib/TeamCity-815" />
+    <property environment="env"/>
+    <!-- <property name="jdk.home.1.6" value="${env.JAVA_HOME}"/> -->
+<property environment="env"/>
+<condition property="jdk.home.1.6" value="${env.JAVA_HOME}" else="/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home">
+    <isset property="env.JAVA_HOME" />
+</condition>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
   <property name="skip.tests" value="true"/>
