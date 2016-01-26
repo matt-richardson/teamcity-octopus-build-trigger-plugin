@@ -324,7 +324,7 @@
   
   <target name="compile.module.octopus-build-trigger-server.production" description="Compile module octopus-build-trigger-server; production classes">
     <mkdir dir="${octopus-build-trigger-server.output.dir}"/>
-    <javac destdir="${octopus-build-trigger-server.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.octopus-build-trigger-server}/javac">
+    <javac destdir="${octopus-build-trigger-server.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.octopus-build-trigger-server}/javac" includeantruntime="false">
       <compilerarg line="${compiler.args.octopus-build-trigger-server}"/>
       <bootclasspath refid="octopus-build-trigger-server.module.bootclasspath"/>
       <classpath refid="octopus-build-trigger-server.module.production.classpath"/>
@@ -459,7 +459,7 @@
   
   <target name="compile.module.octopus-build-trigger-tests.tests" depends="compile.module.octopus-build-trigger-tests.production" description="compile module octopus-build-trigger-tests; test classes" unless="skip.tests">
     <mkdir dir="${octopus-build-trigger-tests.testoutput.dir}"/>
-    <javac destdir="${octopus-build-trigger-tests.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.octopus-build-trigger-tests}/javac">
+    <javac destdir="${octopus-build-trigger-tests.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.octopus-build-trigger-tests}/javac" includeantruntime="false">
       <compilerarg line="${compiler.args.octopus-build-trigger-tests}"/>
       <bootclasspath refid="octopus-build-trigger-tests.module.bootclasspath"/>
       <classpath refid="octopus-build-trigger-tests.module.classpath"/>
