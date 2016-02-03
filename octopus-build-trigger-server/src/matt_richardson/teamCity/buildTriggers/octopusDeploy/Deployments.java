@@ -42,6 +42,10 @@ public class Deployments {
     }
   }
 
+  public Deployments(Deployments oldDeployments) throws ParseException {
+    this(oldDeployments.toString());
+  }
+
   public Deployments() throws ParseException {
     this("");
   }
