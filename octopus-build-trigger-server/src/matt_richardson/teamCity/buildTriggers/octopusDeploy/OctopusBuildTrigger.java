@@ -179,9 +179,9 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
               OctopusDeploymentsProvider provider = new OctopusDeploymentsProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
               final Deployments newDeployments = provider.getDeployments(octopusProject, oldDeployments);
 
-              //todo: fix so that only store that one deployment to one environment has happened here, not multiple environment.
-              //      We could inadvertently miss deployments
-              final String newStoredData = newDeployments.toString();
+              //only store that one deployment to one environment has happened here, not multiple environment.
+              //otherwise, we could inadvertently miss deployments
+              final String newStoredData = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments).toString();
 
               if (!newDeployments.equals(oldDeployments)) {
                 asyncTriggerParameters.getCustomDataStorage().putValue(dataStorageKey, newStoredData);

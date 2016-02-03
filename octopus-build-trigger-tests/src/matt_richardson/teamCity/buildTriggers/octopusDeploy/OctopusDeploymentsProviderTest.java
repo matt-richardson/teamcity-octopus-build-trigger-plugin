@@ -180,6 +180,30 @@ public class OctopusDeploymentsProviderTest {
     Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-21T14:25:53.700Z;2016-01-21T14:25:53.700Z");
   }
 
+  public void testWhenThereAreTwoNewDeploymentsSinceLastCheckItReturnsOnlyOne() throws Exception {
+    HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
+    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    final String oldData = "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z";
+    Deployments oldDeployments = new Deployments(oldData);
+    Deployments newDeployments = deploymentsProvider.getDeployments("Project with multiple environments", oldDeployments);
+    Assert.assertEquals(newDeployments.length(), 2);
+    Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T14:26:14.747Z;2016-01-21T14:25:40.247Z");
+    deployment = newDeployments.getDeploymentForEnvironment("Environments-21");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-21T14:25:53.700Z;2016-01-21T14:25:53.700Z");
+
+    final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments);
+    Assert.assertEquals(trimmedDeployments.length(), 2);
+    deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T14:26:14.747Z;2016-01-21T14:25:40.247Z");
+    deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-21");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z");
+  }
+
   public void testGetDeploymentsWhenMultipleEnvironmentsWithMostRecentDeploymentSuccessful() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
     OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
@@ -192,6 +216,7 @@ public class OctopusDeploymentsProviderTest {
     deployment = newDeployments.getDeploymentForEnvironment("Environments-21");
     Assert.assertNotNull(deployment);
     Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-21T14:24:10.872Z;2016-01-21T14:24:10.872Z");
+
   }
 
   private class FakeContentProvider implements HttpContentProvider {
