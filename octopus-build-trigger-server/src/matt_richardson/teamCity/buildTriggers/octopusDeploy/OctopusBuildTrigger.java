@@ -177,6 +177,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
               final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
               OctopusDeploymentsProvider provider = new OctopusDeploymentsProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
+              //todo: figure out if we actually need to pass oldDeployments in here?
               final Deployments newDeployments = provider.getDeployments(octopusProject, oldDeployments);
 
               //only store that one deployment to one environment has happened here, not multiple environment.
@@ -186,11 +187,13 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
               if (!newDeployments.equals(oldDeployments)) {
                 asyncTriggerParameters.getCustomDataStorage().putValue(dataStorageKey, newStoredData);
 
+                //todo: change to check the property on the context
                 if (oldDeployments.isEmpty()) { // do not trigger build after adding trigger (oldDeployments == null)
                   LOG.debug(getDisplayName() + " no previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                   return createEmptyResult();
                 }
 
+                //todo: option to only trigger on successful deployments?
                 LOG.info(getDisplayName() + " new deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
                 return createUpdatedResult(spec);
               }
