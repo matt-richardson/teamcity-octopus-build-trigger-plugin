@@ -182,12 +182,13 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
 
               //only store that one deployment to one environment has happened here, not multiple environment.
               //otherwise, we could inadvertently miss deployments
+              //todo: investigate passing multiple bits to createUpdatedResult()
               final String newStoredData = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments).toString();
 
               if (!newDeployments.equals(oldDeployments)) {
                 asyncTriggerParameters.getCustomDataStorage().putValue(dataStorageKey, newStoredData);
 
-                //todo: change to check the property on the context
+                //todo: change to check the property on the context that says whether its new
                 if (oldDeployments.isEmpty()) { // do not trigger build after adding trigger (oldDeployments == null)
                   LOG.debug(getDisplayName() + " no previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                   return createEmptyResult();
