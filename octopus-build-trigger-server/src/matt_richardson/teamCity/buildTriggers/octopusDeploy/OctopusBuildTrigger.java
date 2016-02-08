@@ -69,7 +69,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
   @NotNull
   @Override
   public String describeTrigger(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-    return "Wait for a new successful deployment of " + buildTriggerDescriptor.getProperties().get(OCTOPUS_PROJECT) +
+    return "Wait for a new successful deployment of " + buildTriggerDescriptor.getProperties().get(OCTOPUS_PROJECT_ID) +
            " on server " + buildTriggerDescriptor.getProperties().get(OCTOPUS_URL) + ".";
   }
 
@@ -105,9 +105,9 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
           if (StringUtil.isNotEmpty(err)) {
             invalidProps.add(new InvalidProperty(OCTOPUS_URL, err));
           }
-          final String project = properties.get(OCTOPUS_PROJECT);
+          final String project = properties.get(OCTOPUS_PROJECT_ID);
           if (StringUtil.isEmptyOrSpaces(project)) {
-            invalidProps.add(new InvalidProperty(OCTOPUS_PROJECT, "Project ID must be specified")); //todo: change to use dropdown / name
+            invalidProps.add(new InvalidProperty(OCTOPUS_PROJECT_ID, "Project must be specified")); //todo: change to use dropdown / name
           }
         } catch (Exception e) {
           invalidProps.add(new InvalidProperty(OCTOPUS_URL, e.toString()));
@@ -154,7 +154,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
 
             final String octopusUrl = props.get(OCTOPUS_URL);
             final String octopusApiKey = props.get(OCTOPUS_APIKEY);
-            final String octopusProject = props.get(OCTOPUS_PROJECT);
+            final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
 
             if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
               return createErrorResult(getDisplayName() + " settings are invalid (empty url) in build configuration " + asyncTriggerParameters.getBuildType());

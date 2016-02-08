@@ -19,7 +19,7 @@ package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 public final class OctopusBuildTriggerUtil {
   public static String OCTOPUS_URL = "octopus.build.trigger.url";
   public static String OCTOPUS_APIKEY = "octopus.build.trigger.apikey";
-  public static String OCTOPUS_PROJECT = "octopus.build.trigger.project";
+  public static String OCTOPUS_PROJECT_ID = "octopus.build.trigger.project.url";
 
   public static String POLL_INTERVAL_PROP = "octops.build.trigger.poll.interval";
   public static final Integer DEFAULT_POLL_INTERVAL = 30; // seconds

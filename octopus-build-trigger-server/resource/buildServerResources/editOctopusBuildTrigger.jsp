@@ -45,12 +45,12 @@
 </tr>
 
 <tr class="noBorder" >
-    <th><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT%>">Project: </label></th>
+    <th><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>">Project: </label></th>
     <td>
-      <props:selectProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT%>" />
+      <props:selectProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>" />
       <span class="smallNote">
       </span>
-      <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT%>"></span>
+      <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>"></span>
     </td>
 </tr>
 
@@ -62,8 +62,8 @@ window.octopusBuildTrigger = function() {
     var apiKey;
 
     function handleProjectResponse(response) {
-      var dropdown = $$('[name="prop:<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT%>"]')[0];
-      $j('[name="prop:<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT%>"]').empty();
+      var dropdown = $$('[name="prop:<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>"]')[0];
+      $j('[name="prop:<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>"]').empty();
 
       //todo: remember old selected value
       //todo: use jquery/prototype
