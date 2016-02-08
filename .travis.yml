@@ -5,7 +5,7 @@ script:
 - ant all
 branches:
   except:
-  - /^*-v[0-9]/
+  - /^.*-[0-9]*\.[0-9]*\.[0-9]*$/
 before_deploy:
 - git config --global user.email "builds@travis-ci.com"
 - git config --global user.name "Travis CI"
