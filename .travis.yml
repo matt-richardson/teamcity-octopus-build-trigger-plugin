@@ -5,13 +5,14 @@ script:
 - ant all
 branches:
   except:
-    - /^*-v[0-9]/
+  - /^*-v[0-9]/
 before_deploy:
-  - git config --global user.email "builds@travis-ci.com"
-  - git config --global user.name "Travis CI"
-  - export GIT_TAG=$TRAVIS_BRANCH-0.1.$TRAVIS_BUILD_NUMBER
-  - git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
-  - git push -q https://github.com/matt-richardson/teamcity-octopus-build-trigger-plugin.git --tags
+- git config --global user.email "builds@travis-ci.com"
+- git config --global user.name "Travis CI"
+- export GIT_TAG=$TRAVIS_BRANCH-0.1.$TRAVIS_BUILD_NUMBER
+- git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
+- git push -q https://$GIT_TAG_USER:$GIT_TAG_AUTH_TOKEN@github.com/matt-richardson/teamcity-octopus-build-trigger-plugin.git
+  --tags
 deploy:
   provider: releases
   api_key:
@@ -19,3 +20,7 @@ deploy:
   file: out/artifacts/octopus_build_trigger_plugin_zip/octopus-build-trigger.zip
   on:
     repo: matt-richardson/teamcity-octopus-build-trigger-plugin
+env:
+  global:
+  - secure: FQU39qHnx9XMeB/DMN6AMBD18ReFfKdPyP6o/p3b7PA3Yr0JuvDb2y9YZmv7XFI1I6o/fEObHrq66sNXwQzBFmtj1RZMYbU9Me8BsqoxggHxK9jFsp7ycHn0KjCVGKqJLQ3GmyaaA9GDbYDq3hv3RkeCDzHYJ0UoiVYBX8SXtZaXvJv6geTbbY8SAKgLnr9J3+YXTLhN3hgCdBkLyWJpKyWtrgdFDr6q4OHpU5zN+NmzO5UBHO44A4Q0jcs15kwvgpk7miiwyOuXA7l7kcVQLukh19q3eVrMxBLpm8tH2aHgFQIvg9rIEF/1+jB337OTqFcwWrxZFq5Ryiu0QK3UDypP92zaqEsKzYcubs9GHoTMPmpxGGxOZMJ02iW5jB9BhicrhUuozGfUndmk+eSkjjUAtFISMDHIQlAapyck0uz+k+km00MdA9p1lHOLruCSrDrYj/8ncltprq2BjzASRY9N365XuYGgkP/j9Df/UXETXsEfGHvoAidu2Vo1CYtfp0LFL5XK+oXfXvk6ZS8/WV0LPume+wlm/pL4eT53rpNsu8N8LUJJXOPmqe9EvYQM8OoEmfJzuU9sDDZ2DOU9Kbu2rnPIj2dnmj5zEanEebVYGzxdlg6sIst3O+grlhZdLN5LhqN1S/xZjwOTC0V0DLE89K74X97vl39DV43oOPI=
+  - secure: gSbQv+8w/FHn3bGmCyLT+U6iFqyL9h5DnwgWfI6P5tWG4O0nskFc6nFLs65fmedgZkOuu6rFtZai6/4T1sBilSAItBcJwyBXT7Ktv8cQFPvpqMmvuofns9taTka9zoI4O69RqA8sBxUpv2WPEwYVyJOjGOIL4SZNLn4RquEeRGwIbBVJ8Ac+jkiouiucvX6CE0BNTRj7PWYag1HfbuiccmK6bdocP0seRpUaZx+vxxFgUYq4kvSJokJ4lGhMJdSdpdir75CV7OEMYy275xB2+AOliDGQn2XnyVr6S/eypFZoGIhB4ezzLKVg3evqV6UJ/7dKFSLulwsaaROb3JbX2fQ2E0ogdVNY1x4pNK/l+J5IDGVvxL6qK+Rs3K6vo11O/LjOPcD2TIrSEmJ95t63V5hTt5IzzUSEIlEiTQpzYN4I7Bu/FwkHdUGVOcotkHm0eTdbqGaRKk0GaiOTuISDOqolyffusE9V3yusOU1pwueSBcCMKLInM4k1j7j0TnF3dMFIqXOCCNxNIcnGTpqpwsb9V1GXvj/JbFva7wSC1dOo9QrP2OfxHQPVFPEn0sqBwoFJLJ7B3cPX1ZiZZMs5g/AMA2kadDHdGdAfF+0GIVIlaPY2JaZrR6MDo51xVDZqtk7Qr/B7BpKjK0LqtJ3G4t21E4AfUwJTw33wpmphxOg=
