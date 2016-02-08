@@ -199,7 +199,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
                 return createUpdatedResult(spec);
               }
 
-              LOG.debug(getDisplayName() + " resource not changed " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
+              LOG.info(getDisplayName() + " resource not changed " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
               return createEmptyResult();
 
             } catch (Exception e) {
