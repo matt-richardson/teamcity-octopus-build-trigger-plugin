@@ -11,8 +11,8 @@ before_deploy:
 - git config --global user.name "Travis CI"
 - export GIT_TAG=$TRAVIS_BRANCH-0.1.$TRAVIS_BUILD_NUMBER
 - git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
-- git push -q https://$GIT_TAG_USER:$GIT_TAG_AUTH_TOKEN@github.com/matt-richardson/teamcity-octopus-build-trigger-plugin.git
-  --tags
+- git push -q https://$GIT_TAG_USER:$GIT_TAG_AUTH_TOKEN@github.com/matt-richardson/teamcity-octopus-build-trigger-plugin.git --tags
+- ls -alR
 deploy:
   provider: releases
   api_key:
