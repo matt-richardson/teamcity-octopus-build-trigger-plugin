@@ -3,10 +3,10 @@
 [![Build Status](https://travis-ci.org/matt-richardson/teamcity-octopus-build-trigger-plugin.svg?branch=master)](https://travis-ci.org/matt-richardson/teamcity-octopus-build-trigger-plugin)
 
 A TeamCity plugin that polls Octopus Deploy, and triggers a TeamCity build when:
-[x] a deployment to an environment is complete
-[x] a successful deployment to an environment is complete
-[ ] a release is created
-[ ] a new tentacle is added
+- [x] a deployment to an environment is complete
+- [x] a successful deployment to an environment is complete
+- [ ] a release is created
+- [ ] a new tentacle is added
 
 This is very much a work in progress, but feel free to give it a go, and let me know if you face any issues.
 
