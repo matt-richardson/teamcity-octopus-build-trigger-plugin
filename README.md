@@ -21,15 +21,15 @@ See [TeamCity documentation](https://confluence.jetbrains.com/display/TCD9/Insta
 If you want to turn on logging, add the following to `<TeamCity server home>\conf\teamcity-server-log4j.xml`:
 
 ```xml
-  <appender name="OCTOPUS_DEPLOY.LOG" class="jetbrains.buildServer.util.TCRollingFileAppender">
-    <param name="file" value="${teamcity_logs}teamcity-octopusDeploy.log" />
-    <param name="maxBackupIndex" value="3" />
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n" />
-    </layout>
-  </appender>
-  <category name="matt_richardson.teamCity.buildTriggers.octopusDeploy" additivity="false">
-    <priority value="DEBUG" />
-    <appender-ref ref="OCTOPUS_DEPLOY.LOG" />
-  </category>
+<appender name="OCTOPUS_DEPLOY.LOG" class="jetbrains.buildServer.util.TCRollingFileAppender">
+  <param name="file" value="${teamcity_logs}teamcity-octopusDeploy.log" />
+  <param name="maxBackupIndex" value="3" />
+  <layout class="org.apache.log4j.PatternLayout">
+    <param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n" />
+  </layout>
+</appender>
+<category name="matt_richardson.teamCity.buildTriggers.octopusDeploy" additivity="false">
+  <priority value="DEBUG" />
+  <appender-ref ref="OCTOPUS_DEPLOY.LOG" />
+</category>
  ```
