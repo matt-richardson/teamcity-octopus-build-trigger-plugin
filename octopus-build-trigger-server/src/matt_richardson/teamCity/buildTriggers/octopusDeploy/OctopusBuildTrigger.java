@@ -29,11 +29,9 @@ import jetbrains.buildServer.serverSide.TeamCityProperties;
 import jetbrains.buildServer.util.StringUtil;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.*;
@@ -173,13 +171,13 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
             final Boolean triggerOnlyOnSuccessfulDeployment = Boolean.parseBoolean(props.get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT));
 
             if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
-              return createErrorResult(getDisplayName() + " settings are invalid (empty url) in build configuration " + asyncTriggerParameters.getBuildType());
+              return SpecCheckResult.createErrorResult(getDisplayName() + " settings are invalid (empty url) in build configuration " + asyncTriggerParameters.getBuildType());
             }
             if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
-              return createErrorResult(getDisplayName() + " settings are invalid (empty api key) in build configuration " + asyncTriggerParameters.getBuildType());
+              return SpecCheckResult.createErrorResult(getDisplayName() + " settings are invalid (empty api key) in build configuration " + asyncTriggerParameters.getBuildType());
             }
             if (StringUtil.isEmptyOrSpaces(octopusProject)) {
-              return createErrorResult(getDisplayName() + " settings are invalid (empty project) in build configuration " + asyncTriggerParameters.getBuildType());
+              return SpecCheckResult.createErrorResult(getDisplayName() + " settings are invalid (empty project) in build configuration " + asyncTriggerParameters.getBuildType());
             }
 
             LOG.debug(getDisplayName() + " checks for new deployments for project " + octopusProject + " on server " + octopusUrl);
@@ -207,26 +205,26 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
                 //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
                 if (oldDeployments.isEmpty()) { // do not trigger build after adding trigger (oldDeployments == null)
                   LOG.debug(getDisplayName() + " no previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
-                  return createEmptyResult();
+                  return SpecCheckResult.createEmptyResult();
                 }
 
                 final Deployment deployment = newStoredData.getChangedDeployment(oldDeployments);
                 if (triggerOnlyOnSuccessfulDeployment && !deployment.isSuccessful()) {
                   LOG.debug(getDisplayName() + " new deployments found, but they weren't successful, and we are only triggering on successful builds. Server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
-                  return createEmptyResult();
+                  return SpecCheckResult.createEmptyResult();
                 } else {
                   LOG.info(getDisplayName() + " new deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
                   final Spec spec = new Spec(octopusUrl, octopusProject, deployment.isSuccessful());
-                  return createUpdatedResult(spec);
+                  return SpecCheckResult.createUpdatedResult(spec);
                 }
               }
 
               LOG.info(getDisplayName() + " resource not changed " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-              return createEmptyResult();
+              return SpecCheckResult.createEmptyResult();
 
             } catch (Exception e) {
               final Spec spec = new Spec(octopusUrl, octopusProject);
-              return createThrowableResult(spec, e);
+              return SpecCheckResult.createThrowableResult(spec, e);
             }
           }
 
@@ -238,69 +236,8 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
 
       @NotNull
       public CheckResult<Spec> createCrashOnSubmitResult(@NotNull Throwable throwable) {
-        return createThrowableResult(throwable);
+        return SpecCheckResult.createThrowableResult(throwable);
       }
     };
-  }
-
-  @NotNull
-  private SpecCheckResult createEmptyResult() {
-    return new SpecCheckResult();
-  }
-
-  @NotNull
-  private SpecCheckResult createUpdatedResult(@NotNull Spec spec) {
-    return new SpecCheckResult(Collections.singleton(spec), Collections.<Spec, DetectionException>emptyMap());
-  }
-
-  @NotNull
-  private SpecCheckResult createThrowableResult(@NotNull Throwable throwable) {
-    return new SpecCheckResult(throwable);
-  }
-
-  @NotNull
-  private SpecCheckResult createThrowableResult(@NotNull Spec spec, @NotNull Throwable throwable) {
-    return new SpecCheckResult(Collections.singleton(spec), Collections.singletonMap(spec, new DetectionException(throwable.getMessage(), throwable)));
-  }
-
-  @NotNull
-  private SpecCheckResult createErrorResult(@NotNull String error) {
-    return new SpecCheckResult(new BuildTriggerException(error));
-  }
-
-  private static class SpecCheckResult extends CheckResult<Spec> {
-    private SpecCheckResult() { super(); }
-    private SpecCheckResult(@NotNull Collection<Spec> updated, @NotNull Map<Spec, DetectionException> errors) { super(updated, errors); }
-    private SpecCheckResult(@NotNull Throwable generalError) { super(generalError); }
-  }
-
-  private static class Spec {
-    @NotNull
-    private final String url;
-    @NotNull
-    private final String project;
-    @Nullable
-    private final Boolean wasSuccessful;
-
-    private Spec(@NotNull String url, @NotNull String project) {
-      this(url, project, null);
-    }
-
-    private Spec(@NotNull String url, @NotNull String project, Boolean wasSuccessful) {
-      this.url = url;
-      this.project = project;
-      this.wasSuccessful = wasSuccessful;
-    }
-
-    @NotNull
-    private String getUrl() {
-      return this.url;
-    }
-    @NotNull
-    private String getProject() {
-      return this.project;
-    }
-
-    public boolean getWasSuccessful() { return this.wasSuccessful; }
   }
 }
