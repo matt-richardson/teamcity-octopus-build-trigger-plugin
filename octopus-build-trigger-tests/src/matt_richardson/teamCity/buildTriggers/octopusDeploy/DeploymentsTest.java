@@ -48,4 +48,55 @@ public class DeploymentsTest {
     Deployments deployments = new Deployments(expected);
     Assert.assertFalse(deployments.isEmpty());
   }
+
+  public void trim_multiple_deployments_to_return_only_one_changed_environment() throws Exception {
+    final String oldData = "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z";
+    Deployments oldDeployments = new Deployments(oldData);
+    final String newData = "Environments-1;2016-01-21T14:26:14.747Z;2016-01-21T14:25:40.247Z|Environments-21;2016-01-21T14:25:53.700Z;2016-01-21T14:25:53.700Z";
+    Deployments newDeployments = new Deployments(newData);
+
+    final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments);
+    Assert.assertEquals(trimmedDeployments.length(), 2);
+    Deployment deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T14:26:14.747Z;2016-01-21T14:25:40.247Z");
+    deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-21");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z");
+  }
+
+  public void trim_multiple_deployments_to_return_only_one_changed_environment_can_prioritise_successful_deployments() throws Exception {
+    final String oldData = "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z";
+    Deployments oldDeployments = new Deployments(oldData);
+    final String newData = "Environments-1;2016-01-21T14:26:14.747Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-21T14:25:53.700Z;2016-01-21T14:25:53.700Z";
+    Deployments newDeployments = new Deployments(newData);
+
+    final Boolean prioritiseSuccessfulDeployments = true;
+    final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, prioritiseSuccessfulDeployments);
+    Assert.assertEquals(trimmedDeployments.length(), 2);
+    Deployment deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z");
+    deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-21");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-21T14:25:53.700Z;2016-01-21T14:25:53.700Z");
+  }
+
+  public void trim_multiple_deployments_to_return_only_one_changed_environment_can_skip_successful_deployment_prioritisation() throws Exception {
+    final String oldData = "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z";
+    Deployments oldDeployments = new Deployments(oldData);
+    final String newData = "Environments-1;2016-01-21T14:26:14.747Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-21T14:25:53.700Z;2016-01-21T14:25:53.700Z";
+    Deployments newDeployments = new Deployments(newData);
+
+    final Boolean prioritiseSuccessfulDeployments = false;
+    final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, prioritiseSuccessfulDeployments);
+    Assert.assertEquals(trimmedDeployments.length(), 2);
+    Deployment deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T14:26:14.747Z;2016-01-19T00:00:00.000Z");
+    deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-21");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z");
+  }
+
 }

@@ -29,6 +29,7 @@ import jetbrains.buildServer.serverSide.TeamCityProperties;
 import jetbrains.buildServer.util.StringUtil;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,8 +70,19 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
   @NotNull
   @Override
   public String describeTrigger(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-    return "Wait for a new successful deployment of " + buildTriggerDescriptor.getProperties().get(OCTOPUS_PROJECT_ID) +
-           " on server " + buildTriggerDescriptor.getProperties().get(OCTOPUS_URL) + ".";
+    try {
+      String flag = buildTriggerDescriptor.getProperties().get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT);
+      if (flag != null && flag.equals("true")) {
+        return "Wait for a new successful deployment of " + buildTriggerDescriptor.getProperties().get(OCTOPUS_PROJECT_ID) +
+          " on server " + buildTriggerDescriptor.getProperties().get(OCTOPUS_URL) + ".";
+      }
+      return "Wait for a new deployment of " + buildTriggerDescriptor.getProperties().get(OCTOPUS_PROJECT_ID) +
+        " on server " + buildTriggerDescriptor.getProperties().get(OCTOPUS_URL) + ".";
+    }
+    catch (Exception e) {
+      LOG.error("Error in describeTrigger ", e);
+      return "Unable to determine trigger description";
+    }
   }
 
   @NotNull
@@ -137,7 +149,10 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
 
       @NotNull
       public String getRequestorString(@NotNull Spec spec) {
-        return "Successful deployment of " + spec.getProject() + " on " + spec.getUrl();
+        if (spec.getWasSuccessful()) {
+          return "Successful deployment of " + spec.getProject() + " on " + spec.getUrl();
+        }
+        return "Deployment of " + spec.getProject() + " on " + spec.getUrl();
       }
 
       public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
@@ -155,6 +170,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
             final String octopusUrl = props.get(OCTOPUS_URL);
             final String octopusApiKey = props.get(OCTOPUS_APIKEY);
             final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
+            final Boolean triggerOnlyOnSuccessfulDeployment = Boolean.parseBoolean(props.get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT));
 
             if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
               return createErrorResult(getDisplayName() + " settings are invalid (empty url) in build configuration " + asyncTriggerParameters.getBuildType());
@@ -169,7 +185,6 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
             LOG.debug(getDisplayName() + " checks for new deployments for project " + octopusProject + " on server " + octopusUrl);
 
             final String dataStorageKey = (octopusUrl + "|" + octopusProject).toLowerCase();
-            final Spec spec = new Spec(octopusUrl, octopusProject);
 
             try {
               final String oldStoredData = asyncTriggerParameters.getCustomDataStorage().getValue(dataStorageKey);
@@ -183,26 +198,34 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
               //only store that one deployment to one environment has happened here, not multiple environment.
               //otherwise, we could inadvertently miss deployments
               //todo: investigate passing multiple bits to createUpdatedResult()
-              final String newStoredData = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments).toString();
+              final Deployments newStoredData = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, triggerOnlyOnSuccessfulDeployment);
 
               if (!newDeployments.equals(oldDeployments)) {
-                asyncTriggerParameters.getCustomDataStorage().putValue(dataStorageKey, newStoredData);
+                asyncTriggerParameters.getCustomDataStorage().putValue(dataStorageKey, newStoredData.toString());
 
-                //todo: change to check the property on the context that says whether its new
+                //todo: change to check the property on the context that says whether its new?
+                //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
                 if (oldDeployments.isEmpty()) { // do not trigger build after adding trigger (oldDeployments == null)
                   LOG.debug(getDisplayName() + " no previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                   return createEmptyResult();
                 }
 
-                //todo: option to only trigger on successful deployments?
-                LOG.info(getDisplayName() + " new deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-                return createUpdatedResult(spec);
+                final Deployment deployment = newStoredData.getChangedDeployment(oldDeployments);
+                if (triggerOnlyOnSuccessfulDeployment && !deployment.isSuccessful()) {
+                  LOG.debug(getDisplayName() + " new deployments found, but they weren't successful, and we are only triggering on successful builds. Server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
+                  return createEmptyResult();
+                } else {
+                  LOG.info(getDisplayName() + " new deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
+                  final Spec spec = new Spec(octopusUrl, octopusProject, deployment.isSuccessful());
+                  return createUpdatedResult(spec);
+                }
               }
 
               LOG.info(getDisplayName() + " resource not changed " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
               return createEmptyResult();
 
             } catch (Exception e) {
+              final Spec spec = new Spec(octopusUrl, octopusProject);
               return createThrowableResult(spec, e);
             }
           }
@@ -256,10 +279,17 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
     private final String url;
     @NotNull
     private final String project;
+    @Nullable
+    private final Boolean wasSuccessful;
 
-    private Spec(@NotNull String url, String project) {
+    private Spec(@NotNull String url, @NotNull String project) {
+      this(url, project, null);
+    }
+
+    private Spec(@NotNull String url, @NotNull String project, Boolean wasSuccessful) {
       this.url = url;
       this.project = project;
+      this.wasSuccessful = wasSuccessful;
     }
 
     @NotNull
@@ -270,5 +300,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
     private String getProject() {
       return this.project;
     }
+
+    public boolean getWasSuccessful() { return this.wasSuccessful; }
   }
 }

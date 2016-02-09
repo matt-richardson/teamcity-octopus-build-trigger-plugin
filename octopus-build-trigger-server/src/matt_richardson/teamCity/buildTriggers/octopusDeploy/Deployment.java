@@ -51,4 +51,9 @@ public class Deployment {
     SimpleDateFormat dateFormat = new SimpleDateFormat(OctopusDeploymentsProvider.OCTOPUS_DATE_FORMAT);
     return String.format("%s;%s;%s", environmentId, dateFormat.format(latestDeployment), dateFormat.format(latestSuccessfulDeployment));
   }
+
+  public boolean isLatestSuccessfulDeploymentNewerThan(Date compareDate) {
+    return this.latestSuccessfulDeployment.compareTo(compareDate) > 0;
+  }
+
 }

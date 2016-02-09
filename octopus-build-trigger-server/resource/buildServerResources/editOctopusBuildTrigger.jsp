@@ -54,6 +54,13 @@
     </td>
 </tr>
 
+<tr class="noBorder" >
+    <td colspan="2">
+      <props:checkboxProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT%>" />
+      <label for="<%=OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT%>">Trigger only on successful deployments</lable>
+    </td>
+</tr>
+
 <script type="text/javascript">
 
 window.octopusBuildTrigger = function() {

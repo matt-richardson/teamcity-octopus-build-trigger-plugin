@@ -174,9 +174,27 @@ public class Deployments {
   }
 
   public Deployments trimToOnlyHaveMaximumOneChangedEnvironment(Deployments oldDeployments) throws ParseException {
+    return trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, false);
+  }
+
+  public Deployments trimToOnlyHaveMaximumOneChangedEnvironment(Deployments oldDeployments, Boolean prioritiseSuccessfulDeployments) throws ParseException {
      Deployments newDeployments = new Deployments(oldDeployments);
 
      final String oldStringRepresentation = oldDeployments.toString();
+
+    if (prioritiseSuccessfulDeployments) {
+      for (Deployment deployment : statusMap) {
+        Deployment oldDeployment = oldDeployments.getDeploymentForEnvironment(deployment.environmentId);
+
+        if (deployment.isLatestSuccessfulDeploymentNewerThan(oldDeployment.latestSuccessfulDeployment)) {
+          newDeployments.addOrUpdate(deployment);
+          String newStringRepresentation = newDeployments.toString();
+          if (!oldStringRepresentation.equals(newStringRepresentation)) {
+            return newDeployments;
+          }
+        }
+      }
+    }
 
     for (Deployment deployment: statusMap) {
       newDeployments.addOrUpdate(deployment);
@@ -187,5 +205,19 @@ public class Deployments {
     }
     return newDeployments;
 
+  }
+
+  public Deployment getChangedDeployment(Deployments oldDeployments) throws ParseException, NoChangedDeploymentsException {
+    Deployments newDeployments = new Deployments(oldDeployments);
+    final String oldStringRepresentation = oldDeployments.toString();
+
+    for (Deployment deployment: statusMap) {
+      newDeployments.addOrUpdate(deployment);
+      String newStringRepresentation = newDeployments.toString();
+      if (!oldStringRepresentation.equals(newStringRepresentation)) {
+        return deployment;
+      }
+    }
+    throw new NoChangedDeploymentsException(oldDeployments, newDeployments);
   }
 }
