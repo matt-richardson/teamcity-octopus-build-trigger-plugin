@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ApiProgressionResponse {
-  //todo: log to own file, rather than server log
-  private static final Logger LOG = jetbrains.buildServer.log.Loggers.SERVER;
+  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
   Deployments deployments;
   Boolean haveCompleteInformation;
 

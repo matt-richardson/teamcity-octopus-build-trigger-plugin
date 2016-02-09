@@ -38,10 +38,7 @@ import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildT
 
 public final class OctopusBuildTrigger extends BuildTriggerService {
   @NotNull
-  //private static final Logger LOG = Logger.getInstance(Loggers.VCS_CATEGORY + OctopusBuildTrigger.class);
-  //todo: log to own file, rather than server log
-  private static final Logger LOG = jetbrains.buildServer.log.Loggers.SERVER;
-
+  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
   @NotNull
   private final PluginDescriptor myPluginDescriptor;
   @NotNull

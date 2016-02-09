@@ -24,8 +24,7 @@ import java.util.Map;
 
 public class ApiProjectResponse {
   final String projectId;
-  //todo: log to own file, rather than server log
-  private static final Logger LOG = jetbrains.buildServer.log.Loggers.SERVER;
+  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
 
   public ApiProjectResponse(String projectResponse, String octopusProject) throws Exception {
     projectId = getProjectId(projectResponse, octopusProject);

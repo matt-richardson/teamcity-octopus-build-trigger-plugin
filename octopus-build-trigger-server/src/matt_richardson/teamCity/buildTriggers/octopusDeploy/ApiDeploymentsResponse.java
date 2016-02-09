@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ApiDeploymentsResponse {
-  //todo: log to own file, rather than server log
-  private static final Logger LOG = jetbrains.buildServer.log.Loggers.SERVER;
+  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
   final Deployments deployments;
 
   public ApiDeploymentsResponse(HttpContentProvider contentProvider, String deploymentsApiLink, String projectId, Deployments oldDeployments, Deployments newDeployments) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException {
