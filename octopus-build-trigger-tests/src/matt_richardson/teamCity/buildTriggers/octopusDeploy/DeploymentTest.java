@@ -25,47 +25,47 @@ import java.util.GregorianCalendar;
 
 @Test
 public class DeploymentTest {
-  public void isLatestDeploymentOlderThenReturnsTrueWhenNewerDatePassed() {
+  public void isLatestDeploymentOlderThanReturnsTrueWhenNewerDatePassed() {
     Date testDate = new GregorianCalendar(2015, Calendar.DECEMBER, 10).getTime();
     Deployment deployment = new Deployment("env", new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime(), new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime());
-    Assert.assertEquals(deployment.isLatestDeploymentOlderThen(testDate), true);
+    Assert.assertEquals(deployment.isLatestDeploymentOlderThan(testDate), true);
   }
 
-  public void isLatestDeploymentOlderThenReturnsFalseWhenOlderDatePassed() {
+  public void isLatestDeploymentOlderThanReturnsFalseWhenOlderDatePassed() {
     Date testDate = new GregorianCalendar(2015, Calendar.DECEMBER, 8).getTime();
     Deployment deployment = new Deployment("env", new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime(), new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime());
-    Assert.assertEquals(deployment.isLatestDeploymentOlderThen(testDate), false);
+    Assert.assertEquals(deployment.isLatestDeploymentOlderThan(testDate), false);
   }
 
-  public void isLatestDeploymentOlderThenReturnsFalseWhenSameDatePassed() {
+  public void isLatestDeploymentOlderThanReturnsFalseWhenSameDatePassed() {
     Date testDate = new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime();
     Deployment deployment = new Deployment("env", new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime(), new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime());
-    Assert.assertEquals(deployment.isLatestDeploymentOlderThen(testDate), false);
+    Assert.assertEquals(deployment.isLatestDeploymentOlderThan(testDate), false);
   }
 
-  public void isLatestDeploymentOlderThenComparesAgainstLatestDeploymentDate() {
+  public void isLatestDeploymentOlderThanComparesAgainstLatestDeploymentDate() {
     Date testDate = new GregorianCalendar(2015, 12, 10).getTime();
     Deployment deployment = new Deployment("env", new GregorianCalendar(2015, 12, 9).getTime(), new GregorianCalendar(2015, 12, 12).getTime());
-    Assert.assertEquals(deployment.isLatestDeploymentOlderThen(testDate), true);
+    Assert.assertEquals(deployment.isLatestDeploymentOlderThan(testDate), true);
   }
 
   public void isLatestSuccessfulDeploymentOlderThenReturnsTrueWhenNewerDatePassed() {
     //new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime(
     Date testDate = new GregorianCalendar(2015, Calendar.DECEMBER, 10).getTime();
     Deployment deployment = new Deployment("env", new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime(), new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime());
-    Assert.assertEquals(deployment.isLatestDeploymentOlderThen(testDate), true);
+    Assert.assertEquals(deployment.isLatestDeploymentOlderThan(testDate), true);
   }
 
   public void isLatestSuccessfulDeploymentOlderThenReturnsFalseWhenOlderDatePassed() {
     Date testDate = new GregorianCalendar(2015, Calendar.DECEMBER, 8).getTime();
     Deployment deployment = new Deployment("env", new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime(), new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime());
-    Assert.assertEquals(deployment.isLatestDeploymentOlderThen(testDate), false);
+    Assert.assertEquals(deployment.isLatestDeploymentOlderThan(testDate), false);
   }
 
   public void isLatestSuccessfulDeploymentOlderThenReturnsFalseWhenSameDatePassed() {
     Date testDate = new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime();
     Deployment deployment = new Deployment("env", new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime(), new GregorianCalendar(2015, Calendar.DECEMBER, 9).getTime());
-    Assert.assertEquals(deployment.isLatestDeploymentOlderThen(testDate), false);
+    Assert.assertEquals(deployment.isLatestDeploymentOlderThan(testDate), false);
   }
 
   public void isLatestSuccessfulDeploymentOlderThenComparesAgainstLatestDeploymentDate() {

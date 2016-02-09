@@ -126,7 +126,7 @@ public class Deployments {
       statusMap.add(targetDeployment);
     }
     else {
-      if (targetDeployment.isLatestDeploymentOlderThen(latestDeployment)) {
+      if (targetDeployment.isLatestDeploymentOlderThan(latestDeployment)) {
         targetDeployment.latestDeployment = latestDeployment;
       }
       if (finishedSuccessfully && targetDeployment.isLatestSuccessfulDeploymentOlderThen(latestDeployment)) {
@@ -152,7 +152,7 @@ public class Deployments {
       statusMap.add(targetDeployment);
     }
     else {
-      if (targetDeployment.isLatestDeploymentOlderThen(latestDeployment)) {
+      if (targetDeployment.isLatestDeploymentOlderThan(latestDeployment)) {
         targetDeployment.latestDeployment = latestDeployment;
       }
       if (targetDeployment.isLatestSuccessfulDeploymentOlderThen(latestSuccessfulDeployment)) {

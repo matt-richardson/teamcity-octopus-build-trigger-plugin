@@ -53,7 +53,7 @@ public class ApiDeploymentsResponse {
       Date createdDate = dateFormat.parse(deployment.get("Created").toString());
       Deployment lastKnownDeploymentForThisEnvironment = oldDeployments.getDeploymentForEnvironment(environmentId);
       LOG.debug("Found deployment to environment '" + environmentId + "' created at '" + createdDate + "'");
-      if (lastKnownDeploymentForThisEnvironment.isLatestDeploymentOlderThen(createdDate)) {
+      if (lastKnownDeploymentForThisEnvironment.isLatestDeploymentOlderThan(createdDate)) {
         LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "' was newer than the last known deployment to this environment");
         String taskLink = ((Map) (deployment.get("Links"))).get("Task").toString();
         String taskResponse = contentProvider.getContent(taskLink);

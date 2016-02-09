@@ -32,7 +32,7 @@ public class Deployment {
     this.latestSuccessfulDeployment = latestSuccessfulDeployment;
   }
 
-  public boolean isLatestDeploymentOlderThen(Date compareDate) {
+  public boolean isLatestDeploymentOlderThan(Date compareDate) {
     return this.latestDeployment.compareTo(compareDate) < 0;
   }
 
