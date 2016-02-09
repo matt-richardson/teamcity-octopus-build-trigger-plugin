@@ -13,7 +13,8 @@ This is very much a work in progress, but feel free to give it a go, and let me 
 # Installation
 
 Download the [latest release](https://github.com/matt-richardson/teamcity-octopus-build-trigger-plugin/releases/latest), and drop it into your [<TeamCity Data Directory>](https://confluence.jetbrains.com/display/TCD9/TeamCity+Data+Directory)/plugins folder. Restart TeamCity.
-([See docs for more info](https://confluence.jetbrains.com/display/TCD9/Installing+Additional+Plugins)).
+
+See [TeamCity documentation](https://confluence.jetbrains.com/display/TCD9/Installing+Additional+Plugins) for more info.
 
 # Logging
 
@@ -32,4 +33,3 @@ If you want to turn on logging, add the following to `<TeamCity server home>\con
     <appender-ref ref="OCTOPUS_DEPLOY.LOG" />
   </category>
  ```
- 
