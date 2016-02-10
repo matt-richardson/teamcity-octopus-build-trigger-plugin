@@ -25,8 +25,4 @@ class NoChangedDeploymentsException extends Exception {
     this(String.format("Didn't find any differences between '%s' and '%s'.",
       oldDeployments.toString(), newDeployments.toString()));
   }
-
-  public NoChangedDeploymentsException(String message, Throwable cause) {
-    super(message, cause);
-  }
 }

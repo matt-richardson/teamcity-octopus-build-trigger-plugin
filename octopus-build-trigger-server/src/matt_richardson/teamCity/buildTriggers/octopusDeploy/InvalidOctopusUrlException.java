@@ -25,9 +25,4 @@ class InvalidOctopusUrlException extends OctopusDeploymentsProviderException {
     super("Unable to connect to octopus at " + octopusUrl);
     this.octopusUrl = octopusUrl;
   }
-
-  public InvalidOctopusUrlException(URI octopusUrl, Exception e) {
-    super("Unable to connect to octopus at " + octopusUrl, e);
-    this.octopusUrl = octopusUrl;
-  }
 }
