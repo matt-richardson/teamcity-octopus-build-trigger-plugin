@@ -22,7 +22,7 @@ import org.json.simple.parser.JSONParser;
 import java.util.List;
 import java.util.Map;
 
-public class ApiProjectResponse {
+class ApiProjectResponse {
   final String projectId;
   private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
 

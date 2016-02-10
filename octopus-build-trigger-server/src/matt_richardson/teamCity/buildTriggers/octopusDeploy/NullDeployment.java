@@ -18,7 +18,7 @@ package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
 import java.util.Date;
 
-public class NullDeployment extends Deployment {
+class NullDeployment extends Deployment {
   public NullDeployment() {
     super("", new Date(0), new Date(0));
   }

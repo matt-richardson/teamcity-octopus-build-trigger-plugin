@@ -22,7 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Deployments {
+class Deployments {
   private ArrayList<Deployment> statusMap;
 
   public Deployments(String oldStoredData) throws ParseException {

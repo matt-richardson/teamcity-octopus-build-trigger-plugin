@@ -23,7 +23,7 @@ import org.json.simple.parser.ParseException;
 import java.util.Map;
 
 //todo: add tests
-public class ApiRootResponse {
+class ApiRootResponse {
   final String projectApiLink;
   final String deploymentsApiLink;
   final String progressionApiLink;

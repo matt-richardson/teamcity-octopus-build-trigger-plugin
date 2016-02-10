@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.*;
 
-public class DeploymentCompleteCheckJob implements CheckJob<Spec> {
+class DeploymentCompleteCheckJob implements CheckJob<Spec> {
   @NotNull
   private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
 

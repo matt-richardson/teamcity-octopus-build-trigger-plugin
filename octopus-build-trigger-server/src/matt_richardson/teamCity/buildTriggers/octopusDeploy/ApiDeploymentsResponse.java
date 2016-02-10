@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class ApiDeploymentsResponse {
+class ApiDeploymentsResponse {
   private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
   final Deployments deployments;
 

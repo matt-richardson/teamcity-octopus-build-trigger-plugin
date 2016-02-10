@@ -43,8 +43,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-
-public class HttpContentProviderImpl implements HttpContentProvider {
+class HttpContentProviderImpl implements HttpContentProvider {
   private final Logger LOG;
   private final String octopusUrl;
   CloseableHttpClient httpClient;

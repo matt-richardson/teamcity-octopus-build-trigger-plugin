@@ -16,7 +16,7 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-public class InvalidOctopusApiKeyException extends OctopusDeploymentsProviderException {
+class InvalidOctopusApiKeyException extends OctopusDeploymentsProviderException {
   public final int code;
 
   public InvalidOctopusApiKeyException(int code, String reason) {

@@ -31,7 +31,7 @@ import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildT
 import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
 //todo: should this be part of the DeploymentCompleteAsyncBuildTrigger class instead?
-public class OctopusBuildTriggerPropertiesProcessor implements PropertiesProcessor {
+class OctopusBuildTriggerPropertiesProcessor implements PropertiesProcessor {
   @NotNull
   private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
 

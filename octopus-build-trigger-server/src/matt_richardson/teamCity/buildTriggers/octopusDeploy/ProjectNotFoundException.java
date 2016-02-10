@@ -16,7 +16,7 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-public class ProjectNotFoundException extends OctopusDeploymentsProviderException {
+class ProjectNotFoundException extends OctopusDeploymentsProviderException {
   public final String projectIdOrName;
 
   public ProjectNotFoundException(String projectIdOrName) {

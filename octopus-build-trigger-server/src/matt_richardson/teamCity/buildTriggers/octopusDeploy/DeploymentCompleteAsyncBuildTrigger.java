@@ -28,7 +28,7 @@ import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildT
 import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT;
 import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
-public class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Spec> {
+class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Spec> {
   private final String displayName;
   private final int pollInterval;
   @NotNull

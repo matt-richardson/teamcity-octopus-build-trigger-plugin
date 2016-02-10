@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class ApiProgressionResponse {
+class ApiProgressionResponse {
   private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
   Deployments deployments;
   Boolean haveCompleteInformation;

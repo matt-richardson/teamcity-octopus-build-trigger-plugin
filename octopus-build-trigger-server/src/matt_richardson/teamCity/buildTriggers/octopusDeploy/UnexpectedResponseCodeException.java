@@ -16,7 +16,7 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-public class UnexpectedResponseCodeException extends OctopusDeploymentsProviderException {
+class UnexpectedResponseCodeException extends OctopusDeploymentsProviderException {
   public final int code;
 
   public UnexpectedResponseCodeException(int code, String reason) {
