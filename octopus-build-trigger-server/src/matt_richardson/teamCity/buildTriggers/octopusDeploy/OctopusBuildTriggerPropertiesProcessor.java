@@ -1,0 +1,67 @@
+/*
+ * Copyright 2000-2013 JetBrains s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package matt_richardson.teamCity.buildTriggers.octopusDeploy;
+
+import com.intellij.openapi.diagnostic.Logger;
+import jetbrains.buildServer.serverSide.InvalidProperty;
+import jetbrains.buildServer.serverSide.PropertiesProcessor;
+import jetbrains.buildServer.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+
+import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.OCTOPUS_APIKEY;
+import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID;
+import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.OCTOPUS_URL;
+
+//todo: should this be part of the DeploymentCompleteAsyncBuildTrigger class instead?
+public class OctopusBuildTriggerPropertiesProcessor implements PropertiesProcessor {
+  @NotNull
+  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
+
+  @Override
+  public Collection<InvalidProperty> process(Map<String, String> properties) {
+    final ArrayList<InvalidProperty> invalidProps = new ArrayList<>();
+    final String url = properties.get(OCTOPUS_URL);
+    if (StringUtil.isEmptyOrSpaces(url)) {
+      invalidProps.add(new InvalidProperty(OCTOPUS_URL, "URL must be specified"));
+    }
+    final String apiKey = properties.get(OCTOPUS_APIKEY);
+    if (StringUtil.isEmptyOrSpaces(url)) {
+      invalidProps.add(new InvalidProperty(OCTOPUS_APIKEY, "API Key must be specified"));
+    }
+    final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
+
+    final OctopusDeploymentsProvider provider;
+    try {
+      provider = new OctopusDeploymentsProvider(url, apiKey, connectionTimeout, LOG);
+      final String err = provider.checkOctopusConnectivity();
+      if (StringUtil.isNotEmpty(err)) {
+        invalidProps.add(new InvalidProperty(OCTOPUS_URL, err));
+      }
+      final String project = properties.get(OCTOPUS_PROJECT_ID);
+      if (StringUtil.isEmptyOrSpaces(project)) {
+        invalidProps.add(new InvalidProperty(OCTOPUS_PROJECT_ID, "Project must be specified")); //todo: change to use dropdown / name
+      }
+    } catch (Exception e) {
+      invalidProps.add(new InvalidProperty(OCTOPUS_URL, e.toString()));
+    }
+    return invalidProps;
+  }
+}

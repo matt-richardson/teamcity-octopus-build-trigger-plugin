@@ -19,22 +19,17 @@ package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
-import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import jetbrains.buildServer.buildTriggers.BuildTriggerService;
 import jetbrains.buildServer.buildTriggers.BuildTriggeringPolicy;
-import jetbrains.buildServer.buildTriggers.async.*;
-import jetbrains.buildServer.serverSide.InvalidProperty;
+import jetbrains.buildServer.buildTriggers.async.AsyncBuildTrigger;
+import jetbrains.buildServer.buildTriggers.async.AsyncBuildTriggerFactory;
 import jetbrains.buildServer.serverSide.PropertiesProcessor;
 import jetbrains.buildServer.serverSide.TeamCityProperties;
-import jetbrains.buildServer.util.StringUtil;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
-import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.*;
+import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.DEFAULT_POLL_INTERVAL;
+import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.POLL_INTERVAL_PROP;
 
 public final class OctopusBuildTrigger extends BuildTriggerService {
   @NotNull
@@ -65,19 +60,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
   @NotNull
   @Override
   public String describeTrigger(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-    try {
-      String flag = buildTriggerDescriptor.getProperties().get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT);
-      if (flag != null && flag.equals("true")) {
-        return "Wait for a new successful deployment of " + buildTriggerDescriptor.getProperties().get(OCTOPUS_PROJECT_ID) +
-          " on server " + buildTriggerDescriptor.getProperties().get(OCTOPUS_URL) + ".";
-      }
-      return "Wait for a new deployment of " + buildTriggerDescriptor.getProperties().get(OCTOPUS_PROJECT_ID) +
-        " on server " + buildTriggerDescriptor.getProperties().get(OCTOPUS_URL) + ".";
-    }
-    catch (Exception e) {
-      LOG.error("Error in describeTrigger ", e);
-      return "Unable to determine trigger description";
-    }
+    return getBuildTrigger().describeTrigger(buildTriggerDescriptor);
   }
 
   @NotNull
@@ -86,42 +69,9 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
     return myPolicy;
   }
 
-  private int getPollInterval() {
-    return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL);
-  }
-
   @Override
   public PropertiesProcessor getTriggerPropertiesProcessor() {
-    return new PropertiesProcessor() {
-      public Collection<InvalidProperty> process(Map<String, String> properties) {
-        final ArrayList<InvalidProperty> invalidProps = new ArrayList<InvalidProperty>();
-        final String url = properties.get(OCTOPUS_URL);
-        if (StringUtil.isEmptyOrSpaces(url)) {
-          invalidProps.add(new InvalidProperty(OCTOPUS_URL, "URL must be specified"));
-        }
-        final String apiKey = properties.get(OCTOPUS_APIKEY);
-        if (StringUtil.isEmptyOrSpaces(url)) {
-          invalidProps.add(new InvalidProperty(OCTOPUS_APIKEY, "API Key must be specified"));
-        }
-        final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
-
-        final OctopusDeploymentsProvider provider;
-        try {
-          provider = new OctopusDeploymentsProvider(url, apiKey, connectionTimeout, LOG);
-          final String err = provider.checkOctopusConnectivity();
-          if (StringUtil.isNotEmpty(err)) {
-            invalidProps.add(new InvalidProperty(OCTOPUS_URL, err));
-          }
-          final String project = properties.get(OCTOPUS_PROJECT_ID);
-          if (StringUtil.isEmptyOrSpaces(project)) {
-            invalidProps.add(new InvalidProperty(OCTOPUS_PROJECT_ID, "Project must be specified")); //todo: change to use dropdown / name
-          }
-        } catch (Exception e) {
-          invalidProps.add(new InvalidProperty(OCTOPUS_URL, e.toString()));
-        }
-        return invalidProps;
-      }
-    };
+    return new OctopusBuildTriggerPropertiesProcessor();
   }
 
   @Override
@@ -136,105 +86,16 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
 
   @NotNull
   private AsyncBuildTrigger<Spec> getAsyncBuildTrigger() {
-    return new AsyncBuildTrigger<Spec>() {
-      @NotNull
-      public BuildTriggerException makeTriggerException(@NotNull Throwable throwable) {
-        throw new BuildTriggerException(getDisplayName() + " failed with error: " + throwable.getMessage(), throwable);
-      }
+    return getBuildTrigger();
+  }
 
-      @NotNull
-      public String getRequestorString(@NotNull Spec spec) {
-        if (spec.getWasSuccessful()) {
-          return "Successful deployment of " + spec.getProject() + " on " + spec.getUrl();
-        }
-        return "Deployment of " + spec.getProject() + " on " + spec.getUrl();
-      }
+  @NotNull
+  private int getPollInterval() {
+    return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL);
+  }
 
-      public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
-        return OctopusBuildTrigger.this.getPollInterval();
-      }
-
-      @NotNull
-      //todo: this needs tests
-      public CheckJob<Spec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
-        return new CheckJob<Spec>() {
-          @NotNull
-          public CheckResult<Spec> perform() {
-            final Map<String, String> props = asyncTriggerParameters.getTriggerDescriptor().getProperties();
-
-            final String octopusUrl = props.get(OCTOPUS_URL);
-            final String octopusApiKey = props.get(OCTOPUS_APIKEY);
-            final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
-            final Boolean triggerOnlyOnSuccessfulDeployment = Boolean.parseBoolean(props.get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT));
-
-            if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
-              return SpecCheckResult.createErrorResult(getDisplayName() + " settings are invalid (empty url) in build configuration " + asyncTriggerParameters.getBuildType());
-            }
-            if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
-              return SpecCheckResult.createErrorResult(getDisplayName() + " settings are invalid (empty api key) in build configuration " + asyncTriggerParameters.getBuildType());
-            }
-            if (StringUtil.isEmptyOrSpaces(octopusProject)) {
-              return SpecCheckResult.createErrorResult(getDisplayName() + " settings are invalid (empty project) in build configuration " + asyncTriggerParameters.getBuildType());
-            }
-
-            LOG.debug(getDisplayName() + " checks for new deployments for project " + octopusProject + " on server " + octopusUrl);
-
-            final String dataStorageKey = (octopusUrl + "|" + octopusProject).toLowerCase();
-
-            try {
-              final String oldStoredData = asyncTriggerParameters.getCustomDataStorage().getValue(dataStorageKey);
-              final Deployments oldDeployments = new Deployments(oldStoredData);
-              final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
-
-              OctopusDeploymentsProvider provider = new OctopusDeploymentsProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
-              //todo: figure out if we actually need to pass oldDeployments in here?
-              final Deployments newDeployments = provider.getDeployments(octopusProject, oldDeployments);
-
-              //only store that one deployment to one environment has happened here, not multiple environment.
-              //otherwise, we could inadvertently miss deployments
-              //todo: investigate passing multiple bits to createUpdatedResult()
-              final Deployments newStoredData = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, triggerOnlyOnSuccessfulDeployment);
-
-              if (!newDeployments.equals(oldDeployments)) {
-                asyncTriggerParameters.getCustomDataStorage().putValue(dataStorageKey, newStoredData.toString());
-
-                //todo: change to check the property on the context that says whether its new?
-                //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
-                if (oldDeployments.isEmpty()) { // do not trigger build after adding trigger (oldDeployments == null)
-                  LOG.debug(getDisplayName() + " no previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
-                  return SpecCheckResult.createEmptyResult();
-                }
-
-                final Deployment deployment = newStoredData.getChangedDeployment(oldDeployments);
-                if (triggerOnlyOnSuccessfulDeployment && !deployment.isSuccessful()) {
-                  LOG.debug(getDisplayName() + " new deployments found, but they weren't successful, and we are only triggering on successful builds. Server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
-                  return SpecCheckResult.createEmptyResult();
-                } else {
-                  LOG.info(getDisplayName() + " new deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-                  final Spec spec = new Spec(octopusUrl, octopusProject, deployment.isSuccessful());
-                  return SpecCheckResult.createUpdatedResult(spec);
-                }
-              }
-
-              LOG.info(getDisplayName() + " resource not changed " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-              return SpecCheckResult.createEmptyResult();
-
-            } catch (Exception e) {
-              final Spec spec = new Spec(octopusUrl, octopusProject);
-              return SpecCheckResult.createThrowableResult(spec, e);
-            }
-          }
-
-          public boolean allowSchedule(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-            return false;
-          }
-        };
-      }
-
-      @NotNull
-      public CheckResult<Spec> createCrashOnSubmitResult(@NotNull Throwable throwable) {
-        return SpecCheckResult.createThrowableResult(throwable);
-      }
-    };
+  @NotNull
+  private DeploymentCompleteAsyncBuildTrigger getBuildTrigger() {
+    return new DeploymentCompleteAsyncBuildTrigger(getDisplayName(), getPollInterval());
   }
 }
