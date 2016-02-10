@@ -19,9 +19,6 @@ package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created by mattr on 09/02/2016.
- */
 class Spec {
   @NotNull
   private final String url;

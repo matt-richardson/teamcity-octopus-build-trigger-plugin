@@ -25,9 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * Created by mattr on 09/02/2016.
- */
 class SpecCheckResult extends CheckResult<Spec> {
   private SpecCheckResult() {
     super();
@@ -65,5 +62,4 @@ class SpecCheckResult extends CheckResult<Spec> {
   static SpecCheckResult createErrorResult(@NotNull String error) {
     return new SpecCheckResult(new BuildTriggerException(error));
   }
-
 }
