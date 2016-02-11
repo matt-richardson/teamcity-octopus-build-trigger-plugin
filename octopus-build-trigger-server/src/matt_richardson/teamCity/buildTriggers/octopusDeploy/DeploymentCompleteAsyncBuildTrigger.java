@@ -46,10 +46,7 @@ class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Spec> {
 
   @NotNull
   public String getRequestorString(@NotNull Spec spec) {
-    if (spec.getWasSuccessful()) {
-      return "Successful deployment of " + spec.getProject() + " on " + spec.getUrl();
-    }
-    return "Deployment of " + spec.getProject() + " on " + spec.getUrl();
+    return spec.getRequestorString();
   }
 
   public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {

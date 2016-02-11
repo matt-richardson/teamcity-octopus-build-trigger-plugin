@@ -26,28 +26,25 @@ class Spec {
   private final String project;
   @Nullable
   private final Boolean wasSuccessful;
+  @Nullable
+  private final String environmentId;
 
   Spec(@NotNull String url, @NotNull String project) {
-    this(url, project, null);
+    this(url, project, null, null);
   }
 
-  Spec(@NotNull String url, @NotNull String project, Boolean wasSuccessful) {
+  Spec(@NotNull String url, @NotNull String project, @Nullable String environmentId, @Nullable Boolean wasSuccessful) {
     this.url = url;
     this.project = project;
     this.wasSuccessful = wasSuccessful;
+    this.environmentId = environmentId;
   }
 
-  @NotNull
-  String getUrl() {
-    return this.url;
-  }
-
-  @NotNull
-  String getProject() {
-    return this.project;
-  }
-
-  public boolean getWasSuccessful() {
-    return this.wasSuccessful;
+  public String getRequestorString() {
+    if (wasSuccessful == null)
+      return String.format("Unsuccessful attempt to get deployments for %s on %s", project, url);
+    if (wasSuccessful)
+      return String.format("Successful deployment of %s to %s on %s", project, environmentId, url);
+    return String.format("Deployment of %s on %s", project, url);
   }
 }

@@ -78,7 +78,7 @@ class DeploymentCompleteCheckJob implements CheckJob<Spec> {
         }
 
         LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-        final Spec spec = new Spec(octopusUrl, octopusProject, deployment.isSuccessful());
+        final Spec spec = new Spec(octopusUrl, octopusProject, deployment.environmentId, deployment.isSuccessful());
         return SpecCheckResult.createUpdatedResult(spec);
       }
 
