@@ -40,11 +40,11 @@ class ApiProjectResponse {
     for (Object item: items) {
       Map map = (Map)item;
       if (map.get("Name").toString().equals(projectName)) {
-        LOG.debug("Found that project id '" + map.get("Id").toString() + " maps to name '" + projectName + "'");
+        LOG.debug("Found that project id '" + map.get("Id").toString() + "' maps to name '" + projectName + "'");
         return map.get("Id").toString();
       }
       if (map.get("Id").toString().equals(projectName)) {
-        LOG.debug("Found that project id '" + map.get("Id").toString() + " equals supplied name '" + projectName + "'");
+        LOG.debug("Found that project id '" + map.get("Id").toString() + "' equals supplied name '" + projectName + "'");
         return map.get("Id").toString();
       }
     };
