@@ -99,4 +99,41 @@ public class DeploymentsTest {
     Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z");
   }
 
+  public void trim_multiple_deployments_to_return_only_one_changed_environment_returns_input_when_none_changed() throws Exception {
+    final String oldData = "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z";
+    Deployments oldDeployments = new Deployments(oldData);
+    final String newData = "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z";
+    Deployments newDeployments = new Deployments(newData);
+
+    final Boolean prioritiseSuccessfulDeployments = true;
+    final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, prioritiseSuccessfulDeployments);
+    Assert.assertEquals(trimmedDeployments.length(), 2);
+    Deployment deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z");
+    deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-21");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z");
+  }
+
+  public void get_changed_deployment_returns_first_environment_thats_changed() throws Exception {
+    final String oldData = "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z";
+    Deployments oldDeployments = new Deployments(oldData);
+    final String newData = "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-21T14:25:53.700Z;2016-01-21T14:25:53.700Z";
+    Deployments newDeployments = new Deployments(newData);
+
+    Deployment deployment = newDeployments.getChangedDeployment(oldDeployments);
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-21T14:25:53.700Z;2016-01-21T14:25:53.700Z");
+  }
+
+  @Test(expectedExceptions = NoChangedDeploymentsException.class)
+  public void get_changed_deployment_throws_exception_when_none_changed() throws Exception {
+    final String oldData = "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z";
+    Deployments oldDeployments = new Deployments(oldData);
+    final String newData = "Environments-1;2016-01-19T14:00:00.000Z;2016-01-19T00:00:00.000Z|Environments-21;2016-01-20T14:00:00.000Z;2016-01-20T14:00:00.000Z";
+    Deployments newDeployments = new Deployments(newData);
+
+    newDeployments.getChangedDeployment(oldDeployments);
+  }
 }
