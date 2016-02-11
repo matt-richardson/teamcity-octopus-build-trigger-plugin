@@ -32,9 +32,9 @@ class ApiProgressionResponse {
   Deployments deployments;
   Boolean haveCompleteInformation;
 
-  public ApiProgressionResponse(String progressionResponse, Deployments oldDeployments) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, IOException {
+  public ApiProgressionResponse(String progressionResponse) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, IOException {
     LOG.debug("OctopusBuildTrigger: parsing progression response");
-    deployments = new Deployments(oldDeployments);
+    deployments = new Deployments();
     this.haveCompleteInformation = Parse(progressionResponse);
   }
 
