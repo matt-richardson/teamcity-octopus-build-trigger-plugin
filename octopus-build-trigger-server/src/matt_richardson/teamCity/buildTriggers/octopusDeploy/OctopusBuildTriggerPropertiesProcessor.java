@@ -43,24 +43,26 @@ class OctopusBuildTriggerPropertiesProcessor implements PropertiesProcessor {
       invalidProps.add(new InvalidProperty(OCTOPUS_URL, "URL must be specified"));
     }
     final String apiKey = properties.get(OCTOPUS_APIKEY);
-    if (StringUtil.isEmptyOrSpaces(url)) {
+    if (StringUtil.isEmptyOrSpaces(apiKey)) {
       invalidProps.add(new InvalidProperty(OCTOPUS_APIKEY, "API Key must be specified"));
     }
     final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
-    final OctopusDeploymentsProvider provider;
-    try {
-      provider = new OctopusDeploymentsProvider(url, apiKey, connectionTimeout, LOG);
-      final String err = provider.checkOctopusConnectivity();
-      if (StringUtil.isNotEmpty(err)) {
-        invalidProps.add(new InvalidProperty(OCTOPUS_URL, err));
+    if (invalidProps.size() == 0) {
+      final OctopusDeploymentsProvider provider;
+      try {
+        provider = new OctopusDeploymentsProvider(url, apiKey, connectionTimeout, LOG);
+        final String err = provider.checkOctopusConnectivity();
+        if (StringUtil.isNotEmpty(err)) {
+          invalidProps.add(new InvalidProperty(OCTOPUS_URL, err));
+        }
+        final String project = properties.get(OCTOPUS_PROJECT_ID);
+        if (StringUtil.isEmptyOrSpaces(project)) {
+          invalidProps.add(new InvalidProperty(OCTOPUS_PROJECT_ID, "Project must be specified")); //todo: change to use dropdown / name
+        }
+      } catch (Exception e) {
+        invalidProps.add(new InvalidProperty(OCTOPUS_URL, e.toString()));
       }
-      final String project = properties.get(OCTOPUS_PROJECT_ID);
-      if (StringUtil.isEmptyOrSpaces(project)) {
-        invalidProps.add(new InvalidProperty(OCTOPUS_PROJECT_ID, "Project must be specified")); //todo: change to use dropdown / name
-      }
-    } catch (Exception e) {
-      invalidProps.add(new InvalidProperty(OCTOPUS_URL, e.toString()));
     }
     return invalidProps;
   }
