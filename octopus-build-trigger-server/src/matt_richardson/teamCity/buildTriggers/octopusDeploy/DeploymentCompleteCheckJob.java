@@ -29,6 +29,7 @@ import java.util.Map;
 
 import static matt_richardson.teamCity.buildTriggers.octopusDeploy.OctopusBuildTriggerUtil.*;
 
+//todo: this needs tests
 class DeploymentCompleteCheckJob implements CheckJob<Spec> {
   @NotNull
   private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
@@ -53,12 +54,10 @@ class DeploymentCompleteCheckJob implements CheckJob<Spec> {
       final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
       OctopusDeploymentsProvider provider = new OctopusDeploymentsProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
-      //todo: figure out if we actually need to pass oldDeployments in here?
       final Deployments newDeployments = provider.getDeployments(octopusProject, oldDeployments);
 
       //only store that one deployment to one environment has happened here, not multiple environment.
       //otherwise, we could inadvertently miss deployments
-      //todo: investigate passing multiple bits to createUpdatedResult()
       final Deployments newStoredData = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, triggerOnlyOnSuccessfulDeployment);
 
       if (!newDeployments.equals(oldDeployments)) {
@@ -66,7 +65,8 @@ class DeploymentCompleteCheckJob implements CheckJob<Spec> {
 
         //todo: see if its possible to to check the property on the context that says whether its new?
         //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
-        if (oldDeployments.isEmpty()) { // do not trigger build after adding trigger (oldDeployments == null)
+        //do not trigger build after first adding trigger (oldDeployments == null)
+        if (oldDeployments.isEmpty()) {
           LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
           return SpecCheckResult.createEmptyResult();
         }
@@ -79,6 +79,7 @@ class DeploymentCompleteCheckJob implements CheckJob<Spec> {
 
         LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
         final Spec spec = new Spec(octopusUrl, octopusProject, deployment.environmentId, deployment.isSuccessful());
+        //todo: investigate passing multiple bits to createUpdatedResult()
         return SpecCheckResult.createUpdatedResult(spec);
       }
 

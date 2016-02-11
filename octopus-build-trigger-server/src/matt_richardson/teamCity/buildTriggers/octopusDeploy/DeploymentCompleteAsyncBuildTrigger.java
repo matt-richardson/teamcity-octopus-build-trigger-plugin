@@ -54,7 +54,6 @@ class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Spec> {
   }
 
   @NotNull
-  //todo: this needs tests
   public CheckJob<Spec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
     return new DeploymentCompleteCheckJob(asyncTriggerParameters, displayName);
   }
