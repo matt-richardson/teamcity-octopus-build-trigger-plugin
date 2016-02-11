@@ -35,9 +35,13 @@ class ApiProgressionResponse {
   public ApiProgressionResponse(String progressionResponse, Deployments oldDeployments) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, IOException {
     LOG.debug("OctopusBuildTrigger: parsing progression response");
     deployments = new Deployments(oldDeployments);
+    this.haveCompleteInformation = Parse(progressionResponse);
+  }
+
+  private boolean Parse(String progressionResponse) throws java.text.ParseException, ParseException {
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(progressionResponse);
-    SimpleDateFormat dateFormat = new SimpleDateFormat(OctopusDeploymentsProvider.OCTOPUS_DATE_FORMAT);//2015-12-08T08:09:39.624+00:00
+    SimpleDateFormat dateFormat = new SimpleDateFormat(OctopusDeploymentsProvider.OCTOPUS_DATE_FORMAT);
 
     List environments = (List)response.get("Environments");
     for (Object environment : environments) {
@@ -48,11 +52,25 @@ class ApiProgressionResponse {
     List releasesAndDeployments = (List)response.get("Releases");
 
     if (releasesAndDeployments.size() == 0) {
-      LOG.debug("No releases found");
-      this.haveCompleteInformation = true;
-      return;
+      LOG.debug("No releases found in progression api response");
+      return true;
     }
 
+    Boolean foundDeployment = AddDeployments(dateFormat, releasesAndDeployments);
+    if (!foundDeployment) {
+      LOG.debug("No deployments found in progression api response");
+      return true;
+    }
+
+    if (deployments.haveAllDeploymentsFinishedSuccessfully()) {
+      LOG.debug("All deployments have finished successfully - no need to parse deployment response");
+      return true;
+    }
+
+    return false;
+  }
+
+  private Boolean AddDeployments(SimpleDateFormat dateFormat, List releasesAndDeployments) throws java.text.ParseException {
     Boolean foundDeployment = false;
 
     for (Object releaseAndDeploymentPair : releasesAndDeployments) {
@@ -68,18 +86,6 @@ class ApiProgressionResponse {
         deployments.addOrUpdate((String)key, createdDate, isCompleted, isSuccessful);
       }
     }
-    if (!foundDeployment) {
-      LOG.debug("No deployments found");
-      this.haveCompleteInformation = true;
-      return;
-    }
-
-    if (deployments.haveAllDeploymentsFinishedSuccessfully()) {
-      LOG.debug("All deployments have finished successfully - no need to parse deployment response");
-      this.haveCompleteInformation = true;
-      return;
-    }
-
-    this.haveCompleteInformation = false;
+    return foundDeployment;
   }
 }
