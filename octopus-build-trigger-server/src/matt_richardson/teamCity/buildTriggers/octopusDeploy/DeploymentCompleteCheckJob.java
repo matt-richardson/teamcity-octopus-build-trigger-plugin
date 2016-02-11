@@ -75,11 +75,11 @@ class DeploymentCompleteCheckJob implements CheckJob<Spec> {
         if (triggerOnlyOnSuccessfulDeployment && !deployment.isSuccessful()) {
           LOG.debug("New deployments found, but they weren't successful, and we are only triggering on successful builds. Server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
           return SpecCheckResult.createEmptyResult();
-        } else {
-          LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-          final Spec spec = new Spec(octopusUrl, octopusProject, deployment.isSuccessful());
-          return SpecCheckResult.createUpdatedResult(spec);
         }
+
+        LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
+        final Spec spec = new Spec(octopusUrl, octopusProject, deployment.isSuccessful());
+        return SpecCheckResult.createUpdatedResult(spec);
       }
 
       LOG.info("No new deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
