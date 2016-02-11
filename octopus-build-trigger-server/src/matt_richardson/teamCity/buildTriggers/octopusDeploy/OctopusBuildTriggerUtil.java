@@ -16,7 +16,7 @@
 
 package matt_richardson.teamCity.buildTriggers.octopusDeploy;
 
-final class OctopusBuildTriggerUtil {
+public final class OctopusBuildTriggerUtil {
   public static String OCTOPUS_URL = "octopus.build.trigger.url";
   public static String OCTOPUS_APIKEY = "octopus.build.trigger.apikey";
   public static String OCTOPUS_PROJECT_ID = "octopus.build.trigger.project.url";
