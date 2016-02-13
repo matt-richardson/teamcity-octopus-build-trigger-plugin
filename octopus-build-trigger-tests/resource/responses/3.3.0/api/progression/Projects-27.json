@@ -1,0 +1,162 @@
+{
+  "Environments": [
+    {
+      "Id": "Environments-1",
+      "Name": "local"
+    },
+    {
+      "Id": "Environments-21",
+      "Name": "Prod"
+    }
+  ],
+  "Releases": [
+    {
+      "Release": {
+        "Id": "Releases-68",
+        "Assembled": "2016-01-21T14:24:27.138+00:00",
+        "ReleaseNotes": null,
+        "ProjectId": "Projects-27",
+        "ChannelId": "Channels-27",
+        "ProjectVariableSetSnapshotId": "variableset-Projects-27-s-0-VT8T2",
+        "LibraryVariableSetSnapshotIds": [],
+        "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-27-s-0-WNCQ3",
+        "SelectedPackages": [],
+        "Version": "0.0.2",
+        "Links": {
+          "Self": "/api/releases/Releases-68{?force}",
+          "Project": "/api/projects/Projects-27",
+          "Progression": "/api/releases/Releases-68/progression",
+          "Deployments": "/api/releases/Releases-68/deployments",
+          "DeploymentTemplate": "/api/releases/Releases-68/deployments/template",
+          "Artifacts": "/api/artifacts?regarding=Releases-68",
+          "ProjectVariableSnapshot": "/api/variables/variableset-Projects-27-s-0-VT8T2",
+          "ProjectDeploymentProcessSnapshot": "/api/deploymentprocesses/deploymentprocess-Projects-27-s-0-WNCQ3",
+          "Web": "/app#/releases/Releases-68",
+          "SnapshotVariables": "/api/releases/Releases-68/snapshot-variables",
+          "Defects": "/api/releases/Releases-68/defects",
+          "ReportDefect": "/api/releases/Releases-68/defects",
+          "ResolveDefect": "/api/releases/Releases-68/defects/resolve"
+        }
+      },
+      "Deployments": {
+        "Environments-1": {
+          "Id": "Deployments-116",
+          "ProjectId": "Projects-27",
+          "EnvironmentId": "Environments-1",
+          "ReleaseId": "Releases-68",
+          "DeploymentId": "Deployments-116",
+          "TaskId": "ServerTasks-307",
+          "ReleaseVersion": "0.0.2",
+          "Created": "2016-01-21T14:24:30.935+00:00",
+          "QueueTime": "2016-01-21T14:24:30.935+00:00",
+          "CompletedTime": "2016-01-21T14:24:34.607+00:00",
+          "State": "Success",
+          "HasPendingInterruptions": false,
+          "HasWarningsOrErrors": false,
+          "ErrorMessage": "",
+          "Duration": "4 seconds",
+          "IsCurrent": true,
+          "IsPrevious": false,
+          "IsCompleted": true,
+          "Links": {
+            "Self": "/api/deployments/Deployments-116",
+            "Release": "/api/releases/Releases-68",
+            "Task": "/api/tasks/ServerTasks-307"
+          }
+        }
+      },
+      "NextDeployments": [
+        "Environments-21"
+      ],
+      "HasUnresolvedDefect": false,
+      "ReleaseRetentionPeriod": null,
+      "TentacleRetentionPeriod": null
+    },
+    {
+      "Release": {
+        "Id": "Releases-67",
+        "Assembled": "2016-01-21T14:23:59.185+00:00",
+        "ReleaseNotes": null,
+        "ProjectId": "Projects-27",
+        "ChannelId": "Channels-27",
+        "ProjectVariableSetSnapshotId": "variableset-Projects-27-s-0-VT8T2",
+        "LibraryVariableSetSnapshotIds": [],
+        "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-27-s-0-WNCQ3",
+        "SelectedPackages": [],
+        "Version": "0.0.1",
+        "Links": {
+          "Self": "/api/releases/Releases-67{?force}",
+          "Project": "/api/projects/Projects-27",
+          "Progression": "/api/releases/Releases-67/progression",
+          "Deployments": "/api/releases/Releases-67/deployments",
+          "DeploymentTemplate": "/api/releases/Releases-67/deployments/template",
+          "Artifacts": "/api/artifacts?regarding=Releases-67",
+          "ProjectVariableSnapshot": "/api/variables/variableset-Projects-27-s-0-VT8T2",
+          "ProjectDeploymentProcessSnapshot": "/api/deploymentprocesses/deploymentprocess-Projects-27-s-0-WNCQ3",
+          "Web": "/app#/releases/Releases-67",
+          "SnapshotVariables": "/api/releases/Releases-67/snapshot-variables",
+          "Defects": "/api/releases/Releases-67/defects",
+          "ReportDefect": "/api/releases/Releases-67/defects",
+          "ResolveDefect": "/api/releases/Releases-67/defects/resolve"
+        }
+      },
+      "Deployments": {
+        "Environments-1": {
+          "Id": "Deployments-114",
+          "ProjectId": "Projects-27",
+          "EnvironmentId": "Environments-1",
+          "ReleaseId": "Releases-67",
+          "DeploymentId": "Deployments-114",
+          "TaskId": "ServerTasks-305",
+          "ReleaseVersion": "0.0.1",
+          "Created": "2016-01-21T14:24:02.685+00:00",
+          "QueueTime": "2016-01-21T14:24:02.685+00:00",
+          "CompletedTime": "2016-01-21T14:24:06.294+00:00",
+          "State": "Success",
+          "HasPendingInterruptions": false,
+          "HasWarningsOrErrors": false,
+          "ErrorMessage": "",
+          "Duration": "4 seconds",
+          "IsCurrent": false,
+          "IsPrevious": true,
+          "IsCompleted": true,
+          "Links": {
+            "Self": "/api/deployments/Deployments-114",
+            "Release": "/api/releases/Releases-67",
+            "Task": "/api/tasks/ServerTasks-305"
+          }
+        },
+        "Environments-21": {
+          "Id": "Deployments-115",
+          "ProjectId": "Projects-27",
+          "EnvironmentId": "Environments-21",
+          "ReleaseId": "Releases-67",
+          "DeploymentId": "Deployments-115",
+          "TaskId": "ServerTasks-306",
+          "ReleaseVersion": "0.0.1",
+          "Created": "2016-01-21T14:24:10.872+00:00",
+          "QueueTime": "2016-01-21T14:24:10.872+00:00",
+          "CompletedTime": "2016-01-21T14:24:14.513+00:00",
+          "State": "Success",
+          "HasPendingInterruptions": false,
+          "HasWarningsOrErrors": false,
+          "ErrorMessage": "",
+          "Duration": "4 seconds",
+          "IsCurrent": true,
+          "IsPrevious": false,
+          "IsCompleted": true,
+          "Links": {
+            "Self": "/api/deployments/Deployments-115",
+            "Release": "/api/releases/Releases-67",
+            "Task": "/api/tasks/ServerTasks-306"
+          }
+        }
+      },
+      "NextDeployments": [],
+      "HasUnresolvedDefect": false,
+      "ReleaseRetentionPeriod": null,
+      "TentacleRetentionPeriod": null
+    }
+  ],
+  "Links": {}
+}

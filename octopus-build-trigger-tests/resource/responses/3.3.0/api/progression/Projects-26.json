@@ -1,0 +1,133 @@
+{
+  "Environments": [
+    {
+      "Id": "Environments-1",
+      "Name": "local"
+    }
+  ],
+  "Releases": [
+    {
+      "Release": {
+        "Id": "Releases-66",
+        "Assembled": "2016-01-21T13:37:02.882+00:00",
+        "ReleaseNotes": null,
+        "ProjectId": "Projects-26",
+        "ChannelId": "Channels-26",
+        "ProjectVariableSetSnapshotId": "variableset-Projects-26-s-0-56V4D",
+        "LibraryVariableSetSnapshotIds": [],
+        "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-26-s-2-4WY9H",
+        "SelectedPackages": [],
+        "Version": "0.0.2",
+        "Links": {
+          "Self": "/api/releases/Releases-66{?force}",
+          "Project": "/api/projects/Projects-26",
+          "Progression": "/api/releases/Releases-66/progression",
+          "Deployments": "/api/releases/Releases-66/deployments",
+          "DeploymentTemplate": "/api/releases/Releases-66/deployments/template",
+          "Artifacts": "/api/artifacts?regarding=Releases-66",
+          "ProjectVariableSnapshot": "/api/variables/variableset-Projects-26-s-0-56V4D",
+          "ProjectDeploymentProcessSnapshot": "/api/deploymentprocesses/deploymentprocess-Projects-26-s-2-4WY9H",
+          "Web": "/app#/releases/Releases-66",
+          "SnapshotVariables": "/api/releases/Releases-66/snapshot-variables",
+          "Defects": "/api/releases/Releases-66/defects",
+          "ReportDefect": "/api/releases/Releases-66/defects",
+          "ResolveDefect": "/api/releases/Releases-66/defects/resolve"
+        }
+      },
+      "Deployments": {
+        "Environments-1": {
+          "Id": "Deployments-113",
+          "ProjectId": "Projects-26",
+          "EnvironmentId": "Environments-1",
+          "ReleaseId": "Releases-66",
+          "DeploymentId": "Deployments-113",
+          "TaskId": "ServerTasks-303",
+          "ReleaseVersion": "0.0.2",
+          "Created": "2016-01-21T14:18:01.887+00:00",
+          "QueueTime": "2016-01-21T14:18:01.887+00:00",
+          "CompletedTime": "2016-01-21T14:18:06.294+00:00",
+          "State": "Failed",
+          "HasPendingInterruptions": false,
+          "HasWarningsOrErrors": true,
+          "ErrorMessage": "The deployment failed because one or more steps failed. Please see the deployment log for details.",
+          "Duration": "4 seconds",
+          "IsCurrent": true,
+          "IsPrevious": false,
+          "IsCompleted": true,
+          "Links": {
+            "Self": "/api/deployments/Deployments-113",
+            "Release": "/api/releases/Releases-66",
+            "Task": "/api/tasks/ServerTasks-303"
+          }
+        }
+      },
+      "NextDeployments": [
+        "Environments-1"
+      ],
+      "HasUnresolvedDefect": false,
+      "ReleaseRetentionPeriod": null,
+      "TentacleRetentionPeriod": null
+    },
+    {
+      "Release": {
+        "Id": "Releases-65",
+        "Assembled": "2016-01-21T13:35:13.023+00:00",
+        "ReleaseNotes": null,
+        "ProjectId": "Projects-26",
+        "ChannelId": "Channels-26",
+        "ProjectVariableSetSnapshotId": "variableset-Projects-26-s-0-56V4D",
+        "LibraryVariableSetSnapshotIds": [],
+        "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-26-s-1-JW52D",
+        "SelectedPackages": [],
+        "Version": "0.0.1",
+        "Links": {
+          "Self": "/api/releases/Releases-65{?force}",
+          "Project": "/api/projects/Projects-26",
+          "Progression": "/api/releases/Releases-65/progression",
+          "Deployments": "/api/releases/Releases-65/deployments",
+          "DeploymentTemplate": "/api/releases/Releases-65/deployments/template",
+          "Artifacts": "/api/artifacts?regarding=Releases-65",
+          "ProjectVariableSnapshot": "/api/variables/variableset-Projects-26-s-0-56V4D",
+          "ProjectDeploymentProcessSnapshot": "/api/deploymentprocesses/deploymentprocess-Projects-26-s-1-JW52D",
+          "Web": "/app#/releases/Releases-65",
+          "SnapshotVariables": "/api/releases/Releases-65/snapshot-variables",
+          "Defects": "/api/releases/Releases-65/defects",
+          "ReportDefect": "/api/releases/Releases-65/defects",
+          "ResolveDefect": "/api/releases/Releases-65/defects/resolve"
+        }
+      },
+      "Deployments": {
+        "Environments-1": {
+          "Id": "Deployments-83",
+          "ProjectId": "Projects-26",
+          "EnvironmentId": "Environments-1",
+          "ReleaseId": "Releases-65",
+          "DeploymentId": "Deployments-83",
+          "TaskId": "ServerTasks-273",
+          "ReleaseVersion": "0.0.1",
+          "Created": "2016-01-21T13:35:27.179+00:00",
+          "QueueTime": "2016-01-21T13:35:27.179+00:00",
+          "CompletedTime": "2016-01-21T13:36:13.086+00:00",
+          "State": "Success",
+          "HasPendingInterruptions": false,
+          "HasWarningsOrErrors": false,
+          "ErrorMessage": "",
+          "Duration": "46 seconds",
+          "IsCurrent": false,
+          "IsPrevious": false,
+          "IsCompleted": true,
+          "Links": {
+            "Self": "/api/deployments/Deployments-83",
+            "Release": "/api/releases/Releases-65",
+            "Task": "/api/tasks/ServerTasks-273"
+          }
+        }
+      },
+      "NextDeployments": [],
+      "HasUnresolvedDefect": false,
+      "ReleaseRetentionPeriod": null,
+      "TentacleRetentionPeriod": null
+    }
+  ],
+  "Links": {}
+}
