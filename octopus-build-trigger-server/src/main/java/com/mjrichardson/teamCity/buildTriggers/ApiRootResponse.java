@@ -24,24 +24,25 @@ import java.util.Map;
 
 //todo: add tests
 class ApiRootResponse {
-  final String projectApiLink;
   final String deploymentsApiLink;
   final String progressionApiLink;
 
   private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
 
   public ApiRootResponse(String apiResponse) throws ParseException {
-    projectApiLink = parseLink(apiResponse, "Projects");
-    deploymentsApiLink = parseLink(apiResponse, "Deployments");
-    //todo: implement fallback to support multiple versions
-    progressionApiLink = "/api/progression/"; // parseLink(apiResponse, "Progression"); //todo: fix after bug fixed by ODs
+    deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments/");
+    progressionApiLink = parseLink(apiResponse, "Progression", "/api/progression/");
   }
 
-  private String parseLink(String apiResponse, String linkName) throws ParseException {
+  private String parseLink(String apiResponse, String linkName, String defaultResponse) throws ParseException {
     LOG.debug("Parsing '" + apiResponse + "' for link '" + linkName + "'");
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(apiResponse);
     final String link = (String)((Map)response.get("Links")).get(linkName);
+    if (link == null) {
+      LOG.debug("Didn't find a link in response for '" + linkName + "'. Using default '" + defaultResponse + "'");
+      return defaultResponse;
+    }
     final String result = link.replaceAll("\\{.*\\}", ""); //remove all optional params
     LOG.debug("Found link for '" + linkName + "' was '" + result + "'");
     return result;

@@ -23,7 +23,7 @@ import java.net.URISyntaxException;
 public interface HttpContentProvider {
   void close();
 
-  String getContent(String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException;
+  String getContent(String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException;
 
   String getUrl();
 }

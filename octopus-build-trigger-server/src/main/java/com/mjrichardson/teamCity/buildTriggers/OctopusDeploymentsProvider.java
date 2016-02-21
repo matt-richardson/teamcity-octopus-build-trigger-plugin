@@ -39,7 +39,7 @@ final class OctopusDeploymentsProvider {
     this.LOG = log;
   }
 
-  public Deployments getDeployments(String octopusProject, Deployments oldDeployments) throws OctopusDeploymentsProviderException {
+  public Deployments getDeployments(String projectId, Deployments oldDeployments) throws OctopusDeploymentsProviderException {
     //get {octopusurl}/api
     //parse out project url
     //parse out progression url
@@ -50,21 +50,19 @@ final class OctopusDeploymentsProvider {
 
 
     try {
-      LOG.debug("OctopusBuildTrigger: Getting deployments from " + contentProvider.getUrl() + " for project " + octopusProject);
+      LOG.debug("OctopusBuildTrigger: Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
 
       final String apiResponse = contentProvider.getContent("/api");
       final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);
-      final String projectResponse = contentProvider.getContent(apiRootResponse.projectApiLink);
-      final ApiProjectResponse apiProjectResponse = new ApiProjectResponse(projectResponse, octopusProject);
 
-      final String progressionResponse = contentProvider.getContent(apiRootResponse.progressionApiLink + apiProjectResponse.projectId);
+      final String progressionResponse = contentProvider.getContent(apiRootResponse.progressionApiLink + projectId);
       final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse);
 
       if (apiProgressionResponse.haveCompleteInformation)
         return apiProgressionResponse.deployments;
 
       final ApiDeploymentsResponse apiDeploymentsResponse = new ApiDeploymentsResponse(
-        contentProvider, apiRootResponse.deploymentsApiLink, apiProjectResponse.projectId,
+        contentProvider, apiRootResponse.deploymentsApiLink, projectId,
         oldDeployments, apiProgressionResponse.deployments);
 
       return apiDeploymentsResponse.deployments;

@@ -23,12 +23,12 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +40,8 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class HttpContentProviderImpl implements HttpContentProvider {
   private final Logger LOG;
@@ -89,7 +91,7 @@ class HttpContentProviderImpl implements HttpContentProvider {
   }
 
   @NotNull
-  public String getContent(@NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException {
+  public String getContent(@NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException {
     final URI uri = new URL(octopusUrl + uriPath).toURI();
     final HttpGet httpGet = new HttpGet(uri);
 
@@ -103,6 +105,12 @@ class HttpContentProviderImpl implements HttpContentProvider {
       final int statusCode = response.getStatusLine().getStatusCode();
       if (statusCode == 401) {
         throw new InvalidOctopusApiKeyException(statusCode, response.getStatusLine().getReasonPhrase());
+      }
+      if (statusCode == 404 && uriPath.matches(".*Projects-\\d*")) {
+        Pattern p = Pattern.compile(".*(Projects-\\d*)$");
+        Matcher m = p.matcher(uriPath);
+        m.find();
+        throw new ProjectNotFoundException(m.group(1));
       }
       if (statusCode == 404) {
         throw new InvalidOctopusUrlException(uri);

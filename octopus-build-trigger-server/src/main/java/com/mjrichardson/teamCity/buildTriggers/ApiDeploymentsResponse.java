@@ -29,13 +29,13 @@ class ApiDeploymentsResponse {
   private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
   final Deployments deployments;
 
-  public ApiDeploymentsResponse(HttpContentProvider contentProvider, String deploymentsApiLink, String projectId, Deployments oldDeployments, Deployments newDeployments) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException {
+  public ApiDeploymentsResponse(HttpContentProvider contentProvider, String deploymentsApiLink, String projectId, Deployments oldDeployments, Deployments newDeployments) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException {
     final String deploymentsResponse = contentProvider.getContent(deploymentsApiLink + "?Projects=" + projectId);
 
     this.deployments = ParseDeploymentResponse(contentProvider, deploymentsResponse, oldDeployments, newDeployments);
   }
 
-  private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String deploymentsResponse, Deployments oldDeployments, Deployments result) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String deploymentsResponse, Deployments oldDeployments, Deployments result) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ProjectNotFoundException {
     LOG.debug("OctopusBuildTrigger: parsing deployment response");
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(deploymentsResponse);
