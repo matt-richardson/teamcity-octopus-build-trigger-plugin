@@ -53,12 +53,11 @@ class ApiDeploymentsResponse {
         LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "' was newer than the last known deployment to this environment");
         String taskLink = ((Map) (deployment.get("Links"))).get("Task").toString();
         String taskResponse = contentProvider.getContent(taskLink);
-        Map task = (Map)parser.parse(taskResponse);
 
-        Boolean isCompleted = Boolean.parseBoolean(task.get("IsCompleted").toString());
-        Boolean finishedSuccessfully = Boolean.parseBoolean(task.get("FinishedSuccessfully").toString());
-        LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "': isCompleted = '" + isCompleted + "', finishedSuccessfully = '" + finishedSuccessfully + "'");
-        result.addOrUpdate(environmentId, createdDate, isCompleted, finishedSuccessfully);
+        ApiTaskResponse task = new ApiTaskResponse(taskResponse);
+        LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "': isCompleted = '" + task.isCompleted + "', finishedSuccessfully = '" + task.finishedSuccessfully + "'");
+
+        result.addOrUpdate(environmentId, createdDate, task.isCompleted, task.finishedSuccessfully);
         if (result.haveAllDeploymentsFinishedSuccessfully()) {
           LOG.debug("All deployments have finished successfully - no need to keep iterating");
           return result;
