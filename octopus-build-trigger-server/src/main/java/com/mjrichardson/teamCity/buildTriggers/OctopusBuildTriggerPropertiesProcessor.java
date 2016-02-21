@@ -29,7 +29,7 @@ import java.util.Map;
 //todo: should this be part of the DeploymentCompleteAsyncBuildTrigger class instead?
 class OctopusBuildTriggerPropertiesProcessor implements PropertiesProcessor {
   @NotNull
-  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
 
   public Collection<InvalidProperty> process(Map<String, String> properties) {
     final ArrayList<InvalidProperty> invalidProps = new ArrayList<InvalidProperty>();

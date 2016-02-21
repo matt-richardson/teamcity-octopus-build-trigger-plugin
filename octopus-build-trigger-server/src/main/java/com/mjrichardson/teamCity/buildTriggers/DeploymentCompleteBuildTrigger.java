@@ -31,16 +31,16 @@ import org.jetbrains.annotations.NotNull;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.DEFAULT_POLL_INTERVAL;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.POLL_INTERVAL_PROP;
 
-public final class OctopusBuildTrigger extends BuildTriggerService {
+public final class DeploymentCompleteBuildTrigger extends BuildTriggerService {
   @NotNull
-  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
   @NotNull
   private final PluginDescriptor myPluginDescriptor;
   @NotNull
   private final BuildTriggeringPolicy myPolicy;
 
-  public OctopusBuildTrigger(@NotNull final PluginDescriptor pluginDescriptor,
-                             @NotNull final AsyncBuildTriggerFactory triggerFactory) {
+  public DeploymentCompleteBuildTrigger(@NotNull final PluginDescriptor pluginDescriptor,
+                                        @NotNull final AsyncBuildTriggerFactory triggerFactory) {
     myPluginDescriptor = pluginDescriptor;
     myPolicy = triggerFactory.createBuildTrigger(DeploymentCompleteSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
   }
@@ -48,13 +48,13 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
   @NotNull
   @Override
   public String getName() {
-    return "octopusBuildTrigger";
+    return "octopusDeploymentCompleteTrigger";
   }
 
   @NotNull
   @Override
   public String getDisplayName() {
-    return "Octopus Build Trigger";
+    return "Octopus Deployment Complete Trigger";
   }
 
   @NotNull

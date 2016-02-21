@@ -32,7 +32,7 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 //todo: this needs tests
 class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
   @NotNull
-  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
 
   private final AsyncTriggerParameters asyncTriggerParameters;
   private final String displayName;

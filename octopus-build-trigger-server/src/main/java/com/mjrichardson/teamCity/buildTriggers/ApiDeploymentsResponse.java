@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 class ApiDeploymentsResponse {
-  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
   final Deployments deployments;
 
   public ApiDeploymentsResponse(HttpContentProvider contentProvider, String deploymentsApiLink, String projectId, Deployments oldDeployments, Deployments newDeployments) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException {
@@ -36,7 +36,7 @@ class ApiDeploymentsResponse {
   }
 
   private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String deploymentsResponse, Deployments oldDeployments, Deployments result) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ProjectNotFoundException {
-    LOG.debug("OctopusBuildTrigger: parsing deployment response");
+    LOG.debug("DeploymentCompleteBuildTrigger: parsing deployment response");
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(deploymentsResponse);
 

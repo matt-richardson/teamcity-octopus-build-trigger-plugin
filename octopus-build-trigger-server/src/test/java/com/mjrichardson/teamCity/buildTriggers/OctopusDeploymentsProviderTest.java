@@ -46,7 +46,7 @@ public class OctopusDeploymentsProviderTest {
   static String ProjectWithNoReleases = "Projects-101";
   static String ProjectThatDoesNotExist = "Projects-00";
 
-  private static final Logger LOG = Logger.getInstance(Loggers.VCS_CATEGORY + OctopusBuildTrigger.class);
+  private static final Logger LOG = Logger.getInstance(Loggers.VCS_CATEGORY + DeploymentCompleteBuildTrigger.class);
 
   @Test(enabled = false)
   public void testGetDeploymentsFromRealServer() throws Exception {

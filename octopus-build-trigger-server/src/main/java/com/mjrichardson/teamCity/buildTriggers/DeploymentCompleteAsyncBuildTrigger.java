@@ -32,7 +32,7 @@ class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Deploymen
   private final String displayName;
   private final int pollInterval;
   @NotNull
-  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
 
   public DeploymentCompleteAsyncBuildTrigger(String displayName, int pollInterval) {
     this.displayName = displayName;

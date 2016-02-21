@@ -26,7 +26,7 @@ class ApiRootResponse {
   final String deploymentsApiLink;
   final String progressionApiLink;
 
-  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
 
   public ApiRootResponse(String apiResponse) throws ParseException {
     deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments");

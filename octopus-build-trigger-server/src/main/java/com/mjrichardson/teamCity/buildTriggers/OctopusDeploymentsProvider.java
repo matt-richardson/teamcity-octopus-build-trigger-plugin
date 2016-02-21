@@ -50,7 +50,7 @@ final class OctopusDeploymentsProvider {
 
 
     try {
-      LOG.debug("OctopusBuildTrigger: Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
+      LOG.debug("DeploymentCompleteBuildTrigger: Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
 
       final String apiResponse = contentProvider.getContent("/api");
       final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);
@@ -83,7 +83,7 @@ final class OctopusDeploymentsProvider {
 
   public String checkOctopusConnectivity() {
     try {
-      LOG.info("OctopusBuildTrigger: checking connectivity to octopus at " + contentProvider.getUrl());
+      LOG.info("DeploymentCompleteBuildTrigger: checking connectivity to octopus at " + contentProvider.getUrl());
       contentProvider.getContent("/api");
 
       return null;

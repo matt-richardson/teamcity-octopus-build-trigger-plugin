@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Map;
 
 class ApiProgressionResponse {
-  private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
   Deployments deployments;
   Boolean haveCompleteInformation;
 
   public ApiProgressionResponse(String progressionResponse) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, IOException {
-    LOG.debug("OctopusBuildTrigger: parsing progression response");
+    LOG.debug("DeploymentCompleteBuildTrigger: parsing progression response");
     deployments = new Deployments();
     this.haveCompleteInformation = Parse(progressionResponse);
   }
