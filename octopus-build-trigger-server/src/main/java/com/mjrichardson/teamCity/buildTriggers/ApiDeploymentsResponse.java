@@ -43,29 +43,8 @@ class ApiDeploymentsResponse {
     List items = (List)response.get("Items");
 
     for (Object item : items) {
-      Map deployment = (Map)item;
-
-      String environmentId = deployment.get("EnvironmentId").toString();
-      OctopusDate createdDate = new OctopusDate(deployment.get("Created").toString());
-      Deployment lastKnownDeploymentForThisEnvironment = oldDeployments.getDeploymentForEnvironment(environmentId);
-      LOG.debug("Found deployment to environment '" + environmentId + "' created at '" + createdDate + "'");
-      if (lastKnownDeploymentForThisEnvironment.isLatestDeploymentOlderThan(createdDate)) {
-        LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "' was newer than the last known deployment to this environment");
-        String taskLink = ((Map) (deployment.get("Links"))).get("Task").toString();
-        String taskResponse = contentProvider.getContent(taskLink);
-
-        ApiTaskResponse task = new ApiTaskResponse(taskResponse);
-        LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "': isCompleted = '" + task.isCompleted + "', finishedSuccessfully = '" + task.finishedSuccessfully + "'");
-
-        result.addOrUpdate(environmentId, createdDate, task.isCompleted, task.finishedSuccessfully);
-        if (result.haveAllDeploymentsFinishedSuccessfully()) {
-          LOG.debug("All deployments have finished successfully - no need to keep iterating");
-          return result;
-        }
-      }
-      else {
-        LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "' was older than the last known deployment to this environment");
-      }
+      if (ProcessDeployment(contentProvider, oldDeployments, result, (Map)item))
+        return result;
     }
 
     Object nextPage = ((Map)response.get("Links")).get("Page.Next");
@@ -79,4 +58,35 @@ class ApiDeploymentsResponse {
     return result;
   }
 
+  private boolean ProcessDeployment(HttpContentProvider contentProvider, Deployments oldDeployments, Deployments result, Map deployment) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, ParseException {
+    String environmentId = deployment.get("EnvironmentId").toString();
+    OctopusDate createdDate = new OctopusDate(deployment.get("Created").toString());
+    Deployment lastKnownDeploymentForThisEnvironment = oldDeployments.getDeploymentForEnvironment(environmentId);
+    LOG.debug("Found deployment to environment '" + environmentId + "' created at '" + createdDate + "'");
+
+    if (lastKnownDeploymentForThisEnvironment.isLatestDeploymentOlderThan(createdDate)) {
+      LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "' was newer than the last known deployment to this environment");
+
+      GetTask(contentProvider, result, deployment, environmentId, createdDate);
+
+      if (result.haveAllDeploymentsFinishedSuccessfully()) {
+        LOG.debug("All deployments have finished successfully - no need to keep iterating");
+        return true;
+      }
+    }
+    else {
+      LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "' was older than the last known deployment to this environment");
+    }
+    return false;
+  }
+
+  private void GetTask(HttpContentProvider contentProvider, Deployments result, Map deployment, String environmentId, OctopusDate createdDate) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, ParseException {
+    String taskLink = ((Map) (deployment.get("Links"))).get("Task").toString();
+    String taskResponse = contentProvider.getContent(taskLink);
+
+    ApiTaskResponse task = new ApiTaskResponse(taskResponse);
+    LOG.debug("Deployment to environment '" + environmentId + "' created at '" + createdDate + "': isCompleted = '" + task.isCompleted + "', finishedSuccessfully = '" + task.finishedSuccessfully + "'");
+
+    result.addOrUpdate(environmentId, createdDate, task.isCompleted, task.finishedSuccessfully);
+  }
 }
