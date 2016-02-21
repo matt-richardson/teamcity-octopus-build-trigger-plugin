@@ -179,6 +179,17 @@ public class OctopusDeploymentsProviderTest {
     Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00");
   }
 
+  public void testGetDeploymentsWhenNoReleases() throws Exception {
+    HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
+    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    Deployments oldDeployments = new Deployments();
+    Deployments newDeployments = deploymentsProvider.getDeployments("Project with no releases", oldDeployments);
+    Assert.assertEquals(newDeployments.length(), 1);
+    Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
+    Assert.assertNotNull(deployment);
+    Assert.assertEquals(deployment.toString(), "Environments-1;1970-01-01T00:00:00.000+00:00;1970-01-01T00:00:00.000+00:00");
+  }
+
   public void testWhenThereAreTwoNewDeploymentsSinceLastCheckItReturnsOnlyOne() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
     OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);

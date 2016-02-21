@@ -1,0 +1,10 @@
+{
+  "Environments": [
+    {
+      "Id": "Environments-1",
+      "Name": "local"
+    }
+  ],
+  "Releases": [],
+  "Links": {}
+}
