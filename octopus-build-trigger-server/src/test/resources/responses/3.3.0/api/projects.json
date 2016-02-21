@@ -170,39 +170,6 @@
       }
     },
     {
-      "Id": "Projects-22",
-      "VariableSetId": "variableset-Projects-22",
-      "DeploymentProcessId": "deploymentprocess-Projects-22",
-      "IncludedLibraryVariableSetIds": [],
-      "DefaultToSkipIfAlreadyInstalled": false,
-      "VersioningStrategy": {
-        "DonorPackageStepId": null,
-        "Template": "#{Octopus.Version.LastMajor}.#{Octopus.Version.LastMinor}.#{Octopus.Version.NextPatch}"
-      },
-      "ReleaseCreationStrategy": {
-        "ReleaseCreationPackageStepId": null,
-        "ChannelId": null
-      },
-      "Name": "Project with no releases",
-      "Slug": "project-with-no-releases",
-      "Description": "",
-      "IsDisabled": false,
-      "ProjectGroupId": "ProjectGroups-1",
-      "LifecycleId": "Lifecycles-1",
-      "AutoCreateRelease": false,
-      "Links": {
-        "Self": "/api/projects/Projects-22",
-        "Releases": "/api/projects/Projects-22/releases{/version}{?skip}",
-        "Channels": "/api/projects/Projects-22/channels",
-        "OrderChannels": "/api/projects/Projects-22/channels/order",
-        "Variables": "/api/variables/variableset-Projects-22",
-        "Progression": "/api/progression/Projects-22",
-        "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-22",
-        "Web": "/app#/projects/Projects-22",
-        "Logo": "/api/projects/Projects-22/logo"
-      }
-    },
-    {
       "Id": "Projects-25",
       "VariableSetId": "variableset-Projects-25",
       "DeploymentProcessId": "deploymentprocess-Projects-25",
