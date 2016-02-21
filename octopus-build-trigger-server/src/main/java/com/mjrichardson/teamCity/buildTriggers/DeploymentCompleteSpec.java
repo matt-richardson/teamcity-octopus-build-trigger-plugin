@@ -19,7 +19,7 @@ package com.mjrichardson.teamCity.buildTriggers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-class Spec {
+class DeploymentCompleteSpec {
   @NotNull
   private final String url;
   @NotNull
@@ -29,11 +29,11 @@ class Spec {
   @Nullable
   private final String environmentId;
 
-  Spec(@NotNull String url, @NotNull String project) {
+  DeploymentCompleteSpec(@NotNull String url, @NotNull String project) {
     this(url, project, null, null);
   }
 
-  Spec(@NotNull String url, @NotNull String project, @Nullable String environmentId, @Nullable Boolean wasSuccessful) {
+  DeploymentCompleteSpec(@NotNull String url, @NotNull String project, @Nullable String environmentId, @Nullable Boolean wasSuccessful) {
     this.url = url;
     this.project = project;
     this.wasSuccessful = wasSuccessful;

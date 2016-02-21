@@ -42,7 +42,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
   public OctopusBuildTrigger(@NotNull final PluginDescriptor pluginDescriptor,
                              @NotNull final AsyncBuildTriggerFactory triggerFactory) {
     myPluginDescriptor = pluginDescriptor;
-    myPolicy = triggerFactory.createBuildTrigger(Spec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
+    myPolicy = triggerFactory.createBuildTrigger(DeploymentCompleteSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
   }
 
   @NotNull
@@ -85,7 +85,7 @@ public final class OctopusBuildTrigger extends BuildTriggerService {
   }
 
   @NotNull
-  private AsyncBuildTrigger<Spec> getAsyncBuildTrigger() {
+  private AsyncBuildTrigger<DeploymentCompleteSpec> getAsyncBuildTrigger() {
     return getBuildTrigger();
   }
 

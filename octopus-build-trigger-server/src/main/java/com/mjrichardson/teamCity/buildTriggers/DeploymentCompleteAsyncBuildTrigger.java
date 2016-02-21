@@ -28,7 +28,7 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OC
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
-class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Spec> {
+class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<DeploymentCompleteSpec> {
   private final String displayName;
   private final int pollInterval;
   @NotNull
@@ -45,8 +45,8 @@ class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Spec> {
   }
 
   @NotNull
-  public String getRequestorString(@NotNull Spec spec) {
-    return spec.getRequestorString();
+  public String getRequestorString(@NotNull DeploymentCompleteSpec deploymentCompleteSpec) {
+    return deploymentCompleteSpec.getRequestorString();
   }
 
   public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
@@ -54,13 +54,13 @@ class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Spec> {
   }
 
   @NotNull
-  public CheckJob<Spec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
+  public CheckJob<DeploymentCompleteSpec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
     return new DeploymentCompleteCheckJob(asyncTriggerParameters, displayName);
   }
 
   @NotNull
-  public CheckResult<Spec> createCrashOnSubmitResult(@NotNull Throwable throwable) {
-    return SpecCheckResult.createThrowableResult(throwable);
+  public CheckResult<DeploymentCompleteSpec> createCrashOnSubmitResult(@NotNull Throwable throwable) {
+    return DeploymentCompleteSpecCheckResult.createThrowableResult(throwable);
   }
 
   public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {

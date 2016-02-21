@@ -30,7 +30,7 @@ import java.util.Map;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
 //todo: this needs tests
-class DeploymentCompleteCheckJob implements CheckJob<Spec> {
+class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
   @NotNull
   private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
 
@@ -43,8 +43,8 @@ class DeploymentCompleteCheckJob implements CheckJob<Spec> {
   }
 
   @NotNull
-  CheckResult<Spec> getCheckResult(String octopusUrl, String octopusApiKey, String octopusProject,
-                                   Boolean triggerOnlyOnSuccessfulDeployment, CustomDataStorage dataStorage) {
+  CheckResult<DeploymentCompleteSpec> getCheckResult(String octopusUrl, String octopusApiKey, String octopusProject,
+                                                     Boolean triggerOnlyOnSuccessfulDeployment, CustomDataStorage dataStorage) {
     LOG.debug("Checking for new deployments for project " + octopusProject + " on server " + octopusUrl);
     final String dataStorageKey = (octopusUrl + "|" + octopusProject).toLowerCase();
 
@@ -68,49 +68,49 @@ class DeploymentCompleteCheckJob implements CheckJob<Spec> {
         //do not trigger build after first adding trigger (oldDeployments == null)
         if (oldDeployments.isEmpty()) {
           LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
-          return SpecCheckResult.createEmptyResult();
+          return DeploymentCompleteSpecCheckResult.createEmptyResult();
         }
 
         final Deployment deployment = newStoredData.getChangedDeployment(oldDeployments);
         if (triggerOnlyOnSuccessfulDeployment && !deployment.isSuccessful()) {
           LOG.debug("New deployments found, but they weren't successful, and we are only triggering on successful builds. Server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
-          return SpecCheckResult.createEmptyResult();
+          return DeploymentCompleteSpecCheckResult.createEmptyResult();
         }
 
         LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-        final Spec spec = new Spec(octopusUrl, octopusProject, deployment.environmentId, deployment.isSuccessful());
+        final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, deployment.environmentId, deployment.isSuccessful());
         //todo: investigate passing multiple bits to createUpdatedResult()
-        return SpecCheckResult.createUpdatedResult(spec);
+        return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
       }
 
       LOG.info("No new deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-      return SpecCheckResult.createEmptyResult();
+      return DeploymentCompleteSpecCheckResult.createEmptyResult();
 
     } catch (Exception e) {
-      final Spec spec = new Spec(octopusUrl, octopusProject);
-      return SpecCheckResult.createThrowableResult(spec, e);
+      final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject);
+      return DeploymentCompleteSpecCheckResult.createThrowableResult(deploymentCompleteSpec, e);
     }
   }
 
   @NotNull
-  public CheckResult<Spec> perform() {
+  public CheckResult<DeploymentCompleteSpec> perform() {
     final Map<String, String> props = asyncTriggerParameters.getTriggerDescriptor().getProperties();
 
     final String octopusUrl = props.get(OCTOPUS_URL);
     if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
-      return SpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
+      return DeploymentCompleteSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
         displayName, asyncTriggerParameters.getBuildType()));
     }
 
     final String octopusApiKey = props.get(OCTOPUS_APIKEY);
     if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
-      return SpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
+      return DeploymentCompleteSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
         displayName, asyncTriggerParameters.getBuildType()));
     }
 
     final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
     if (StringUtil.isEmptyOrSpaces(octopusProject)) {
-      return SpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty project) in build configuration %s",
+      return DeploymentCompleteSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty project) in build configuration %s",
         displayName, asyncTriggerParameters.getBuildType()));
     }
 
