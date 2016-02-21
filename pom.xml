@@ -23,6 +23,7 @@
   <properties>
     <teamcity-version>9.0.1</teamcity-version>
     <finalName>${project.artifactId}-${project.version}</finalName>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <repositories>
     <repository>
