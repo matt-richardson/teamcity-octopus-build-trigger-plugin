@@ -55,7 +55,7 @@ final class OctopusDeploymentsProvider {
       final String apiResponse = contentProvider.getContent("/api");
       final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);
 
-      final String progressionResponse = contentProvider.getContent(apiRootResponse.progressionApiLink + projectId);
+      final String progressionResponse = contentProvider.getContent(apiRootResponse.progressionApiLink + "/" + projectId);
       final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse);
 
       if (apiProgressionResponse.haveCompleteInformation)

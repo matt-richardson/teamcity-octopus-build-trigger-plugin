@@ -22,7 +22,6 @@ import org.json.simple.parser.ParseException;
 
 import java.util.Map;
 
-//todo: add tests
 class ApiRootResponse {
   final String deploymentsApiLink;
   final String progressionApiLink;
@@ -30,8 +29,8 @@ class ApiRootResponse {
   private static final Logger LOG = Logger.getInstance(OctopusBuildTrigger.class.getName());
 
   public ApiRootResponse(String apiResponse) throws ParseException {
-    deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments/");
-    progressionApiLink = parseLink(apiResponse, "Progression", "/api/progression/");
+    deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments");
+    progressionApiLink = parseLink(apiResponse, "Progression", "/api/progression");
   }
 
   private String parseLink(String apiResponse, String linkName, String defaultResponse) throws ParseException {
