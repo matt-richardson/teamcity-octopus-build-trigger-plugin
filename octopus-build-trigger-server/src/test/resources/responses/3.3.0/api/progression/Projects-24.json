@@ -22,7 +22,7 @@
           "Self": "/api/releases/Releases-63{?force}",
           "Project": "/api/projects/Projects-24",
           "Progression": "/api/releases/Releases-63/progression",
-          "Deployments": "/api/releases/Releases-63/deployments",
+          "Deployments": "/api/releases/Releases-63/deployments{?skip}",
           "DeploymentTemplate": "/api/releases/Releases-63/deployments/template",
           "Artifacts": "/api/artifacts?regarding=Releases-63",
           "ProjectVariableSnapshot": "/api/variables/variableset-Projects-24-s-0-ZWV6Q",

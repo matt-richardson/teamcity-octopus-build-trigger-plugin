@@ -22,7 +22,7 @@
           "Self": "/api/releases/Releases-64{?force}",
           "Project": "/api/projects/Projects-25",
           "Progression": "/api/releases/Releases-64/progression",
-          "Deployments": "/api/releases/Releases-64/deployments",
+          "Deployments": "/api/releases/Releases-64/deployments{?skip}",
           "DeploymentTemplate": "/api/releases/Releases-64/deployments/template",
           "Artifacts": "/api/artifacts?regarding=Releases-64",
           "ProjectVariableSnapshot": "/api/variables/variableset-Projects-25-s-0-CF4HB",

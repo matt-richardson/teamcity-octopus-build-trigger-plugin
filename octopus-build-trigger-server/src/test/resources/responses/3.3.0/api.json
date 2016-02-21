@@ -1,6 +1,6 @@
 {
   "Application": "Octopus Deploy",
-  "Version": "3.2.1",
+  "Version": "3.3.0-beta0002",
   "ApiVersion": "3.0.0",
   "FormsLoginEnabled": true,
   "Links": {
@@ -52,6 +52,7 @@
     "PermissionDescriptions": "/api/permissions/all",
     "Variables": "/api/variables{/id}",
     "VariableNames": "/api/variables/names{?project}",
+    "VariablesNonPrintableChars": "/api/variables/nonPrintableChars",
     "VersionRuleTest": "/api/channels/rule-test{?version,versionRange,preReleaseTag}",
     "Reporting/DeploymentsCountedByWeek": "/api/reporting/deployments-counted-by-week{?projectIds}",
     "RepositoryConfiguration": "/api/repository/configuration",

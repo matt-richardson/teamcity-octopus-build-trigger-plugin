@@ -26,7 +26,7 @@
     "Raw": "/api/tasks/ServerTasks-272/raw",
     "Rerun": "/api/tasks/rerun/ServerTasks-272",
     "Cancel": "/api/tasks/ServerTasks-272/cancel",
-    "QueuedBehind": "/api/tasks/ServerTasks-272/queued-behind",
+    "QueuedBehind": "/api/tasks/ServerTasks-272/queued-behind{?skip}",
     "Details": "/api/tasks/ServerTasks-272/details{?verbose,tail}",
     "Artifacts": "/api/artifacts?regarding=ServerTasks-272",
     "Interruptions": "/api/tasks"
