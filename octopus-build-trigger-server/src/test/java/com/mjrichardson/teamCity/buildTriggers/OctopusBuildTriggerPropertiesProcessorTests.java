@@ -32,7 +32,7 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OC
 public class OctopusBuildTriggerPropertiesProcessorTests {
 
     public void returns_error_when_url_is_null() {
-      OctopusBuildTriggerPropertiesProcessor processor = new OctopusBuildTriggerPropertiesProcessor();
+      OctopusDeploymentCompleteTriggerPropertiesProcessor processor = new OctopusDeploymentCompleteTriggerPropertiesProcessor();
       Map<String,String> properties = new HashMap<String,String>();
       properties.put(OCTOPUS_APIKEY, "api key");
       properties.put(OCTOPUS_PROJECT_ID, "project-id");
@@ -46,7 +46,7 @@ public class OctopusBuildTriggerPropertiesProcessorTests {
     }
 
   public void returns_error_when_api_key_is_null() {
-    OctopusBuildTriggerPropertiesProcessor processor = new OctopusBuildTriggerPropertiesProcessor();
+    OctopusDeploymentCompleteTriggerPropertiesProcessor processor = new OctopusDeploymentCompleteTriggerPropertiesProcessor();
     Map<String,String> properties = new HashMap<String,String>();
     properties.put(OCTOPUS_APIKEY, null);
     properties.put(OCTOPUS_PROJECT_ID, "project-id");

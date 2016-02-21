@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.Map;
 
 //todo: should this be part of the DeploymentCompleteAsyncBuildTrigger class instead?
-class OctopusBuildTriggerPropertiesProcessor implements PropertiesProcessor {
+class OctopusDeploymentCompleteTriggerPropertiesProcessor implements PropertiesProcessor {
   @NotNull
   private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
 

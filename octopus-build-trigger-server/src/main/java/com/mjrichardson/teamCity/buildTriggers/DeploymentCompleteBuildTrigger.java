@@ -71,12 +71,12 @@ public final class DeploymentCompleteBuildTrigger extends BuildTriggerService {
 
   @Override
   public PropertiesProcessor getTriggerPropertiesProcessor() {
-    return new OctopusBuildTriggerPropertiesProcessor();
+    return new OctopusDeploymentCompleteTriggerPropertiesProcessor();
   }
 
   @Override
   public String getEditParametersUrl() {
-    return myPluginDescriptor.getPluginResourcesPath("editOctopusBuildTrigger.jsp");
+    return myPluginDescriptor.getPluginResourcesPath("editOctopusDeploymentCompleteTrigger.jsp");
   }
 
   @Override
