@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="testng-5.14.10">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/octopus-build-trigger-tests/lib/testng-5.14.10.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

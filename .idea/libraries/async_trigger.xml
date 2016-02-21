@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="async-trigger">
-    <CLASSES>
-      <root url="jar://$TeamCityDistribution$/webapps/ROOT/WEB-INF/plugins/Maven2/server/async-trigger.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

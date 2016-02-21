@@ -1,4 +1,7 @@
-/out/
 
+target/
 .idea/workspace.xml
 .idea/tasks.xml
+octopus-build-trigger-server/target/
+build/target/
+

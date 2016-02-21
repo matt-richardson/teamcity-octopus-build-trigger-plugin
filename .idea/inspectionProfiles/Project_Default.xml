@@ -1,9 +1,0 @@
-<component name="InspectionProjectProfileManager">
-  <profile version="1.0" is_locked="false">
-    <option name="myName" value="Project Default" />
-    <option name="myLocal" value="false" />
-    <inspection_tool class="EmptyStatementBody" enabled="false" level="WARNING" enabled_by_default="false">
-      <option name="m_reportEmptyBlocks" value="false" />
-    </inspection_tool>
-  </profile>
-</component>

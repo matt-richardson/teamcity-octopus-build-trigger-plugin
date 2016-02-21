@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="TestAll">
+ 
+    <test name="anyname">
+	<classes>
+		<class name="com.mjrichardson.teamCity.buildTriggers.DeploymentsTest" />
+		<class name="com.mjrichardson.teamCity.buildTriggers.DeploymentTest" />
+		<class name="com.mjrichardson.teamCity.buildTriggers.OctopusDeploymentsProviderTest" />
+	</classes>
+    </test>
+  
+</suite>
