@@ -5,4 +5,5 @@
        default-autowire="constructor">
     <import resource="classpath*:META-INF/spring-server-async-trigger.xml"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.DeploymentCompleteBuildTrigger"/>
+    <bean class="com.mjrichardson.teamCity.buildTriggers.ReleaseCreatedBuildTrigger"/>
 </beans>
