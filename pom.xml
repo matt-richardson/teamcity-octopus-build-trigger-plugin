@@ -39,27 +39,26 @@
   </pluginRepositories>
   <build>
     <finalName>${finalName}</finalName>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.jetbrains.teamcity</groupId>
-          <artifactId>teamcity-sdk-maven-plugin</artifactId>
-          <version>RELEASE</version>
-          <configuration>
-            <teamcityDir>../../Downloads/TeamCity</teamcityDir>
-            <dataDirectory>../../.BuildServer</dataDirectory>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jetbrains.teamcity</groupId>
+        <artifactId>teamcity-sdk-maven-plugin</artifactId>
+        <version>0.2</version>
+        <configuration>
+          <teamcityDir>../../Downloads/TeamCity</teamcityDir>
+          <dataDirectory>../../.BuildServer</dataDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
   <modules>
     <module>octopus-build-trigger-server</module>
