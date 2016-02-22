@@ -28,7 +28,7 @@ If you want to turn on logging, add the following to `<TeamCity server home>\con
     <param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n" />
   </layout>
 </appender>
-<category name="matt_richardson.teamCity.buildTriggers.octopusDeploy" additivity="false">
+<category name="com.mjrichardson.teamCity.buildTriggers" additivity="false">
   <priority value="DEBUG" />
   <appender-ref ref="OCTOPUS_DEPLOY.LOG" />
 </category>
