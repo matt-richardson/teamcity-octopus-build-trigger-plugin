@@ -61,7 +61,7 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
       //otherwise, we could inadvertently miss deployments
       final Deployments newStoredData = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, triggerOnlyOnSuccessfulDeployment);
 
-      if (!newDeployments.equals(oldDeployments)) {
+      if (!newDeployments.toString().equals(oldDeployments.toString())) {
         dataStorage.putValue(dataStorageKey, newStoredData.toString());
 
         //todo: see if its possible to to check the property on the context that says whether its new?
