@@ -26,7 +26,6 @@ import java.security.NoSuchAlgorithmException;
 
 public final class DeploymentsProvider {
 
-  public static final String OCTOPUS_DATE_FORMAT = "yyyy-MM-ddHH:mm:ss.SSSZ";
   private final HttpContentProvider contentProvider;
   private final Logger LOG;
 
