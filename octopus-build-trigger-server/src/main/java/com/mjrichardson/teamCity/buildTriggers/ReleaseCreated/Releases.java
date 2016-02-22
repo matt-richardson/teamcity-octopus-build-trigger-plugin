@@ -42,22 +42,6 @@ public class Releases {
         return statusMap.size() == 0;
     }
 
-    public Releases trimToOnlyHaveMaximumOneChangedRelease(Releases oldReleases) {
-        Releases newReleases = new Releases(oldReleases);
-
-        final String oldStringRepresentation = oldReleases.toString();
-
-        for (Release release: statusMap) {
-            newReleases.addOrUpdate(release);
-            String newStringRepresentation = newReleases.toString();
-            if (!oldStringRepresentation.equals(newStringRepresentation)) {
-                return newReleases;
-            }
-        }
-
-        return newReleases;
-    }
-
     private void addOrUpdate(Release release) {
         if (!contains(release.id)) {
             add(release);
@@ -88,20 +72,6 @@ public class Releases {
 
     public void add(Release release) {
         statusMap.add(release);
-    }
-
-    public Release getChangedRelease(Releases oldReleases) throws NoChangedReleasesException {
-        Releases newReleases = new Releases(oldReleases);
-        final String oldStringRepresentation = oldReleases.toString();
-
-        for (Release release: statusMap) {
-            newReleases.addOrUpdate(release);
-            String newStringRepresentation = newReleases.toString();
-            if (!oldStringRepresentation.equals(newStringRepresentation)) {
-                return release;
-            }
-        }
-        throw new NoChangedReleasesException(oldReleases, newReleases);
     }
 
     public Release getNextRelease(Release oldRelease) {
