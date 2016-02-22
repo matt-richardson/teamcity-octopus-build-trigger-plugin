@@ -46,7 +46,7 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
   CheckResult<DeploymentCompleteSpec> getCheckResult(String octopusUrl, String octopusApiKey, String octopusProject,
                                                      Boolean triggerOnlyOnSuccessfulDeployment, CustomDataStorage dataStorage) {
     LOG.debug("Checking for new deployments for project " + octopusProject + " on server " + octopusUrl);
-    final String dataStorageKey = (octopusUrl + "|" + octopusProject).toLowerCase();
+    final String dataStorageKey = (displayName + "|" + octopusUrl + "|" + octopusProject).toLowerCase();
 
     try {
       final String oldStoredData = dataStorage.getValue(dataStorageKey);
