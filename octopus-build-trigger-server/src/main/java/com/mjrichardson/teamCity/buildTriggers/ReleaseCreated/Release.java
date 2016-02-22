@@ -15,7 +15,7 @@ public class Release implements Comparable {
         this.version = item.get("Version").toString();
     }
 
-    private Release(String releaseId, OctopusDate assembledDate, String version) {
+    Release(String releaseId, OctopusDate assembledDate, String version) {
         this.id = releaseId;
         this.assembledDate = assembledDate;
         this.version = version;
@@ -27,6 +27,9 @@ public class Release implements Comparable {
     }
 
     public static Release Parse(String pair) {
+        if (pair == null || pair == "") {
+            return new NullRelease();
+        }
         final String[] split = pair.split(";");
         final String releaseId = split[0];
         final OctopusDate assembledDate = new OctopusDate(split[1]);
@@ -37,6 +40,6 @@ public class Release implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        return assembledDate.compareTo(((Release)o).assembledDate);
+        return ((Release)o).assembledDate.compareTo(assembledDate);
     }
 }

@@ -64,11 +64,9 @@ public class Releases {
         }
     }
 
-    public boolean overlapsWith(Releases oldReleases) {
-        for (Release release: oldReleases.statusMap) {
-            if (contains(release.id))
-                return true;
-        }
+    public boolean overlapsWith(Release oldRelease) {
+        if (contains(oldRelease.id))
+            return true;
         return false;
     }
 
@@ -104,5 +102,20 @@ public class Releases {
             }
         }
         throw new NoChangedReleasesException(oldReleases, newReleases);
+    }
+
+    public Release getNextRelease(Release oldRelease) {
+        Collections.sort(statusMap);
+        Release nextRelease = oldRelease;
+
+        //for some unknown reason, was getting a concurrent modification exception here when this was a foreach
+        for (int i = 0; i < statusMap.size(); i++) {
+            Release release = statusMap.get(i);
+            if (release.compareTo(oldRelease) < 0)
+                nextRelease = release;
+            else if (release.version.equals(oldRelease.version))
+                return nextRelease;
+        }
+        return oldRelease;
     }
 }

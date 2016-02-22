@@ -33,31 +33,31 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
     final String dataStorageKey = (displayName + "|" + octopusUrl + "|" + octopusProject).toLowerCase();
 
     try {
-      final String oldStoredData = dataStorage.getValue(dataStorageKey);
-      final Releases oldReleases = new Releases(oldStoredData);
+      String oldStoredData = dataStorage.getValue(dataStorageKey);
+      final Release oldRelease = Release.Parse(oldStoredData);
       final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
       ReleasesProvider provider = new ReleasesProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
-      final Releases newReleases = provider.getReleases(octopusProject, oldReleases);
+      final Releases newReleases = provider.getReleases(octopusProject, oldRelease);
 
-      //only store that one release has happened here, not multiple .
+      //only store that one release has happened here, not multiple.
       //otherwise, we could inadvertently miss releases
-      final Releases newStoredData = newReleases.trimToOnlyHaveMaximumOneChangedRelease(oldReleases);
+      final Release newRelease = newReleases.getNextRelease(oldRelease);
+      final String newStoredData = newRelease.toString();
 
-      if (!newReleases.toString().equals(oldReleases.toString())) {
-        dataStorage.putValue(dataStorageKey, newStoredData.toString());
+      if (!newRelease.toString().equals(oldRelease.toString())) {
+        dataStorage.putValue(dataStorageKey, newStoredData);
 
         //todo: see if its possible to to check the property on the context that says whether its new?
         //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
         //do not trigger build after first adding trigger (oldReleases == null)
-        if (oldReleases.isEmpty()) {
+        if (oldRelease.getClass().equals(NullRelease.class)) {
           LOG.debug("No previous releases known for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
           return ReleaseCreatedSpecCheckResult.createEmptyResult();
         }
 
-        Release release = newReleases.getChangedRelease(oldReleases);
-        LOG.info("New release " + release.version + " created on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-        final ReleaseCreatedSpec releaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, octopusProject, release.version);
+        LOG.info("New release " + newRelease.version + " created on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
+        final ReleaseCreatedSpec releaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, octopusProject, newRelease.version);
         //todo: investigate passing multiple bits to createUpdatedResult()
         return ReleaseCreatedSpecCheckResult.createUpdatedResult(releaseCreatedSpec);
       }

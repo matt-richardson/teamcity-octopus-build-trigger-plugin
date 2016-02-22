@@ -78,7 +78,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
   }
 
   public String getUrl() {
-    return null;
+    return this.octopusUrl;
   }
 
   public void close() {

@@ -22,7 +22,7 @@ public class ReleasesProvider {
         this.LOG = log;
     }
 
-    public Releases getReleases(String projectId, Releases oldReleases) throws InvalidOctopusApiKeyException, InvalidOctopusUrlException, ProjectNotFoundException, ReleasesProviderException {
+    public Releases getReleases(String projectId, Release oldRelease) throws InvalidOctopusApiKeyException, InvalidOctopusUrlException, ProjectNotFoundException, ReleasesProviderException {
         //get {octopusurl}/api
         //parse out releases url
         //call release url for project id
@@ -38,7 +38,7 @@ public class ReleasesProvider {
 
             Releases newReleases = apiReleaseResponse.releases;
 
-            while (shouldGetNextPage(oldReleases, newReleases, apiReleaseResponse)) {
+            while (shouldGetNextPage(oldRelease, newReleases, apiReleaseResponse)) {
                 releasesResponse = contentProvider.getContent(apiReleaseResponse.nextLink);
                 apiReleaseResponse = new ApiReleaseResponse(releasesResponse);
                 newReleases.Append(apiReleaseResponse.releases);
@@ -59,12 +59,12 @@ public class ReleasesProvider {
         }
     }
 
-    private boolean shouldGetNextPage(Releases oldReleases, Releases newReleases, ApiReleaseResponse apiReleaseResponse) {
+    private boolean shouldGetNextPage(Release oldRelease, Releases newReleases, ApiReleaseResponse apiReleaseResponse) {
         if (newReleases.isEmpty())
             return false;
         if (apiReleaseResponse.nextLink == null)
             return false;
-        if (newReleases.overlapsWith(oldReleases))
+        if (newReleases.overlapsWith(oldRelease))
             return false;
         return true;
     }
