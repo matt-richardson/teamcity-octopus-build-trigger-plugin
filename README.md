@@ -9,6 +9,7 @@ A TeamCity plugin that polls Octopus Deploy, and triggers a TeamCity build when:
 - [ ] a new tentacle is added
 
 This is very much a work in progress, but feel free to give it a go, and let me know if you face any issues.
+Constructive criticism received gratefully - this is my first real java project, and there's a lot I'm unaware of in that ecosystem.
 
 # Installation
 
