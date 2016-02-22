@@ -34,14 +34,14 @@ public class ReleasesProvider {
             final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);
 
             String releasesResponse = contentProvider.getContent("/api/projects/" + projectId + "/releases"); //todo: parse properly
-            ApiReleaseResponse apiReleaseResponse = new ApiReleaseResponse(releasesResponse);
+            ApiProjectReleasesResponse apiProjectReleasesResponse = new ApiProjectReleasesResponse(releasesResponse);
 
-            Releases newReleases = apiReleaseResponse.releases;
+            Releases newReleases = apiProjectReleasesResponse.releases;
 
-            while (shouldGetNextPage(oldRelease, newReleases, apiReleaseResponse)) {
-                releasesResponse = contentProvider.getContent(apiReleaseResponse.nextLink);
-                apiReleaseResponse = new ApiReleaseResponse(releasesResponse);
-                newReleases.Append(apiReleaseResponse.releases);
+            while (shouldGetNextPage(oldRelease, newReleases, apiProjectReleasesResponse)) {
+                releasesResponse = contentProvider.getContent(apiProjectReleasesResponse.nextLink);
+                apiProjectReleasesResponse = new ApiProjectReleasesResponse(releasesResponse);
+                newReleases.Append(apiProjectReleasesResponse.releases);
             }
             return newReleases;
         }
@@ -59,10 +59,10 @@ public class ReleasesProvider {
         }
     }
 
-    private boolean shouldGetNextPage(Release oldRelease, Releases newReleases, ApiReleaseResponse apiReleaseResponse) {
+    private boolean shouldGetNextPage(Release oldRelease, Releases newReleases, ApiProjectReleasesResponse apiProjectReleasesResponse) {
         if (newReleases.isEmpty())
             return false;
-        if (apiReleaseResponse.nextLink == null)
+        if (apiProjectReleasesResponse.nextLink == null)
             return false;
         if (newReleases.overlapsWith(oldRelease))
             return false;

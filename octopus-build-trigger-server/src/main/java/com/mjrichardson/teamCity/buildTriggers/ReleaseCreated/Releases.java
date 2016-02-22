@@ -88,4 +88,12 @@ public class Releases {
         }
         return oldRelease;
     }
+
+    public int size() {
+        return statusMap.size();
+    }
+
+    public Release[] toArray() {
+        return statusMap.toArray(new Release[0]);
+    }
 }

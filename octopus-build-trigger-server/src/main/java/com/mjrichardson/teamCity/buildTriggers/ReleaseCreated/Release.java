@@ -5,9 +5,9 @@ import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import java.util.Map;
 
 public class Release implements Comparable {
-    final String id;
-    final OctopusDate assembledDate;
-    final String version;
+    public final String id;
+    public final OctopusDate assembledDate;
+    public final String version;
 
     public Release(Map item) {
         this.id = item.get("Id").toString();
