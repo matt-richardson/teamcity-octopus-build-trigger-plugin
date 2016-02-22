@@ -1,0 +1,32 @@
+{
+  "Id": "ServerTasks-620",
+  "Name": "Health",
+  "Description": "Check Tentacle health",
+  "Arguments": {},
+  "State": "Success",
+  "Completed": "22 February 2016 20:38",
+  "QueueTime": "2016-02-22T20:38:21.064+00:00",
+  "StartTime": "2016-02-22T20:38:21.067+00:00",
+  "LastUpdatedTime": "2016-02-22T20:38:22.694+00:00",
+  "CompletedTime": "2016-02-22T20:38:22.694+00:00",
+  "ServerNode": "DESKTOP-4VQNCHP",
+  "Duration": "2 seconds",
+  "ErrorMessage": "",
+  "HasBeenPickedUpByProcessor": true,
+  "IsCompleted": true,
+  "FinishedSuccessfully": true,
+  "HasPendingInterruptions": false,
+  "CanRerun": true,
+  "HasWarningsOrErrors": true,
+  "Links": {
+    "Self": "/api/tasks/ServerTasks-620",
+    "Web": "/app#/tasks/ServerTasks-620",
+    "Raw": "/api/tasks/ServerTasks-620/raw",
+    "Rerun": "/api/tasks/rerun/ServerTasks-620",
+    "Cancel": "/api/tasks/ServerTasks-620/cancel",
+    "QueuedBehind": "/api/tasks/ServerTasks-620/queued-behind{?skip}",
+    "Details": "/api/tasks/ServerTasks-620/details{?verbose,tail}",
+    "Artifacts": "/api/artifacts?regarding=ServerTasks-620",
+    "Interruptions": "/api/tasks"
+  }
+}
