@@ -53,7 +53,7 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
       final Deployments oldDeployments = new Deployments(oldStoredData);
       final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
-      OctopusDeploymentsProvider provider = new OctopusDeploymentsProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
+      DeploymentsProvider provider = new DeploymentsProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
       final Deployments newDeployments = provider.getDeployments(octopusProject, oldDeployments);
 
       //only store that one deployment to one environment has happened here, not multiple environment.

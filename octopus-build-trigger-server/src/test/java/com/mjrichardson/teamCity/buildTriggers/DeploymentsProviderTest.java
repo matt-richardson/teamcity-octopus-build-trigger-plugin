@@ -31,7 +31,7 @@ import java.net.URISyntaxException;
 
 
 @Test
-public class OctopusDeploymentsProviderTest {
+public class DeploymentsProviderTest {
   final String octopusUrl = "http://baseUrl";
   final String octopusApiKey = "API-key";
   final String realOctopusUrl = "http://windows10vm.local/";
@@ -52,7 +52,7 @@ public class OctopusDeploymentsProviderTest {
   public void testGetDeploymentsFromRealServer() throws Exception {
     HttpContentProvider contentProvider = new HttpContentProviderImpl(LOG, realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT
     );
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments("Project with latest deployment successful", oldDeployments);
     Assert.assertNotNull(newDeployments);
@@ -60,7 +60,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsFromEmptyStart() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments("Projects-24", oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -82,7 +82,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsFromEmptyStartWithNoReleases() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(ProjectWithNoReleases, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -93,7 +93,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsFromEmptyStartWithNoDeployments() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(ProjectWithNoDeployments, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -106,7 +106,7 @@ public class OctopusDeploymentsProviderTest {
   public void testGetDeploymentsWithInvalidProject() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
 
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
 
     deploymentsProvider.getDeployments(ProjectThatDoesNotExist, oldDeployments);
@@ -115,7 +115,7 @@ public class OctopusDeploymentsProviderTest {
   @Test(expectedExceptions = InvalidOctopusUrlException.class)
   public void testGetDeploymentsWithOctopusUrlWithInvalidHost() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider("http://octopus.example.com", octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
 
     //todo: need another test around HttpContentProviderImpl
@@ -125,7 +125,7 @@ public class OctopusDeploymentsProviderTest {
   @Test(expectedExceptions = InvalidOctopusUrlException.class)
   public void testGetDeploymentsWithOctopusUrlWithInvalidPath() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl + "/not-an-octopus-instance", octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
 
     //todo: need another test around HttpContentProviderImpl
@@ -135,7 +135,7 @@ public class OctopusDeploymentsProviderTest {
   @Test(expectedExceptions = InvalidOctopusApiKeyException.class)
   public void testGetDeploymentsWithInvalidOctopusApiKey() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, "invalid-api-key");
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
 
     //todo: need another test around HttpContentProviderImpl
@@ -144,7 +144,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsWhenUpToDate() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments("Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00");
     Deployments newDeployments = deploymentsProvider.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -155,7 +155,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsWhenNoSuccessfulDeploymentsHaveOccurred() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(ProjectWithNoSuccessfulDeployments, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -166,7 +166,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsWhenNoSuccessfulDeploymentsOnFirstPageOfResults() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(ProjectWithNoRecentSuccessfulDeployments, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -178,7 +178,7 @@ public class OctopusDeploymentsProviderTest {
   public void testGetDeploymentsWhenMultipleEnvironments() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
 
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(ProjectWithMultipleEnvironments, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 2);
@@ -192,7 +192,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsWhenNoReleases() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(ProjectWithNoReleases, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
@@ -203,7 +203,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testWhenThereAreTwoNewDeploymentsSinceLastCheckItReturnsOnlyOne() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
     Deployments oldDeployments = new Deployments(oldData);
     Deployments newDeployments = deploymentsProvider.getDeployments(ProjectWithMultipleEnvironments, oldDeployments);
@@ -227,7 +227,7 @@ public class OctopusDeploymentsProviderTest {
 
   public void testGetDeploymentsWhenMultipleEnvironmentsWithMostRecentDeploymentSuccessful() throws Exception {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
-    OctopusDeploymentsProvider deploymentsProvider = new OctopusDeploymentsProvider(contentProvider, LOG);
+    DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
     Deployments newDeployments = deploymentsProvider.getDeployments(ProjectWithMultipleEnvironmentsAndMostRecentDeploymentSuccessful, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 2);

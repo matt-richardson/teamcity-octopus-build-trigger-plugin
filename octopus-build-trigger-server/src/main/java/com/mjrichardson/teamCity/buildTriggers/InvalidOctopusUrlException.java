@@ -18,7 +18,7 @@ package com.mjrichardson.teamCity.buildTriggers;
 
 import java.net.URI;
 
-class InvalidOctopusUrlException extends OctopusDeploymentsProviderException {
+class InvalidOctopusUrlException extends DeploymentsProviderException {
   public final URI octopusUrl;
 
   public InvalidOctopusUrlException(URI octopusUrl) {

@@ -7,21 +7,21 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
 
-public class OctopusReleasesProvider {
+public class ReleasesProvider {
     private final Logger LOG;
     private final HttpContentProvider contentProvider;
 
-    public OctopusReleasesProvider(String octopusUrl, String apiKey, Integer connectionTimeout, Logger log) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public ReleasesProvider(String octopusUrl, String apiKey, Integer connectionTimeout, Logger log) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         this(new HttpContentProviderImpl(log, octopusUrl, apiKey, connectionTimeout), log);
     }
 
-    public OctopusReleasesProvider(HttpContentProvider contentProvider, Logger log)
+    public ReleasesProvider(HttpContentProvider contentProvider, Logger log)
     {
         this.contentProvider = contentProvider;
         this.LOG = log;
     }
 
-    public Releases getReleases(String projectId, Releases oldReleases) throws InvalidOctopusApiKeyException, InvalidOctopusUrlException, ProjectNotFoundException, OctopusReleasesProviderException {
+    public Releases getReleases(String projectId, Releases oldReleases) throws InvalidOctopusApiKeyException, InvalidOctopusUrlException, ProjectNotFoundException, ReleasesProviderException {
         //get {octopusurl}/api
         //parse out releases url
         //call release url for project id
@@ -54,7 +54,7 @@ public class OctopusReleasesProvider {
             throw e;
         }
         catch (Throwable e) {
-            throw new OctopusReleasesProviderException("URL " + contentProvider.getUrl() + ": " + e, e);
+            throw new ReleasesProviderException("URL " + contentProvider.getUrl() + ": " + e, e);
         }
     }
 

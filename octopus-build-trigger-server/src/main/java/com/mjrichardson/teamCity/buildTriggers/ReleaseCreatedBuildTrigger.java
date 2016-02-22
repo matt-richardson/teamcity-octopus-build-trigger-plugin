@@ -54,7 +54,7 @@ public final class ReleaseCreatedBuildTrigger extends BuildTriggerService {
 
   @Override
   public PropertiesProcessor getTriggerPropertiesProcessor() {
-    return new OctopusReleaseCreatedTriggerPropertiesProcessor();
+    return new ReleaseCreatedTriggerPropertiesProcessor();
   }
 
   @Override

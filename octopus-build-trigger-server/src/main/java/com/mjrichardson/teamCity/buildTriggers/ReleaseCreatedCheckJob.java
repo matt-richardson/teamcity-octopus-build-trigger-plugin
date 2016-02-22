@@ -36,7 +36,7 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
       final Releases oldReleases = new Releases(oldStoredData);
       final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
-      OctopusReleasesProvider provider = new OctopusReleasesProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
+      ReleasesProvider provider = new ReleasesProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
       final Releases newReleases = provider.getReleases(octopusProject, oldReleases);
 
       //only store that one release has happened here, not multiple .
@@ -67,7 +67,7 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
     } catch (Exception e) {
       final ReleaseCreatedSpec ReleaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, octopusProject);
       return ReleaseCreatedSpecCheckResult.createThrowableResult(ReleaseCreatedSpec, e);
-    } catch (OctopusReleasesProviderException e) {
+    } catch (ReleasesProviderException e) {
       final ReleaseCreatedSpec ReleaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, octopusProject);
       return ReleaseCreatedSpecCheckResult.createThrowableResult(ReleaseCreatedSpec, e);
     }

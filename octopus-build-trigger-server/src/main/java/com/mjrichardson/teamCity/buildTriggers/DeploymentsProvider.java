@@ -23,23 +23,23 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
 
-final class OctopusDeploymentsProvider {
+final class DeploymentsProvider {
 
   static final String OCTOPUS_DATE_FORMAT = "yyyy-MM-ddHH:mm:ss.SSSZ";
   private final HttpContentProvider contentProvider;
   private final Logger LOG;
 
-  public OctopusDeploymentsProvider(String octopusUrl, String apiKey, Integer connectionTimeout, Logger log) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+  public DeploymentsProvider(String octopusUrl, String apiKey, Integer connectionTimeout, Logger log) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
     this(new HttpContentProviderImpl(log, octopusUrl, apiKey, connectionTimeout), log);
   }
 
-  public OctopusDeploymentsProvider(HttpContentProvider contentProvider, Logger log)
+  public DeploymentsProvider(HttpContentProvider contentProvider, Logger log)
   {
     this.contentProvider = contentProvider;
     this.LOG = log;
   }
 
-  public Deployments getDeployments(String projectId, Deployments oldDeployments) throws OctopusDeploymentsProviderException {
+  public Deployments getDeployments(String projectId, Deployments oldDeployments) throws DeploymentsProviderException {
     //get {octopusurl}/api
     //parse out project url
     //parse out progression url
@@ -77,7 +77,7 @@ final class OctopusDeploymentsProvider {
       throw e;
     }
     catch (Throwable e) {
-      throw new OctopusDeploymentsProviderException("URL " + contentProvider.getUrl() + ": " + e, e);
+      throw new DeploymentsProviderException("URL " + contentProvider.getUrl() + ": " + e, e);
     }
   }
 

@@ -6,7 +6,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class OctopusDate {
-    DateTimeFormatter dateFormat = DateTimeFormat.forPattern(OctopusDeploymentsProvider.OCTOPUS_DATE_FORMAT);//2015-12-08T08:09:39.624+00:00
+    DateTimeFormatter dateFormat = DateTimeFormat.forPattern(DeploymentsProvider.OCTOPUS_DATE_FORMAT);//2015-12-08T08:09:39.624+00:00
     DateTime dateTime;
 
     public OctopusDate(String s) {

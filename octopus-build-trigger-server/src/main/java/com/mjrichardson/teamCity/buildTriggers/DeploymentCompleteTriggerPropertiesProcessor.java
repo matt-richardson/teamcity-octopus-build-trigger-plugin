@@ -1,3 +1,19 @@
+/*
+ * Copyright 2000-2013 JetBrains s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mjrichardson.teamCity.buildTriggers;
 
 import com.intellij.openapi.diagnostic.Logger;
@@ -10,10 +26,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-//todo: should this be part of the ReleaseCreatedAsyncBuildTrigger class instead?
-class OctopusReleaseCreatedTriggerPropertiesProcessor implements PropertiesProcessor {
+//todo: should this be part of the DeploymentCompleteAsyncBuildTrigger class instead?
+class DeploymentCompleteTriggerPropertiesProcessor implements PropertiesProcessor {
   @NotNull
-  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
 
   public Collection<InvalidProperty> process(Map<String, String> properties) {
     final ArrayList<InvalidProperty> invalidProps = new ArrayList<InvalidProperty>();
@@ -28,9 +44,9 @@ class OctopusReleaseCreatedTriggerPropertiesProcessor implements PropertiesProce
     final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
     if (invalidProps.size() == 0) {
-      final OctopusDeploymentsProvider provider;
+      final DeploymentsProvider provider;
       try {
-        provider = new OctopusDeploymentsProvider(url, apiKey, connectionTimeout, LOG);
+        provider = new DeploymentsProvider(url, apiKey, connectionTimeout, LOG);
         final String err = provider.checkOctopusConnectivity();
         if (StringUtil.isNotEmpty(err)) {
           invalidProps.add(new InvalidProperty(OctopusBuildTriggerUtil.OCTOPUS_URL, err));

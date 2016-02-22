@@ -71,7 +71,7 @@ public final class DeploymentCompleteBuildTrigger extends BuildTriggerService {
 
   @Override
   public PropertiesProcessor getTriggerPropertiesProcessor() {
-    return new OctopusDeploymentCompleteTriggerPropertiesProcessor();
+    return new DeploymentCompleteTriggerPropertiesProcessor();
   }
 
   @Override

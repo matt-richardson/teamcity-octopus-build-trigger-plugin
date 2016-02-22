@@ -5,7 +5,7 @@
 	<classes>
 		<class name="com.mjrichardson.teamCity.buildTriggers.DeploymentsTest" />
 		<class name="com.mjrichardson.teamCity.buildTriggers.DeploymentTest" />
-		<class name="com.mjrichardson.teamCity.buildTriggers.OctopusDeploymentsProviderTest" />
+		<class name="com.mjrichardson.teamCity.buildTriggers.DeploymentsProviderTest" />
 	</classes>
     </test>
   

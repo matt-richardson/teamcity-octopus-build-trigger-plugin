@@ -16,12 +16,12 @@
 
 package com.mjrichardson.teamCity.buildTriggers;
 
-class OctopusDeploymentsProviderException extends Exception {
-  public OctopusDeploymentsProviderException(String message) {
+class DeploymentsProviderException extends Exception {
+  public DeploymentsProviderException(String message) {
     super(message);
   }
 
-  public OctopusDeploymentsProviderException(String message, Throwable cause) {
+  public DeploymentsProviderException(String message, Throwable cause) {
     super(message, cause);
   }
 }
