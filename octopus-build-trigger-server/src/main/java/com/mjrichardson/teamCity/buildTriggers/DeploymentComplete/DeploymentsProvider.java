@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.*;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
 
-final class DeploymentsProvider {
+public final class DeploymentsProvider {
 
-  static final String OCTOPUS_DATE_FORMAT = "yyyy-MM-ddHH:mm:ss.SSSZ";
+  public static final String OCTOPUS_DATE_FORMAT = "yyyy-MM-ddHH:mm:ss.SSSZ";
   private final HttpContentProvider contentProvider;
   private final Logger LOG;
 
@@ -39,7 +40,7 @@ final class DeploymentsProvider {
     this.LOG = log;
   }
 
-  public Deployments getDeployments(String projectId, Deployments oldDeployments) throws DeploymentsProviderException {
+  public Deployments getDeployments(String projectId, Deployments oldDeployments) throws DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     //get {octopusurl}/api
     //parse out project url
     //parse out progression url

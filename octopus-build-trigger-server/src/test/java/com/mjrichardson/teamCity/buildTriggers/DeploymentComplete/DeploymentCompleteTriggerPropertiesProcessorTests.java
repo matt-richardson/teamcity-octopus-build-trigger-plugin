@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import jetbrains.buildServer.serverSide.InvalidProperty;
 import org.testng.Assert;
@@ -24,9 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_APIKEY;
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID;
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
+import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
 @Test
 public class DeploymentCompleteTriggerPropertiesProcessorTests {

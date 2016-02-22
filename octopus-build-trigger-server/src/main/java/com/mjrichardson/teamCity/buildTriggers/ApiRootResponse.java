@@ -17,14 +17,15 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTrigger;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.util.Map;
 
-class ApiRootResponse {
-  final String deploymentsApiLink;
-  final String progressionApiLink;
+public class ApiRootResponse {
+  public final String deploymentsApiLink;
+  public final String progressionApiLink;
 
   private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
 

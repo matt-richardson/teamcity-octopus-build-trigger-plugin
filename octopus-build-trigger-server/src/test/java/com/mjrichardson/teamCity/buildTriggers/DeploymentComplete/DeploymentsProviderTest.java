@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.log.Loggers;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.format.DateTimeFormat;

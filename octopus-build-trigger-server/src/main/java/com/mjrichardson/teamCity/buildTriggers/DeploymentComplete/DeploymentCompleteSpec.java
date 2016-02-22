@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -1,4 +1,4 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import org.jetbrains.annotations.NotNull;
 

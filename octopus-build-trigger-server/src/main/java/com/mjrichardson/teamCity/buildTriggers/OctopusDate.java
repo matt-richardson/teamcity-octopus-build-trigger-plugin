@@ -1,13 +1,15 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentsProvider;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class OctopusDate {
+    //todo: move local?
     DateTimeFormatter dateFormat = DateTimeFormat.forPattern(DeploymentsProvider.OCTOPUS_DATE_FORMAT);//2015-12-08T08:09:39.624+00:00
-    DateTime dateTime;
+    public DateTime dateTime;
 
     public OctopusDate(String s) {
         dateTime = DateTime.parse(s.replace("Z", "+00:00").replace("T", ""), dateFormat);

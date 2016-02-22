@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
+import com.mjrichardson.teamCity.buildTriggers.NullDeployment;
+import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
+import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.util.StringUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 
-class Deployments {
+public class Deployments {
   private ArrayList<Deployment> statusMap;
 
   public Deployments(String oldStoredData) throws ParseException {

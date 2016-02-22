@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;

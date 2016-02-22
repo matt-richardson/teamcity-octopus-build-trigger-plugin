@@ -16,7 +16,10 @@
 
 package com.mjrichardson.teamCity.buildTriggers;
 
-class UnexpectedResponseCodeException extends DeploymentsProviderException {
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentsProviderException;
+
+//todo: wrong inheritance tree
+public class UnexpectedResponseCodeException extends DeploymentsProviderException {
   public final int code;
 
   public UnexpectedResponseCodeException(int code, String reason) {

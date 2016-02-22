@@ -1,5 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.Release;
+import com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.Releases;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 

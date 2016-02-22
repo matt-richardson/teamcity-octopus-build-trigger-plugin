@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-class DeploymentsProviderException extends Exception {
+public class DeploymentsProviderException extends Exception {
   public DeploymentsProviderException(String message) {
     super(message);
   }

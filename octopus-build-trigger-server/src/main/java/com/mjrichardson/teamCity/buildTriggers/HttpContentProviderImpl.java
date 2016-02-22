@@ -43,7 +43,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class HttpContentProviderImpl implements HttpContentProvider {
+public class HttpContentProviderImpl implements HttpContentProvider {
   private final Logger LOG;
   private final String octopusUrl;
   CloseableHttpClient httpClient;

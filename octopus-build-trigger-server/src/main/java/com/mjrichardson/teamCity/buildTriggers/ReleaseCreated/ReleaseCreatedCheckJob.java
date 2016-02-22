@@ -1,6 +1,7 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.async.AsyncTriggerParameters;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;

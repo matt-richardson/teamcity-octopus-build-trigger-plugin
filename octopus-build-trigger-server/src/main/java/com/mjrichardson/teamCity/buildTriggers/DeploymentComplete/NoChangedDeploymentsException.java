@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 class NoChangedDeploymentsException extends Exception {
   public NoChangedDeploymentsException(String message) {

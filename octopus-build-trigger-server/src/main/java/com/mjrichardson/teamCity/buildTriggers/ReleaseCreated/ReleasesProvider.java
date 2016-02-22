@@ -1,6 +1,7 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.*;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;

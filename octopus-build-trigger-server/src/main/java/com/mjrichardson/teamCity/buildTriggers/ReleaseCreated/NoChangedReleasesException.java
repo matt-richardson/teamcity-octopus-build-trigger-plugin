@@ -1,4 +1,4 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 class NoChangedReleasesException extends Exception {
   public NoChangedReleasesException(String message) {

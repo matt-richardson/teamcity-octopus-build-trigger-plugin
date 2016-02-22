@@ -15,7 +15,7 @@
  */
 
 //todo: move back under the jetbrains namespace? (https://confluence.jetbrains.com/display/TCD9/Plugin+Development+FAQ)
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-class Deployment {
+import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
+
+public class Deployment {
   final String environmentId;
   OctopusDate latestDeployment;
   OctopusDate latestSuccessfulDeployment;

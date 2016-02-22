@@ -16,7 +16,9 @@
 
 package com.mjrichardson.teamCity.buildTriggers;
 
-class ProjectNotFoundException extends DeploymentsProviderException {
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentsProviderException;
+
+public class ProjectNotFoundException extends DeploymentsProviderException {
   public final String projectIdOrName;
 
   public ProjectNotFoundException(String projectIdOrName) {

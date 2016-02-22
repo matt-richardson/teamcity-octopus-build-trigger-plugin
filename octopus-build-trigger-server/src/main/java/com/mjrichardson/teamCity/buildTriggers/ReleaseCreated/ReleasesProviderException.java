@@ -1,4 +1,4 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 public class ReleasesProviderException extends Throwable {
     public ReleasesProviderException(String message) {
