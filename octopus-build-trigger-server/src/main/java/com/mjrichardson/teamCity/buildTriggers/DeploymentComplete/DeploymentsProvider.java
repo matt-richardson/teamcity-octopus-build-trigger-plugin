@@ -40,7 +40,7 @@ public final class DeploymentsProvider {
     this.LOG = log;
   }
 
-  public Deployments getDeployments(String projectId, Deployments oldDeployments) throws DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  public Deployments getDeployments(String projectId, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     //get {octopusurl}/api
     //parse out project url
     //parse out progression url
