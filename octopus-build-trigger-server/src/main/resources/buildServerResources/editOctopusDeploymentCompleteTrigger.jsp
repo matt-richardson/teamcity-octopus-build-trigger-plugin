@@ -21,7 +21,7 @@
 
 <tr class="noBorder" >
     <td colspan="2">
-        <em>Octopus Deploy build trigger will add a build to the queue when a new successful deployment has completed.</em>
+        <em>Octopus Deployment Complete build trigger will add a build to the queue when a new successful deployment has completed.</em>
     </td>
 </tr>
 
