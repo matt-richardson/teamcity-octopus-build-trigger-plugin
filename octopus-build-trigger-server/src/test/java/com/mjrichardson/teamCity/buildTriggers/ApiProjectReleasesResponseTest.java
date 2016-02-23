@@ -27,7 +27,5 @@ public class ApiProjectReleasesResponseTest {
         Assert.assertEquals(sut.nextLink, "/api/projects/Projects-103/releases?skip=30");
         Assert.assertEquals(sut.releases.size(), 30);
     }
-
-
 }
 
