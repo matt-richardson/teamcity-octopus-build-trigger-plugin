@@ -63,7 +63,7 @@ public class DeploymentsProviderTest {
     HttpContentProvider contentProvider = new FakeContentProvider(octopusUrl, octopusApiKey);
     DeploymentsProvider deploymentsProvider = new DeploymentsProvider(contentProvider, LOG);
     Deployments oldDeployments = new Deployments();
-    Deployments newDeployments = deploymentsProvider.getDeployments("Projects-24", oldDeployments);
+    Deployments newDeployments = deploymentsProvider.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
     Assert.assertEquals(newDeployments.length(), 1);
     Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);

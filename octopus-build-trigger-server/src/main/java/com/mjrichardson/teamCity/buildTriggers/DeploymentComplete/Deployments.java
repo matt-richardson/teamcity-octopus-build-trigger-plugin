@@ -222,4 +222,12 @@ public class Deployments {
     }
     throw new NoChangedDeploymentsException(oldDeployments, newDeployments);
   }
+
+  public int size() {
+    return statusMap.size();
+  }
+
+  public Deployment[] toArray() {
+    return statusMap.toArray(new Deployment[0]);
+  }
 }

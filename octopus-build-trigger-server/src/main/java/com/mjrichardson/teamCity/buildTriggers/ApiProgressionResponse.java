@@ -34,7 +34,6 @@ public class ApiProgressionResponse {
 
   public ApiProgressionResponse(String progressionResponse) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, IOException {
     LOG.debug("DeploymentCompleteBuildTrigger: parsing progression response");
-    deployments = new Deployments();
     this.haveCompleteInformation = Parse(progressionResponse);
   }
 
@@ -42,6 +41,7 @@ public class ApiProgressionResponse {
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(progressionResponse);
 
+    deployments = new Deployments();
     List environments = (List)response.get("Environments");
     for (Object environment : environments) {
       Map environmentMap = (Map)environment;
@@ -77,6 +77,7 @@ public class ApiProgressionResponse {
       Map deps = (Map)releaseAndDeploymentPairMap.get("Deployments");
       for (Object key : deps.keySet()) {
         foundDeployment = true;
+        //todo: refactor into ctor on Deployment class
         Map deployment = (Map) deps.get(key);
         OctopusDate createdDate = new OctopusDate(deployment.get("Created").toString());
         Boolean isCompleted = Boolean.parseBoolean(deployment.get("IsCompleted").toString());

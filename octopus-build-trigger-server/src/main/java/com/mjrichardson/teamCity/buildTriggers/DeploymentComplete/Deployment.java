@@ -19,9 +19,9 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 
 public class Deployment {
-  final String environmentId;
-  OctopusDate latestDeployment;
-  OctopusDate latestSuccessfulDeployment;
+  public final String environmentId;
+  public OctopusDate latestDeployment;//todo:consider if we can make this class idempotent
+  public OctopusDate latestSuccessfulDeployment;
 
   public Deployment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
     this.environmentId = environmentId;
