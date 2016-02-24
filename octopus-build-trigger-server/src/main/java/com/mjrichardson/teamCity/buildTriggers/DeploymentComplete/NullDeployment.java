@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Deployment;
+import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
 
 public class NullDeployment extends Deployment {
   public NullDeployment() {
