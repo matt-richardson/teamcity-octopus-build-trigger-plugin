@@ -68,9 +68,6 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
     } catch (Exception e) {
       final ReleaseCreatedSpec ReleaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, octopusProject);
       return ReleaseCreatedSpecCheckResult.createThrowableResult(ReleaseCreatedSpec, e);
-    } catch (ReleasesProviderException e) {
-      final ReleaseCreatedSpec ReleaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, octopusProject);
-      return ReleaseCreatedSpecCheckResult.createThrowableResult(ReleaseCreatedSpec, e);
     }
   }
 

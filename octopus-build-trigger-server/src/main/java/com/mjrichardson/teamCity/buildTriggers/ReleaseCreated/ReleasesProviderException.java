@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
-public class ReleasesProviderException extends Throwable {
+public class ReleasesProviderException extends Exception {
     public ReleasesProviderException(String message) {
         super(message);
     }
