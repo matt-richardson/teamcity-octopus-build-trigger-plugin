@@ -6,7 +6,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-//todo: add tests
 public class OctopusConnectivityChecker {
   private final Logger LOG;
   private HttpContentProvider contentProvider;
@@ -22,7 +21,7 @@ public class OctopusConnectivityChecker {
 
   public String checkOctopusConnectivity() {
     try {
-      LOG.info("DeploymentCompleteBuildTrigger: checking connectivity to octopus at " + contentProvider.getUrl());
+      LOG.info("OctopusConnectivityChecker: checking connectivity to octopus at " + contentProvider.getUrl());
       contentProvider.getContent("/api");
 
       return null;
