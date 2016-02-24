@@ -29,6 +29,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
+//todo: needs tests
+//todo: consider if this should really go and get tasks
 public class ApiDeploymentsResponse {
   private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
   public final Deployments deployments;

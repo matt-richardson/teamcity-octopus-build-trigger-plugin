@@ -5,6 +5,7 @@ import jetbrains.buildServer.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 
+//todo: needs tests
 public class Releases {
     private ArrayList<Release> statusMap;
 

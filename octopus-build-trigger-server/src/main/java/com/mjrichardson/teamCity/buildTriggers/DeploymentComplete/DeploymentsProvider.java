@@ -23,7 +23,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-
+//todo needs tests
 public final class DeploymentsProvider {
 
   private final HttpContentProvider contentProvider;
@@ -76,6 +76,7 @@ public final class DeploymentsProvider {
       throw e;
     }
     catch (Throwable e) {
+      //todo: improve error message here
       throw new DeploymentsProviderException("URL " + contentProvider.getUrl() + ": " + e, e);
     }
   }

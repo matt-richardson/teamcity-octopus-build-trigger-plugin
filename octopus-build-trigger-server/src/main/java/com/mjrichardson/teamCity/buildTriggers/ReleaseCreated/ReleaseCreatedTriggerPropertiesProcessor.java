@@ -13,6 +13,8 @@ import java.util.Collection;
 import java.util.Map;
 
 //todo: should this be part of the ReleaseCreatedAsyncBuildTrigger class instead?
+//todo: refactor
+//todo: add tests
 class ReleaseCreatedTriggerPropertiesProcessor implements PropertiesProcessor {
   @NotNull
   private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTrigger.class.getName());

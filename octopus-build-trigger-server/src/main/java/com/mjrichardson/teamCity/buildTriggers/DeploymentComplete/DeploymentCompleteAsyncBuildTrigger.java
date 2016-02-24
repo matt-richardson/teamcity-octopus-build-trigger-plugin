@@ -28,6 +28,7 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OC
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
+//todo resolve confusion between this and DeploymentCompleteBuildTrigger
 class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<DeploymentCompleteSpec> {
   private final String displayName;
   private final int pollInterval;
@@ -67,6 +68,7 @@ class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Deploymen
     return getDescription(buildTriggerDescriptor.getProperties());
   }
 
+  //todo: move somewhere better
   private String getDescription(Map<String, String> properties) {
     try {
       String flag = properties.get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT);

@@ -65,6 +65,7 @@ public class Deployments {
     return statusMap.size() == 0;
   }
 
+  //todo: this method appears to have no tests
   @Override
   public boolean equals(Object obj) {
 
@@ -117,6 +118,7 @@ public class Deployments {
     return statusMap.size();
   }
 
+  //todo: this method appears to have no tests
   public void addOrUpdate(String environmentId, OctopusDate latestDeployment, Boolean isCompleted, Boolean finishedSuccessfully) {
     if (!isCompleted)
       return;

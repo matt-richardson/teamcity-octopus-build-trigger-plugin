@@ -11,6 +11,7 @@ import java.util.Map;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
+//todo resolve confusion between this and ReleaseCreatedBuildTrigger
 class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreatedSpec> {
   private final String displayName;
   private final int pollInterval;
@@ -50,6 +51,7 @@ class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreate
     return getDescription(buildTriggerDescriptor.getProperties());
   }
 
+  //todo: move somewhere better
   private String getDescription(Map<String, String> properties) {
     try {
       return String.format("Wait for a new release of %s to be created on server %s.",

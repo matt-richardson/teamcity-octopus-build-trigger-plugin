@@ -7,7 +7,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-
+//todo: needs tests
 public class ReleasesProvider {
     private final Logger LOG;
     private final HttpContentProvider contentProvider;

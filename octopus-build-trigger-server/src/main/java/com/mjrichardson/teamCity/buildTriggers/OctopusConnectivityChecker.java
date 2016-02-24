@@ -6,6 +6,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
+//todo: add tests
 public class OctopusConnectivityChecker {
   private final Logger LOG;
   private HttpContentProvider contentProvider;

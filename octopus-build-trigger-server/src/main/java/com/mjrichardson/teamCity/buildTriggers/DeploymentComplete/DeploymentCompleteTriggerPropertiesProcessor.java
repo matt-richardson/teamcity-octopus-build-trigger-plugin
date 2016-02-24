@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Map;
 
 //todo: should this be part of the DeploymentCompleteAsyncBuildTrigger class instead?
+//todo: refactor
 class DeploymentCompleteTriggerPropertiesProcessor implements PropertiesProcessor {
   @NotNull
   private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
