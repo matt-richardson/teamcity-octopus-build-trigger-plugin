@@ -18,7 +18,6 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.*;
-import jetbrains.buildServer.log.Loggers;
 import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 
 @Test
 public class DeploymentsProviderTest {
@@ -45,7 +43,7 @@ public class DeploymentsProviderTest {
   static String ProjectWithNoReleases = "Projects-101";
   static String ProjectThatDoesNotExist = "Projects-00";
 
-  private static final Logger LOG = Logger.getInstance(Loggers.VCS_CATEGORY + DeploymentCompleteBuildTrigger.class);
+  private static final Logger LOG = Logger.getInstance(DeploymentsProviderTest.class.getName());
 
   @Test(enabled = false)
   public void testGetDeploymentsFromRealServer() throws Exception {
