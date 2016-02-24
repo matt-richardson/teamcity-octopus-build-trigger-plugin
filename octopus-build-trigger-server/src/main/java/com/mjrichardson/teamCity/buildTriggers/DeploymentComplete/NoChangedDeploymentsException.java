@@ -17,12 +17,8 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 class NoChangedDeploymentsException extends Exception {
-  public NoChangedDeploymentsException(String message) {
-    super(message);
-  }
-
   public NoChangedDeploymentsException(Deployments oldDeployments, Deployments newDeployments) {
-    this(String.format("Didn't find any differences between '%s' and '%s'.",
+    super(String.format("Didn't find any differences between '%s' and '%s'.",
       oldDeployments.toString(), newDeployments.toString()));
   }
 }
