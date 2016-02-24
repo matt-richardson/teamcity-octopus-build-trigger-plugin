@@ -20,8 +20,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.log.Loggers;
 import org.apache.commons.io.IOUtils;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -69,15 +67,13 @@ public class DeploymentsProviderTest {
     Assert.assertNotNull(deployment);
     Assert.assertEquals(deployment.environmentId, "Environments-1");
 
-    DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ").withZoneUTC();//2015-12-08T08:09:39.624+00:00
-
     //2015-12-08T08:09:39.624+00:00
-    Assert.assertEquals(dateFormat.print(deployment.latestDeployment.dateTime),
-                        dateFormat.print(new OctopusDate(2016, 1, 21, 13, 31, 56, 22).dateTime),
+    Assert.assertEquals(deployment.latestDeployment.toString(),
+                        new OctopusDate(2016, 1, 21, 13, 31, 56, 22).toString(),
                         "Latest deployment is not as expected");
     //2015-11-12T09:22:00.865+00:00
-    Assert.assertEquals(dateFormat.print(deployment.latestSuccessfulDeployment.dateTime),
-                        dateFormat.print(new OctopusDate(2016, 1, 21, 13, 31, 56, 22).dateTime),
+    Assert.assertEquals(deployment.latestSuccessfulDeployment.toString(),
+                        new OctopusDate(2016, 1, 21, 13, 31, 56, 22).toString(),
                         "Latest successful deployment is not as expected");
   }
 

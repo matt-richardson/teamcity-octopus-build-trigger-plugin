@@ -7,8 +7,8 @@ import org.joda.time.format.DateTimeFormatter;
 
 public class OctopusDate {
     private static final String OCTOPUS_DATE_FORMAT = "yyyy-MM-ddHH:mm:ss.SSSZ";//2015-12-08T08:09:39.624+00:00
-    DateTimeFormatter dateFormat = DateTimeFormat.forPattern(OCTOPUS_DATE_FORMAT);
-    public DateTime dateTime;
+    private DateTimeFormatter dateFormat = DateTimeFormat.forPattern(OCTOPUS_DATE_FORMAT);
+    private DateTime dateTime;
 
     public OctopusDate(String s) {
         dateTime = DateTime.parse(s.replace("Z", "+00:00").replace("T", ""), dateFormat);
