@@ -18,6 +18,7 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
+import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityChecker;
 import jetbrains.buildServer.serverSide.InvalidProperty;
 import jetbrains.buildServer.serverSide.PropertiesProcessor;
 import jetbrains.buildServer.util.StringUtil;
@@ -45,10 +46,10 @@ class DeploymentCompleteTriggerPropertiesProcessor implements PropertiesProcesso
     final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
     if (invalidProps.size() == 0) {
-      final DeploymentsProvider provider;
+      final OctopusConnectivityChecker connectivityChecker;
       try {
-        provider = new DeploymentsProvider(url, apiKey, connectionTimeout, LOG);
-        final String err = provider.checkOctopusConnectivity();
+        connectivityChecker = new OctopusConnectivityChecker(url, apiKey, connectionTimeout, LOG);
+        final String err = connectivityChecker.checkOctopusConnectivity();
         if (StringUtil.isNotEmpty(err)) {
           invalidProps.add(new InvalidProperty(OctopusBuildTriggerUtil.OCTOPUS_URL, err));
         }

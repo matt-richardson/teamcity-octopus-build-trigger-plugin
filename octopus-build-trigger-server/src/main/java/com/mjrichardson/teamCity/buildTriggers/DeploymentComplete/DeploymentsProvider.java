@@ -48,7 +48,6 @@ public final class DeploymentsProvider {
     //call progression url for project id
     //return NewDeploymentStatus(responseBody);
 
-
     try {
       LOG.debug("DeploymentCompleteBuildTrigger: Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
 
@@ -80,21 +79,4 @@ public final class DeploymentsProvider {
       throw new DeploymentsProviderException("URL " + contentProvider.getUrl() + ": " + e, e);
     }
   }
-
-  public String checkOctopusConnectivity() {
-    try {
-      LOG.info("DeploymentCompleteBuildTrigger: checking connectivity to octopus at " + contentProvider.getUrl());
-      contentProvider.getContent("/api");
-
-      return null;
-
-    } catch (UnexpectedResponseCodeException e) {
-      return e.getMessage();
-    } catch (Throwable e) {
-      return e.getMessage();
-    } finally {
-      contentProvider.close();
-    }
-  }
-
 }
