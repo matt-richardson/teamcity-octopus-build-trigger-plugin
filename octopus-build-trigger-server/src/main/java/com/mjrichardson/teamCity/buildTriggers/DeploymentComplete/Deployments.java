@@ -143,6 +143,8 @@ public class Deployments {
   }
 
   public void addOrUpdate(Deployment deployment) {
+    if (deployment.getClass().equals(NullDeployment.class))
+      return;
     addOrUpdate(deployment.environmentId, deployment.latestDeployment, deployment.latestSuccessfulDeployment);
   }
 

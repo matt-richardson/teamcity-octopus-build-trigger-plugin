@@ -17,6 +17,7 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Deployment;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTrigger;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Deployments;
 import org.json.simple.parser.JSONParser;
@@ -77,13 +78,8 @@ public class ApiProgressionResponse {
       Map deps = (Map)releaseAndDeploymentPairMap.get("Deployments");
       for (Object key : deps.keySet()) {
         foundDeployment = true;
-        //todo: refactor into ctor on Deployment class
-        Map deployment = (Map) deps.get(key);
-        OctopusDate createdDate = new OctopusDate(deployment.get("Created").toString());
-        Boolean isCompleted = Boolean.parseBoolean(deployment.get("IsCompleted").toString());
-        Boolean isSuccessful = deployment.get("State").toString().equals("Success");
-
-        deployments.addOrUpdate((String)key, createdDate, isCompleted, isSuccessful);
+        Deployment deployment = Deployment.Parse((Map) deps.get(key));
+        deployments.addOrUpdate(deployment);
       }
     }
     return foundDeployment;

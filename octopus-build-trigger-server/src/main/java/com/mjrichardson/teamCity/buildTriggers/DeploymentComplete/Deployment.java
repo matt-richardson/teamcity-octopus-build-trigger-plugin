@@ -16,12 +16,19 @@
 
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
+import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
+
+import java.util.Map;
 
 public class Deployment {
   public final String environmentId;
   public OctopusDate latestDeployment;//todo:consider if we can make this class idempotent
   public OctopusDate latestSuccessfulDeployment;
+
+  public Deployment(String environmentId, OctopusDate latestDeployment) {
+    this(environmentId, latestDeployment, new NullOctopusDate());
+  }
 
   public Deployment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
     this.environmentId = environmentId;
@@ -52,4 +59,16 @@ public class Deployment {
     return this.latestSuccessfulDeployment.compareTo(compareDate) > 0;
   }
 
+  public static Deployment Parse(Map map) {
+    OctopusDate createdDate = new OctopusDate(map.get("Created").toString());
+    Boolean isCompleted = Boolean.parseBoolean(map.get("IsCompleted").toString());
+    Boolean isSuccessful = map.get("State").toString().equals("Success");
+    String environmentId = map.get("EnvironmentId").toString();
+
+    if (!isCompleted)
+      return new NullDeployment();
+    if (isSuccessful)
+      return new Deployment(environmentId, createdDate, createdDate);
+    return new Deployment(environmentId, createdDate);
+  }
 }
