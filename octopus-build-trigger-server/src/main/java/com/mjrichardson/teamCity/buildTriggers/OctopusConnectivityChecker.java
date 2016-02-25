@@ -11,7 +11,7 @@ public class OctopusConnectivityChecker {
   private HttpContentProvider contentProvider;
 
   public OctopusConnectivityChecker(String octopusUrl, String apiKey, Integer connectionTimeout, Logger log) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-    this(new HttpContentProviderImpl(log, octopusUrl, apiKey, connectionTimeout), log);
+    this(new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout), log);
   }
 
   OctopusConnectivityChecker(HttpContentProvider contentProvider, Logger log) {

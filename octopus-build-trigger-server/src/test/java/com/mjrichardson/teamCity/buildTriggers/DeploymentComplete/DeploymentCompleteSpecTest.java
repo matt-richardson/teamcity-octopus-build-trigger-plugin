@@ -21,6 +21,6 @@ public class DeploymentCompleteSpecTest {
     @Test
     public void when_unsuccessful_returns_success_message() throws Exception {
         DeploymentCompleteSpec sut = new DeploymentCompleteSpec("theurl", "theproject", "theenv", false);
-        Assert.assertEquals(sut.getRequestorString(), "Deployment of theproject on theurl");
+        Assert.assertEquals(sut.getRequestorString(), "Deployment of theproject to theenv on theurl");
     }
 }

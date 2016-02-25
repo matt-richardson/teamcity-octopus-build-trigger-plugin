@@ -1,83 +1,11 @@
-/*
- * Copyright 2000-2013 JetBrains s.r.o.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.mjrichardson.teamCity.buildTriggers.*;
+import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
+import com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 
-//todo needs tests
-public final class DeploymentsProvider {
-
-  private final HttpContentProvider contentProvider;
-  private final Logger LOG;
-
-  public DeploymentsProvider(String octopusUrl, String apiKey, Integer connectionTimeout, Logger log) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-    this(new HttpContentProviderImpl(log, octopusUrl, apiKey, connectionTimeout), log);
-  }
-
-  public DeploymentsProvider(HttpContentProvider contentProvider, Logger log)
-  {
-    this.contentProvider = contentProvider;
-    this.LOG = log;
-  }
-
-  public Deployments getDeployments(String projectId, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
-    //get {octopusurl}/api
-    //parse out project url
-    //parse out progression url
-    //call project url
-    //parse id for project
-    //call progression url for project id
-    //return NewDeploymentStatus(responseBody);
-
-    try {
-      LOG.debug("DeploymentCompleteBuildTrigger: Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
-
-      final String apiResponse = contentProvider.getContent("/api");
-      final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);
-
-      final String progressionResponse = contentProvider.getContent(apiRootResponse.progressionApiLink + "/" + projectId);
-      final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse);
-
-      if (apiProgressionResponse.haveCompleteInformation)
-        return apiProgressionResponse.deployments;
-
-      final ApiDeploymentsResponse apiDeploymentsResponse = new ApiDeploymentsResponse(
-        contentProvider, apiRootResponse.deploymentsApiLink, projectId,
-        oldDeployments, apiProgressionResponse.deployments);
-
-      return apiDeploymentsResponse.deployments;
-    }
-    catch (InvalidOctopusApiKeyException e) {
-      throw e;
-    }
-    catch (InvalidOctopusUrlException e) {
-      throw e;
-    }
-    catch (ProjectNotFoundException e) {
-      throw e;
-    }
-    catch (Throwable e) {
-      //todo: improve error message here
-      throw new DeploymentsProviderException("URL " + contentProvider.getUrl() + ": " + e, e);
-    }
-  }
+public interface DeploymentsProvider {
+    Deployments getDeployments(String octopusProject, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException;
 }

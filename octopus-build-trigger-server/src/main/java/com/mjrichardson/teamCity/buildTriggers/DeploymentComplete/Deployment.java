@@ -45,9 +45,11 @@ public class Deployment {
   }
 
   public boolean isSuccessful() {
-    OctopusDate testDate = new OctopusDate(2000, 1, 1);
+    return this.latestSuccessfulDeployment.compareTo(this.latestDeployment) == 0;
+  }
 
-    return this.latestSuccessfulDeployment.compareTo(testDate) > 0;
+  public boolean hasHadAtLeastOneSuccessfulDeployment() {
+    return this.latestSuccessfulDeployment.compareTo(new NullOctopusDate()) > 0;
   }
 
   @Override

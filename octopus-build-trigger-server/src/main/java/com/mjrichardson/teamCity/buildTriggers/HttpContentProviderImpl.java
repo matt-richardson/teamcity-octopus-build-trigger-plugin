@@ -45,14 +45,15 @@ import java.util.regex.Pattern;
 
 //todo: needs tests
 public class HttpContentProviderImpl implements HttpContentProvider {
-  private final Logger LOG;
+  @NotNull
+  private static final Logger LOG = Logger.getInstance(HttpContentProviderImpl.class.getName());
+
   private final String octopusUrl;
   CloseableHttpClient httpClient;
   @NotNull
   private String apiKey;
 
-  public HttpContentProviderImpl(@NotNull Logger log, @NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-    this.LOG = log;
+  public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
     this.octopusUrl = octopusUrl;
     this.apiKey = apiKey;
     this.init(connectionTimeout);

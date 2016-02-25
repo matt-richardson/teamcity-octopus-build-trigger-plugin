@@ -13,7 +13,7 @@ public class ReleasesProvider {
     private final HttpContentProvider contentProvider;
 
     public ReleasesProvider(String octopusUrl, String apiKey, Integer connectionTimeout, Logger log) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        this(new HttpContentProviderImpl(log, octopusUrl, apiKey, connectionTimeout), log);
+        this(new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout), log);
     }
 
     public ReleasesProvider(HttpContentProvider contentProvider, Logger log)

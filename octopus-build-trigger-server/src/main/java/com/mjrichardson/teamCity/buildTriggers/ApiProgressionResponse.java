@@ -62,7 +62,7 @@ public class ApiProgressionResponse {
       return true;
     }
 
-    if (deployments.haveAllDeploymentsFinishedSuccessfully()) {
+    if (deployments.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment()) {
       LOG.debug("All deployments have finished successfully - no need to parse deployment response");
       return true;
     }

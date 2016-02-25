@@ -19,7 +19,6 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
-import jetbrains.buildServer.buildTriggers.async.AsyncTriggerParameters;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
@@ -35,12 +34,22 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
   @NotNull
   private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
 
-  private final AsyncTriggerParameters asyncTriggerParameters;
   private final String displayName;
+  private final String buildType;
+  private final CustomDataStorage dataStorage;
+  private final Map<String, String> props;
+  private final DeploymentsProviderFactory deploymentsProviderFactory;
 
-  public DeploymentCompleteCheckJob(AsyncTriggerParameters asyncTriggerParameters, String displayName) {
-    this.asyncTriggerParameters = asyncTriggerParameters;
+  public DeploymentCompleteCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
+    this(new DeploymentsProviderFactory(), displayName, buildType, dataStorage, properties);
+  }
+
+  public DeploymentCompleteCheckJob(DeploymentsProviderFactory deploymentsProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
+    this.deploymentsProviderFactory = deploymentsProviderFactory;
     this.displayName = displayName;
+    this.buildType = buildType;
+    this.dataStorage = dataStorage;
+    this.props = properties;
   }
 
   @NotNull
@@ -52,9 +61,10 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
     try {
       final String oldStoredData = dataStorage.getValue(dataStorageKey);
       final Deployments oldDeployments = new Deployments(oldStoredData);
-      final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
-      DeploymentsProvider provider = new DeploymentsProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
+      final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
+      DeploymentsProvider provider = deploymentsProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeout);
+
       final Deployments newDeployments = provider.getDeployments(octopusProject, oldDeployments);
 
       //only store that one deployment to one environment has happened here, not multiple environment.
@@ -88,37 +98,34 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
       return DeploymentCompleteSpecCheckResult.createEmptyResult();
 
     } catch (Exception e) {
-      final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject);
-      return DeploymentCompleteSpecCheckResult.createThrowableResult(deploymentCompleteSpec, e);
+      return DeploymentCompleteSpecCheckResult.createThrowableResult(e);
     }
   }
 
   @NotNull
   public CheckResult<DeploymentCompleteSpec> perform() {
-    final Map<String, String> props = asyncTriggerParameters.getTriggerDescriptor().getProperties();
 
     final String octopusUrl = props.get(OCTOPUS_URL);
     if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
       return DeploymentCompleteSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
-        displayName, asyncTriggerParameters.getBuildType()));
+        displayName, this.buildType));
     }
 
     final String octopusApiKey = props.get(OCTOPUS_APIKEY);
     if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
       return DeploymentCompleteSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
-        displayName, asyncTriggerParameters.getBuildType()));
+        displayName, this.buildType));
     }
 
     final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
     if (StringUtil.isEmptyOrSpaces(octopusProject)) {
       return DeploymentCompleteSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty project) in build configuration %s",
-        displayName, asyncTriggerParameters.getBuildType()));
+        displayName, this.buildType));
     }
 
     final Boolean triggerOnlyOnSuccessfulDeployment = Boolean.parseBoolean(props.get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT));
 
-    return getCheckResult(octopusUrl, octopusApiKey, octopusProject,
-      triggerOnlyOnSuccessfulDeployment, asyncTriggerParameters.getCustomDataStorage());
+    return getCheckResult(octopusUrl, octopusApiKey, octopusProject, triggerOnlyOnSuccessfulDeployment, dataStorage);
   }
 
   public boolean allowSchedule(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {

@@ -41,10 +41,10 @@ class DeploymentCompleteSpec {
   }
 
   public String getRequestorString() {
-    if (wasSuccessful == null)
+    if (environmentId == null || environmentId == null)
       return String.format("Unsuccessful attempt to get deployments for %s on %s", project, url);
     if (wasSuccessful)
       return String.format("Successful deployment of %s to %s on %s", project, environmentId, url);
-    return String.format("Deployment of %s on %s", project, url);
+    return String.format("Deployment of %s to %s on %s", project, environmentId, url);
   }
 }

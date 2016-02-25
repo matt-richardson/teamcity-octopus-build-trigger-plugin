@@ -51,6 +51,11 @@ public class Deployments {
     this("");
   }
 
+  public Deployments(Deployment deployment) throws ParseException {
+    this("");
+    addOrUpdate(deployment);
+  }
+
   @Override
   public String toString() {
     String result = "";
@@ -166,10 +171,10 @@ public class Deployments {
     }
   }
 
-  public boolean haveAllDeploymentsFinishedSuccessfully() {
+  public boolean haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment() {
     boolean result = true;
     for (Deployment deployment: statusMap) {
-        result = result & deployment.isSuccessful();
+        result = result & deployment.hasHadAtLeastOneSuccessfulDeployment();
     }
     return result;
   }

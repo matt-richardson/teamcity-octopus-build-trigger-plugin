@@ -75,7 +75,7 @@ public class ApiDeploymentsResponse {
 
       GetTask(contentProvider, result, deployment, environmentId, createdDate);
 
-      if (result.haveAllDeploymentsFinishedSuccessfully()) {
+      if (result.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment()) {
         LOG.debug("All deployments have finished successfully - no need to keep iterating");
         return true;
       }

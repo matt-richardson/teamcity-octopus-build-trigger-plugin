@@ -56,7 +56,10 @@ class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Deploymen
 
   @NotNull
   public CheckJob<DeploymentCompleteSpec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
-    return new DeploymentCompleteCheckJob(asyncTriggerParameters, displayName);
+    return new DeploymentCompleteCheckJob(displayName,
+                                          asyncTriggerParameters.getBuildType().toString(),
+                                          asyncTriggerParameters.getCustomDataStorage(),
+                                          asyncTriggerParameters.getTriggerDescriptor().getProperties());
   }
 
   @NotNull
