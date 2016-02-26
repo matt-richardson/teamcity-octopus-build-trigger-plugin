@@ -4,7 +4,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @Test
 public class ReleaseTest {
@@ -49,7 +48,7 @@ public class ReleaseTest {
     }
 
     public void can_create_from_map() {
-        Map map = new HashMap();
+        HashMap<String,String> map = new HashMap<>();
         map.put("Id", "Releases-21");
         map.put("Assembled", "2016-01-20T14:32:59.991+00:00");
         map.put("Version", "1.0.3");

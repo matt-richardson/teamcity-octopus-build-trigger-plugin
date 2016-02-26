@@ -317,6 +317,7 @@ public class DeploymentCompleteCheckJobTest {
 
         @NotNull
         @Override
+        @SuppressWarnings( "deprecation" )
         public String getSignature() {
             return null;
         }

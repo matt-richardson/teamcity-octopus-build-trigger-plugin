@@ -4,7 +4,7 @@ import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 
 import java.util.Map;
 
-public class Release implements Comparable {
+public class Release implements Comparable<Release> {
     public final String id;
     public final OctopusDate assembledDate;
     public final String version;
@@ -39,7 +39,7 @@ public class Release implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        return ((Release)o).assembledDate.compareTo(assembledDate);
+    public int compareTo(Release o) {
+        return o.assembledDate.compareTo(assembledDate);
     }
 }
