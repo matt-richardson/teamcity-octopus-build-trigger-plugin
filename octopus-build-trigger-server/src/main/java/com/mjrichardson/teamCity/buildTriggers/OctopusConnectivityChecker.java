@@ -1,21 +1,21 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTrigger;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
 public class OctopusConnectivityChecker {
-  private final Logger LOG;
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
   private HttpContentProvider contentProvider;
 
-  public OctopusConnectivityChecker(String octopusUrl, String apiKey, Integer connectionTimeout, Logger log) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-    this(new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout), log);
+  public OctopusConnectivityChecker(String octopusUrl, String apiKey, Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    this(new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout));
   }
 
-  OctopusConnectivityChecker(HttpContentProvider contentProvider, Logger log) {
-    LOG = log;
+  OctopusConnectivityChecker(HttpContentProvider contentProvider) {
     this.contentProvider = contentProvider;
   }
 

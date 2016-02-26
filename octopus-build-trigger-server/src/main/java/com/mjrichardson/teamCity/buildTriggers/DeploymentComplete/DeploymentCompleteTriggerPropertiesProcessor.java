@@ -49,7 +49,7 @@ class DeploymentCompleteTriggerPropertiesProcessor implements PropertiesProcesso
     if (invalidProps.size() == 0) {
       final OctopusConnectivityChecker connectivityChecker;
       try {
-        connectivityChecker = new OctopusConnectivityChecker(url, apiKey, connectionTimeout, LOG);
+        connectivityChecker = new OctopusConnectivityChecker(url, apiKey, connectionTimeout);
         final String err = connectivityChecker.checkOctopusConnectivity();
         if (StringUtil.isNotEmpty(err)) {
           invalidProps.add(new InvalidProperty(OctopusBuildTriggerUtil.OCTOPUS_URL, err));

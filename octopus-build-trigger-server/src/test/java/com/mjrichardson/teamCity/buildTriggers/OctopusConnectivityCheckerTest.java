@@ -14,7 +14,7 @@ public class OctopusConnectivityCheckerTest {
 
     public void check_octopus_connectivity_returns_null_when_content_provider_returns_content() {
         FakeContentProvider contentProvider = new FakeContentProvider();
-        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider, LOG);
+        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), null);
         Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
@@ -23,7 +23,7 @@ public class OctopusConnectivityCheckerTest {
     public void check_octopus_connectivity_returns_error_message_when_gets_invalid_octopus_api_key_excepton() {
         Exception exception = new InvalidOctopusApiKeyException(403, "Invalid api key");
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
-        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider, LOG);
+        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
         Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
@@ -32,7 +32,7 @@ public class OctopusConnectivityCheckerTest {
     public void check_octopus_connectivity_returns_error_message_when_gets_invalid_octopus_url_exception() throws URISyntaxException {
         Exception exception = new InvalidOctopusUrlException(new URI("http://example.org"));
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
-        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider, LOG);
+        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
         Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
@@ -41,7 +41,7 @@ public class OctopusConnectivityCheckerTest {
     public void check_octopus_connectivity_returns_error_message_when_gets_unexpected_response_code_exception() throws URISyntaxException {
         Exception exception = new UnexpectedResponseCodeException(451, "unexpected response");
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
-        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider, LOG);
+        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
         Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
@@ -50,7 +50,7 @@ public class OctopusConnectivityCheckerTest {
     public void check_octopus_connectivity_returns_error_message_when_gets_project_not_found_exception() throws URISyntaxException {
         Exception exception = new ProjectNotFoundException("Projects-61");
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
-        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider, LOG);
+        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
         Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
@@ -59,7 +59,7 @@ public class OctopusConnectivityCheckerTest {
     public void check_octopus_connectivity_returns_error_message_when_throwable() throws URISyntaxException {
         Throwable exception = new OutOfMemoryError();
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
-        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider, LOG);
+        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
         Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
