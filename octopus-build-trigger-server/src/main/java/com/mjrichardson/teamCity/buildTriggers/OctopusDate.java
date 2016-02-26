@@ -34,6 +34,13 @@ public class OctopusDate {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() != OctopusDate.class)
+            return false;
+        return obj.toString().equals(toString());
+    }
+
+    @Override
     public String toString() {
         DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ").withZoneUTC();
         return dateFormat.print(dateTime);
