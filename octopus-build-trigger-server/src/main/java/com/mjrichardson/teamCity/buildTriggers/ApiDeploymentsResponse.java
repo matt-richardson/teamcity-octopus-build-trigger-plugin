@@ -18,7 +18,7 @@ package com.mjrichardson.teamCity.buildTriggers;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Deployment;
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTrigger;
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTriggerService;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Deployments;
 import jetbrains.buildServer.serverSide.ProjectNotFoundException;
 import org.json.simple.parser.JSONParser;
@@ -32,7 +32,7 @@ import java.util.Map;
 //todo: needs tests
 //todo: consider if this should really go and get tasks
 public class ApiDeploymentsResponse {
-  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTriggerService.class.getName());
   public final Deployments deployments;
 
   public ApiDeploymentsResponse(HttpContentProvider contentProvider, String deploymentsApiLink, String projectId, Deployments oldDeployments, Deployments newDeployments) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, UnexpectedResponseCodeException {
@@ -42,7 +42,7 @@ public class ApiDeploymentsResponse {
   }
 
   private Deployments ParseDeploymentResponse(HttpContentProvider contentProvider, String deploymentsResponse, Deployments oldDeployments, Deployments result) throws ParseException, java.text.ParseException, IOException, URISyntaxException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ProjectNotFoundException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException {
-    LOG.debug("DeploymentCompleteBuildTrigger: parsing deployment response");
+    LOG.debug("DeploymentCompleteBuildTriggerService: parsing deployment response");
     JSONParser parser = new JSONParser();
     Map response = (Map)parser.parse(deploymentsResponse);
 

@@ -28,12 +28,11 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OC
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
-//todo resolve confusion between this and DeploymentCompleteBuildTrigger
 class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<DeploymentCompleteSpec> {
   private final String displayName;
   private final int pollInterval;
   @NotNull
-  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTriggerService.class.getName());
 
   public DeploymentCompleteAsyncBuildTrigger(String displayName, int pollInterval) {
     this.displayName = displayName;

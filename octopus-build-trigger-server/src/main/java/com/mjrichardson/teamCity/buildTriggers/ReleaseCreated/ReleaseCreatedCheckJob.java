@@ -17,7 +17,7 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 //todo: this needs tests
 class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
   @NotNull
-  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTriggerService.class.getName());
 
   private final AsyncTriggerParameters asyncTriggerParameters;
   private final String displayName;

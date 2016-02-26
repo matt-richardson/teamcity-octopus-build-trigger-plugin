@@ -17,7 +17,7 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTrigger;
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTriggerService;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -27,7 +27,7 @@ public class ApiRootResponse {
   public final String deploymentsApiLink;
   public final String progressionApiLink;
 
-  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTriggerService.class.getName());
 
   public ApiRootResponse(String apiResponse) throws ParseException {
     deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments");

@@ -17,7 +17,7 @@ import java.util.Map;
 //todo: add tests
 class ReleaseCreatedTriggerPropertiesProcessor implements PropertiesProcessor {
   @NotNull
-  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTriggerService.class.getName());
 
   public Collection<InvalidProperty> process(Map<String, String> properties) {
     final ArrayList<InvalidProperty> invalidProps = new ArrayList<InvalidProperty>();

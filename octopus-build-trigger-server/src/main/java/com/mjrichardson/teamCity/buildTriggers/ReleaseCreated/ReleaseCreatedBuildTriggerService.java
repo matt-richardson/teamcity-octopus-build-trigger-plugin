@@ -14,16 +14,16 @@ import org.jetbrains.annotations.NotNull;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.DEFAULT_POLL_INTERVAL;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.POLL_INTERVAL_PROP;
 
-public final class ReleaseCreatedBuildTrigger extends BuildTriggerService {
+public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService {
   @NotNull
-  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTriggerService.class.getName());
   @NotNull
   private final PluginDescriptor myPluginDescriptor;
   @NotNull
   private final BuildTriggeringPolicy myPolicy;
 
-  public ReleaseCreatedBuildTrigger(@NotNull final PluginDescriptor pluginDescriptor,
-                                        @NotNull final AsyncBuildTriggerFactory triggerFactory) {
+  public ReleaseCreatedBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
+                                           @NotNull final AsyncBuildTriggerFactory triggerFactory) {
     myPluginDescriptor = pluginDescriptor;
     myPolicy = triggerFactory.createBuildTrigger(ReleaseCreatedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
   }

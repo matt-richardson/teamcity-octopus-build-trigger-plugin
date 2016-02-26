@@ -32,7 +32,7 @@ import java.util.Map;
 //todo: refactor
 class DeploymentCompleteTriggerPropertiesProcessor implements PropertiesProcessor {
   @NotNull
-  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTriggerService.class.getName());
 
   public Collection<InvalidProperty> process(Map<String, String> properties) {
     final ArrayList<InvalidProperty> invalidProps = new ArrayList<InvalidProperty>();

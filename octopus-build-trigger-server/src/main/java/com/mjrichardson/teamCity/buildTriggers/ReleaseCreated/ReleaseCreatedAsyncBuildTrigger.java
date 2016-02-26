@@ -11,12 +11,11 @@ import java.util.Map;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
-//todo resolve confusion between this and ReleaseCreatedBuildTrigger
 class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreatedSpec> {
   private final String displayName;
   private final int pollInterval;
   @NotNull
-  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTriggerService.class.getName());
 
   public ReleaseCreatedAsyncBuildTrigger(String displayName, int pollInterval) {
     this.displayName = displayName;

@@ -18,7 +18,7 @@ package com.mjrichardson.teamCity.buildTriggers;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Deployment;
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTrigger;
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTriggerService;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Deployments;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Map;
 
 public class ApiProgressionResponse {
-  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTrigger.class.getName());
+  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTriggerService.class.getName());
   public Deployments deployments;
   public Boolean haveCompleteInformation;
 
   public ApiProgressionResponse(String progressionResponse) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, IOException {
-    LOG.debug("DeploymentCompleteBuildTrigger: parsing progression response");
+    LOG.debug("DeploymentCompleteBuildTriggerService: parsing progression response");
     this.haveCompleteInformation = Parse(progressionResponse);
   }
 

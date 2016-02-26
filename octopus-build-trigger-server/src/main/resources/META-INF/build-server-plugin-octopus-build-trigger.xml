@@ -4,6 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
        default-autowire="constructor">
     <import resource="classpath*:META-INF/spring-server-async-trigger.xml"/>
-    <bean class="com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTrigger"/>
-    <bean class="com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.ReleaseCreatedBuildTrigger"/>
+    <bean class="com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTriggerService"/>
+    <bean class="com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.ReleaseCreatedBuildTriggerService"/>
 </beans>
