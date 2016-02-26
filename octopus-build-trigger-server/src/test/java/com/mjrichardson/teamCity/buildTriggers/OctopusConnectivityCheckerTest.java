@@ -7,6 +7,9 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 @Test
 public class OctopusConnectivityCheckerTest {
@@ -63,6 +66,13 @@ public class OctopusConnectivityCheckerTest {
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
         Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
+    }
+
+    @Test(groups = { "needs-internet-access" })
+    public void check_octopus_connectivity_against_live_octopus_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        OctopusConnectivityChecker sut = new OctopusConnectivityChecker("https://demo.octopusdeploy.com", "", 6000);
+        String result = sut.checkOctopusConnectivity();
+        Assert.assertEquals(result, null);
     }
 
     private class FakeContentProvider implements HttpContentProvider {

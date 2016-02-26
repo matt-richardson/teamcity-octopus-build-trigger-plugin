@@ -1,8 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.mjrichardson.teamCity.buildTriggers.*;
-import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
-import jetbrains.buildServer.buildTriggers.BuildTriggerService;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import org.jetbrains.annotations.NotNull;
@@ -302,48 +301,4 @@ public class DeploymentCompleteCheckJobTest {
         }
     }
 
-    private class FakeBuildTriggerDescriptor implements BuildTriggerDescriptor {
-        @NotNull
-        @Override
-        public String getTriggerName() {
-            return null;
-        }
-
-        @NotNull
-        @Override
-        public Map<String, String> getProperties() {
-            return null;
-        }
-
-        @NotNull
-        @Override
-        @SuppressWarnings( "deprecation" )
-        public String getSignature() {
-            return null;
-        }
-
-        @NotNull
-        @Override
-        public BuildTriggerService getBuildTriggerService() {
-            return null;
-        }
-
-        @NotNull
-        @Override
-        public String getId() {
-            return null;
-        }
-
-        @NotNull
-        @Override
-        public String getType() {
-            return null;
-        }
-
-        @NotNull
-        @Override
-        public Map<String, String> getParameters() {
-            return null;
-        }
-    }
 }
