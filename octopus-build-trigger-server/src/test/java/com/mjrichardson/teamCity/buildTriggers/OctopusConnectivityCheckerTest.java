@@ -13,8 +13,6 @@ import java.security.NoSuchAlgorithmException;
 
 @Test
 public class OctopusConnectivityCheckerTest {
-    private static final Logger LOG = Logger.getInstance(OctopusConnectivityChecker.class.getName());
-
     public void check_octopus_connectivity_returns_null_when_content_provider_returns_content() {
         FakeContentProvider contentProvider = new FakeContentProvider();
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);

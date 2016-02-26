@@ -15,7 +15,7 @@ class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreate
   private final String displayName;
   private final int pollInterval;
   @NotNull
-  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTriggerService.class.getName());
+  private static final Logger LOG = Logger.getInstance(ReleaseCreatedAsyncBuildTrigger.class.getName());
 
   public ReleaseCreatedAsyncBuildTrigger(String displayName, int pollInterval) {
     this.displayName = displayName;

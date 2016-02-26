@@ -31,9 +31,6 @@ import java.util.Map;
 //todo: should this be part of the DeploymentCompleteAsyncBuildTrigger class instead?
 //todo: refactor
 class DeploymentCompleteTriggerPropertiesProcessor implements PropertiesProcessor {
-  @NotNull
-  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTriggerService.class.getName());
-
   public Collection<InvalidProperty> process(Map<String, String> properties) {
     final ArrayList<InvalidProperty> invalidProps = new ArrayList<InvalidProperty>();
     final String url = properties.get(OctopusBuildTriggerUtil.OCTOPUS_URL);

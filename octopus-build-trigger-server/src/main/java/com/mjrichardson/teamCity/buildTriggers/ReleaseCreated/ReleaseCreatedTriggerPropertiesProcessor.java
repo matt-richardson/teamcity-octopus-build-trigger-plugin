@@ -16,9 +16,6 @@ import java.util.Map;
 //todo: refactor
 //todo: add tests
 class ReleaseCreatedTriggerPropertiesProcessor implements PropertiesProcessor {
-  @NotNull
-  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTriggerService.class.getName());
-
   public Collection<InvalidProperty> process(Map<String, String> properties) {
     final ArrayList<InvalidProperty> invalidProps = new ArrayList<InvalidProperty>();
     final String url = properties.get(OctopusBuildTriggerUtil.OCTOPUS_URL);

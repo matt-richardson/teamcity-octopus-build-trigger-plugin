@@ -28,7 +28,7 @@ public class ReleasesProvider {
         //call release url for project id
 
         try {
-            LOG.debug("ReleaseCreatedBuildTriggerService: Getting releases from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
+            LOG.debug("Getting releases from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
 
             final String apiResponse = contentProvider.getContent("/api");
             final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);

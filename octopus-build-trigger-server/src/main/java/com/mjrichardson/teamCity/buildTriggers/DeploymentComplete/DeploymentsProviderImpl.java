@@ -50,7 +50,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
     //return NewDeploymentStatus(responseBody);
 
     try {
-      LOG.debug("DeploymentCompleteBuildTriggerService: Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
+      LOG.debug("Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
 
       final String apiResponse = contentProvider.getContent("/api");
       final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);

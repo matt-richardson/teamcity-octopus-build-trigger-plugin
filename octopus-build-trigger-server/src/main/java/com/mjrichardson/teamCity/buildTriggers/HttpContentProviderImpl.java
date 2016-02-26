@@ -123,7 +123,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
 
       final HttpEntity entity = response.getEntity();
       final String content = EntityUtils.toString(entity);
-      LOG.info("Octopus Deploy: request to " + uri + " returned " + content);
+      LOG.info("request to " + uri + " returned " + content);
       return content;
 
     } finally {
