@@ -268,7 +268,7 @@ public class DeploymentCompleteCheckJobTest {
 
         @Override
         public Deployments getDeployments(String octopusProject, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
-            Deployment deployment = new Deployment("Environments-1", new OctopusDate(2016, 02, 25), new OctopusDate(2016, 02, 25));
+            Deployment deployment = new Deployment("Environments-1", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25));
             return new Deployments(deployment);
         }
     }

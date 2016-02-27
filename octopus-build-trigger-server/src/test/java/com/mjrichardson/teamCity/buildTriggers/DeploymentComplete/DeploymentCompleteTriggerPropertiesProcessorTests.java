@@ -32,7 +32,7 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 public class DeploymentCompleteTriggerPropertiesProcessorTests {
     public void returns_error_when_url_is_null() {
         DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor();
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "api key");
         properties.put(OCTOPUS_PROJECT_ID, "project-id");
         properties.put(OCTOPUS_URL, null);
@@ -46,7 +46,7 @@ public class DeploymentCompleteTriggerPropertiesProcessorTests {
 
     public void returns_error_when_api_key_is_null() {
         DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor();
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, null);
         properties.put(OCTOPUS_PROJECT_ID, "project-id");
         properties.put(OCTOPUS_URL, "http://example.com");
@@ -62,7 +62,7 @@ public class DeploymentCompleteTriggerPropertiesProcessorTests {
         String connectivityCheckResult = "connectivity error";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
         DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "project-id");
         properties.put(OCTOPUS_URL, "api key");
@@ -78,7 +78,7 @@ public class DeploymentCompleteTriggerPropertiesProcessorTests {
         String connectivityCheckResult = "";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
         DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "");
         properties.put(OCTOPUS_URL, "api key");
@@ -94,7 +94,7 @@ public class DeploymentCompleteTriggerPropertiesProcessorTests {
         NoSuchAlgorithmException exception = new NoSuchAlgorithmException("the exception message");
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(exception);
         DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         properties.put(OCTOPUS_URL, "api key");
@@ -110,7 +110,7 @@ public class DeploymentCompleteTriggerPropertiesProcessorTests {
         String connectivityCheckResult = "";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
         DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         properties.put(OCTOPUS_URL, "api key");
