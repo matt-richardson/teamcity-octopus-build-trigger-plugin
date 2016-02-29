@@ -1,10 +1,9 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
-import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeContentProvider;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
@@ -71,50 +70,5 @@ public class OctopusConnectivityCheckerTest {
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker("https://demo.octopusdeploy.com", "", 6000);
         String result = sut.checkOctopusConnectivity();
         Assert.assertEquals(result, null);
-    }
-
-    private class FakeContentProvider implements HttpContentProvider {
-        private final Throwable exception;
-        public String requestedUriPath;
-        public boolean closeWasCalled;
-
-        public FakeContentProvider() {
-            this(null);
-        }
-
-        public FakeContentProvider(Throwable exception) {
-            this.exception = exception;
-        }
-
-        @Override
-        public void close() {
-            closeWasCalled = true;
-        }
-
-        @Override
-        public String getContent(String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException {
-            requestedUriPath = uriPath;
-            if (this.exception != null) {
-                //there must be a better way of doing this
-                if (exception.getClass() == IOException.class)
-                    throw (IOException)exception;
-                if (exception.getClass() == UnexpectedResponseCodeException.class)
-                    throw (UnexpectedResponseCodeException)exception;
-                if (exception.getClass() == InvalidOctopusApiKeyException.class)
-                    throw (InvalidOctopusApiKeyException)exception;
-                if (exception.getClass() == InvalidOctopusUrlException.class)
-                    throw (InvalidOctopusUrlException)exception;
-                if (exception.getClass() == URISyntaxException.class)
-                    throw (URISyntaxException)exception;
-                if (exception.getClass() == ProjectNotFoundException.class)
-                    throw (ProjectNotFoundException)exception;
-            }
-            return "some content";
-        }
-
-        @Override
-        public String getUrl() {
-            return null;
-        }
     }
 }

@@ -1,11 +1,8 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-import com.mjrichardson.teamCity.buildTriggers.*;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerDescriptor;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -13,7 +10,6 @@ import org.testng.annotations.Test;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -204,101 +200,4 @@ public class DeploymentCompleteCheckJobTest {
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
         Assert.assertFalse(sut.allowSchedule(new FakeBuildTriggerDescriptor()));
     }
-
-    class FakeDeploymentsProviderFactory extends DeploymentsProviderFactory {
-        private final DeploymentsProvider deploymentsProvider;
-
-        public FakeDeploymentsProviderFactory(DeploymentsProvider deploymentsProvider) {
-
-            this.deploymentsProvider = deploymentsProvider;
-        }
-
-        @Override
-        public DeploymentsProvider getProvider(String octopusUrl, String octopusApiKey, Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-            return deploymentsProvider;
-        }
-    }
-
-    private class FakeCustomDataStorage implements CustomDataStorage {
-        private final String storedDataValue;
-
-        public FakeCustomDataStorage() {
-            this(null);
-        }
-
-        public FakeCustomDataStorage(String storedDataValue) {
-            this.storedDataValue = storedDataValue;
-        }
-
-        @Override
-        public void putValues(@NotNull Map<String, String> map) {
-
-        }
-
-        @Nullable
-        @Override
-        public Map<String, String> getValues() {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public String getValue(@NotNull String s) {
-            return storedDataValue;
-        }
-
-        @Override
-        public void putValue(@NotNull String s, @Nullable String s1) {
-
-        }
-
-        @Override
-        public void flush() {
-
-        }
-
-        @Override
-        public void dispose() {
-
-        }
-    }
-
-    private class FakeDeploymentsProviderWithOneDeployment implements DeploymentsProvider {
-        public FakeDeploymentsProviderWithOneDeployment() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {}
-
-        @Override
-        public Deployments getDeployments(String octopusProject, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
-            Deployment deployment = new Deployment("Environments-1", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25));
-            return new Deployments(deployment);
-        }
-    }
-
-    private class FakeDeploymentsProviderWithOneFailedDeployment implements DeploymentsProvider {
-        public FakeDeploymentsProviderWithOneFailedDeployment() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {}
-
-        @Override
-        public Deployments getDeployments(String octopusProject, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
-            Deployment deployment = new Deployment("Environments-1", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 1));
-            return new Deployments(deployment);
-        }
-    }
-
-    private class FakeDeploymentsProviderWithNoDeployments implements DeploymentsProvider {
-        public FakeDeploymentsProviderWithNoDeployments() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {}
-
-        @Override
-        public Deployments getDeployments(String octopusProject, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
-            return new Deployments("");
-        }
-    }
-
-    private class FakeDeploymentsProviderThatThrowsExceptions implements DeploymentsProvider {
-        public FakeDeploymentsProviderThatThrowsExceptions() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {}
-
-        @Override
-        public Deployments getDeployments(String octopusProject, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
-            throw new ProjectNotFoundException(octopusProject);
-        }
-    }
-
 }
