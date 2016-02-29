@@ -54,11 +54,6 @@ class DeploymentCompleteSpecCheckResult extends CheckResult<DeploymentCompleteSp
   }
 
   @NotNull
-  static DeploymentCompleteSpecCheckResult createThrowableResult(@NotNull DeploymentCompleteSpec deploymentCompleteSpec, @NotNull Throwable throwable) {
-    return new DeploymentCompleteSpecCheckResult(Collections.singleton(deploymentCompleteSpec), Collections.singletonMap(deploymentCompleteSpec, new DetectionException(throwable.getMessage(), throwable)));
-  }
-
-  @NotNull
   static DeploymentCompleteSpecCheckResult createErrorResult(@NotNull String error) {
     return new DeploymentCompleteSpecCheckResult(new BuildTriggerException(error));
   }

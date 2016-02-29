@@ -67,25 +67,15 @@ class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Deploymen
   }
 
   public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
-    return getDescription(buildTriggerDescriptor.getProperties());
-  }
-
-  //todo: move somewhere better
-  private String getDescription(Map<String, String> properties) {
-    try {
-      String flag = properties.get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT);
-      if (flag != null && flag.equals("true")) {
-        return String.format("Wait for a new successful deployment of %s on server %s.",
+    Map<String, String> properties = buildTriggerDescriptor.getProperties();
+    String flag = properties.get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT);
+    if (flag != null && flag.equals("true")) {
+      return String.format("Wait for a new successful deployment of %s on server %s.",
           properties.get(OCTOPUS_PROJECT_ID),
           properties.get(OCTOPUS_URL));
-      }
-      return String.format("Wait for a new deployment of %s on server %s.",
-        properties.get(OCTOPUS_PROJECT_ID),
-        properties.get(OCTOPUS_URL));
     }
-    catch (Exception e) {
-      LOG.error("Error in describeTrigger ", e);
-      return "Unable to determine trigger description";
-    }
+    return String.format("Wait for a new deployment of %s on server %s.",
+                properties.get(OCTOPUS_PROJECT_ID),
+                properties.get(OCTOPUS_URL));
   }
 }

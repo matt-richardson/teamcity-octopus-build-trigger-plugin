@@ -29,7 +29,6 @@ import java.util.Map;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-//todo: this needs tests
 class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
   @NotNull
   private static final Logger LOG = Logger.getInstance(DeploymentCompleteCheckJob.class.getName());
