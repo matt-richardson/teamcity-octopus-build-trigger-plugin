@@ -11,6 +11,24 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OC
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
 public class FakeBuildTriggerDescriptor implements BuildTriggerDescriptor {
+
+    private Map<String, String> properties;
+
+    private static Map<String, String> getDefaultProperties() {
+        HashMap<String,String> hashMap = new HashMap<>();
+        hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
+        hashMap.put(OCTOPUS_URL, "the-server");
+        return hashMap;
+    }
+
+    public FakeBuildTriggerDescriptor() {
+        this(getDefaultProperties());
+    }
+
+    public FakeBuildTriggerDescriptor(Map<String, String> properties) {
+        this.properties = properties;
+    }
+
     @NotNull
     @Override
     public String getTriggerName() {
@@ -20,10 +38,7 @@ public class FakeBuildTriggerDescriptor implements BuildTriggerDescriptor {
     @NotNull
     @Override
     public Map<String, String> getProperties() {
-        HashMap<String,String> hashMap = new HashMap<>();
-        hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
-        hashMap.put(OCTOPUS_URL, "the-server");
-        return hashMap;
+        return properties;
     }
 
     @NotNull
