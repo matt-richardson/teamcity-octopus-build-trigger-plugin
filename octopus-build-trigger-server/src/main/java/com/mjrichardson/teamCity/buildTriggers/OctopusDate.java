@@ -35,7 +35,7 @@ public class OctopusDate {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() != OctopusDate.class)
+        if (obj.getClass() != OctopusDate.class && obj.getClass() != NullOctopusDate.class )
             return false;
         return obj.toString().equals(toString());
     }

@@ -26,8 +26,12 @@ import java.util.ArrayList;
 public class Deployments {
   private ArrayList<Deployment> statusMap;
 
+  public Deployments() {
+    this.statusMap = new ArrayList<>();
+  }
+
   public Deployments(String oldStoredData) throws ParseException {
-    this.statusMap = new ArrayList<Deployment>();
+    this();
 
     if (!StringUtil.isEmptyOrSpaces(oldStoredData)) {
 
@@ -43,16 +47,13 @@ public class Deployments {
     }
   }
 
-  public Deployments(Deployments oldDeployments) throws ParseException {
-    this(oldDeployments.toString());
+  public Deployments(Deployments oldDeployments) {
+    this();
+    addOrUpdate(oldDeployments);
   }
 
-  public Deployments() throws ParseException {
-    this("");
-  }
-
-  public Deployments(Deployment deployment) throws ParseException {
-    this("");
+  public Deployments(Deployment deployment)  {
+    this();
     addOrUpdate(deployment);
   }
 
@@ -70,7 +71,6 @@ public class Deployments {
     return statusMap.size() == 0;
   }
 
-  //todo: this method appears to have no tests
   @Override
   public boolean equals(Object obj) {
 
@@ -123,7 +123,6 @@ public class Deployments {
     return statusMap.size();
   }
 
-  //todo: this method appears to have no tests
   public void addOrUpdate(String environmentId, OctopusDate latestDeployment, Boolean isCompleted, Boolean finishedSuccessfully) {
     if (!isCompleted)
       return;
@@ -183,11 +182,11 @@ public class Deployments {
     addOrUpdate(environmentId, new NullOctopusDate(), new NullOctopusDate());
   }
 
-  public Deployments trimToOnlyHaveMaximumOneChangedEnvironment(Deployments oldDeployments) throws ParseException {
+  public Deployments trimToOnlyHaveMaximumOneChangedEnvironment(Deployments oldDeployments) {
     return trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, false);
   }
 
-  public Deployments trimToOnlyHaveMaximumOneChangedEnvironment(Deployments oldDeployments, Boolean prioritiseSuccessfulDeployments) throws ParseException {
+  public Deployments trimToOnlyHaveMaximumOneChangedEnvironment(Deployments oldDeployments, Boolean prioritiseSuccessfulDeployments) {
      Deployments newDeployments = new Deployments(oldDeployments);
 
      final String oldStringRepresentation = oldDeployments.toString();
