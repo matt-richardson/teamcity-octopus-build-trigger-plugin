@@ -74,7 +74,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(newDeployments.length(), 1);
     Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-1;1970-01-01T00:00:00.000+00:00;1970-01-01T00:00:00.000+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
   }
 
   public void testGetDeploymentsFromEmptyStartWithNoDeployments() throws Exception {
@@ -85,7 +85,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(newDeployments.length(), 1);
     Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-1;1970-01-01T00:00:00.000+00:00;1970-01-01T00:00:00.000+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
   }
 
   @Test(expectedExceptions = ProjectNotFoundException.class)
@@ -136,7 +136,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(newDeployments.length(), 1);
     Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 13, 31, 56, 22), new OctopusDate(2016, 1, 21, 13, 31, 56, 22)));
   }
 
   public void testGetDeploymentsWhenNoSuccessfulDeploymentsHaveOccurred() throws Exception {
@@ -147,7 +147,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(newDeployments.length(), 1);
     Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T13:32:59.991+00:00;1970-01-01T00:00:00.000+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 13, 32, 59, 991), new OctopusDate(1970, 1, 1)));
   }
 
   public void testGetDeploymentsWhenNoSuccessfulDeploymentsOnFirstPageOfResults() throws Exception {
@@ -158,7 +158,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(newDeployments.length(), 1);
     Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T14:18:01.887+00:00;2016-01-21T13:35:27.179+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 18, 1, 887), new OctopusDate(2016, 1, 21, 13, 35, 27, 179)));
   }
 
   public void testGetDeploymentsWhenMultipleEnvironments() throws Exception {
@@ -170,10 +170,10 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(newDeployments.length(), 2);
     Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-21T14:25:40.247+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
     deployment = newDeployments.getDeploymentForEnvironment("Environments-21");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700)));
   }
 
   public void testGetDeploymentsWhenNoReleases() throws Exception {
@@ -184,7 +184,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(newDeployments.length(), 1);
     Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-1;1970-01-01T00:00:00.000+00:00;1970-01-01T00:00:00.000+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
   }
 
   public void testWhenThereAreTwoNewDeploymentsSinceLastCheckItReturnsOnlyOne() throws Exception {
@@ -196,19 +196,19 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(newDeployments.length(), 2);
     Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-21T14:25:40.247+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
     deployment = newDeployments.getDeploymentForEnvironment("Environments-21");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700)));
 
     final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments);
     Assert.assertEquals(trimmedDeployments.length(), 2);
     deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-21T14:25:40.247+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
     deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-21");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0)));
   }
 
   public void testGetDeploymentsWhenMultipleEnvironmentsWithMostRecentDeploymentSuccessful() throws Exception {
@@ -219,10 +219,10 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(newDeployments.length(), 2);
     Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-1;2016-01-21T14:24:30.935+00:00;2016-01-21T14:24:30.935+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 24, 30, 935), new OctopusDate(2016, 1, 21, 14, 24, 30, 935)));
     deployment = newDeployments.getDeploymentForEnvironment("Environments-21");
     Assert.assertNotNull(deployment);
-    Assert.assertEquals(deployment.toString(), "Environments-21;2016-01-21T14:24:10.872+00:00;2016-01-21T14:24:10.872+00:00");
+    Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 21, 14, 24, 10, 872), new OctopusDate(2016, 1, 21, 14, 24, 10, 872)));
 
   }
 }

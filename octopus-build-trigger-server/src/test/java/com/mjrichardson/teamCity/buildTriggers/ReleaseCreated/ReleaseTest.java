@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
+import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -21,7 +22,7 @@ public class ReleaseTest {
         Release sut = Release.Parse("Releases-91;2016-01-21T13:32:59.991+00:00;1.0.0");
         Assert.assertEquals(sut.id, "Releases-91");
         Assert.assertEquals(sut.version, "1.0.0");
-        Assert.assertEquals(sut.assembledDate.toString(), "2016-01-21T13:32:59.991+00:00");
+        Assert.assertEquals(sut.assembledDate, new OctopusDate(2016, 01, 21, 13, 32, 59, 991));
     }
 
     public void to_string_formats_correctly() {
@@ -48,13 +49,13 @@ public class ReleaseTest {
     }
 
     public void can_create_from_map() {
-        HashMap<String,String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>();
         map.put("Id", "Releases-21");
         map.put("Assembled", "2016-01-20T14:32:59.991+00:00");
         map.put("Version", "1.0.3");
         Release sut = new Release(map);
         Assert.assertEquals(sut.id, "Releases-21");
         Assert.assertEquals(sut.version, "1.0.3");
-        Assert.assertEquals(sut.assembledDate.toString(), "2016-01-20T14:32:59.991+00:00");
+        Assert.assertEquals(sut.assembledDate, new OctopusDate(2016, 01, 20, 14, 32, 59, 991));
     }
 }

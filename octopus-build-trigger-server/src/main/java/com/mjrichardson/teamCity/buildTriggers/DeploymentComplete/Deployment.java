@@ -57,6 +57,13 @@ public class Deployment {
     return String.format("%s;%s;%s", environmentId, latestDeployment, latestSuccessfulDeployment);
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (obj.getClass() != Deployment.class && obj.getClass() != NullDeployment.class )
+      return false;
+    return obj.toString().equals(toString());
+  }
+
   public boolean isLatestSuccessfulDeploymentNewerThan(OctopusDate compareDate) {
     return this.latestSuccessfulDeployment.compareTo(compareDate) > 0;
   }

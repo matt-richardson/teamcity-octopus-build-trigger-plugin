@@ -12,4 +12,10 @@ public class NullDeploymentTest {
         Assert.assertEquals(sut.latestDeployment.getClass(), NullOctopusDate.class);
         Assert.assertEquals(sut.latestSuccessfulDeployment.getClass(), NullOctopusDate.class);
     }
+
+    public void equals_returns_true_for_equal_null_deployment() {
+        Deployment sut = new NullDeployment();
+        Deployment other = new NullDeployment();
+        Assert.assertTrue(sut.equals(other));
+    }
 }

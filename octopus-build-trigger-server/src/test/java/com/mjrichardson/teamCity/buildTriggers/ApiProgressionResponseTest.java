@@ -47,7 +47,7 @@ public class ApiProgressionResponseTest {
         Assert.assertEquals(sut.deployments.size(), 1);
         Deployment[] deployments = sut.deployments.toArray();
         Assert.assertEquals(deployments[0].environmentId, "Environments-1");
-        Assert.assertEquals(deployments[0].latestDeployment.toString(), "2016-01-21T13:32:59.991+00:00");
+        Assert.assertEquals(deployments[0].latestDeployment, new OctopusDate(2016, 1, 21, 13, 32, 59, 991));
         Assert.assertEquals(deployments[0].latestSuccessfulDeployment.getClass(), NullOctopusDate.class);
     }
 
@@ -58,8 +58,8 @@ public class ApiProgressionResponseTest {
         Assert.assertEquals(sut.deployments.size(), 1);
         Deployment[] deployments = sut.deployments.toArray();
         Assert.assertEquals(deployments[0].environmentId, "Environments-1");
-        Assert.assertEquals(deployments[0].latestDeployment.toString(), "2016-01-21T13:31:56.022+00:00");
-        Assert.assertEquals(deployments[0].latestSuccessfulDeployment.toString(), "2016-01-21T13:31:56.022+00:00");
+        Assert.assertEquals(deployments[0].latestDeployment, new OctopusDate(2016, 1, 21, 13, 31, 56, 22));
+        Assert.assertEquals(deployments[0].latestSuccessfulDeployment, new OctopusDate(2016, 1, 21, 13, 31, 56, 22));
     }
 
     public void can_parse_progression_response_with_multiple_environments() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
@@ -69,11 +69,11 @@ public class ApiProgressionResponseTest {
         Assert.assertEquals(sut.deployments.size(), 2);
         Deployment[] deployments = sut.deployments.toArray();
         Assert.assertEquals(deployments[0].environmentId, "Environments-1");
-        Assert.assertEquals(deployments[0].latestDeployment.toString(), "2016-01-21T14:26:14.747+00:00");
-        Assert.assertEquals(deployments[0].latestSuccessfulDeployment.toString(), "2016-01-21T14:25:40.247+00:00");
+        Assert.assertEquals(deployments[0].latestDeployment, new OctopusDate(2016, 1, 21, 14, 26, 14, 747));
+        Assert.assertEquals(deployments[0].latestSuccessfulDeployment, new OctopusDate(2016, 1, 21, 14, 25, 40, 247));
         Assert.assertEquals(deployments[1].environmentId, "Environments-21");
-        Assert.assertEquals(deployments[1].latestDeployment.toString(), "2016-01-21T14:25:53.700+00:00");
-        Assert.assertEquals(deployments[1].latestSuccessfulDeployment.toString(), "2016-01-21T14:25:53.700+00:00");
+        Assert.assertEquals(deployments[1].latestDeployment, new OctopusDate(2016, 1, 21, 14, 25, 53, 700));
+        Assert.assertEquals(deployments[1].latestSuccessfulDeployment, new OctopusDate(2016, 1, 21, 14, 25, 53, 700));
     }
 
     public void can_parse_progression_response_with_multiple_environments_and_most_recent_deployment_successful() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
@@ -83,11 +83,11 @@ public class ApiProgressionResponseTest {
         Assert.assertEquals(sut.deployments.size(), 2);
         Deployment[] deployments = sut.deployments.toArray();
         Assert.assertEquals(deployments[0].environmentId, "Environments-1");
-        Assert.assertEquals(deployments[0].latestDeployment.toString(), "2016-01-21T14:24:30.935+00:00");
-        Assert.assertEquals(deployments[0].latestSuccessfulDeployment.toString(), "2016-01-21T14:24:30.935+00:00");
+        Assert.assertEquals(deployments[0].latestDeployment, new OctopusDate(2016, 1, 21, 14, 24, 30, 935));
+        Assert.assertEquals(deployments[0].latestSuccessfulDeployment, new OctopusDate(2016, 1, 21, 14, 24, 30, 935));
         Assert.assertEquals(deployments[1].environmentId, "Environments-21");
-        Assert.assertEquals(deployments[1].latestDeployment.toString(), "2016-01-21T14:24:10.872+00:00");
-        Assert.assertEquals(deployments[1].latestSuccessfulDeployment.toString(), "2016-01-21T14:24:10.872+00:00");
+        Assert.assertEquals(deployments[1].latestDeployment, new OctopusDate(2016, 1, 21, 14, 24, 10, 872));
+        Assert.assertEquals(deployments[1].latestSuccessfulDeployment, new OctopusDate(2016, 1, 21, 14, 24, 10, 872));
     }
 
     public void can_parse_progression_response_with_no_recent_successful_deployments() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
@@ -97,7 +97,7 @@ public class ApiProgressionResponseTest {
         Assert.assertEquals(sut.deployments.size(), 1);
         Deployment[] deployments = sut.deployments.toArray();
         Assert.assertEquals(deployments[0].environmentId, "Environments-1");
-        Assert.assertEquals(deployments[0].latestDeployment.toString(), "2016-01-21T14:18:01.887+00:00");
-        Assert.assertEquals(deployments[0].latestSuccessfulDeployment.toString(), "2016-01-21T13:35:27.179+00:00");
+        Assert.assertEquals(deployments[0].latestDeployment, new OctopusDate(2016, 1, 21, 14, 18, 1, 887));
+        Assert.assertEquals(deployments[0].latestSuccessfulDeployment, new OctopusDate(2016, 1, 21, 13, 35, 27, 179));
     }
 }
