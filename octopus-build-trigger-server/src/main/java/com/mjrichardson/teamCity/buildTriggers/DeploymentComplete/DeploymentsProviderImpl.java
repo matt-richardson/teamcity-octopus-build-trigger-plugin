@@ -20,36 +20,21 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-
-//todo needs tests
 public class DeploymentsProviderImpl implements DeploymentsProvider {
-
-  private final HttpContentProvider contentProvider;
   @NotNull
   private static final Logger LOG = Logger.getInstance(DeploymentsProviderImpl.class.getName());
+  private final HttpContentProviderFactory httpContentProviderFactory;
 
-  public DeploymentsProviderImpl(String octopusUrl, String apiKey, Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-    this(new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout));
-  }
-
-  public DeploymentsProviderImpl(HttpContentProvider contentProvider)
-  {
-    this.contentProvider = contentProvider;
+  public DeploymentsProviderImpl(HttpContentProviderFactory httpContentProviderFactory) {
+    this.httpContentProviderFactory = httpContentProviderFactory;
   }
 
   public Deployments getDeployments(String projectId, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
-    //get {octopusurl}/api
-    //parse out project url
-    //parse out progression url
-    //call project url
-    //parse id for project
-    //call progression url for project id
-    //return NewDeploymentStatus(responseBody);
+    String url = null;
 
     try {
+      HttpContentProvider contentProvider = httpContentProviderFactory.getContentProvider();
+      url = contentProvider.getUrl();
       LOG.debug("Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
 
       final String apiResponse = contentProvider.getContent("/api");
@@ -77,8 +62,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
       throw e;
     }
     catch (Throwable e) {
-      //todo: improve error message here
-      throw new DeploymentsProviderException("URL " + contentProvider.getUrl() + ": " + e, e);
+      throw new DeploymentsProviderException(String.format("Unexpected exception in DeploymentsProviderImpl, while attempting to get deployments from %s: %s", url, e), e);
     }
   }
 }

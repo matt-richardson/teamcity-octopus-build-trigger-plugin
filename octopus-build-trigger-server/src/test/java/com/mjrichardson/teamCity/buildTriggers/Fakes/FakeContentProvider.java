@@ -50,6 +50,8 @@ public class FakeContentProvider implements HttpContentProvider {
                 throw (URISyntaxException) exception;
             if (exception.getClass() == ProjectNotFoundException.class)
                 throw (ProjectNotFoundException) exception;
+            if (exception.getClass() == OutOfMemoryError.class)
+                throw (OutOfMemoryError) exception;
         }
 
         String s = octopusUrl + uriPath;
