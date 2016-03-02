@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Map;
 
 class DeploymentCompleteSpecCheckResult extends CheckResult<DeploymentCompleteSpec> {
-  private DeploymentCompleteSpecCheckResult() {
+  DeploymentCompleteSpecCheckResult() {
     super();
   }
 
