@@ -38,7 +38,10 @@ class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreate
 
   @NotNull
   public CheckJob<ReleaseCreatedSpec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
-    return new ReleaseCreatedCheckJob(asyncTriggerParameters, displayName);
+    return new ReleaseCreatedCheckJob(displayName,
+                                      asyncTriggerParameters.getBuildType().toString(),
+                                      asyncTriggerParameters.getCustomDataStorage(),
+                                      asyncTriggerParameters.getTriggerDescriptor().getProperties());
   }
 
   @NotNull
@@ -47,19 +50,9 @@ class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreate
   }
 
   public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
-    return getDescription(buildTriggerDescriptor.getProperties());
-  }
-
-  //todo: move somewhere better
-  private String getDescription(Map<String, String> properties) {
-    try {
-      return String.format("Wait for a new release of %s to be created on server %s.",
-              properties.get(OCTOPUS_PROJECT_ID),
-              properties.get(OCTOPUS_URL));
-    }
-    catch (Exception e) {
-      LOG.error("Error in describeTrigger ", e);
-      return "Unable to determine trigger description";
-    }
+    Map<String, String> properties = buildTriggerDescriptor.getProperties();
+    return String.format("Wait for a new release of %s to be created on server %s.",
+            properties.get(OCTOPUS_PROJECT_ID),
+            properties.get(OCTOPUS_URL));
   }
 }

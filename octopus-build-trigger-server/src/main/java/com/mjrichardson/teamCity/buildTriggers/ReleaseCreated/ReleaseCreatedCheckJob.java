@@ -3,7 +3,6 @@ package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
-import jetbrains.buildServer.buildTriggers.async.AsyncTriggerParameters;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
@@ -19,12 +18,23 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
   @NotNull
   private static final Logger LOG = Logger.getInstance(ReleaseCreatedCheckJob.class.getName());
 
-  private final AsyncTriggerParameters asyncTriggerParameters;
+  private final ReleasesProviderFactory releasesProviderFactory;
   private final String displayName;
+  private final String buildType;
+  private final CustomDataStorage dataStorage;
+  private final Map<String, String> props;
 
-  public ReleaseCreatedCheckJob(AsyncTriggerParameters asyncTriggerParameters, String displayName) {
-    this.asyncTriggerParameters = asyncTriggerParameters;
+  //todo: remove dependency on asyncTriggerParameters
+  public  ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
+    this(new ReleasesProviderFactory(), displayName, buildType, dataStorage, properties);
+  }
+
+  public  ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
+    this.releasesProviderFactory = releasesProviderFactory;
     this.displayName = displayName;
+    this.buildType = buildType;
+    this.dataStorage = dataStorage;
+    this.props = properties;
   }
 
   @NotNull
@@ -37,7 +47,7 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
       final Release oldRelease = Release.Parse(oldStoredData);
       final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
 
-      ReleasesProvider provider = new ReleasesProvider(octopusUrl, octopusApiKey, connectionTimeout, LOG);
+      ReleasesProvider provider = releasesProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeout);
       final Releases newReleases = provider.getReleases(octopusProject, oldRelease);
 
       //only store that one release has happened here, not multiple.
@@ -66,34 +76,32 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
       return ReleaseCreatedSpecCheckResult.createEmptyResult();
 
     } catch (Exception e) {
-      final ReleaseCreatedSpec ReleaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, octopusProject);
-      return ReleaseCreatedSpecCheckResult.createThrowableResult(ReleaseCreatedSpec, e);
+      return ReleaseCreatedSpecCheckResult.createThrowableResult(e);
     }
   }
 
   @NotNull
   public CheckResult<ReleaseCreatedSpec> perform() {
-    final Map<String, String> props = asyncTriggerParameters.getTriggerDescriptor().getProperties();
 
     final String octopusUrl = props.get(OCTOPUS_URL);
     if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
       return ReleaseCreatedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
-              displayName, asyncTriggerParameters.getBuildType()));
+              displayName, buildType));
     }
 
     final String octopusApiKey = props.get(OCTOPUS_APIKEY);
     if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
       return ReleaseCreatedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
-              displayName, asyncTriggerParameters.getBuildType()));
+              displayName, buildType));
     }
 
     final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
     if (StringUtil.isEmptyOrSpaces(octopusProject)) {
       return ReleaseCreatedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty project) in build configuration %s",
-              displayName, asyncTriggerParameters.getBuildType()));
+              displayName, buildType));
     }
 
-    return getCheckResult(octopusUrl, octopusApiKey, octopusProject, asyncTriggerParameters.getCustomDataStorage());
+    return getCheckResult(octopusUrl, octopusApiKey, octopusProject, dataStorage);
   }
 
   public boolean allowSchedule(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {

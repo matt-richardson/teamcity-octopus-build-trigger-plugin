@@ -107,6 +107,7 @@ public class DeploymentCompleteCheckJobTest {
         Assert.assertFalse(result.hasCheckErrors());
     }
 
+    //todo: issue where if trigger is created before any deployments, then it will miss the first deployment
     public void perform_returns_empty_result_if_no_previous_data_stored() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         //this situation is when trigger is first setup
         DeploymentsProviderFactory deploymentsProviderFactory = new FakeDeploymentsProviderFactory(new FakeDeploymentsProviderWithOneDeployment());

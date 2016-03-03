@@ -18,4 +18,10 @@ public class NullDeploymentTest {
         Deployment other = new NullDeployment();
         Assert.assertTrue(sut.equals(other));
     }
+
+    public void equals_returns_true_for_when_other_has_null_dates() {
+        Deployment sut = new NullDeployment();
+        Deployment other = new Deployment("", new NullOctopusDate(), new NullOctopusDate());
+        Assert.assertTrue(sut.equals(other));
+    }
 }

@@ -15,7 +15,7 @@ public class Release implements Comparable<Release> {
         this.version = item.get("Version").toString();
     }
 
-    Release(String releaseId, OctopusDate assembledDate, String version) {
+    public Release(String releaseId, OctopusDate assembledDate, String version) {
         this.id = releaseId;
         this.assembledDate = assembledDate;
         this.version = version;

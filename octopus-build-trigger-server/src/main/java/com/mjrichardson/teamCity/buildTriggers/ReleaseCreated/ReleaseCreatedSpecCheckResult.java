@@ -38,11 +38,6 @@ class ReleaseCreatedSpecCheckResult extends CheckResult<ReleaseCreatedSpec> {
   }
 
   @NotNull
-  static ReleaseCreatedSpecCheckResult createThrowableResult(@NotNull ReleaseCreatedSpec ReleaseCreatedSpec, @NotNull Throwable throwable) {
-    return new ReleaseCreatedSpecCheckResult(Collections.singleton(ReleaseCreatedSpec), Collections.singletonMap(ReleaseCreatedSpec, new DetectionException(throwable.getMessage(), throwable)));
-  }
-
-  @NotNull
   static ReleaseCreatedSpecCheckResult createErrorResult(@NotNull String error) {
     return new ReleaseCreatedSpecCheckResult(new BuildTriggerException(error));
   }

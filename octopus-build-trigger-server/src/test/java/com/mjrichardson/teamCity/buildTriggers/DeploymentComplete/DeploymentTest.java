@@ -153,4 +153,14 @@ public class DeploymentTest {
     Deployment sut = new Deployment("environment-1", new OctopusDate(2016, 2, 26), new NullOctopusDate());
     Assert.assertFalse(sut.hasHadAtLeastOneSuccessfulDeployment());
   }
+
+  public void equals_returns_false_when_other_object_is_not_a_deployment() {
+    Deployment sut = new Deployment("environment-1", new OctopusDate(2016, 2, 26), new NullOctopusDate());
+    Assert.assertFalse(sut.equals(new Deployments()));
+  }
+
+  public void equals_returns_false_when_other_object_is_null() {
+    Deployment sut = new Deployment("environment-1", new OctopusDate(2016, 2, 26), new NullOctopusDate());
+    Assert.assertFalse(sut.equals(null));
+  }
 }

@@ -14,7 +14,7 @@ public class Releases {
     }
 
     public Releases(String oldStoredData) {
-        this.statusMap = new ArrayList<Release>();
+        this.statusMap = new ArrayList<>();
 
         if (!StringUtil.isEmptyOrSpaces(oldStoredData)) {
             for (String pair : oldStoredData.split("\\|")) {
@@ -28,6 +28,11 @@ public class Releases {
     public Releases(Releases oldReleases) {
         this(oldReleases.toString());
     }
+
+    public Releases(Release oldRelease) {
+        this(oldRelease.toString());
+    }
+
 
     @Override
     public String toString() {
