@@ -38,7 +38,7 @@ public class ReleasesProviderImpl implements ReleasesProvider {
             while (shouldGetNextPage(oldRelease, newReleases, apiProjectReleasesResponse)) {
                 releasesResponse = contentProvider.getContent(apiProjectReleasesResponse.nextLink);
                 apiProjectReleasesResponse = new ApiProjectReleasesResponse(releasesResponse);
-                newReleases.Append(apiProjectReleasesResponse.releases);
+                newReleases.add(apiProjectReleasesResponse.releases);
             }
             return newReleases;
         }
@@ -61,7 +61,7 @@ public class ReleasesProviderImpl implements ReleasesProvider {
             return false;
         if (apiProjectReleasesResponse.nextLink == null)
             return false;
-        if (newReleases.overlapsWith(oldRelease))
+        if (newReleases.contains(oldRelease))
             return false;
         return true;
     }

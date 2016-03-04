@@ -5,7 +5,6 @@ import jetbrains.buildServer.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 
-//todo: needs tests
 public class Releases {
     private ArrayList<Release> statusMap;
 
@@ -25,14 +24,9 @@ public class Releases {
         }
     }
 
-    public Releases(Releases oldReleases) {
-        this(oldReleases.toString());
-    }
-
     public Releases(Release oldRelease) {
         this(oldRelease.toString());
     }
-
 
     @Override
     public String toString() {
@@ -48,36 +42,25 @@ public class Releases {
         return statusMap.size() == 0;
     }
 
-    private void addOrUpdate(Release release) {
-        if (!contains(release.id)) {
-            add(release);
-        }
-    }
-
-    public boolean overlapsWith(Release oldRelease) {
-        if (contains(oldRelease.id))
-            return true;
-        return false;
-    }
-
-    public boolean contains(String releaseId) {
+    public boolean contains(Release other) {
         for (Release release: statusMap) {
-            if (release.id.equals(releaseId))
+            if (release.id.equals(other.id))
                 return true;
         }
         return false;
     }
 
-    public void Append(Releases releases) {
+    public void add(Releases releases) {
         for (Release release: releases.statusMap) {
-            if (!contains(release.id)) {
+            if (!contains(release)) {
                 add(release);
             }
         }
     }
 
     public void add(Release release) {
-        statusMap.add(release);
+        if (release.getClass() != NullRelease.class && !contains(release))
+            statusMap.add(release);
     }
 
     public Release getNextRelease(Release oldRelease) {
