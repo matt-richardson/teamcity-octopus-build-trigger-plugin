@@ -100,6 +100,16 @@ public class ReleasesTest {
     Assert.assertEquals(release, nonMatchedRelease);
   }
 
+  public void get_next_release_returns_oldest_release_if_passed_null_release() throws Exception {
+    final Release oldRelease = new Release("release-2", new OctopusDate(2016, 3, 1), "1.1.0");
+    final Release newRelease = new Release("release-3", new OctopusDate(2016, 3, 2), "1.2.0");
+    Releases newReleases = new Releases(String.format("%s|%s", newRelease.toString(), oldRelease.toString()));
+
+    Release release = newReleases.getNextRelease(new NullRelease());
+    Assert.assertNotNull(release);
+    Assert.assertEquals(release, oldRelease);
+  }
+
   public void to_array_converts_releases_to_array_successfully() {
     final Release oldRelease = new Release("release-2", new OctopusDate(2016, 3, 1), "1.0.0");
     final Release newRelease = new Release("release-3", new OctopusDate(2016, 3, 3), "1.2.0");

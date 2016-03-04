@@ -67,6 +67,9 @@ public class Releases {
         Collections.sort(statusMap);
         Release nextRelease = oldRelease;
 
+        if (oldRelease.getClass() == NullRelease.class && size() > 0)
+            return statusMap.get(size() - 1);
+
         //for some unknown reason, was getting a concurrent modification exception here when this was a foreach
         for (int i = 0; i < statusMap.size(); i++) {
             Release release = statusMap.get(i);
