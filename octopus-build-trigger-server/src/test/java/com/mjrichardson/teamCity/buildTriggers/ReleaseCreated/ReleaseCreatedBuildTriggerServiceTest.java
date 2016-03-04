@@ -41,13 +41,13 @@ public class ReleaseCreatedBuildTriggerServiceTest {
     }
 
     @Test
-    public void testGetEditParametersUrl() throws Exception {
+    public void get_edit_parameters_url() throws Exception {
         ReleaseCreatedBuildTriggerService sut = new ReleaseCreatedBuildTriggerService(new FakePluginDescriptor(), new FakeAsyncBuildTriggerFactory());
         Assert.assertEquals(sut.getEditParametersUrl(), "resources-path/editOctopusReleaseCreatedTrigger.jsp");
     }
 
     @Test
-    public void testIsMultipleTriggersPerBuildTypeAllowed() throws Exception {
+    public void is_multiple_triggers_per_build_type_allowed() throws Exception {
         ReleaseCreatedBuildTriggerService sut = new ReleaseCreatedBuildTriggerService(new FakePluginDescriptor(), new FakeAsyncBuildTriggerFactory());
         Assert.assertTrue(sut.isMultipleTriggersPerBuildTypeAllowed());
     }

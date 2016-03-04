@@ -25,7 +25,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-//todo: rename tests to use underscores
 @Test
 public class DeploymentsProviderImplTest {
   final String octopusUrl = "http://baseUrl";
@@ -43,7 +42,7 @@ public class DeploymentsProviderImplTest {
   static String ProjectThatDoesNotExist = "Projects-00";
 
   @Test(enabled = false)
-  public void testGetDeploymentsFromRealServer() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  public void get_deployments_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -51,7 +50,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertNotNull(newDeployments);
   }
 
-  public void testGetDeploymentsFromEmptyStart() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  public void get_deployments_from_empty_start() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -71,7 +70,7 @@ public class DeploymentsProviderImplTest {
                         "Latest successful deployment is not as expected");
   }
 
-  public void testGetDeploymentsFromEmptyStartWithNoReleases() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  public void get_deployments_from_empty_start_with_no_releases() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -82,7 +81,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
   }
 
-  public void testGetDeploymentsFromEmptyStartWithNoDeployments() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  public void get_deployments_from_empty_start_with_no_deployments() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -94,7 +93,7 @@ public class DeploymentsProviderImplTest {
   }
 
   @Test(expectedExceptions = ProjectNotFoundException.class)
-  public void testGetDeploymentsWithInvalidProject() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  public void get_deployments_with_invalid_project() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -103,7 +102,7 @@ public class DeploymentsProviderImplTest {
   }
 
   @Test(expectedExceptions = InvalidOctopusUrlException.class)
-  public void testGetDeploymentsWithOctopusUrlWithInvalidHost() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  public void get_deployments_with_octopus_url_with_invalid_host() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory("http://octopus.example.com", octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -113,7 +112,7 @@ public class DeploymentsProviderImplTest {
   }
 
   @Test(expectedExceptions = InvalidOctopusUrlException.class)
-  public void testGetDeploymentsWithOctopusUrlWithInvalidPath() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  public void get_deployments_with_octopus_url_with_invalid_path() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl + "/not-an-octopus-instance", octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -123,7 +122,7 @@ public class DeploymentsProviderImplTest {
   }
 
   @Test(expectedExceptions = InvalidOctopusApiKeyException.class)
-  public void testGetDeploymentsWithInvalidOctopusApiKey() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+  public void get_deployments_with_invalid_octopus_api_key() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, "invalid-api-key");
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -142,7 +141,7 @@ public class DeploymentsProviderImplTest {
     deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
   }
 
-  public void testGetDeploymentsWhenUpToDate() throws Exception {
+  public void get_deployments_when_up_to_date() throws Exception {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments("Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00");
@@ -153,7 +152,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 13, 31, 56, 22), new OctopusDate(2016, 1, 21, 13, 31, 56, 22)));
   }
 
-  public void testGetDeploymentsWhenNoSuccessfulDeploymentsHaveOccurred() throws Exception {
+  public void get_deployments_when_no_successful_deployments_have_occurred() throws Exception {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -164,7 +163,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 13, 32, 59, 991), new OctopusDate(1970, 1, 1)));
   }
 
-  public void testGetDeploymentsWhenNoSuccessfulDeploymentsOnFirstPageOfResults() throws Exception {
+  public void get_deployments_when_no_successful_deployments_on_first_page_of_results() throws Exception {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -175,7 +174,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 18, 1, 887), new OctopusDate(2016, 1, 21, 13, 35, 27, 179)));
   }
 
-  public void testGetDeploymentsWhenMultipleEnvironments() throws Exception {
+  public void get_deployments_when_multiple_environments() throws Exception {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -189,7 +188,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700)));
   }
 
-  public void testGetDeploymentsWhenNoReleases() throws Exception {
+  public void get_deployments_when_no_releases() throws Exception {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
@@ -200,7 +199,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
   }
 
-  public void testWhenThereAreTwoNewDeploymentsSinceLastCheckItReturnsOnlyOne() throws Exception {
+  public void when_there_are_two_new_deployments_since_last_check_it_returns_only_one() throws Exception {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
@@ -224,7 +223,7 @@ public class DeploymentsProviderImplTest {
     Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0)));
   }
 
-  public void testGetDeploymentsWhenMultipleEnvironmentsWithMostRecentDeploymentSuccessful() throws Exception {
+  public void get_deployments_when_multiple_environments_with_most_recent_deployment_successful() throws Exception {
     HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
