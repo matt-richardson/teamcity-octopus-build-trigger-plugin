@@ -6,27 +6,27 @@ import org.testng.annotations.Test;
 @Test
 public class OctopusDateTest {
     public void can_parse_date_with_t_separator_between_date_and_time() {
-        OctopusDate sut = new OctopusDate("2016-12-15T16:10:11.256+00:00");
+        OctopusDate sut = OctopusDate.Parse("2016-12-15T16:10:11.256+00:00");
         Assert.assertEquals(sut, new OctopusDate(2016,12,15,16,10,11,256));
     }
 
     public void can_parse_date_with_no_t_separator_between_date_and_time() {
-        OctopusDate sut = new OctopusDate("2016-12-1516:10:11.256+00:00");
+        OctopusDate sut = OctopusDate.Parse("2016-12-1516:10:11.256+00:00");
         Assert.assertEquals(sut, new OctopusDate(2016,12,15,16,10,11,256));
     }
 
     public void can_parse_date_with_z_timezone_specification() {
-        OctopusDate sut = new OctopusDate("2016-12-15T16:10:11.256Z");
+        OctopusDate sut = OctopusDate.Parse("2016-12-15T16:10:11.256Z");
         Assert.assertEquals(sut, new OctopusDate(2016,12,15,16,10,11,256));
     }
 
     public void can_parse_date_with_utc_timezone_specification() {
-        OctopusDate sut = new OctopusDate("2016-12-1516:10:11.256+00:00");
+        OctopusDate sut = OctopusDate.Parse("2016-12-1516:10:11.256+00:00");
         Assert.assertEquals(sut, new OctopusDate(2016,12,15,16,10,11,256));
     }
 
     public void can_parse_date_with_non_timezone_specification() {
-        OctopusDate sut = new OctopusDate("2016-12-1516:10:11.256+03:00");
+        OctopusDate sut = OctopusDate.Parse("2016-12-1516:10:11.256+03:00");
         Assert.assertEquals(sut, new OctopusDate(2016,12,15,13,10,11,256));
     }
 

@@ -60,7 +60,7 @@ public class DeploymentsTest {
   }
 
   public void passing_single_deployment_to_ctor_adds_to_collection() throws Exception {
-    final Deployment deployment = new Deployment("Environments-1", new OctopusDate("2015-12-08T08:09:39.624+00:00"), new OctopusDate("2015-11-12T09:22:00.865+00:00"));
+    final Deployment deployment = new Deployment("Environments-1", OctopusDate.Parse("2015-12-08T08:09:39.624+00:00"), OctopusDate.Parse("2015-11-12T09:22:00.865+00:00"));
     Deployments deployments = new Deployments(deployment);
     Assert.assertEquals(deployments.size(), 1);
     Assert.assertEquals(deployments.toString(), "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00");

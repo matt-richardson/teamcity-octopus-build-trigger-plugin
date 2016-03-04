@@ -65,7 +65,7 @@ public class ApiDeploymentsResponse {
 
   private boolean ProcessDeployment(HttpContentProvider contentProvider, Deployments oldDeployments, Deployments result, Map deployment) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException {
     String environmentId = deployment.get("EnvironmentId").toString();
-    OctopusDate createdDate = new OctopusDate(deployment.get("Created").toString());
+    OctopusDate createdDate = OctopusDate.Parse(deployment.get("Created").toString());
     Deployment lastKnownDeploymentForThisEnvironment = oldDeployments.getDeploymentForEnvironment(environmentId);
     LOG.debug("Found deployment to environment '" + environmentId + "' created at '" + createdDate + "'");
 

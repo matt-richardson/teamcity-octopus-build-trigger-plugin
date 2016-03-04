@@ -71,7 +71,7 @@ public class Deployment {
   }
 
   public static Deployment Parse(Map map) {
-    OctopusDate createdDate = new OctopusDate(map.get("Created").toString());
+    OctopusDate createdDate = OctopusDate.Parse(map.get("Created").toString());
     Boolean isCompleted = Boolean.parseBoolean(map.get("IsCompleted").toString());
     Boolean isSuccessful = map.get("State").toString().equals("Success");
     String environmentId = map.get("EnvironmentId").toString();

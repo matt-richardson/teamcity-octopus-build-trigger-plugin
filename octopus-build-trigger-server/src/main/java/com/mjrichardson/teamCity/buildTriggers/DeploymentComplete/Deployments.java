@@ -39,8 +39,8 @@ public class Deployments {
         if (pair.length() > 0) {
           final String[] split = pair.split(";");
           final String environmentId = split[0];
-          final OctopusDate latestDeployment = new OctopusDate(split[1]);
-          final OctopusDate latestSuccessfulDeployment = new OctopusDate(split[2]);
+          final OctopusDate latestDeployment = OctopusDate.Parse(split[1]);
+          final OctopusDate latestSuccessfulDeployment = OctopusDate.Parse(split[2]);
           statusMap.add(new Deployment(environmentId, latestDeployment, latestSuccessfulDeployment));
         }
       }

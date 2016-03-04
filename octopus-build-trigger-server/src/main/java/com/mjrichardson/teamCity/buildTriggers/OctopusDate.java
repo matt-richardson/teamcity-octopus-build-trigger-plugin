@@ -9,9 +9,8 @@ public class OctopusDate {
     private static final String OCTOPUS_DATE_FORMAT = "yyyy-MM-ddHH:mm:ss.SSSZ";//2015-12-08T08:09:39.624+00:00
     private DateTime dateTime;
 
-    public OctopusDate(String s) {
-        DateTimeFormatter dateFormat = DateTimeFormat.forPattern(OCTOPUS_DATE_FORMAT);
-        dateTime = DateTime.parse(s.replace("Z", "+00:00").replace("T", ""), dateFormat);
+    private OctopusDate(DateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public OctopusDate(int year, int month, int dayOfMonth)
@@ -27,6 +26,12 @@ public class OctopusDate {
     public OctopusDate(int year, int month, int dayOfMonth, int hour, int minute, int seconds, int milliseconds)
     {
         dateTime = new DateTime(year, month, dayOfMonth, hour, minute, seconds, milliseconds, DateTimeZone.UTC);
+    }
+
+    public static OctopusDate Parse(String input) {
+        DateTimeFormatter dateFormat = DateTimeFormat.forPattern(OCTOPUS_DATE_FORMAT);
+        DateTime dateTime = DateTime.parse(input.replace("Z", "+00:00").replace("T", ""), dateFormat);
+        return new OctopusDate(dateTime);
     }
 
     public int compareTo(OctopusDate compareDate) {
