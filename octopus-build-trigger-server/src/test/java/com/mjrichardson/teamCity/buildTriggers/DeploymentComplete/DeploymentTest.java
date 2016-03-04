@@ -163,4 +163,10 @@ public class DeploymentTest {
     Deployment sut = new Deployment("environment-1", new OctopusDate(2016, 2, 26), new NullOctopusDate());
     Assert.assertFalse(sut.equals(null));
   }
+
+  public void equals_returns_true_when_both_objects_are_same() {
+    Deployment sut = new Deployment("environment-1", new OctopusDate(2016, 2, 26), new NullOctopusDate());
+    Deployment other = new Deployment("environment-1", new OctopusDate(2016, 2, 26), new NullOctopusDate());
+    Assert.assertTrue(sut.equals(other));
+  }
 }
