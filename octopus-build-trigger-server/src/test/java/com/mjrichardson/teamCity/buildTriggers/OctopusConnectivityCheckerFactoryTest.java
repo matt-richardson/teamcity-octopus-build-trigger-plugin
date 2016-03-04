@@ -1,6 +1,5 @@
-package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
+package com.mjrichardson.teamCity.buildTriggers;
 
-import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityChecker;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

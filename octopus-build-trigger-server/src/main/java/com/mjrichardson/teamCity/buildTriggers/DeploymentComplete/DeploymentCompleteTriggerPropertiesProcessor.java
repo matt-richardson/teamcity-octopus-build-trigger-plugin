@@ -18,6 +18,7 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityChecker;
+import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityCheckerFactory;
 import jetbrains.buildServer.serverSide.InvalidProperty;
 import jetbrains.buildServer.serverSide.PropertiesProcessor;
 import jetbrains.buildServer.util.StringUtil;

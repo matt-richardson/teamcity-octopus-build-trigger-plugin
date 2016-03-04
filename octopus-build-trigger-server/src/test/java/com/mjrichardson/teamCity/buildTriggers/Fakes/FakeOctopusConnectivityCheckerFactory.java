@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.Fakes;
 
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.OctopusConnectivityCheckerFactory;
+import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityCheckerFactory;
 import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityChecker;
 
 import java.security.KeyManagementException;

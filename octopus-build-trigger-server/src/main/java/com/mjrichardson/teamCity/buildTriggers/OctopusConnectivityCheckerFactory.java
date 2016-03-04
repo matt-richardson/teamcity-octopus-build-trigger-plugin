@@ -1,6 +1,4 @@
-package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
-
-import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityChecker;
+package com.mjrichardson.teamCity.buildTriggers;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
