@@ -95,7 +95,7 @@ public class DeploymentCompleteCheckJobTest {
         DeploymentsProviderFactory deploymentsProviderFactory = new FakeDeploymentsProviderFactory(new FakeDeploymentsProviderWithOneDeployment());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage("Environments-1;2016-02-25T00:00:00.000+00:00;2016-02-25T00:00:00.000+00:00;");
+        CustomDataStorage dataStorage = new FakeCustomDataStorage("Environments-1;2016-02-25T00:00:00.000+00:00;2016-02-25T00:00:00.000+00:00");
 
         Map<String,String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
@@ -107,7 +107,6 @@ public class DeploymentCompleteCheckJobTest {
         Assert.assertFalse(result.hasCheckErrors());
     }
 
-    //todo: issue where if trigger is created before any deployments, then it will miss the first deployment
     public void perform_returns_empty_result_if_no_previous_data_stored() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         //this situation is when trigger is first setup
         DeploymentsProviderFactory deploymentsProviderFactory = new FakeDeploymentsProviderFactory(new FakeDeploymentsProviderWithOneDeployment());
@@ -120,9 +119,41 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
+
+        //this is when the trigger is created
         CheckResult<DeploymentCompleteSpec>result = sut.perform();
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
+    }
+
+    public void perform_returns_empty_result_if_no_previous_data_stored_first_time_then_returns_updates_second_time() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        //this situation is when trigger is first setup
+        DeploymentsProviderFactory deploymentsProviderFactory = new FakeDeploymentsProviderFactory(new FakeDeploymentsProviderWithNoDeployments());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage();
+
+        Map<String,String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
+        DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
+
+        //this is when the trigger is created
+        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        Assert.assertFalse(result.updatesDetected());
+        Assert.assertFalse(result.hasCheckErrors());
+
+        //this is the first check
+        deploymentsProviderFactory = new FakeDeploymentsProviderFactory(new FakeDeploymentsProviderWithOneDeployment());
+        sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
+
+        result = sut.perform();
+        Assert.assertTrue(result.updatesDetected());
+        Assert.assertFalse(result.hasCheckErrors());
+        Assert.assertEquals(result.getUpdated().size(), 1);
+        DeploymentCompleteSpec updated[] = result.getUpdated().toArray(new DeploymentCompleteSpec[0]);
+        Assert.assertEquals(updated[0].getRequestorString(), "Successful deployment of the-project-id to Environments-1 on the-url");
     }
 
     public void perform_returns_empty_result_if_new_deployment_but_it_failed_when_only_triggering_on_successful_builds() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
@@ -174,7 +205,7 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
         Assert.assertTrue(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);

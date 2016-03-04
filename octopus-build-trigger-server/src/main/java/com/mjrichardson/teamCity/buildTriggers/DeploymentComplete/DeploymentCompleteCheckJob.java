@@ -70,13 +70,13 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
       //otherwise, we could inadvertently miss deployments
       final Deployments newStoredData = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, triggerOnlyOnSuccessfulDeployment);
 
-      if (!newDeployments.toString().equals(oldDeployments.toString())) {
+      if (!newDeployments.toString().equals(oldStoredData)) {
         dataStorage.putValue(dataStorageKey, newStoredData.toString());
 
         //todo: see if its possible to to check the property on the context that says whether its new?
         //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
         //do not trigger build after first adding trigger (oldDeployments == null)
-        if (oldDeployments.isEmpty()) {
+        if (oldStoredData == null) {
           LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
           return DeploymentCompleteSpecCheckResult.createEmptyResult();
         }
