@@ -15,4 +15,9 @@ public class NullOctopusDateTest {
         OctopusDate dateB = new NullOctopusDate();
         Assert.assertTrue(dateA.equals(dateB));
     }
+
+    public void can_parse_to_null_octopus_date() {
+        OctopusDate sut = OctopusDate.Parse("1970-01-01T00:00:00.000+00:00");
+        Assert.assertEquals(sut.getClass(), NullOctopusDate.class);
+    }
 }

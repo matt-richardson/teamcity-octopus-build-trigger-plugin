@@ -31,6 +31,8 @@ public class OctopusDate {
     public static OctopusDate Parse(String input) {
         DateTimeFormatter dateFormat = DateTimeFormat.forPattern(OCTOPUS_DATE_FORMAT);
         DateTime dateTime = DateTime.parse(input.replace("Z", "+00:00").replace("T", ""), dateFormat);
+        if (dateTime.compareTo(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeZone.UTC)) == 0)
+            return new NullOctopusDate();
         return new OctopusDate(dateTime);
     }
 
