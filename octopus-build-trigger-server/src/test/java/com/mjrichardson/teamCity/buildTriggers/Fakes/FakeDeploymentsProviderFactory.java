@@ -11,7 +11,6 @@ public class FakeDeploymentsProviderFactory extends DeploymentsProviderFactory {
     private final DeploymentsProvider deploymentsProvider;
 
     public FakeDeploymentsProviderFactory(DeploymentsProvider deploymentsProvider) {
-
         this.deploymentsProvider = deploymentsProvider;
     }
 
