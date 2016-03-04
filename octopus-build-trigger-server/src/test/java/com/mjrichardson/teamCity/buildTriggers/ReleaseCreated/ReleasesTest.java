@@ -90,9 +90,9 @@ public class ReleasesTest {
   }
 
   public void get_next_release_returns_old_release_if_no_matching_or_newer_release() throws Exception {
-    final Release oldRelease = new Release("release-2", new OctopusDate(2016, 3, 1), "1.0.0");
-    final Release newRelease = new Release("release-3", new OctopusDate(2016, 3, 2), "1.2.0");
-    final Release nonMatchedRelease = new Release("release-3", new OctopusDate(2016, 3, 3), "1.3.0");
+    final Release oldRelease = new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0");
+    final Release newRelease = new Release("release-2", new OctopusDate(2016, 3, 2), "1.1.0");
+    final Release nonMatchedRelease = new Release("release-3", new OctopusDate(2016, 3, 3), "1.2.0");
     Releases newReleases = new Releases(String.format("%s|%s", newRelease.toString(), oldRelease.toString()));
 
     Release release = newReleases.getNextRelease(nonMatchedRelease);
