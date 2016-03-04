@@ -24,12 +24,11 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
   private final CustomDataStorage dataStorage;
   private final Map<String, String> props;
 
-  //todo: remove dependency on asyncTriggerParameters
-  public  ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
+  public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
     this(new ReleasesProviderFactory(), displayName, buildType, dataStorage, properties);
   }
 
-  public  ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
+  public ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
     this.releasesProviderFactory = releasesProviderFactory;
     this.displayName = displayName;
     this.buildType = buildType;
@@ -55,13 +54,13 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
       final Release newRelease = newReleases.getNextRelease(oldRelease);
       final String newStoredData = newRelease.toString();
 
-      if (!newRelease.toString().equals(oldRelease.toString())) {
+      if (!newRelease.toString().equals(oldStoredData)) {
         dataStorage.putValue(dataStorageKey, newStoredData);
 
         //todo: see if its possible to to check the property on the context that says whether its new?
         //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
         //do not trigger build after first adding trigger (oldReleases == null)
-        if (oldRelease.getClass().equals(NullRelease.class)) {
+        if (oldStoredData == null) {
           LOG.debug("No previous releases known for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
           return ReleaseCreatedSpecCheckResult.createEmptyResult();
         }

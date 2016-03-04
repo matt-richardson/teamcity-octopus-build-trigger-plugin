@@ -108,7 +108,6 @@ public class ReleaseCreatedCheckJobTest {
         Assert.assertFalse(result.hasCheckErrors());
     }
 
-    //todo: issue where if trigger is created before any releases, then it will miss the first release
     public void perform_returns_empty_result_if_no_previous_data_stored() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         //this situation is when trigger is first setup
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
@@ -121,9 +120,38 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<ReleaseCreatedSpec>result = sut.perform();
+        //this is when the trigger is created
+        CheckResult<ReleaseCreatedSpec> result = sut.perform();
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
+    }
+
+    public void perform_returns_empty_result_if_no_previous_data_stored_first_time_then_returns_updates_second_time() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        //this situation is when trigger is first setup
+        ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithNoReleases());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage();
+
+        Map<String,String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties);
+        //this is when the trigger is created
+        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        Assert.assertFalse(result.updatesDetected());
+        Assert.assertFalse(result.hasCheckErrors());
+
+        releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
+        sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties);
+        //this is the first check
+        result = sut.perform();
+        Assert.assertTrue(result.updatesDetected());
+        Assert.assertFalse(result.hasCheckErrors());
+        Assert.assertEquals(result.getUpdated().size(), 1);
+        ReleaseCreatedSpec updated[] = result.getUpdated().toArray(new ReleaseCreatedSpec[0]);
+        Assert.assertEquals(updated[0].getRequestorString(), "Release 1.0.0 of project the-project-id created on the-url");
     }
 
     public void perform_returns_updated_result_if_new_release() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
