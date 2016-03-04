@@ -12,4 +12,9 @@ public class NullReleaseTest {
         Assert.assertEquals(sut.assembledDate.getClass(), NullOctopusDate.class);
         Assert.assertEquals(sut.version, "");
     }
+
+    public void can_parse_to_null_release() {
+        Release sut = Release.Parse(new NullRelease().toString());
+        Assert.assertEquals(sut.getClass(), NullRelease.class);
+    }
 }

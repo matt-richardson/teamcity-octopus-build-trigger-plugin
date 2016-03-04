@@ -30,12 +30,16 @@ public class Release implements Comparable<Release> {
         if (pair == null || pair == "") {
             return new NullRelease();
         }
-        final String[] split = pair.split(";");
+        final Integer DONT_REMOVE_EMPTY_VALUES = -1;
+        final String[] split = pair.split(";", DONT_REMOVE_EMPTY_VALUES);
         final String releaseId = split[0];
         final OctopusDate assembledDate = OctopusDate.Parse(split[1]);
         final String version = split[2];
 
-        return new Release(releaseId, assembledDate, version);
+        Release result = new Release(releaseId, assembledDate, version);
+        if (result.equals(new NullRelease()))
+            return new NullRelease();
+        return result;
     }
 
     @Override
