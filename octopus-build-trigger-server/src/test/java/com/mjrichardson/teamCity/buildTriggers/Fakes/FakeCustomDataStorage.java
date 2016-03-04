@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class FakeCustomDataStorage implements CustomDataStorage {
-    private final String storedDataValue;
+    private String storedDataValue;
 
     public FakeCustomDataStorage() {
         this(null);
@@ -36,7 +36,7 @@ public class FakeCustomDataStorage implements CustomDataStorage {
 
     @Override
     public void putValue(@NotNull String s, @Nullable String s1) {
-
+        storedDataValue = s1;
     }
 
     @Override
