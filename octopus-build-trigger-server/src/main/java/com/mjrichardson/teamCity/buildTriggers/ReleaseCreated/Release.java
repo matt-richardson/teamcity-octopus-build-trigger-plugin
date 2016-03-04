@@ -42,4 +42,13 @@ public class Release implements Comparable<Release> {
     public int compareTo(Release o) {
         return o.assembledDate.compareTo(assembledDate);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (obj.getClass() != Release.class && obj.getClass() != NullRelease.class)
+            return false;
+        return toString().equals(obj.toString());
+    }
 }

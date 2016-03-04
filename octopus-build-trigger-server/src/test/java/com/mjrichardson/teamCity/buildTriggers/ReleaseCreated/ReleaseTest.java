@@ -58,4 +58,20 @@ public class ReleaseTest {
         Assert.assertEquals(sut.version, "1.0.3");
         Assert.assertEquals(sut.assembledDate, new OctopusDate(2016, 01, 20, 14, 32, 59, 991));
     }
+
+    public void equals_returns_false_when_other_object_is_not_a_release() {
+        Release sut = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0");
+        Assert.assertFalse(sut.equals(new Releases()));
+    }
+
+    public void equals_returns_false_when_other_object_is_null() {
+        Release sut = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0");
+        Assert.assertFalse(sut.equals(null));
+    }
+
+    public void equals_returns_true_when_both_objects_are_same() {
+        Release sut = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0");
+        Release other = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0");
+        Assert.assertTrue(sut.equals(other));
+    }
 }
