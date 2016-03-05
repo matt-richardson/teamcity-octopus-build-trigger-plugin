@@ -29,8 +29,6 @@ public class OctopusConnectivityChecker {
       return e.getMessage();
     } catch (Throwable e) {
       return e.getMessage();
-    } finally {
-      contentProvider.close();
     }
   }
 }

@@ -49,17 +49,19 @@ public class HttpContentProviderImpl implements HttpContentProvider {
   private static final Logger LOG = Logger.getInstance(HttpContentProviderImpl.class.getName());
 
   private final String octopusUrl;
-  CloseableHttpClient httpClient;
+  ;
   @NotNull
   private String apiKey;
+  @NotNull
+  private final Integer connectionTimeout;
 
   public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
     this.octopusUrl = octopusUrl;
     this.apiKey = apiKey;
-    this.init(connectionTimeout);
+    this.connectionTimeout = connectionTimeout;
   }
 
-  private void init(@NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+  private CloseableHttpClient getHttpClient(@NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
     final RequestConfig requestConfig = RequestConfig.custom()
                                                      .setConnectTimeout(connectionTimeout)
                                                      .setConnectionRequestTimeout(connectionTimeout)
@@ -76,32 +78,24 @@ public class HttpContentProviderImpl implements HttpContentProvider {
                                                  .setDefaultRequestConfig(requestConfig)
                                                  .setSSLSocketFactory(sslConnectionFactory);
 
-    httpClient = builder.build();
+    return builder.build();
   }
 
   public String getUrl() {
     return this.octopusUrl;
   }
 
-  public void close() {
-    if (httpClient == null) return;
-    try {
-      httpClient.close();
-    } catch (IOException e) {
-      //
-    }
-  }
-
   @NotNull
-  public String getContent(@NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException {
+  public String getContent(@NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
     final URI uri = new URL(octopusUrl + uriPath).toURI();
     final HttpGet httpGet = new HttpGet(uri);
+    CloseableHttpClient httpClient = getHttpClient(this.connectionTimeout);;
 
     try {
       LOG.info("Getting response from url " + uri);
-
       final HttpContext httpContext = HttpClientContext.create();
       httpGet.addHeader("X-Octopus-ApiKey", this.apiKey);
+
       final CloseableHttpResponse response = httpClient.execute(httpGet, httpContext);
 
       final int statusCode = response.getStatusLine().getStatusCode();
@@ -128,6 +122,13 @@ public class HttpContentProviderImpl implements HttpContentProvider {
 
     } finally {
       httpGet.releaseConnection();
+      if (httpClient != null) {
+        try {
+          httpClient.close();
+        } catch (IOException e) {
+          //
+        }
+      }
     }
   }
 

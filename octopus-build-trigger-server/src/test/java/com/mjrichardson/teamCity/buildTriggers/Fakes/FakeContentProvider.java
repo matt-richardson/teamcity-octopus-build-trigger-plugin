@@ -11,7 +11,6 @@ import java.net.URISyntaxException;
 public class FakeContentProvider implements HttpContentProvider {
     private Throwable exception = null;
     public String requestedUriPath = null;
-    public boolean closeWasCalled;
     private String octopusUrl = null;
     private String octopusApiKey = null;
 
@@ -27,11 +26,6 @@ public class FakeContentProvider implements HttpContentProvider {
     public FakeContentProvider(Throwable exception) {
         this.exception = exception;
         this.octopusUrl = "http://fake-url";
-    }
-
-    @Override
-    public void close() {
-        closeWasCalled = true;
     }
 
     @Override

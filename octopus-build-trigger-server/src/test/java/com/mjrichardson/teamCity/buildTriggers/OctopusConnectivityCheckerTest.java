@@ -16,7 +16,6 @@ public class OctopusConnectivityCheckerTest {
         FakeContentProvider contentProvider = new FakeContentProvider();
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), null);
-        Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -25,7 +24,6 @@ public class OctopusConnectivityCheckerTest {
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
-        Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -34,7 +32,6 @@ public class OctopusConnectivityCheckerTest {
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
-        Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -43,7 +40,6 @@ public class OctopusConnectivityCheckerTest {
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
-        Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -52,7 +48,6 @@ public class OctopusConnectivityCheckerTest {
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
-        Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -61,7 +56,6 @@ public class OctopusConnectivityCheckerTest {
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
-        Assert.assertTrue(contentProvider.closeWasCalled);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
