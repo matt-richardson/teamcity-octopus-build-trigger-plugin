@@ -4,15 +4,10 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import org.jetbrains.annotations.NotNull;
 
-//todo: needs tests
 public class ReleasesProviderImpl implements ReleasesProvider {
     @NotNull
     private static final Logger LOG = Logger.getInstance(ReleasesProviderImpl.class.getName());
     private final HttpContentProviderFactory httpContentProviderFactory;
-
-//    public ReleasesProviderImpl(String octopusUrl, String apiKey, Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-//        this(new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout));
-//    }
 
     public ReleasesProviderImpl(HttpContentProviderFactory httpContentProviderFactory) {
         this.httpContentProviderFactory = httpContentProviderFactory;
@@ -59,9 +54,9 @@ public class ReleasesProviderImpl implements ReleasesProvider {
     private boolean shouldGetNextPage(Release oldRelease, Releases newReleases, ApiProjectReleasesResponse apiProjectReleasesResponse) {
         if (newReleases.isEmpty())
             return false;
-        if (apiProjectReleasesResponse.nextLink == null)
-            return false;
         if (newReleases.contains(oldRelease))
+            return false;
+        if (apiProjectReleasesResponse.nextLink == null)
             return false;
         return true;
     }

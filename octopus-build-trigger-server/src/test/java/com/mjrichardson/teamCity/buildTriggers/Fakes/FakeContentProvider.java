@@ -26,6 +26,7 @@ public class FakeContentProvider implements HttpContentProvider {
 
     public FakeContentProvider(Throwable exception) {
         this.exception = exception;
+        this.octopusUrl = "http://fake-url";
     }
 
     @Override
@@ -61,7 +62,7 @@ public class FakeContentProvider implements HttpContentProvider {
         if (!this.octopusApiKey.startsWith("API-")) {
             throw new InvalidOctopusApiKeyException(401, "Invalid octopus api key");
         }
-        if (uriPath.endsWith("Projects-00")) {
+        if (uriPath.contains("Projects-00")) {
             throw new ProjectNotFoundException("Projects-00");
         }
 

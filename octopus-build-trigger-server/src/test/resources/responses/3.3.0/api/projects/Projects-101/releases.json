@@ -1,0 +1,12 @@
+{
+  "ItemType": "Release",
+  "IsStale": false,
+  "TotalResults": 0,
+  "ItemsPerPage": 30,
+  "Items": [],
+  "Links": {
+    "Self": "/api/projects/Projects-101/releases",
+    "Template": "/api/projects/Projects-101/releases",
+    "Page.Current": "/api/projects/Projects-101/releases?skip=0"
+  }
+}

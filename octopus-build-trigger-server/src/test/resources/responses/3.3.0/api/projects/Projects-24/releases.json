@@ -1,0 +1,41 @@
+{
+  "ItemType": "Release",
+  "IsStale": false,
+  "TotalResults": 1,
+  "ItemsPerPage": 30,
+  "Items": [
+    {
+      "Id": "Releases-63",
+      "Assembled": "2016-01-21T13:31:50.304+00:00",
+      "ReleaseNotes": null,
+      "ProjectId": "Projects-24",
+      "ChannelId": "Channels-24",
+      "ProjectVariableSetSnapshotId": "variableset-Projects-24-s-0-ZWV6Q",
+      "LibraryVariableSetSnapshotIds": [],
+      "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-24-s-0-F639H",
+      "SelectedPackages": [],
+      "Version": "0.0.1",
+      "Links": {
+        "Self": "/api/releases/Releases-63{?force}",
+        "Project": "/api/projects/Projects-24",
+        "Progression": "/api/releases/Releases-63/progression",
+        "Deployments": "/api/releases/Releases-63/deployments{?skip}",
+        "DeploymentTemplate": "/api/releases/Releases-63/deployments/template",
+        "Artifacts": "/api/artifacts?regarding=Releases-63",
+        "ProjectVariableSnapshot": "/api/variables/variableset-Projects-24-s-0-ZWV6Q",
+        "ProjectDeploymentProcessSnapshot": "/api/deploymentprocesses/deploymentprocess-Projects-24-s-0-F639H",
+        "Web": "/app#/releases/Releases-63",
+        "SnapshotVariables": "/api/releases/Releases-63/snapshot-variables",
+        "Defects": "/api/releases/Releases-63/defects",
+        "ReportDefect": "/api/releases/Releases-63/defects",
+        "ResolveDefect": "/api/releases/Releases-63/defects/resolve"
+      }
+    }
+  ],
+  "Links": {
+    "Self": "/api/projects/Projects-24/releases",
+    "Template": "/api/projects/Projects-24/releases",
+    "Page.Current": "/api/projects/Projects-24/releases?skip=0",
+    "Page.0": "/api/projects/Projects-24/releases?skip=0"
+  }
+}
