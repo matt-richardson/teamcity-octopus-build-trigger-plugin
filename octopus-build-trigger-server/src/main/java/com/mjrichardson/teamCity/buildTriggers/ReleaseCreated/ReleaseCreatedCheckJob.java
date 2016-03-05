@@ -13,7 +13,6 @@ import java.util.Map;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-//todo: this needs tests
 class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
   @NotNull
   private static final Logger LOG = Logger.getInstance(ReleaseCreatedCheckJob.class.getName());
