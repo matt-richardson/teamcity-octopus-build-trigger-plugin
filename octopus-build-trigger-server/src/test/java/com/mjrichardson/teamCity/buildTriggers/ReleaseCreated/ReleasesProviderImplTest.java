@@ -84,7 +84,6 @@ public class ReleasesProviderImplTest {
     ReleasesProviderImpl ReleasesProviderImpl = new ReleasesProviderImpl(contentProviderFactory);
     Release oldRelease = new NullRelease();
 
-    //todo: need another test around HttpContentProviderImpl
     ReleasesProviderImpl.getReleases(ProjectWithLatestReleaseSuccessful, oldRelease);
   }
 
@@ -94,7 +93,6 @@ public class ReleasesProviderImplTest {
     ReleasesProviderImpl ReleasesProviderImpl = new ReleasesProviderImpl(contentProviderFactory);
     Release oldRelease = new NullRelease();
 
-    //todo: need another test around HttpContentProviderImpl
     ReleasesProviderImpl.getReleases(ProjectWithLatestReleaseSuccessful, oldRelease);
   }
 
@@ -104,7 +102,6 @@ public class ReleasesProviderImplTest {
     ReleasesProviderImpl ReleasesProviderImpl = new ReleasesProviderImpl(contentProviderFactory);
     Release oldRelease = new NullRelease();
 
-    //todo: need another test around HttpContentProviderImpl
     ReleasesProviderImpl.getReleases(ProjectWithLatestReleaseSuccessful, oldRelease);
   }
 
@@ -114,7 +111,6 @@ public class ReleasesProviderImplTest {
     ReleasesProviderImpl ReleasesProviderImpl = new ReleasesProviderImpl(contentProviderFactory);
     Release oldRelease = new NullRelease();
 
-    //todo: need another test around HttpContentProviderImpl
     ReleasesProviderImpl.getReleases(ProjectWithLatestReleaseSuccessful, oldRelease);
   }
 
