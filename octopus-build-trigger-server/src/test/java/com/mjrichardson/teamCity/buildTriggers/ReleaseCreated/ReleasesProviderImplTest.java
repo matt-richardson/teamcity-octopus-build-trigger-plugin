@@ -39,7 +39,7 @@ public class ReleasesProviderImplTest {
   static String ProjectWithManyReleases = "Projects-103";
   static String ProjectThatDoesNotExist = "Projects-00";
 
-  @Test(enabled = false)
+  @Test(groups = { "needs-real-server" })
   public void get_releases_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, ReleasesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
     HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT);
     ReleasesProviderImpl ReleasesProviderImpl = new ReleasesProviderImpl(contentProviderFactory);
