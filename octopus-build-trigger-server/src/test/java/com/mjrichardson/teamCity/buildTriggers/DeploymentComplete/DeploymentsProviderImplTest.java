@@ -46,7 +46,7 @@ public class DeploymentsProviderImplTest {
     HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT);
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
-    Deployments newDeployments = deploymentsProviderImpl.getDeployments("Project with latest deployment successful", oldDeployments);
+    Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
     Assert.assertNotNull(newDeployments);
   }
 
