@@ -37,13 +37,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//todo: needs tests
 public class HttpContentProviderImpl implements HttpContentProvider {
   @NotNull
   private static final Logger LOG = Logger.getInstance(HttpContentProviderImpl.class.getName());
@@ -119,8 +119,11 @@ public class HttpContentProviderImpl implements HttpContentProvider {
       final String content = EntityUtils.toString(entity);
       LOG.info("request to " + uri + " returned " + content);
       return content;
-
-    } finally {
+    }
+    catch (UnknownHostException e) {
+        throw new InvalidOctopusUrlException(uri, e);
+    }
+    finally {
       httpGet.releaseConnection();
       if (httpClient != null) {
         try {
@@ -131,5 +134,4 @@ public class HttpContentProviderImpl implements HttpContentProvider {
       }
     }
   }
-
 }

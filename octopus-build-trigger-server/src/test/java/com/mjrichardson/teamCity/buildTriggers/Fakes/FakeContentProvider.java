@@ -65,7 +65,7 @@ public class FakeContentProvider implements HttpContentProvider {
             InputStream resource = getClass().getResourceAsStream(resourceName);
             return IOUtils.toString(resource);
         } catch (IOException e) {
-            throw new InvalidOctopusUrlException(new URI(s));
+            throw new InvalidOctopusUrlException(new URI(s), e);
         }
     }
 

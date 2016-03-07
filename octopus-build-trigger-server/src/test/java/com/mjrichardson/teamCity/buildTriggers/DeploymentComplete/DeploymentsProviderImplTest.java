@@ -107,7 +107,6 @@ public class DeploymentsProviderImplTest {
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
 
-    //todo: need another test around HttpContentProviderImpl
     deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
   }
 
@@ -117,7 +116,6 @@ public class DeploymentsProviderImplTest {
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
 
-    //todo: need another test around HttpContentProviderImpl
     deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
   }
 
@@ -127,7 +125,6 @@ public class DeploymentsProviderImplTest {
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
 
-    //todo: need another test around HttpContentProviderImpl
     deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
   }
 
@@ -137,7 +134,6 @@ public class DeploymentsProviderImplTest {
     DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
     Deployments oldDeployments = new Deployments();
 
-    //todo: need another test around HttpContentProviderImpl
     deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
   }
 
