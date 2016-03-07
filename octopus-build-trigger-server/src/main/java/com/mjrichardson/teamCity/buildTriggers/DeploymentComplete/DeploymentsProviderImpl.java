@@ -21,48 +21,44 @@ import com.mjrichardson.teamCity.buildTriggers.*;
 import org.jetbrains.annotations.NotNull;
 
 public class DeploymentsProviderImpl implements DeploymentsProvider {
-  @NotNull
-  private static final Logger LOG = Logger.getInstance(DeploymentsProviderImpl.class.getName());
-  private final HttpContentProviderFactory httpContentProviderFactory;
+    @NotNull
+    private static final Logger LOG = Logger.getInstance(DeploymentsProviderImpl.class.getName());
+    private final HttpContentProviderFactory httpContentProviderFactory;
 
-  public DeploymentsProviderImpl(HttpContentProviderFactory httpContentProviderFactory) {
-    this.httpContentProviderFactory = httpContentProviderFactory;
-  }
-
-  public Deployments getDeployments(String projectId, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
-    String url = null;
-
-    try {
-      HttpContentProvider contentProvider = httpContentProviderFactory.getContentProvider();
-      url = contentProvider.getUrl();
-      LOG.debug("Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
-
-      final String apiResponse = contentProvider.getContent("/api");
-      final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);
-
-      final String progressionResponse = contentProvider.getContent(apiRootResponse.progressionApiLink + "/" + projectId);
-      final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse);
-
-      if (apiProgressionResponse.haveCompleteInformation)
-        return apiProgressionResponse.deployments;
-
-      final ApiDeploymentsResponse apiDeploymentsResponse = new ApiDeploymentsResponse(
-        contentProvider, apiRootResponse.deploymentsApiLink, projectId,
-        oldDeployments, apiProgressionResponse.deployments);
-
-      return apiDeploymentsResponse.deployments;
+    public DeploymentsProviderImpl(HttpContentProviderFactory httpContentProviderFactory) {
+        this.httpContentProviderFactory = httpContentProviderFactory;
     }
-    catch (InvalidOctopusApiKeyException e) {
-      throw e;
+
+    public Deployments getDeployments(String projectId, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+        String url = null;
+
+        try {
+            HttpContentProvider contentProvider = httpContentProviderFactory.getContentProvider();
+            url = contentProvider.getUrl();
+            LOG.debug("Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
+
+            final String apiResponse = contentProvider.getContent("/api");
+            final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);
+
+            final String progressionResponse = contentProvider.getContent(apiRootResponse.progressionApiLink + "/" + projectId);
+            final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse);
+
+            if (apiProgressionResponse.haveCompleteInformation)
+                return apiProgressionResponse.deployments;
+
+            final ApiDeploymentsResponse apiDeploymentsResponse = new ApiDeploymentsResponse(
+                    contentProvider, apiRootResponse.deploymentsApiLink, projectId,
+                    oldDeployments, apiProgressionResponse.deployments);
+
+            return apiDeploymentsResponse.deployments;
+        } catch (InvalidOctopusApiKeyException e) {
+            throw e;
+        } catch (InvalidOctopusUrlException e) {
+            throw e;
+        } catch (ProjectNotFoundException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new DeploymentsProviderException(String.format("Unexpected exception in DeploymentsProviderImpl, while attempting to get deployments from %s: %s", url, e), e);
+        }
     }
-    catch (InvalidOctopusUrlException e) {
-      throw e;
-    }
-    catch (ProjectNotFoundException e) {
-      throw e;
-    }
-    catch (Throwable e) {
-      throw new DeploymentsProviderException(String.format("Unexpected exception in DeploymentsProviderImpl, while attempting to get deployments from %s: %s", url, e), e);
-    }
-  }
 }

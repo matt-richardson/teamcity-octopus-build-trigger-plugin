@@ -1,15 +1,15 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="TestAll">
-  <test name="travis-ci">
-    <groups>
-      <run>
-        <exclude name="needs-real-server" />
-      </run>
-    </groups>
-    <packages>
-      <package name="com.mjrichardson.teamCity.buildTriggers" />
-      <package name="com.mjrichardson.teamCity.buildTriggers.DeploymentComplete" />
-      <package name="com.mjrichardson.teamCity.buildTriggers.ReleaseCreated" />
-     </packages>
-  </test>
+    <test name="travis-ci">
+        <groups>
+            <run>
+                <exclude name="needs-real-server"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="com.mjrichardson.teamCity.buildTriggers"/>
+            <package name="com.mjrichardson.teamCity.buildTriggers.DeploymentComplete"/>
+            <package name="com.mjrichardson.teamCity.buildTriggers.ReleaseCreated"/>
+        </packages>
+    </test>
 </suite>

@@ -14,6 +14,6 @@ import java.text.ParseException;
 public class FakeReleasesProviderWithOneRelease implements ReleasesProvider {
     @Override
     public Releases getReleases(String octopusProject, Release oldRelease) throws ReleasesProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
-        return new Releases(new Release("release-1", new OctopusDate(2016,3,1), "1.0.0"));
+        return new Releases(new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0"));
     }
 }

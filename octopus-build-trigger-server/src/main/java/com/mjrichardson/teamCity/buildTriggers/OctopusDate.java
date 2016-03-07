@@ -13,18 +13,15 @@ public class OctopusDate {
         this.dateTime = dateTime;
     }
 
-    public OctopusDate(int year, int month, int dayOfMonth)
-    {
+    public OctopusDate(int year, int month, int dayOfMonth) {
         this(year, month, dayOfMonth, 0, 0, 0, 0);
     }
 
-    public OctopusDate(int year, int month, int dayOfMonth, int hour, int minute, int seconds)
-    {
+    public OctopusDate(int year, int month, int dayOfMonth, int hour, int minute, int seconds) {
         this(year, month, dayOfMonth, hour, minute, seconds, 0);
     }
 
-    public OctopusDate(int year, int month, int dayOfMonth, int hour, int minute, int seconds, int milliseconds)
-    {
+    public OctopusDate(int year, int month, int dayOfMonth, int hour, int minute, int seconds, int milliseconds) {
         dateTime = new DateTime(year, month, dayOfMonth, hour, minute, seconds, milliseconds, DateTimeZone.UTC);
     }
 
@@ -42,7 +39,7 @@ public class OctopusDate {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() != OctopusDate.class && obj.getClass() != NullOctopusDate.class )
+        if (obj.getClass() != OctopusDate.class && obj.getClass() != NullOctopusDate.class)
             return false;
         return obj.toString().equals(toString());
     }

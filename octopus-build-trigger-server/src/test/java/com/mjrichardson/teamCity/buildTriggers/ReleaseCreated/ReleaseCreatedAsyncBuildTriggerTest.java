@@ -17,7 +17,7 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 @Test
 public class ReleaseCreatedAsyncBuildTriggerTest {
     @Test(expectedExceptions = BuildTriggerException.class,
-          expectedExceptionsMessageRegExp = "the display name failed with error: the exception message")
+            expectedExceptionsMessageRegExp = "the display name failed with error: the exception message")
     public void make_trigger_exception_throws_build_trigger_exception() {
         String displayName = "the display name";
         int pollInterval = 100;
@@ -67,7 +67,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
         Integer pollInterval = 100;
         ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollInterval);
 
-        HashMap<String,String> hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
         hashMap.put(OCTOPUS_URL, "the-server");
 
@@ -81,7 +81,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
         Integer pollInterval = 100;
         ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollInterval);
 
-        HashMap<String,String> hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
         hashMap.put(OCTOPUS_URL, "the-server");
         hashMap.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");

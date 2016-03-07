@@ -59,7 +59,7 @@ public class OctopusConnectivityCheckerTest {
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
-    @Test(groups = { "needs-internet-access" })
+    @Test(groups = {"needs-internet-access"})
     public void check_octopus_connectivity_against_live_octopus_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker("https://demo.octopusdeploy.com", "", 6000);
         String result = sut.checkOctopusConnectivity();

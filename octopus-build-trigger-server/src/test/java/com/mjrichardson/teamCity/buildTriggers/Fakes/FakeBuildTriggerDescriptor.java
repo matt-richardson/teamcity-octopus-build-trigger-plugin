@@ -15,7 +15,7 @@ public class FakeBuildTriggerDescriptor implements BuildTriggerDescriptor {
     private Map<String, String> properties;
 
     private static Map<String, String> getDefaultProperties() {
-        HashMap<String,String> hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
         hashMap.put(OCTOPUS_URL, "the-server");
         return hashMap;

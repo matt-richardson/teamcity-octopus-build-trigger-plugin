@@ -24,58 +24,56 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID;
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT;
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
+import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
 class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<DeploymentCompleteSpec> {
-  private final String displayName;
-  private final int pollInterval;
-  @NotNull
-  private static final Logger LOG = Logger.getInstance(DeploymentCompleteAsyncBuildTrigger.class.getName());
+    private final String displayName;
+    private final int pollInterval;
+    @NotNull
+    private static final Logger LOG = Logger.getInstance(DeploymentCompleteAsyncBuildTrigger.class.getName());
 
-  public DeploymentCompleteAsyncBuildTrigger(String displayName, int pollInterval) {
-    this.displayName = displayName;
-    this.pollInterval = pollInterval;
-  }
-
-  @NotNull
-  public BuildTriggerException makeTriggerException(@NotNull Throwable throwable) {
-    throw new BuildTriggerException(displayName + " failed with error: " + throwable.getMessage(), throwable);
-  }
-
-  @NotNull
-  public String getRequestorString(@NotNull DeploymentCompleteSpec deploymentCompleteSpec) {
-    return deploymentCompleteSpec.getRequestorString();
-  }
-
-  public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
-    return pollInterval;
-  }
-
-  @NotNull
-  public CheckJob<DeploymentCompleteSpec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
-    return new DeploymentCompleteCheckJob(displayName,
-                                          asyncTriggerParameters.getBuildType().toString(),
-                                          asyncTriggerParameters.getCustomDataStorage(),
-                                          asyncTriggerParameters.getTriggerDescriptor().getProperties());
-  }
-
-  @NotNull
-  public CheckResult<DeploymentCompleteSpec> createCrashOnSubmitResult(@NotNull Throwable throwable) {
-    return DeploymentCompleteSpecCheckResult.createThrowableResult(throwable);
-  }
-
-  public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
-    Map<String, String> properties = buildTriggerDescriptor.getProperties();
-    String flag = properties.get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT);
-    if (flag != null && flag.equals("true")) {
-      return String.format("Wait for a new successful deployment of %s on server %s.",
-          properties.get(OCTOPUS_PROJECT_ID),
-          properties.get(OCTOPUS_URL));
+    public DeploymentCompleteAsyncBuildTrigger(String displayName, int pollInterval) {
+        this.displayName = displayName;
+        this.pollInterval = pollInterval;
     }
-    return String.format("Wait for a new deployment of %s on server %s.",
+
+    @NotNull
+    public BuildTriggerException makeTriggerException(@NotNull Throwable throwable) {
+        throw new BuildTriggerException(displayName + " failed with error: " + throwable.getMessage(), throwable);
+    }
+
+    @NotNull
+    public String getRequestorString(@NotNull DeploymentCompleteSpec deploymentCompleteSpec) {
+        return deploymentCompleteSpec.getRequestorString();
+    }
+
+    public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
+        return pollInterval;
+    }
+
+    @NotNull
+    public CheckJob<DeploymentCompleteSpec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
+        return new DeploymentCompleteCheckJob(displayName,
+                asyncTriggerParameters.getBuildType().toString(),
+                asyncTriggerParameters.getCustomDataStorage(),
+                asyncTriggerParameters.getTriggerDescriptor().getProperties());
+    }
+
+    @NotNull
+    public CheckResult<DeploymentCompleteSpec> createCrashOnSubmitResult(@NotNull Throwable throwable) {
+        return DeploymentCompleteSpecCheckResult.createThrowableResult(throwable);
+    }
+
+    public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
+        Map<String, String> properties = buildTriggerDescriptor.getProperties();
+        String flag = properties.get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT);
+        if (flag != null && flag.equals("true")) {
+            return String.format("Wait for a new successful deployment of %s on server %s.",
+                    properties.get(OCTOPUS_PROJECT_ID),
+                    properties.get(OCTOPUS_URL));
+        }
+        return String.format("Wait for a new deployment of %s on server %s.",
                 properties.get(OCTOPUS_PROJECT_ID),
                 properties.get(OCTOPUS_URL));
-  }
+    }
 }

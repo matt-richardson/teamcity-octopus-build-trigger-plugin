@@ -2,7 +2,8 @@ package com.mjrichardson.teamCity.buildTriggers.Fakes;
 
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.async.AsyncTriggerParameters;
-import jetbrains.buildServer.serverSide.*;
+import jetbrains.buildServer.serverSide.CustomDataStorage;
+import jetbrains.buildServer.serverSide.SBuildType;
 import org.jetbrains.annotations.NotNull;
 
 public class FakeAsyncTriggerParameters implements AsyncTriggerParameters {

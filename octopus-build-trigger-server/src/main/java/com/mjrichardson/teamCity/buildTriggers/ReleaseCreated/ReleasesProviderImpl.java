@@ -36,17 +36,13 @@ public class ReleasesProviderImpl implements ReleasesProvider {
                 newReleases.add(apiProjectReleasesResponse.releases);
             }
             return newReleases;
-        }
-        catch (InvalidOctopusApiKeyException e) {
+        } catch (InvalidOctopusApiKeyException e) {
             throw e;
-        }
-        catch (InvalidOctopusUrlException e) {
+        } catch (InvalidOctopusUrlException e) {
             throw e;
-        }
-        catch (ProjectNotFoundException e) {
+        } catch (ProjectNotFoundException e) {
             throw e;
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             throw new ReleasesProviderException(String.format("Unexpected exception in ReleasesProviderImpl, while attempting to get releases from %s: %s", url, e), e);
         }
     }

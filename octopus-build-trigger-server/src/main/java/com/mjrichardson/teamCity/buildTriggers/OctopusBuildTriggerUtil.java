@@ -17,14 +17,14 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
 public final class OctopusBuildTriggerUtil {
-  public static String OCTOPUS_URL = "octopus.build.trigger.url";
-  public static String OCTOPUS_APIKEY = "octopus.build.trigger.apikey";
-  public static String OCTOPUS_PROJECT_ID = "octopus.build.trigger.project.url";
-  public static String OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT = "octopus.build.trigger.only.on.successful.deployment";
+    public static String OCTOPUS_URL = "octopus.build.trigger.url";
+    public static String OCTOPUS_APIKEY = "octopus.build.trigger.apikey";
+    public static String OCTOPUS_PROJECT_ID = "octopus.build.trigger.project.url";
+    public static String OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT = "octopus.build.trigger.only.on.successful.deployment";
 
-  public static String POLL_INTERVAL_PROP = "octops.build.trigger.poll.interval";
-  public static final Integer DEFAULT_POLL_INTERVAL = 30; // seconds
+    public static String POLL_INTERVAL_PROP = "octops.build.trigger.poll.interval";
+    public static final Integer DEFAULT_POLL_INTERVAL = 30; // seconds
 
-  public static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout";
-  public static final Integer DEFAULT_CONNECTION_TIMEOUT = 60 * 1000; // milliseconds
+    public static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout";
+    public static final Integer DEFAULT_CONNECTION_TIMEOUT = 60 * 1000; // milliseconds
 }

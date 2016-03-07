@@ -1,9 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentsProvider;
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentsProviderFactory;
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentsProviderImpl;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

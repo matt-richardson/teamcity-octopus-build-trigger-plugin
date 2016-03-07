@@ -22,64 +22,64 @@ import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import java.util.Map;
 
 public class Deployment {
-  public final String environmentId;
-  public OctopusDate latestDeployment;//todo:consider if we can make this class idempotent
-  public OctopusDate latestSuccessfulDeployment;
+    public final String environmentId;
+    public OctopusDate latestDeployment;//todo:consider if we can make this class idempotent
+    public OctopusDate latestSuccessfulDeployment;
 
-  public Deployment(String environmentId, OctopusDate latestDeployment) {
-    this(environmentId, latestDeployment, new NullOctopusDate());
-  }
+    public Deployment(String environmentId, OctopusDate latestDeployment) {
+        this(environmentId, latestDeployment, new NullOctopusDate());
+    }
 
-  public Deployment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
-    this.environmentId = environmentId;
-    this.latestDeployment = latestDeployment;
-    this.latestSuccessfulDeployment = latestSuccessfulDeployment;
-  }
+    public Deployment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
+        this.environmentId = environmentId;
+        this.latestDeployment = latestDeployment;
+        this.latestSuccessfulDeployment = latestSuccessfulDeployment;
+    }
 
-  public boolean isLatestDeploymentOlderThan(OctopusDate compareDate) {
-    return this.latestDeployment.compareTo(compareDate) < 0;
-  }
+    public boolean isLatestDeploymentOlderThan(OctopusDate compareDate) {
+        return this.latestDeployment.compareTo(compareDate) < 0;
+    }
 
-  public boolean isLatestSuccessfulDeploymentOlderThen(OctopusDate compareDate) {
-    return this.latestSuccessfulDeployment.compareTo(compareDate) < 0;
-  }
+    public boolean isLatestSuccessfulDeploymentOlderThen(OctopusDate compareDate) {
+        return this.latestSuccessfulDeployment.compareTo(compareDate) < 0;
+    }
 
-  public boolean isSuccessful() {
-    return this.latestSuccessfulDeployment.compareTo(this.latestDeployment) == 0;
-  }
+    public boolean isSuccessful() {
+        return this.latestSuccessfulDeployment.compareTo(this.latestDeployment) == 0;
+    }
 
-  public boolean hasHadAtLeastOneSuccessfulDeployment() {
-    return this.latestSuccessfulDeployment.compareTo(new NullOctopusDate()) > 0;
-  }
+    public boolean hasHadAtLeastOneSuccessfulDeployment() {
+        return this.latestSuccessfulDeployment.compareTo(new NullOctopusDate()) > 0;
+    }
 
-  @Override
-  public String toString() {
-    return String.format("%s;%s;%s", environmentId, latestDeployment, latestSuccessfulDeployment);
-  }
+    @Override
+    public String toString() {
+        return String.format("%s;%s;%s", environmentId, latestDeployment, latestSuccessfulDeployment);
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null)
-      return false;
-    if (obj.getClass() != Deployment.class && obj.getClass() != NullDeployment.class )
-      return false;
-    return obj.toString().equals(toString());
-  }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (obj.getClass() != Deployment.class && obj.getClass() != NullDeployment.class)
+            return false;
+        return obj.toString().equals(toString());
+    }
 
-  public boolean isLatestSuccessfulDeploymentNewerThan(OctopusDate compareDate) {
-    return this.latestSuccessfulDeployment.compareTo(compareDate) > 0;
-  }
+    public boolean isLatestSuccessfulDeploymentNewerThan(OctopusDate compareDate) {
+        return this.latestSuccessfulDeployment.compareTo(compareDate) > 0;
+    }
 
-  public static Deployment Parse(Map map) {
-    OctopusDate createdDate = OctopusDate.Parse(map.get("Created").toString());
-    Boolean isCompleted = Boolean.parseBoolean(map.get("IsCompleted").toString());
-    Boolean isSuccessful = map.get("State").toString().equals("Success");
-    String environmentId = map.get("EnvironmentId").toString();
+    public static Deployment Parse(Map map) {
+        OctopusDate createdDate = OctopusDate.Parse(map.get("Created").toString());
+        Boolean isCompleted = Boolean.parseBoolean(map.get("IsCompleted").toString());
+        Boolean isSuccessful = map.get("State").toString().equals("Success");
+        String environmentId = map.get("EnvironmentId").toString();
 
-    if (!isCompleted)
-      return new NullDeployment();
-    if (isSuccessful)
-      return new Deployment(environmentId, createdDate, createdDate);
-    return new Deployment(environmentId, createdDate);
-  }
+        if (!isCompleted)
+            return new NullDeployment();
+        if (isSuccessful)
+            return new Deployment(environmentId, createdDate, createdDate);
+        return new Deployment(environmentId, createdDate);
+    }
 }

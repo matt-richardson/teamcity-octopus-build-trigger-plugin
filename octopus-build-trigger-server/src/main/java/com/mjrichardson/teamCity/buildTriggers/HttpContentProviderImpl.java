@@ -45,93 +45,92 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HttpContentProviderImpl implements HttpContentProvider {
-  @NotNull
-  private static final Logger LOG = Logger.getInstance(HttpContentProviderImpl.class.getName());
+    @NotNull
+    private static final Logger LOG = Logger.getInstance(HttpContentProviderImpl.class.getName());
 
-  private final String octopusUrl;
-  ;
-  @NotNull
-  private String apiKey;
-  @NotNull
-  private final Integer connectionTimeout;
+    private final String octopusUrl;
+    ;
+    @NotNull
+    private String apiKey;
+    @NotNull
+    private final Integer connectionTimeout;
 
-  public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-    this.octopusUrl = octopusUrl;
-    this.apiKey = apiKey;
-    this.connectionTimeout = connectionTimeout;
-  }
-
-  private CloseableHttpClient getHttpClient(@NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-    final RequestConfig requestConfig = RequestConfig.custom()
-                                                     .setConnectTimeout(connectionTimeout)
-                                                     .setConnectionRequestTimeout(connectionTimeout)
-                                                     .setSocketTimeout(connectionTimeout)
-                                                     .build();
-
-    final SSLContext sslContext = SSLContexts.custom()
-                                             .loadTrustMaterial(null, new TrustSelfSignedStrategy())
-                                             .build();
-
-    SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
-
-    final HttpClientBuilder builder = HttpClients.custom()
-                                                 .setDefaultRequestConfig(requestConfig)
-                                                 .setSSLSocketFactory(sslConnectionFactory);
-
-    return builder.build();
-  }
-
-  public String getUrl() {
-    return this.octopusUrl;
-  }
-
-  @NotNull
-  public String getContent(@NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-    final URI uri = new URL(octopusUrl + uriPath).toURI();
-    final HttpGet httpGet = new HttpGet(uri);
-    CloseableHttpClient httpClient = getHttpClient(this.connectionTimeout);;
-
-    try {
-      LOG.info("Getting response from url " + uri);
-      final HttpContext httpContext = HttpClientContext.create();
-      httpGet.addHeader("X-Octopus-ApiKey", this.apiKey);
-
-      final CloseableHttpResponse response = httpClient.execute(httpGet, httpContext);
-
-      final int statusCode = response.getStatusLine().getStatusCode();
-      if (statusCode == 401) {
-        throw new InvalidOctopusApiKeyException(statusCode, response.getStatusLine().getReasonPhrase());
-      }
-      if (statusCode == 404 && uriPath.matches(".*Projects-\\d*")) {
-        Pattern p = Pattern.compile(".*(Projects-\\d*)$");
-        Matcher m = p.matcher(uriPath);
-        m.find();
-        throw new ProjectNotFoundException(m.group(1));
-      }
-      if (statusCode == 404) {
-        throw new InvalidOctopusUrlException(uri);
-      }
-      if (statusCode >= 300) {
-        throw new UnexpectedResponseCodeException(statusCode, response.getStatusLine().getReasonPhrase());
-      }
-
-      final HttpEntity entity = response.getEntity();
-      final String content = EntityUtils.toString(entity);
-      LOG.info("request to " + uri + " returned " + content);
-      return content;
+    public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        this.octopusUrl = octopusUrl;
+        this.apiKey = apiKey;
+        this.connectionTimeout = connectionTimeout;
     }
-    catch (UnknownHostException e) {
-        throw new InvalidOctopusUrlException(uri, e);
+
+    private CloseableHttpClient getHttpClient(@NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        final RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(connectionTimeout)
+                .setConnectionRequestTimeout(connectionTimeout)
+                .setSocketTimeout(connectionTimeout)
+                .build();
+
+        final SSLContext sslContext = SSLContexts.custom()
+                .loadTrustMaterial(null, new TrustSelfSignedStrategy())
+                .build();
+
+        SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+
+        final HttpClientBuilder builder = HttpClients.custom()
+                .setDefaultRequestConfig(requestConfig)
+                .setSSLSocketFactory(sslConnectionFactory);
+
+        return builder.build();
     }
-    finally {
-      httpGet.releaseConnection();
-      if (httpClient != null) {
+
+    public String getUrl() {
+        return this.octopusUrl;
+    }
+
+    @NotNull
+    public String getContent(@NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        final URI uri = new URL(octopusUrl + uriPath).toURI();
+        final HttpGet httpGet = new HttpGet(uri);
+        CloseableHttpClient httpClient = getHttpClient(this.connectionTimeout);
+        ;
+
         try {
-          httpClient.close();
-        } catch (IOException e) {
-          //
+            LOG.info("Getting response from url " + uri);
+            final HttpContext httpContext = HttpClientContext.create();
+            httpGet.addHeader("X-Octopus-ApiKey", this.apiKey);
+
+            final CloseableHttpResponse response = httpClient.execute(httpGet, httpContext);
+
+            final int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 401) {
+                throw new InvalidOctopusApiKeyException(statusCode, response.getStatusLine().getReasonPhrase());
+            }
+            if (statusCode == 404 && uriPath.matches(".*Projects-\\d*")) {
+                Pattern p = Pattern.compile(".*(Projects-\\d*)$");
+                Matcher m = p.matcher(uriPath);
+                m.find();
+                throw new ProjectNotFoundException(m.group(1));
+            }
+            if (statusCode == 404) {
+                throw new InvalidOctopusUrlException(uri);
+            }
+            if (statusCode >= 300) {
+                throw new UnexpectedResponseCodeException(statusCode, response.getStatusLine().getReasonPhrase());
+            }
+
+            final HttpEntity entity = response.getEntity();
+            final String content = EntityUtils.toString(entity);
+            LOG.info("request to " + uri + " returned " + content);
+            return content;
+        } catch (UnknownHostException e) {
+            throw new InvalidOctopusUrlException(uri, e);
+        } finally {
+            httpGet.releaseConnection();
+            if (httpClient != null) {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    //
+                }
+            }
         }
-      }
     }
-  }
 }

@@ -21,7 +21,7 @@ public class ReleaseCreatedCheckJobTest {
 
     @DataProvider(name = "NullAndEmpty")
     public static Object[][] NullAndEmpty() {
-        return new Object[][] {{""}, {null}};
+        return new Object[][]{{""}, {null}};
     }
 
     @Test(dataProvider = "NullAndEmpty")
@@ -31,10 +31,10 @@ public class ReleaseCreatedCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, value);
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<ReleaseCreatedSpec>result = sut.perform();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform();
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty url) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -47,11 +47,11 @@ public class ReleaseCreatedCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, value);
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<ReleaseCreatedSpec>result = sut.perform();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform();
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty api key) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -64,12 +64,12 @@ public class ReleaseCreatedCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, value);
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<ReleaseCreatedSpec>result = sut.perform();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform();
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty project) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -81,12 +81,12 @@ public class ReleaseCreatedCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<ReleaseCreatedSpec>result = sut.perform();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform();
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
         Assert.assertNotNull(result.getGeneralError());
@@ -96,14 +96,14 @@ public class ReleaseCreatedCheckJobTest {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithOneRelease());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016,3,1), "1.0.0")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<ReleaseCreatedSpec>result = sut.perform();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform();
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -115,7 +115,7 @@ public class ReleaseCreatedCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
@@ -133,7 +133,7 @@ public class ReleaseCreatedCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
@@ -158,15 +158,15 @@ public class ReleaseCreatedCheckJobTest {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016,3,1), "1.0.0")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<ReleaseCreatedSpec>result = sut.perform();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform();
         Assert.assertTrue(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);
@@ -183,9 +183,9 @@ public class ReleaseCreatedCheckJobTest {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithNoReleases());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016,3,1), "1.0.0")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");

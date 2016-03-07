@@ -12,47 +12,47 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OC
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
 class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreatedSpec> {
-  private final String displayName;
-  private final int pollInterval;
-  @NotNull
-  private static final Logger LOG = Logger.getInstance(ReleaseCreatedAsyncBuildTrigger.class.getName());
+    private final String displayName;
+    private final int pollInterval;
+    @NotNull
+    private static final Logger LOG = Logger.getInstance(ReleaseCreatedAsyncBuildTrigger.class.getName());
 
-  public ReleaseCreatedAsyncBuildTrigger(String displayName, int pollInterval) {
-    this.displayName = displayName;
-    this.pollInterval = pollInterval;
-  }
+    public ReleaseCreatedAsyncBuildTrigger(String displayName, int pollInterval) {
+        this.displayName = displayName;
+        this.pollInterval = pollInterval;
+    }
 
-  @NotNull
-  public BuildTriggerException makeTriggerException(@NotNull Throwable throwable) {
-    throw new BuildTriggerException(displayName + " failed with error: " + throwable.getMessage(), throwable);
-  }
+    @NotNull
+    public BuildTriggerException makeTriggerException(@NotNull Throwable throwable) {
+        throw new BuildTriggerException(displayName + " failed with error: " + throwable.getMessage(), throwable);
+    }
 
-  @NotNull
-  public String getRequestorString(@NotNull ReleaseCreatedSpec deploymentCompleteSpec) {
-    return deploymentCompleteSpec.getRequestorString();
-  }
+    @NotNull
+    public String getRequestorString(@NotNull ReleaseCreatedSpec deploymentCompleteSpec) {
+        return deploymentCompleteSpec.getRequestorString();
+    }
 
-  public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
-    return pollInterval;
-  }
+    public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
+        return pollInterval;
+    }
 
-  @NotNull
-  public CheckJob<ReleaseCreatedSpec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
-    return new ReleaseCreatedCheckJob(displayName,
-                                      asyncTriggerParameters.getBuildType().toString(),
-                                      asyncTriggerParameters.getCustomDataStorage(),
-                                      asyncTriggerParameters.getTriggerDescriptor().getProperties());
-  }
+    @NotNull
+    public CheckJob<ReleaseCreatedSpec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
+        return new ReleaseCreatedCheckJob(displayName,
+                asyncTriggerParameters.getBuildType().toString(),
+                asyncTriggerParameters.getCustomDataStorage(),
+                asyncTriggerParameters.getTriggerDescriptor().getProperties());
+    }
 
-  @NotNull
-  public CheckResult<ReleaseCreatedSpec> createCrashOnSubmitResult(@NotNull Throwable throwable) {
-    return ReleaseCreatedSpecCheckResult.createThrowableResult(throwable);
-  }
+    @NotNull
+    public CheckResult<ReleaseCreatedSpec> createCrashOnSubmitResult(@NotNull Throwable throwable) {
+        return ReleaseCreatedSpecCheckResult.createThrowableResult(throwable);
+    }
 
-  public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
-    Map<String, String> properties = buildTriggerDescriptor.getProperties();
-    return String.format("Wait for a new release of %s to be created on server %s.",
-            properties.get(OCTOPUS_PROJECT_ID),
-            properties.get(OCTOPUS_URL));
-  }
+    public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
+        Map<String, String> properties = buildTriggerDescriptor.getProperties();
+        return String.format("Wait for a new release of %s to be created on server %s.",
+                properties.get(OCTOPUS_PROJECT_ID),
+                properties.get(OCTOPUS_URL));
+    }
 }

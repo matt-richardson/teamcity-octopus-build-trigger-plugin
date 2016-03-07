@@ -20,7 +20,7 @@ public class DeploymentCompleteCheckJobTest {
 
     @DataProvider(name = "NullAndEmpty")
     public static Object[][] NullAndEmpty() {
-        return new Object[][] {{""}, {null}};
+        return new Object[][]{{""}, {null}};
     }
 
     @Test(dataProvider = "NullAndEmpty")
@@ -30,10 +30,10 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, value);
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty url) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -46,11 +46,11 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, value);
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty api key) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -63,12 +63,12 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, value);
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty project) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -80,12 +80,12 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
         Assert.assertNotNull(result.getGeneralError());
@@ -97,12 +97,12 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage("Environments-1;2016-02-25T00:00:00.000+00:00;2016-02-25T00:00:00.000+00:00");
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -114,14 +114,14 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
 
         //this is when the trigger is created
-        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -133,14 +133,14 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
 
         //this is when the trigger is created
-        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
 
@@ -162,13 +162,13 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage("Environments-1;2016-02-01T00:00:00.000+00:00;2016-02-01T00:00:00.000+00:00;");
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -179,13 +179,13 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage("Environments-1;2016-02-01T00:00:00.000+00:00;2016-02-01T00:00:00.000+00:00;");
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "false");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties);
-        CheckResult<DeploymentCompleteSpec>result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
         Assert.assertTrue(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);
@@ -199,7 +199,7 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage("Environments-1;2016-02-01T00:00:00.000+00:00;2016-02-01T00:00:00.000+00:00;");
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
@@ -224,7 +224,7 @@ public class DeploymentCompleteCheckJobTest {
         String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage("Environments-1;2016-02-01T00:00:00.000+00:00;2016-02-01T00:00:00.000+00:00;");
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");

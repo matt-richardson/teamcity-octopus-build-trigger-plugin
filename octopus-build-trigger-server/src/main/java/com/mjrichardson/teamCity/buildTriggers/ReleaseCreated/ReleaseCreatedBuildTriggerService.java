@@ -15,70 +15,70 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.DE
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.POLL_INTERVAL_PROP;
 
 public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService {
-  @NotNull
-  private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTriggerService.class.getName());
-  @NotNull
-  private final PluginDescriptor myPluginDescriptor;
-  @NotNull
-  private final BuildTriggeringPolicy myPolicy;
+    @NotNull
+    private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTriggerService.class.getName());
+    @NotNull
+    private final PluginDescriptor myPluginDescriptor;
+    @NotNull
+    private final BuildTriggeringPolicy myPolicy;
 
-  public ReleaseCreatedBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
-                                           @NotNull final AsyncBuildTriggerFactory triggerFactory) {
-    myPluginDescriptor = pluginDescriptor;
-    myPolicy = triggerFactory.createBuildTrigger(ReleaseCreatedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
-  }
+    public ReleaseCreatedBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
+                                             @NotNull final AsyncBuildTriggerFactory triggerFactory) {
+        myPluginDescriptor = pluginDescriptor;
+        myPolicy = triggerFactory.createBuildTrigger(ReleaseCreatedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
+    }
 
-  @NotNull
-  @Override
-  public String getName() {
-    return "octopusReleaseCreatedTrigger";
-  }
+    @NotNull
+    @Override
+    public String getName() {
+        return "octopusReleaseCreatedTrigger";
+    }
 
-  @NotNull
-  @Override
-  public String getDisplayName() {
-    return "Octopus Release Created Trigger";
-  }
+    @NotNull
+    @Override
+    public String getDisplayName() {
+        return "Octopus Release Created Trigger";
+    }
 
-  @NotNull
-  @Override
-  public String describeTrigger(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-    return getBuildTrigger().describeTrigger(buildTriggerDescriptor);
-  }
+    @NotNull
+    @Override
+    public String describeTrigger(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
+        return getBuildTrigger().describeTrigger(buildTriggerDescriptor);
+    }
 
-  @NotNull
-  @Override
-  public BuildTriggeringPolicy getBuildTriggeringPolicy() {
-    return myPolicy;
-  }
+    @NotNull
+    @Override
+    public BuildTriggeringPolicy getBuildTriggeringPolicy() {
+        return myPolicy;
+    }
 
-  @Override
-  public PropertiesProcessor getTriggerPropertiesProcessor() {
-    return new ReleaseCreatedTriggerPropertiesProcessor();
-  }
+    @Override
+    public PropertiesProcessor getTriggerPropertiesProcessor() {
+        return new ReleaseCreatedTriggerPropertiesProcessor();
+    }
 
-  @Override
-  public String getEditParametersUrl() {
-    return myPluginDescriptor.getPluginResourcesPath("editOctopusReleaseCreatedTrigger.jsp");
-  }
+    @Override
+    public String getEditParametersUrl() {
+        return myPluginDescriptor.getPluginResourcesPath("editOctopusReleaseCreatedTrigger.jsp");
+    }
 
-  @Override
-  public boolean isMultipleTriggersPerBuildTypeAllowed() {
-    return true;
-  }
+    @Override
+    public boolean isMultipleTriggersPerBuildTypeAllowed() {
+        return true;
+    }
 
-  @NotNull
-  private AsyncBuildTrigger<ReleaseCreatedSpec> getAsyncBuildTrigger() {
-    return getBuildTrigger();
-  }
+    @NotNull
+    private AsyncBuildTrigger<ReleaseCreatedSpec> getAsyncBuildTrigger() {
+        return getBuildTrigger();
+    }
 
-  @NotNull
-  private int getPollInterval() {
-    return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL);
-  }
+    @NotNull
+    private int getPollInterval() {
+        return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL);
+    }
 
-  @NotNull
-  private ReleaseCreatedAsyncBuildTrigger getBuildTrigger() {
-    return new ReleaseCreatedAsyncBuildTrigger(getDisplayName(), getPollInterval());
-  }
+    @NotNull
+    private ReleaseCreatedAsyncBuildTrigger getBuildTrigger() {
+        return new ReleaseCreatedAsyncBuildTrigger(getDisplayName(), getPollInterval());
+    }
 }

@@ -12,14 +12,12 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID;
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT;
+import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
 @Test
 public class DeploymentCompleteAsyncBuildTriggerTest {
     @Test(expectedExceptions = BuildTriggerException.class,
-          expectedExceptionsMessageRegExp = "the display name failed with error: the exception message")
+            expectedExceptionsMessageRegExp = "the display name failed with error: the exception message")
     public void make_trigger_exception_throws_build_trigger_exception() {
         String displayName = "the display name";
         int pollInterval = 100;
@@ -69,7 +67,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         Integer pollInterval = 100;
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollInterval);
 
-        HashMap<String,String> hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
         hashMap.put(OCTOPUS_URL, "the-server");
 
@@ -83,7 +81,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         Integer pollInterval = 100;
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollInterval);
 
-        HashMap<String,String> hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
         hashMap.put(OCTOPUS_URL, "the-server");
         hashMap.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");

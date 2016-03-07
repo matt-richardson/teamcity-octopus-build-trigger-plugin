@@ -19,7 +19,7 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
 
 public class NullDeployment extends Deployment {
-  public NullDeployment() {
-    super("", new NullOctopusDate(), new NullOctopusDate());
-  }
+    public NullDeployment() {
+        super("", new NullOctopusDate(), new NullOctopusDate());
+    }
 }

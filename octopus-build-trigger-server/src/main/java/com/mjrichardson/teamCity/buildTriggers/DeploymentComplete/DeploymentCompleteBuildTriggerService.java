@@ -32,70 +32,70 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.DE
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.POLL_INTERVAL_PROP;
 
 public final class DeploymentCompleteBuildTriggerService extends BuildTriggerService {
-  @NotNull
-  private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTriggerService.class.getName());
-  @NotNull
-  private final PluginDescriptor myPluginDescriptor;
-  @NotNull
-  private final BuildTriggeringPolicy myPolicy;
+    @NotNull
+    private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTriggerService.class.getName());
+    @NotNull
+    private final PluginDescriptor myPluginDescriptor;
+    @NotNull
+    private final BuildTriggeringPolicy myPolicy;
 
-  public DeploymentCompleteBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
-                                               @NotNull final AsyncBuildTriggerFactory triggerFactory) {
-    myPluginDescriptor = pluginDescriptor;
-    myPolicy = triggerFactory.createBuildTrigger(DeploymentCompleteSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
-  }
+    public DeploymentCompleteBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
+                                                 @NotNull final AsyncBuildTriggerFactory triggerFactory) {
+        myPluginDescriptor = pluginDescriptor;
+        myPolicy = triggerFactory.createBuildTrigger(DeploymentCompleteSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
+    }
 
-  @NotNull
-  @Override
-  public String getName() {
-    return "octopusDeploymentCompleteTrigger";
-  }
+    @NotNull
+    @Override
+    public String getName() {
+        return "octopusDeploymentCompleteTrigger";
+    }
 
-  @NotNull
-  @Override
-  public String getDisplayName() {
-    return "Octopus Deployment Complete Trigger";
-  }
+    @NotNull
+    @Override
+    public String getDisplayName() {
+        return "Octopus Deployment Complete Trigger";
+    }
 
-  @NotNull
-  @Override
-  public String describeTrigger(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-    return getBuildTrigger().describeTrigger(buildTriggerDescriptor);
-  }
+    @NotNull
+    @Override
+    public String describeTrigger(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
+        return getBuildTrigger().describeTrigger(buildTriggerDescriptor);
+    }
 
-  @NotNull
-  @Override
-  public BuildTriggeringPolicy getBuildTriggeringPolicy() {
-    return myPolicy;
-  }
+    @NotNull
+    @Override
+    public BuildTriggeringPolicy getBuildTriggeringPolicy() {
+        return myPolicy;
+    }
 
-  @Override
-  public PropertiesProcessor getTriggerPropertiesProcessor() {
-    return new DeploymentCompleteTriggerPropertiesProcessor();
-  }
+    @Override
+    public PropertiesProcessor getTriggerPropertiesProcessor() {
+        return new DeploymentCompleteTriggerPropertiesProcessor();
+    }
 
-  @Override
-  public String getEditParametersUrl() {
-    return myPluginDescriptor.getPluginResourcesPath("editOctopusDeploymentCompleteTrigger.jsp");
-  }
+    @Override
+    public String getEditParametersUrl() {
+        return myPluginDescriptor.getPluginResourcesPath("editOctopusDeploymentCompleteTrigger.jsp");
+    }
 
-  @Override
-  public boolean isMultipleTriggersPerBuildTypeAllowed() {
-    return true;
-  }
+    @Override
+    public boolean isMultipleTriggersPerBuildTypeAllowed() {
+        return true;
+    }
 
-  @NotNull
-  private AsyncBuildTrigger<DeploymentCompleteSpec> getAsyncBuildTrigger() {
-    return getBuildTrigger();
-  }
+    @NotNull
+    private AsyncBuildTrigger<DeploymentCompleteSpec> getAsyncBuildTrigger() {
+        return getBuildTrigger();
+    }
 
-  @NotNull
-  private int getPollInterval() {
-    return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL);
-  }
+    @NotNull
+    private int getPollInterval() {
+        return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL);
+    }
 
-  @NotNull
-  private DeploymentCompleteAsyncBuildTrigger getBuildTrigger() {
-    return new DeploymentCompleteAsyncBuildTrigger(getDisplayName(), getPollInterval());
-  }
+    @NotNull
+    private DeploymentCompleteAsyncBuildTrigger getBuildTrigger() {
+        return new DeploymentCompleteAsyncBuildTrigger(getDisplayName(), getPollInterval());
+    }
 }

@@ -26,35 +26,35 @@ import java.util.Collections;
 import java.util.Map;
 
 class DeploymentCompleteSpecCheckResult extends CheckResult<DeploymentCompleteSpec> {
-  DeploymentCompleteSpecCheckResult() {
-    super();
-  }
+    DeploymentCompleteSpecCheckResult() {
+        super();
+    }
 
-  private DeploymentCompleteSpecCheckResult(@NotNull Collection<DeploymentCompleteSpec> updated, @NotNull Map<DeploymentCompleteSpec, DetectionException> errors) {
-    super(updated, errors);
-  }
+    private DeploymentCompleteSpecCheckResult(@NotNull Collection<DeploymentCompleteSpec> updated, @NotNull Map<DeploymentCompleteSpec, DetectionException> errors) {
+        super(updated, errors);
+    }
 
-  private DeploymentCompleteSpecCheckResult(@NotNull Throwable generalError) {
-    super(generalError);
-  }
+    private DeploymentCompleteSpecCheckResult(@NotNull Throwable generalError) {
+        super(generalError);
+    }
 
-  @NotNull
-  static DeploymentCompleteSpecCheckResult createEmptyResult() {
-    return new DeploymentCompleteSpecCheckResult();
-  }
+    @NotNull
+    static DeploymentCompleteSpecCheckResult createEmptyResult() {
+        return new DeploymentCompleteSpecCheckResult();
+    }
 
-  @NotNull
-  static DeploymentCompleteSpecCheckResult createUpdatedResult(@NotNull DeploymentCompleteSpec deploymentCompleteSpec) {
-    return new DeploymentCompleteSpecCheckResult(Collections.singleton(deploymentCompleteSpec), Collections.<DeploymentCompleteSpec, DetectionException>emptyMap());
-  }
+    @NotNull
+    static DeploymentCompleteSpecCheckResult createUpdatedResult(@NotNull DeploymentCompleteSpec deploymentCompleteSpec) {
+        return new DeploymentCompleteSpecCheckResult(Collections.singleton(deploymentCompleteSpec), Collections.<DeploymentCompleteSpec, DetectionException>emptyMap());
+    }
 
-  @NotNull
-  static DeploymentCompleteSpecCheckResult createThrowableResult(@NotNull Throwable throwable) {
-    return new DeploymentCompleteSpecCheckResult(throwable);
-  }
+    @NotNull
+    static DeploymentCompleteSpecCheckResult createThrowableResult(@NotNull Throwable throwable) {
+        return new DeploymentCompleteSpecCheckResult(throwable);
+    }
 
-  @NotNull
-  static DeploymentCompleteSpecCheckResult createErrorResult(@NotNull String error) {
-    return new DeploymentCompleteSpecCheckResult(new BuildTriggerException(error));
-  }
+    @NotNull
+    static DeploymentCompleteSpecCheckResult createErrorResult(@NotNull String error) {
+        return new DeploymentCompleteSpecCheckResult(new BuildTriggerException(error));
+    }
 }

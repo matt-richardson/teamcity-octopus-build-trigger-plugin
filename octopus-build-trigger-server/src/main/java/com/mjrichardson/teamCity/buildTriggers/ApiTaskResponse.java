@@ -12,7 +12,7 @@ public class ApiTaskResponse {
     public ApiTaskResponse(String taskResponse) throws ParseException {
         JSONParser parser = new JSONParser();
 
-        Map task = (Map)parser.parse(taskResponse);
+        Map task = (Map) parser.parse(taskResponse);
 
         isCompleted = Boolean.parseBoolean(task.get("IsCompleted").toString());
         finishedSuccessfully = Boolean.parseBoolean(task.get("FinishedSuccessfully").toString());

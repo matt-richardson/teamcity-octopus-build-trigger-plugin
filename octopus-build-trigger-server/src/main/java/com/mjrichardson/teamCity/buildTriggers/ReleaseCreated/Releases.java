@@ -32,7 +32,7 @@ public class Releases {
     public String toString() {
         String result = "";
         Collections.sort(statusMap);
-        for (Release release: statusMap) {
+        for (Release release : statusMap) {
             result = String.format("%s%s|", result, release.toString());
         }
         return result.replaceAll("\\|+$", "");
@@ -43,7 +43,7 @@ public class Releases {
     }
 
     public boolean contains(Release other) {
-        for (Release release: statusMap) {
+        for (Release release : statusMap) {
             if (release.id.equals(other.id))
                 return true;
         }
@@ -51,7 +51,7 @@ public class Releases {
     }
 
     public void add(Releases releases) {
-        for (Release release: releases.statusMap) {
+        for (Release release : releases.statusMap) {
             if (!contains(release)) {
                 add(release);
             }

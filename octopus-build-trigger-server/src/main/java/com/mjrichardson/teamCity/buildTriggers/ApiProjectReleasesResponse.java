@@ -14,16 +14,16 @@ public class ApiProjectReleasesResponse {
 
     public ApiProjectReleasesResponse(String releasesResponse) throws ParseException {
         JSONParser parser = new JSONParser();
-        Map response = (Map)parser.parse(releasesResponse);
+        Map response = (Map) parser.parse(releasesResponse);
 
         releases = new Releases();
 
-        List items = (List)response.get("Items");
+        List items = (List) response.get("Items");
         for (Object item : items) {
-            releases.add(new Release((Map)item));
+            releases.add(new Release((Map) item));
         }
 
-        Object nextPage = ((Map)response.get("Links")).get("Page.Next");
+        Object nextPage = ((Map) response.get("Links")).get("Page.Next");
         if (nextPage != null)
             nextLink = nextPage.toString();
     }

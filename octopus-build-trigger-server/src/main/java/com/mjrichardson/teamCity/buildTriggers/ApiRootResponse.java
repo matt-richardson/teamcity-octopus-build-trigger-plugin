@@ -23,27 +23,27 @@ import org.json.simple.parser.ParseException;
 import java.util.Map;
 
 public class ApiRootResponse {
-  public final String deploymentsApiLink;
-  public final String progressionApiLink;
+    public final String deploymentsApiLink;
+    public final String progressionApiLink;
 
-  private static final Logger LOG = Logger.getInstance(ApiRootResponse.class.getName());
+    private static final Logger LOG = Logger.getInstance(ApiRootResponse.class.getName());
 
-  public ApiRootResponse(String apiResponse) throws ParseException {
-    deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments");
-    progressionApiLink = parseLink(apiResponse, "Progression", "/api/progression");
-  }
-
-  private String parseLink(String apiResponse, String linkName, String defaultResponse) throws ParseException {
-    LOG.debug("Parsing '" + apiResponse + "' for link '" + linkName + "'");
-    JSONParser parser = new JSONParser();
-    Map response = (Map)parser.parse(apiResponse);
-    final String link = (String)((Map)response.get("Links")).get(linkName);
-    if (link == null) {
-      LOG.debug("Didn't find a link in response for '" + linkName + "'. Using default '" + defaultResponse + "'");
-      return defaultResponse;
+    public ApiRootResponse(String apiResponse) throws ParseException {
+        deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments");
+        progressionApiLink = parseLink(apiResponse, "Progression", "/api/progression");
     }
-    final String result = link.replaceAll("\\{.*\\}", ""); //remove all optional params
-    LOG.debug("Found link for '" + linkName + "' was '" + result + "'");
-    return result;
-  }
+
+    private String parseLink(String apiResponse, String linkName, String defaultResponse) throws ParseException {
+        LOG.debug("Parsing '" + apiResponse + "' for link '" + linkName + "'");
+        JSONParser parser = new JSONParser();
+        Map response = (Map) parser.parse(apiResponse);
+        final String link = (String) ((Map) response.get("Links")).get(linkName);
+        if (link == null) {
+            LOG.debug("Didn't find a link in response for '" + linkName + "'. Using default '" + defaultResponse + "'");
+            return defaultResponse;
+        }
+        final String result = link.replaceAll("\\{.*\\}", ""); //remove all optional params
+        LOG.debug("Found link for '" + linkName + "' was '" + result + "'");
+        return result;
+    }
 }
