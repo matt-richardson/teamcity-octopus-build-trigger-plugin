@@ -28,13 +28,13 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
 class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<DeploymentCompleteSpec> {
     private final String displayName;
-    private final int pollInterval;
+    private final int pollIntervalInSeconds;
     @NotNull
     private static final Logger LOG = Logger.getInstance(DeploymentCompleteAsyncBuildTrigger.class.getName());
 
-    public DeploymentCompleteAsyncBuildTrigger(String displayName, int pollInterval) {
+    public DeploymentCompleteAsyncBuildTrigger(String displayName, int pollIntervalInSeconds) {
         this.displayName = displayName;
-        this.pollInterval = pollInterval;
+        this.pollIntervalInSeconds = pollIntervalInSeconds;
     }
 
     @NotNull
@@ -48,7 +48,7 @@ class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Deploymen
     }
 
     public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
-        return pollInterval;
+        return pollIntervalInSeconds;
     }
 
     @NotNull

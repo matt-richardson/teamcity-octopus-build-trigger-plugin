@@ -53,19 +53,19 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     @NotNull
     private String apiKey;
     @NotNull
-    private final Integer connectionTimeout;
+    private final Integer connectionTimeoutInMilliseconds;
 
-    public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeoutInMilliseconds) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         this.octopusUrl = octopusUrl;
         this.apiKey = apiKey;
-        this.connectionTimeout = connectionTimeout;
+        this.connectionTimeoutInMilliseconds = connectionTimeoutInMilliseconds;
     }
 
-    private CloseableHttpClient getHttpClient(@NotNull Integer connectionTimeout) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    private CloseableHttpClient getHttpClient(@NotNull Integer connectionTimeoutInMilliseconds) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         final RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(connectionTimeout)
-                .setConnectionRequestTimeout(connectionTimeout)
-                .setSocketTimeout(connectionTimeout)
+                .setConnectTimeout(connectionTimeoutInMilliseconds)
+                .setConnectionRequestTimeout(connectionTimeoutInMilliseconds)
+                .setSocketTimeout(connectionTimeoutInMilliseconds)
                 .build();
 
         final SSLContext sslContext = SSLContexts.custom()
@@ -89,8 +89,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     public String getContent(@NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         final URI uri = new URL(octopusUrl + uriPath).toURI();
         final HttpGet httpGet = new HttpGet(uri);
-        CloseableHttpClient httpClient = getHttpClient(this.connectionTimeout);
-        ;
+        CloseableHttpClient httpClient = getHttpClient(this.connectionTimeoutInMilliseconds);
 
         try {
             LOG.info("Getting response from url " + uri);

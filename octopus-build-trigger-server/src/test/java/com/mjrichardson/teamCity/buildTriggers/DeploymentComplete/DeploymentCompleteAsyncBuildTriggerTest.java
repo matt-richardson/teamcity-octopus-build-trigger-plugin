@@ -20,15 +20,15 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
             expectedExceptionsMessageRegExp = "the display name failed with error: the exception message")
     public void make_trigger_exception_throws_build_trigger_exception() {
         String displayName = "the display name";
-        int pollInterval = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollInterval);
+        int pollIntervalInSeconds = 100;
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds);
         sut.makeTriggerException(new ParseException("the exception message"));
     }
 
     public void get_requestor_string_returns_requestor_string_from_deployment_complete_spec() {
         String displayName = "the display name";
-        int pollInterval = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollInterval);
+        int pollIntervalInSeconds = 100;
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds);
         String result = sut.getRequestorString(new DeploymentCompleteSpec("the-url", "the-project"));
 
         Assert.assertEquals(result, "Unsuccessful attempt to get deployments for the-project on the-url");
@@ -36,17 +36,17 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
 
     public void poll_interval_returns_passed_in_poll_interval() {
         String displayName = "the display name";
-        Integer pollInterval = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollInterval);
+        Integer pollIntervalInSeconds = 100;
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds);
         Integer result = sut.getPollInterval(new FakeAsyncTriggerParameters());
 
-        Assert.assertEquals(result, pollInterval);
+        Assert.assertEquals(result, pollIntervalInSeconds);
     }
 
     public void create_job_returns_instance_of_deployment_complete_check_job() throws CheckJobCreationException {
         String displayName = "the display name";
-        Integer pollInterval = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollInterval);
+        Integer pollIntervalInSeconds = 100;
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds);
         CheckJob<DeploymentCompleteSpec> result = sut.createJob(new FakeAsyncTriggerParameters());
 
         Assert.assertEquals(result.getClass(), DeploymentCompleteCheckJob.class);
@@ -54,8 +54,8 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
 
     public void create_crash_on_submit_result_returns_deployment_complete_spec_check_result() {
         String displayName = "the display name";
-        Integer pollInterval = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollInterval);
+        Integer pollIntervalInSeconds = 100;
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds);
         CheckResult<DeploymentCompleteSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"));
 
         Assert.assertTrue(result.hasCheckErrors());
@@ -64,8 +64,8 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
 
     public void describe_trigger_returns_description_based_on_properties() {
         String displayName = "the display name";
-        Integer pollInterval = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollInterval);
+        Integer pollIntervalInSeconds = 100;
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds);
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
@@ -78,8 +78,8 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
 
     public void describe_trigger_returns_description_based_on_properties2() {
         String displayName = "the display name";
-        Integer pollInterval = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollInterval);
+        Integer pollIntervalInSeconds = 100;
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds);
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");

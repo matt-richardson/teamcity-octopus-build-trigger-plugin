@@ -23,8 +23,8 @@ public final class OctopusBuildTriggerUtil {
     public static String OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT = "octopus.build.trigger.only.on.successful.deployment";
 
     public static String POLL_INTERVAL_PROP = "octopus.build.trigger.poll.interval";
-    public static final Integer DEFAULT_POLL_INTERVAL = 30; // seconds
+    public static final Integer DEFAULT_POLL_INTERVAL_IN_SECONDS = 30;
 
     public static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout";
-    public static final Integer DEFAULT_CONNECTION_TIMEOUT = 60 * 1000; // milliseconds
+    public static final Integer DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS = 60 * 1000;
 }

@@ -61,7 +61,7 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
             final String oldStoredData = dataStorage.getValue(dataStorageKey);
             final Deployments oldDeployments = new Deployments(oldStoredData);
 
-            final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT;//triggerParameters.getConnectionTimeout(); //todo:fix
+            final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS;//triggerParameters.getConnectionTimeout(); //todo:fix
             DeploymentsProvider provider = deploymentsProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeout);
 
             final Deployments newDeployments = provider.getDeployments(octopusProject, oldDeployments);

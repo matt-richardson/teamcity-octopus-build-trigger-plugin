@@ -11,15 +11,16 @@ public class FakeContentProviderFactory extends HttpContentProviderFactory {
     private String octopusUrl = null;
     private String octopusApiKey = null;
     private OutOfMemoryError exception = null;
+    private static Integer connectionTimeoutInMilliseconds = 100;
 
     public FakeContentProviderFactory(String octopusUrl, String octopusApiKey) {
-        super(octopusUrl, octopusApiKey, 100);
+        super(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
         this.octopusUrl = octopusUrl;
         this.octopusApiKey = octopusApiKey;
     }
 
     public FakeContentProviderFactory(OutOfMemoryError exception) {
-        super("", "", 100);
+        super("", "", connectionTimeoutInMilliseconds);
         this.exception = exception;
     }
 

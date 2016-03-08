@@ -13,13 +13,13 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OC
 
 class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreatedSpec> {
     private final String displayName;
-    private final int pollInterval;
+    private final int pollIntervalInSeconds;
     @NotNull
     private static final Logger LOG = Logger.getInstance(ReleaseCreatedAsyncBuildTrigger.class.getName());
 
-    public ReleaseCreatedAsyncBuildTrigger(String displayName, int pollInterval) {
+    public ReleaseCreatedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds) {
         this.displayName = displayName;
-        this.pollInterval = pollInterval;
+        this.pollIntervalInSeconds = pollIntervalInSeconds;
     }
 
     @NotNull
@@ -33,7 +33,7 @@ class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreate
     }
 
     public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
-        return pollInterval;
+        return pollIntervalInSeconds;
     }
 
     @NotNull

@@ -28,7 +28,7 @@ import jetbrains.buildServer.serverSide.TeamCityProperties;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.DEFAULT_POLL_INTERVAL;
+import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.DEFAULT_POLL_INTERVAL_IN_SECONDS;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.POLL_INTERVAL_PROP;
 
 public final class DeploymentCompleteBuildTriggerService extends BuildTriggerService {
@@ -91,7 +91,7 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
 
     @NotNull
     private int getPollInterval() {
-        return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL);
+        return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL_IN_SECONDS);
     }
 
     @NotNull

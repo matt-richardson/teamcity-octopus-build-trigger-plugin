@@ -14,8 +14,8 @@ public class ReleasesProviderFactoryTest {
         ReleasesProviderFactory sut = new ReleasesProviderFactory();
         String url = "the-url";
         String apiKey = "the-api-key";
-        Integer connectionTimeout = 100;
-        ReleasesProvider result = sut.getProvider(url, apiKey, connectionTimeout);
+        Integer connectionTimeoutInMilliseconds = 100;
+        ReleasesProvider result = sut.getProvider(url, apiKey, connectionTimeoutInMilliseconds);
 
         Assert.assertEquals(result.getClass(), ReleasesProviderImpl.class);
     }

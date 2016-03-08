@@ -7,7 +7,8 @@ import org.testng.annotations.Test;
 public class OctopusConnectivityCheckerFactoryTest {
     public void create_returns_octopus_connectivity_checker() throws Exception {
         OctopusConnectivityCheckerFactory sut = new OctopusConnectivityCheckerFactory();
-        OctopusConnectivityChecker result = sut.create("url", "apiKey", 100);
+        Integer connectionTimeoutInMilliseconds = 100;
+        OctopusConnectivityChecker result = sut.create("url", "apiKey", connectionTimeoutInMilliseconds);
         Assert.assertNotNull(result);
         Assert.assertEquals(result.getClass(), OctopusConnectivityChecker.class);
     }

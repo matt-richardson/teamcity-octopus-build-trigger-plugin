@@ -10,7 +10,8 @@ import java.security.NoSuchAlgorithmException;
 @Test
 public class HttpContentProviderFactoryTest {
     public void get_content_provider_returns_valid_object() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        HttpContentProviderFactory sut = new HttpContentProviderFactory("url", "apikey", 100);
+        Integer connectionTimeoutInMilliseconds = 100;
+        HttpContentProviderFactory sut = new HttpContentProviderFactory("url", "apikey", connectionTimeoutInMilliseconds);
         HttpContentProvider result = sut.getContentProvider();
 
         Assert.assertNotNull(result);
