@@ -42,12 +42,15 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
 
             //todo: move to a builder pattern for loading up results
             String projectsResponse = contentProvider.getContent(apiRootResponse.projectsApiLink);
-            final ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
-            while (shouldGetNextProjectsPage(apiProjectsResponse, projectId)) {
+            ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
+            Projects projects = apiProjectsResponse.projects;
+            while (shouldGetNextProjectsPage(apiProjectsResponse, projects, projectId)) {
                 projectsResponse = contentProvider.getContent(apiProjectsResponse.nextLink);
-                apiProjectsResponse.add(new ApiProjectReleasesResponse(projectsResponse));
+                apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
+                Projects newProjects = apiProjectsResponse.projects;
+                projects.add(newProjects);
             }
-            Project project = apiProjectsResponse.getProject(projectId);
+            Project project = projects.getProject(projectId);
 
             final String progressionResponse = contentProvider.getContent(project.progressionApiLink);
             final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse);
@@ -71,10 +74,10 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         }
     }
 
-    private boolean shouldGetNextProjectsPage(ApiProjectsResponse apiProjectsResponse, String projectId) {
-        if (apiProjectsResponse.isEmpty())
+    private boolean shouldGetNextProjectsPage(ApiProjectsResponse apiProjectsResponse, Projects projects, String projectId) {
+        if (projects.isEmpty())
             return false;
-        if (apiProjectsResponse.projects.contains(projectId))
+        if (projects.contains(projectId))
             return false;
         if (apiProjectsResponse.nextLink == null)
             return false;

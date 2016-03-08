@@ -1,6 +1,5 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -25,17 +24,5 @@ public class ApiProjectsResponse {
         Object nextPage = ((Map) response.get("Links")).get("Page.Next");
         if (nextPage != null)
             nextLink = nextPage.toString();
-    }
-
-    public boolean isEmpty() {
-        return projects.isEmpty();
-    }
-
-    public void add(ApiProjectReleasesResponse apiProjectReleasesResponse) {
-        throw new NotImplementedException();
-    }
-
-    public Project getProject(String projectId) throws ProjectNotFoundException {
-        return projects.getProject(projectId);
     }
 }

@@ -33,4 +33,18 @@ public class Projects {
         if (!contains(project.id))
             statusMap.add(project);
     }
+
+    public void add(Projects projects) {
+        for (Project project : projects.statusMap) {
+            add(project);
+        }
+    }
+
+    public int size() {
+        return statusMap.size();
+    }
+
+    public Project[] toArray() {
+        return statusMap.toArray(new Project[0]);
+    }
 }

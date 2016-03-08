@@ -61,4 +61,21 @@ public class ProjectsTest {
         projects.add(getProject("Projects-2", "/api/releases", "/api/progression"));
         projects.getProject("Projects-3");
     }
+
+    public void add_with_multiple_projects_succeeds() {
+        Projects oldProjects = new Projects();
+        oldProjects.add(getProject("Projects-1", "/api/releases", "/api/progression"));
+        oldProjects.add(getProject("Projects-2", "/api/releases", "/api/progression"));
+
+        Projects newProjects = new Projects();
+        newProjects.add(getProject("Projects-3", "/api/releases", "/api/progression"));
+        newProjects.add(getProject("Projects-4", "/api/releases", "/api/progression"));
+
+        newProjects.add(oldProjects);
+
+        Assert.assertTrue(newProjects.contains("Projects-1"));
+        Assert.assertTrue(newProjects.contains("Projects-2"));
+        Assert.assertTrue(newProjects.contains("Projects-3"));
+        Assert.assertTrue(newProjects.contains("Projects-4"));
+    }
 }
