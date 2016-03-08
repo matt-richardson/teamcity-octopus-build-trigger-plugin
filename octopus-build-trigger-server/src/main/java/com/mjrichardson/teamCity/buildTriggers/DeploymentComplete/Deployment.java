@@ -21,6 +21,7 @@ import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 
 import java.util.Map;
 
+//todo: rename this to Environment?
 public class Deployment {
     public final String environmentId;
     public OctopusDate latestDeployment;//todo:consider if we can make this class idempotent

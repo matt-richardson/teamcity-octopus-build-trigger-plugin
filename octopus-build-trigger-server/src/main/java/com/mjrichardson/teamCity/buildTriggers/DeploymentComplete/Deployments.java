@@ -23,6 +23,7 @@ import jetbrains.buildServer.util.StringUtil;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+//todo: rename this to Environments?
 public class Deployments {
     private ArrayList<Deployment> statusMap;
 
