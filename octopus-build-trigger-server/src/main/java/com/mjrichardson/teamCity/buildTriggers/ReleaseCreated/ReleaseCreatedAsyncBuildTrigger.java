@@ -1,6 +1,5 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
-import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import jetbrains.buildServer.buildTriggers.async.*;
@@ -14,8 +13,6 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OC
 class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreatedSpec> {
     private final String displayName;
     private final int pollIntervalInSeconds;
-    @NotNull
-    private static final Logger LOG = Logger.getInstance(ReleaseCreatedAsyncBuildTrigger.class.getName());
 
     public ReleaseCreatedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds) {
         this.displayName = displayName;
