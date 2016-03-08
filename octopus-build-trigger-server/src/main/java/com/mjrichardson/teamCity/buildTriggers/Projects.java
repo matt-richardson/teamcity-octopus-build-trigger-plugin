@@ -1,6 +1,5 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
-
 import java.util.ArrayList;
 
 public class Projects {
