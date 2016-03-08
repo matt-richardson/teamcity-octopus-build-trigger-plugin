@@ -63,10 +63,6 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
                     oldDeployments, apiProgressionResponse.deployments);
 
             return apiDeploymentsResponse.deployments;
-        } catch (InvalidOctopusApiKeyException e) {
-            throw e;
-        } catch (InvalidOctopusUrlException e) {
-            throw e;
         } catch (ProjectNotFoundException e) {
             throw e;
         } catch (Throwable e) {
