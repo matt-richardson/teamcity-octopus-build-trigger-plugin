@@ -1,0 +1,14 @@
+{
+  "ItemType": "Project",
+  "IsStale": false,
+  "TotalResults": 0,
+  "ItemsPerPage": 30,
+  "Items": [
+  ],
+  "Links": {
+    "Self": "/api/projects",
+    "Template": "/api/projects{?skip}",
+    "Page.Current": "/api/projects?skip=0",
+    "Page.0": "/api/projects?skip=0"
+  }
+}
