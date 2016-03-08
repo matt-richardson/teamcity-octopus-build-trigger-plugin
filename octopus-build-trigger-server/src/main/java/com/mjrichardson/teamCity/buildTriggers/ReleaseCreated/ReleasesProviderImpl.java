@@ -24,13 +24,20 @@ public class ReleasesProviderImpl implements ReleasesProvider {
 
             final String apiResponse = contentProvider.getContent("/api");
             final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);
-
-            String releasesResponse = contentProvider.getContent("/api/projects/" + projectId + "/releases"); //todo: parse properly
+            //todo: move to a builder pattern for loading up results
+            String projectsResponse = contentProvider.getContent(apiRootResponse.projectsApiLink);
+            final ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
+            while (shouldGetNextProjectsPage(apiProjectsResponse, projectId)) {
+                projectsResponse = contentProvider.getContent(apiProjectsResponse.nextLink);
+                apiProjectsResponse.add(new ApiProjectReleasesResponse(projectsResponse));
+            }
+            Project project = apiProjectsResponse.getProject(projectId);
+            String releasesResponse = contentProvider.getContent(project.releasesApiLink);
             ApiProjectReleasesResponse apiProjectReleasesResponse = new ApiProjectReleasesResponse(releasesResponse);
 
             Releases newReleases = apiProjectReleasesResponse.releases;
 
-            while (shouldGetNextPage(oldRelease, newReleases, apiProjectReleasesResponse)) {
+            while (shouldGetNextReleasePage(oldRelease, newReleases, apiProjectReleasesResponse)) {
                 releasesResponse = contentProvider.getContent(apiProjectReleasesResponse.nextLink);
                 apiProjectReleasesResponse = new ApiProjectReleasesResponse(releasesResponse);
                 newReleases.add(apiProjectReleasesResponse.releases);
@@ -47,7 +54,17 @@ public class ReleasesProviderImpl implements ReleasesProvider {
         }
     }
 
-    private boolean shouldGetNextPage(Release oldRelease, Releases newReleases, ApiProjectReleasesResponse apiProjectReleasesResponse) {
+    private boolean shouldGetNextProjectsPage(ApiProjectsResponse apiProjectsResponse, String projectId) {
+        if (apiProjectsResponse.isEmpty())
+            return false;
+        if (apiProjectsResponse.projects.contains(projectId))
+            return false;
+        if (apiProjectsResponse.nextLink == null)
+            return false;
+        return true;
+    }
+
+    private boolean shouldGetNextReleasePage(Release oldRelease, Releases newReleases, ApiProjectReleasesResponse apiProjectReleasesResponse) {
         if (newReleases.isEmpty())
             return false;
         if (newReleases.contains(oldRelease))

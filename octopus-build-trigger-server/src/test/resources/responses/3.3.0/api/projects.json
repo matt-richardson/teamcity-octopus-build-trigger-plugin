@@ -1,7 +1,7 @@
 {
   "ItemType": "Project",
   "IsStale": false,
-  "TotalResults": 7,
+  "TotalResults": 8,
   "ItemsPerPage": 30,
   "Items": [
     {
@@ -35,6 +35,39 @@
         "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-24",
         "Web": "/app#/projects/Projects-24",
         "Logo": "/api/projects/Projects-24/logo"
+      }
+    },
+    {
+      "Id": "Projects-103",
+      "VariableSetId": "variableset-Projects-103",
+      "DeploymentProcessId": "deploymentprocess-Projects-103",
+      "IncludedLibraryVariableSetIds": [],
+      "DefaultToSkipIfAlreadyInstalled": false,
+      "VersioningStrategy": {
+        "DonorPackageStepId": null,
+        "Template": "#{Octopus.Version.LastMajor}.#{Octopus.Version.LastMinor}.#{Octopus.Version.NextPatch}"
+      },
+      "ReleaseCreationStrategy": {
+        "ReleaseCreationPackageStepId": null,
+        "ChannelId": null
+      },
+      "Name": "Project with many releases",
+      "Slug": "project-with-many-releases",
+      "Description": "",
+      "IsDisabled": false,
+      "ProjectGroupId": "ProjectGroups-1",
+      "LifecycleId": "Lifecycles-1",
+      "AutoCreateRelease": false,
+      "Links": {
+        "Self": "/api/projects/Projects-103",
+        "Releases": "/api/projects/Projects-103/releases{/version}{?skip}",
+        "Channels": "/api/projects/Projects-103/channels",
+        "OrderChannels": "/api/projects/Projects-103/channels/order",
+        "Variables": "/api/variables/variableset-Projects-103",
+        "Progression": "/api/progression/Projects-103",
+        "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-103",
+        "Web": "/app#/projects/Projects-103",
+        "Logo": "/api/projects/Projects-103/logo"
       }
     },
     {

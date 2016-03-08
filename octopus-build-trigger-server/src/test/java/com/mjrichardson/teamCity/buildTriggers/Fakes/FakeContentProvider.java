@@ -56,7 +56,7 @@ public class FakeContentProvider implements HttpContentProvider {
         if (!this.octopusApiKey.startsWith("API-")) {
             throw new InvalidOctopusApiKeyException(401, "Invalid octopus api key");
         }
-        if (uriPath.contains("Projects-00")) {
+        if (uriPath.endsWith("/api/projects/Projects-00")) {
             throw new ProjectNotFoundException("Projects-00");
         }
 

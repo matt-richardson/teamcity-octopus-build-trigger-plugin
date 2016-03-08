@@ -40,7 +40,16 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
             final String apiResponse = contentProvider.getContent("/api");
             final ApiRootResponse apiRootResponse = new ApiRootResponse(apiResponse);
 
-            final String progressionResponse = contentProvider.getContent(apiRootResponse.progressionApiLink + "/" + projectId);
+            //todo: move to a builder pattern for loading up results
+            String projectsResponse = contentProvider.getContent(apiRootResponse.projectsApiLink);
+            final ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
+            while (shouldGetNextProjectsPage(apiProjectsResponse, projectId)) {
+                projectsResponse = contentProvider.getContent(apiProjectsResponse.nextLink);
+                apiProjectsResponse.add(new ApiProjectReleasesResponse(projectsResponse));
+            }
+            Project project = apiProjectsResponse.getProject(projectId);
+
+            final String progressionResponse = contentProvider.getContent(project.progressionApiLink);
             final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse);
 
             if (apiProgressionResponse.haveCompleteInformation)
@@ -60,5 +69,15 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         } catch (Throwable e) {
             throw new DeploymentsProviderException(String.format("Unexpected exception in DeploymentsProviderImpl, while attempting to get deployments from %s: %s", url, e), e);
         }
+    }
+
+    private boolean shouldGetNextProjectsPage(ApiProjectsResponse apiProjectsResponse, String projectId) {
+        if (apiProjectsResponse.isEmpty())
+            return false;
+        if (apiProjectsResponse.projects.contains(projectId))
+            return false;
+        if (apiProjectsResponse.nextLink == null)
+            return false;
+        return true;
     }
 }

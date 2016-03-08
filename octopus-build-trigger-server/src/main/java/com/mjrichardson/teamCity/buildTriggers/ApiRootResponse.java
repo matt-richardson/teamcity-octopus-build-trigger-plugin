@@ -25,12 +25,14 @@ import java.util.Map;
 public class ApiRootResponse {
     public final String deploymentsApiLink;
     public final String progressionApiLink;
+    public final String projectsApiLink;
 
     private static final Logger LOG = Logger.getInstance(ApiRootResponse.class.getName());
 
     public ApiRootResponse(String apiResponse) throws ParseException {
         deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments");
         progressionApiLink = parseLink(apiResponse, "Progression", "/api/progression");
+        projectsApiLink = parseLink(apiResponse, "Projects", "/api/projects");
     }
 
     private String parseLink(String apiResponse, String linkName, String defaultResponse) throws ParseException {
