@@ -20,7 +20,7 @@ public class ApiProjectReleasesResponse {
 
         List items = (List) response.get("Items");
         for (Object item : items) {
-            releases.add(new Release((Map) item));
+            releases.add(Release.Parse((Map) item));
         }
 
         Object nextPage = ((Map) response.get("Links")).get("Page.Next");

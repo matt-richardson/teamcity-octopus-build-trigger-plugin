@@ -9,12 +9,6 @@ public class Release implements Comparable<Release> {
     public final OctopusDate assembledDate;
     public final String version;
 
-    public Release(Map item) {
-        this.id = item.get("Id").toString();
-        this.assembledDate = OctopusDate.Parse(item.get("Assembled").toString());
-        this.version = item.get("Version").toString();
-    }
-
     public Release(String releaseId, OctopusDate assembledDate, String version) {
         this.id = releaseId;
         this.assembledDate = assembledDate;
@@ -24,6 +18,14 @@ public class Release implements Comparable<Release> {
     @Override
     public String toString() {
         return id + ";" + assembledDate.toString() + ";" + version;
+    }
+
+    public static Release Parse(Map item) {
+        String id = item.get("Id").toString();
+        OctopusDate assembledDate = OctopusDate.Parse(item.get("Assembled").toString());
+        String version = item.get("Version").toString();
+
+        return new Release(id, assembledDate, version);
     }
 
     public static Release Parse(String pair) {
