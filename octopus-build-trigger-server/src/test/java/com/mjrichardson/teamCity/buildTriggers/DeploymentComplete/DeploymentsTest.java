@@ -73,7 +73,7 @@ public class DeploymentsTest {
         Deployments newDeployments = new Deployments(newData);
 
         final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments);
-        Assert.assertEquals(trimmedDeployments.length(), 2);
+        Assert.assertEquals(trimmedDeployments.size(), 2);
         Deployment deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
@@ -90,7 +90,7 @@ public class DeploymentsTest {
 
         final Boolean prioritiseSuccessfulDeployments = true;
         final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, prioritiseSuccessfulDeployments);
-        Assert.assertEquals(trimmedDeployments.length(), 2);
+        Assert.assertEquals(trimmedDeployments.size(), 2);
         Deployment deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 19, 14, 0, 0, 0), new OctopusDate(2016, 1, 19, 0, 0, 0, 0)));
@@ -107,7 +107,7 @@ public class DeploymentsTest {
 
         final Boolean prioritiseSuccessfulDeployments = false;
         final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, prioritiseSuccessfulDeployments);
-        Assert.assertEquals(trimmedDeployments.length(), 2);
+        Assert.assertEquals(trimmedDeployments.size(), 2);
         Deployment deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 19, 0, 0, 0, 0)));
@@ -124,7 +124,7 @@ public class DeploymentsTest {
 
         final Boolean prioritiseSuccessfulDeployments = true;
         final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, prioritiseSuccessfulDeployments);
-        Assert.assertEquals(trimmedDeployments.length(), 2);
+        Assert.assertEquals(trimmedDeployments.size(), 2);
         Deployment deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 19, 14, 0, 0, 0), new OctopusDate(2016, 1, 19, 0, 0, 0, 0)));

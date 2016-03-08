@@ -55,7 +55,7 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         Deployments oldDeployments = new Deployments();
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
-        Assert.assertEquals(newDeployments.length(), 1);
+        Assert.assertEquals(newDeployments.size(), 1);
         Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment.environmentId, "Environments-1");
@@ -75,7 +75,7 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         Deployments oldDeployments = new Deployments();
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithNoReleases, oldDeployments);
-        Assert.assertEquals(newDeployments.length(), 1);
+        Assert.assertEquals(newDeployments.size(), 1);
         Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
@@ -86,7 +86,7 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         Deployments oldDeployments = new Deployments();
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithNoDeployments, oldDeployments);
-        Assert.assertEquals(newDeployments.length(), 1);
+        Assert.assertEquals(newDeployments.size(), 1);
         Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
@@ -142,7 +142,7 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         Deployments oldDeployments = new Deployments("Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00");
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
-        Assert.assertEquals(newDeployments.length(), 1);
+        Assert.assertEquals(newDeployments.size(), 1);
         Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 13, 31, 56, 22), new OctopusDate(2016, 1, 21, 13, 31, 56, 22)));
@@ -153,7 +153,7 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         Deployments oldDeployments = new Deployments();
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithNoSuccessfulDeployments, oldDeployments);
-        Assert.assertEquals(newDeployments.length(), 1);
+        Assert.assertEquals(newDeployments.size(), 1);
         Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 13, 32, 59, 991), new OctopusDate(1970, 1, 1)));
@@ -164,7 +164,7 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         Deployments oldDeployments = new Deployments();
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithNoRecentSuccessfulDeployments, oldDeployments);
-        Assert.assertEquals(newDeployments.length(), 1);
+        Assert.assertEquals(newDeployments.size(), 1);
         Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 18, 1, 887), new OctopusDate(2016, 1, 21, 13, 35, 27, 179)));
@@ -175,7 +175,7 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         Deployments oldDeployments = new Deployments();
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldDeployments);
-        Assert.assertEquals(newDeployments.length(), 2);
+        Assert.assertEquals(newDeployments.size(), 2);
         Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
@@ -189,7 +189,7 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         Deployments oldDeployments = new Deployments();
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithNoReleases, oldDeployments);
-        Assert.assertEquals(newDeployments.length(), 1);
+        Assert.assertEquals(newDeployments.size(), 1);
         Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
@@ -201,7 +201,7 @@ public class DeploymentsProviderImplTest {
         final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
         Deployments oldDeployments = new Deployments(oldData);
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldDeployments);
-        Assert.assertEquals(newDeployments.length(), 2);
+        Assert.assertEquals(newDeployments.size(), 2);
         Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
@@ -210,7 +210,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700)));
 
         final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments);
-        Assert.assertEquals(trimmedDeployments.length(), 2);
+        Assert.assertEquals(trimmedDeployments.size(), 2);
         deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
@@ -224,13 +224,12 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         Deployments oldDeployments = new Deployments();
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndMostRecentDeploymentSuccessful, oldDeployments);
-        Assert.assertEquals(newDeployments.length(), 2);
+        Assert.assertEquals(newDeployments.size(), 2);
         Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 24, 30, 935), new OctopusDate(2016, 1, 21, 14, 24, 30, 935)));
         deployment = newDeployments.getDeploymentForEnvironment("Environments-21");
         Assert.assertNotNull(deployment);
         Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 21, 14, 24, 10, 872), new OctopusDate(2016, 1, 21, 14, 24, 10, 872)));
-
     }
 }

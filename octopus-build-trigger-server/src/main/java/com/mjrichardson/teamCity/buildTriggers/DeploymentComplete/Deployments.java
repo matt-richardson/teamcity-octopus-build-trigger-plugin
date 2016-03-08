@@ -118,10 +118,6 @@ public class Deployments {
         return new NullDeployment();
     }
 
-    public int length() {
-        return statusMap.size();
-    }
-
     public void addOrUpdate(String environmentId, OctopusDate latestDeployment, Boolean isCompleted, Boolean finishedSuccessfully) {
         if (!isCompleted)
             return;
