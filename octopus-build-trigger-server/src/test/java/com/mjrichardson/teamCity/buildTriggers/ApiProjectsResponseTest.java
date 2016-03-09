@@ -13,7 +13,7 @@ public class ApiProjectsResponseTest {
         ApiProjectsResponse sut = new ApiProjectsResponse(json);
 
         Assert.assertFalse(sut.projects.isEmpty());
-        Assert.assertEquals(sut.projects.size(), 8);
+        Assert.assertEquals(sut.projects.size(), 9);
         Project[] array = sut.projects.toArray();
         Assert.assertEquals(array[0].id, "Projects-24");
         Assert.assertEquals(array[0].progressionApiLink, "/api/progression/Projects-24");
