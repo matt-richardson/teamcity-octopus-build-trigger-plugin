@@ -16,15 +16,21 @@
 
 package com.mjrichardson.teamCity.buildTriggers;
 
+import jetbrains.buildServer.serverSide.TeamCityProperties;
+
 public final class OctopusBuildTriggerUtil {
     public static String OCTOPUS_URL = "octopus.build.trigger.url";
     public static String OCTOPUS_APIKEY = "octopus.build.trigger.apikey";
     public static String OCTOPUS_PROJECT_ID = "octopus.build.trigger.project.url";
     public static String OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT = "octopus.build.trigger.only.on.successful.deployment";
 
-    public static String POLL_INTERVAL_PROP = "octopus.build.trigger.poll.interval";
+    public static String POLL_INTERVAL_PROP = "octopus.build.trigger.poll.interval.in.seconds";
     public static final Integer DEFAULT_POLL_INTERVAL_IN_SECONDS = 30;
 
-    public static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout";
-    public static final Integer DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS = 60 * 1000;
+    private static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout.in.milliseconds";
+    private static final Integer DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS = 60 * 1000;
+
+    public static Integer getConnectionTimeoutInMilliseconds() {
+        return TeamCityProperties.getInteger(CONNECTION_TIMEOUT_PROP, DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS);
+    }
 }

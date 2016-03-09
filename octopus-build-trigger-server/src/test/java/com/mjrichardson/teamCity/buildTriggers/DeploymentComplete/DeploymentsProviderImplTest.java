@@ -43,7 +43,7 @@ public class DeploymentsProviderImplTest {
 
     @Test(groups = {"needs-real-server"})
     public void get_deployments_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
-        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS);
+        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds());
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         Deployments oldDeployments = new Deployments();
         Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);

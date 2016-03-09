@@ -43,7 +43,7 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
         try {
             String oldStoredData = dataStorage.getValue(dataStorageKey);
             final Release oldRelease = Release.Parse(oldStoredData);
-            final Integer connectionTimeout = OctopusBuildTriggerUtil.DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS;//triggerParameters.getConnectionTimeout(); //todo:fix
+            final Integer connectionTimeout = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
 
             ReleasesProvider provider = releasesProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeout);
             final Releases newReleases = provider.getReleases(octopusProject, oldRelease);
