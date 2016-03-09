@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 
 @Test
-public class OctopusDeploymentTest {
+public class DeploymentTest {
     public void can_parse_valid_map() {
         HashMap<String, Object> linksMap = new HashMap<>();
         linksMap.put("Task", "/api/tasks/ServerTasks-770");
@@ -17,7 +17,7 @@ public class OctopusDeploymentTest {
         map.put("Created", "2016-03-09T05:29:31.768+00:00");
         map.put("Links", linksMap);
 
-        OctopusDeployment result = OctopusDeployment.Parse(map);
+        Deployment result = Deployment.Parse(map);
         Assert.assertEquals(result.id, "Deployments-211");
         Assert.assertEquals(result.environmentId, "Environments-1");
         Assert.assertEquals(result.createdDate, new OctopusDate(2016, 3, 9, 5, 29, 31, 768));

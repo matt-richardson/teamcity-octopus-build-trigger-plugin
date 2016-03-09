@@ -16,18 +16,18 @@ public class ApiDeploymentsResponseTest {
         String json = ResourceHandler.getResource("api/deployments/Projects=Projects-25");
         ApiDeploymentsResponse sut = new ApiDeploymentsResponse(json);
         Assert.assertEquals(sut.nextLink, null);
-        Assert.assertEquals(sut.octopusDeployments.size(), 1);
-        OctopusDeployment[] octopusDeployments = sut.octopusDeployments.toArray();
-        Assert.assertEquals(octopusDeployments[0].id, "Deployments-82");
-        Assert.assertEquals(octopusDeployments[0].environmentId, "Environments-1");
-        Assert.assertEquals(octopusDeployments[0].createdDate, new OctopusDate(2016,1,21,13,32,59,991));
-        Assert.assertEquals(octopusDeployments[0].taskLink, "/api/tasks/ServerTasks-272");
+        Assert.assertEquals(sut.deployments.size(), 1);
+        Deployment[] deployments = sut.deployments.toArray();
+        Assert.assertEquals(deployments[0].id, "Deployments-82");
+        Assert.assertEquals(deployments[0].environmentId, "Environments-1");
+        Assert.assertEquals(deployments[0].createdDate, new OctopusDate(2016,1,21,13,32,59,991));
+        Assert.assertEquals(deployments[0].taskLink, "/api/tasks/ServerTasks-272");
     }
 
     public void can_parse_valid_response_with_next_link() throws IOException, ParseException, NoSuchAlgorithmException, URISyntaxException, KeyStoreException, java.text.ParseException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, ProjectNotFoundException, KeyManagementException {
         String json = ResourceHandler.getResource("api/deployments/Projects=Projects-121");
         ApiDeploymentsResponse sut = new ApiDeploymentsResponse(json);
         Assert.assertEquals(sut.nextLink, "/api/deployments?skip=30&projects=Projects-121");
-        Assert.assertEquals(sut.octopusDeployments.size(), 30);
+        Assert.assertEquals(sut.deployments.size(), 30);
     }
 }

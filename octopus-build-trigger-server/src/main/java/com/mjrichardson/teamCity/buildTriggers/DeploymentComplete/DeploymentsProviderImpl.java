@@ -90,7 +90,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         String deploymentsResponse = contentProvider.getContent(apiRootResponse.deploymentsApiLink + "?Projects=" + projectId);
         ApiDeploymentsResponse response = new ApiDeploymentsResponse(deploymentsResponse);
         Environments result = new Environments();
-        for (OctopusDeployment item : response.octopusDeployments) {
+        for (Deployment item : response.deployments) {
             if (ProcessDeployment(contentProvider, oldEnvironments, result, item))
                 return result;
         }
@@ -98,7 +98,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         while (response.nextLink != null) {
             deploymentsResponse = contentProvider.getContent(response.nextLink);
             response = new ApiDeploymentsResponse(deploymentsResponse);
-            for (OctopusDeployment item : response.octopusDeployments) {
+            for (Deployment item : response.deployments) {
                 if (ProcessDeployment(contentProvider, oldEnvironments, result, item))
                     return result;
             }
@@ -107,25 +107,25 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         return result;
     }
 
-    private boolean ProcessDeployment(HttpContentProvider contentProvider, Environments oldEnvironments, Environments result, OctopusDeployment octopusDeployment) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        Environment lastKnownEnvironmentState = oldEnvironments.getEnvironment(octopusDeployment.environmentId);
-        LOG.debug("Found deployment to environment '" + octopusDeployment.environmentId + "' created at '" + octopusDeployment.createdDate + "'");
+    private boolean ProcessDeployment(HttpContentProvider contentProvider, Environments oldEnvironments, Environments result, Deployment deployment) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        Environment lastKnownEnvironmentState = oldEnvironments.getEnvironment(deployment.environmentId);
+        LOG.debug("Found deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "'");
 
-        if (lastKnownEnvironmentState.isLatestDeploymentOlderThan(octopusDeployment.createdDate)) {
-            LOG.debug("Deployment to environment '" + octopusDeployment.environmentId + "' created at '" + octopusDeployment.createdDate + "' was newer than the last known deployment to this environment");
+        if (lastKnownEnvironmentState.isLatestDeploymentOlderThan(deployment.createdDate)) {
+            LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "' was newer than the last known deployment to this environment");
 
-            String taskResponse = contentProvider.getContent(octopusDeployment.taskLink);
+            String taskResponse = contentProvider.getContent(deployment.taskLink);
             ApiTaskResponse task = new ApiTaskResponse(taskResponse);
-            LOG.debug("Deployment to environment '" + octopusDeployment.environmentId + "' created at '" + octopusDeployment.createdDate + "': isCompleted = '" + task.isCompleted + "', finishedSuccessfully = '" + task.finishedSuccessfully + "'");
+            LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "': isCompleted = '" + task.isCompleted + "', finishedSuccessfully = '" + task.finishedSuccessfully + "'");
 
-            result.addOrUpdate(octopusDeployment.environmentId, octopusDeployment.createdDate, task.isCompleted, task.finishedSuccessfully);
+            result.addOrUpdate(deployment.environmentId, deployment.createdDate, task.isCompleted, task.finishedSuccessfully);
 
             if (result.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment()) {
                 LOG.debug("All deployments have finished successfully - no need to keep iterating");
                 return true;
             }
         } else {
-            LOG.debug("Deployment to environment '" + octopusDeployment.environmentId + "' created at '" + octopusDeployment.createdDate + "' was older than the last known deployment to this environment");
+            LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "' was older than the last known deployment to this environment");
         }
         return false;
     }

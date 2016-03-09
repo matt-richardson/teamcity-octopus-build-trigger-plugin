@@ -29,18 +29,18 @@ import java.util.List;
 import java.util.Map;
 
 public class ApiDeploymentsResponse {
-    public final OctopusDeployments octopusDeployments;
+    public final Deployments deployments;
     public String nextLink;
 
     public ApiDeploymentsResponse(String deploymentsResponse) throws URISyntaxException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, UnexpectedResponseCodeException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        this.octopusDeployments = new OctopusDeployments();
+        this.deployments = new Deployments();
 
         JSONParser parser = new JSONParser();
         Map response = (Map) parser.parse(deploymentsResponse);
 
         List items = (List) response.get("Items");
         for (Object item : items) {
-            octopusDeployments.add(OctopusDeployment.Parse((Map)item));
+            deployments.add(Deployment.Parse((Map)item));
         }
 
         Object nextPage = ((Map) response.get("Links")).get("Page.Next");
