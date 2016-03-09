@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-//todo: move back under the jetbrains namespace? (https://confluence.jetbrains.com/display/TCD9/Plugin+Development+FAQ)
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
