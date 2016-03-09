@@ -28,7 +28,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
-//todo: needs tests
 public class ApiDeploymentsResponse {
     public final OctopusDeployments octopusDeployments;
     public String nextLink;

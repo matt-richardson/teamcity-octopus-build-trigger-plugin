@@ -1,7 +1,7 @@
 {
   "ItemType": "Project",
   "IsStale": false,
-  "TotalResults": 8,
+  "TotalResults": 9,
   "ItemsPerPage": 30,
   "Items": [
     {
@@ -35,6 +35,39 @@
         "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-24",
         "Web": "/app#/projects/Projects-24",
         "Logo": "/api/projects/Projects-24/logo"
+      }
+    },
+    {
+      "Id": "Projects-121",
+      "VariableSetId": "variableset-Projects-121",
+      "DeploymentProcessId": "deploymentprocess-Projects-121",
+      "IncludedLibraryVariableSetIds": [],
+      "DefaultToSkipIfAlreadyInstalled": false,
+      "VersioningStrategy": {
+        "DonorPackageStepId": null,
+        "Template": "#{Octopus.Version.LastMajor}.#{Octopus.Version.LastMinor}.#{Octopus.Version.NextPatch}"
+      },
+      "ReleaseCreationStrategy": {
+        "ReleaseCreationPackageStepId": null,
+        "ChannelId": null
+      },
+      "Name": "Project with many deployments",
+      "Slug": "project-with-many-deployments",
+      "Description": "",
+      "IsDisabled": false,
+      "ProjectGroupId": "ProjectGroups-1",
+      "LifecycleId": "Lifecycles-1",
+      "AutoCreateRelease": false,
+      "Links": {
+        "Self": "/api/projects/Projects-121",
+        "Releases": "/api/projects/Projects-121/releases{/version}{?skip}",
+        "Channels": "/api/projects/Projects-121/channels",
+        "OrderChannels": "/api/projects/Projects-121/channels/order",
+        "Variables": "/api/variables/variableset-Projects-121",
+        "Progression": "/api/progression/Projects-121",
+        "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-121",
+        "Web": "/app#/projects/Projects-121",
+        "Logo": "/api/projects/Projects-121/logo"
       }
     },
     {
@@ -213,7 +246,7 @@
         "Template": "#{Octopus.Version.LastMajor}.#{Octopus.Version.LastMinor}.#{Octopus.Version.NextPatch}"
       },
       "ReleaseCreationStrategy": {
-        "ReleaseCreationPackageStepId": null,
+        "ReleaseCreationPackageStepId": "",
         "ChannelId": null
       },
       "Name": "Project with no releases",

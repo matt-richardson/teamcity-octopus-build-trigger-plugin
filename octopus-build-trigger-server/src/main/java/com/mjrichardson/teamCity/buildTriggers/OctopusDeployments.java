@@ -28,4 +28,12 @@ public class OctopusDeployments implements Iterable<OctopusDeployment> {
     public Iterator<OctopusDeployment> iterator() {
         return statusMap.iterator();
     }
+
+    public int size() {
+        return statusMap.size();
+    }
+
+    public OctopusDeployment[] toArray() {
+        return statusMap.toArray(new OctopusDeployment[0]);
+    }
 }
