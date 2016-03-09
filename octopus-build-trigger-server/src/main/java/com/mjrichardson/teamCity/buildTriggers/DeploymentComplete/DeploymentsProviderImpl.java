@@ -37,7 +37,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         this.httpContentProviderFactory = httpContentProviderFactory;
     }
 
-    public Deployments getDeployments(String projectId, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+    public Environments getDeployments(String projectId, Environments oldEnvironments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         String url = null;
 
         try {
@@ -47,7 +47,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
 
             final ApiRootResponse apiRootResponse = getApiRootResponse(contentProvider);
             final Project project = getProject(projectId, contentProvider, apiRootResponse);
-            return getDeployments(projectId, oldDeployments, contentProvider, apiRootResponse, project);
+            return getDeployments(projectId, oldEnvironments, contentProvider, apiRootResponse, project);
 
         } catch (ProjectNotFoundException | InvalidOctopusApiKeyException | InvalidOctopusUrlException e) {
             throw e;
@@ -56,14 +56,14 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         }
     }
 
-    private Deployments getDeployments(String projectId, Deployments oldDeployments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, Project project) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, java.text.ParseException, ParseException {
+    private Environments getDeployments(String projectId, Environments oldEnvironments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, Project project) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, java.text.ParseException, ParseException {
         final String progressionResponse = contentProvider.getContent(project.progressionApiLink);
         final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse);
 
         if (apiProgressionResponse.haveCompleteInformation)
-            return apiProgressionResponse.deployments;
+            return apiProgressionResponse.environments;
 
-        return getDeploymentsFromApi(projectId, oldDeployments, contentProvider, apiRootResponse, apiProgressionResponse);
+        return getEnvironmentsFromApi(projectId, oldEnvironments, contentProvider, apiRootResponse, apiProgressionResponse);
     }
 
     private Project getProject(String projectId, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {
@@ -86,12 +86,12 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
     }
 
     @NotNull
-    private Deployments getDeploymentsFromApi(String projectId, Deployments oldDeployments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, ApiProgressionResponse apiProgressionResponse) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    private Environments getEnvironmentsFromApi(String projectId, Environments oldEnvironments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, ApiProgressionResponse apiProgressionResponse) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         String deploymentsResponse = contentProvider.getContent(apiRootResponse.deploymentsApiLink + "?Projects=" + projectId);
         ApiDeploymentsResponse response = new ApiDeploymentsResponse(deploymentsResponse);
-        Deployments result = new Deployments();
+        Environments result = new Environments();
         for (OctopusDeployment item : response.octopusDeployments) {
-            if (ProcessDeployment(contentProvider, oldDeployments, result, item))
+            if (ProcessDeployment(contentProvider, oldEnvironments, result, item))
                 return result;
         }
 
@@ -99,7 +99,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
             deploymentsResponse = contentProvider.getContent(response.nextLink);
             response = new ApiDeploymentsResponse(deploymentsResponse);
             for (OctopusDeployment item : response.octopusDeployments) {
-                if (ProcessDeployment(contentProvider, oldDeployments, result, item))
+                if (ProcessDeployment(contentProvider, oldEnvironments, result, item))
                     return result;
             }
         }
@@ -107,11 +107,11 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         return result;
     }
 
-    private boolean ProcessDeployment(HttpContentProvider contentProvider, Deployments oldDeployments, Deployments result, OctopusDeployment octopusDeployment) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        Deployment lastKnownDeploymentForThisEnvironment = oldDeployments.getDeploymentForEnvironment(octopusDeployment.environmentId);
+    private boolean ProcessDeployment(HttpContentProvider contentProvider, Environments oldEnvironments, Environments result, OctopusDeployment octopusDeployment) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        Environment lastKnownEnvironmentState = oldEnvironments.getEnvironment(octopusDeployment.environmentId);
         LOG.debug("Found deployment to environment '" + octopusDeployment.environmentId + "' created at '" + octopusDeployment.createdDate + "'");
 
-        if (lastKnownDeploymentForThisEnvironment.isLatestDeploymentOlderThan(octopusDeployment.createdDate)) {
+        if (lastKnownEnvironmentState.isLatestDeploymentOlderThan(octopusDeployment.createdDate)) {
             LOG.debug("Deployment to environment '" + octopusDeployment.environmentId + "' created at '" + octopusDeployment.createdDate + "' was newer than the last known deployment to this environment");
 
             String taskResponse = contentProvider.getContent(octopusDeployment.taskLink);

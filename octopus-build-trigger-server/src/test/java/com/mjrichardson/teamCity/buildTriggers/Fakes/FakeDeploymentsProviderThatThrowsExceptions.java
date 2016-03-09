@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.Fakes;
 
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Deployments;
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environments;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentsProvider;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentsProviderException;
 import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusApiKeyException;
@@ -17,7 +17,7 @@ public class FakeDeploymentsProviderThatThrowsExceptions implements DeploymentsP
     }
 
     @Override
-    public Deployments getDeployments(String octopusProject, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
+    public Environments getDeployments(String octopusProject, Environments oldEnvironments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
         throw new ProjectNotFoundException(octopusProject);
     }
 }

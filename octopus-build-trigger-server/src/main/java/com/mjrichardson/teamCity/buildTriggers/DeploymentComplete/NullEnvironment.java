@@ -16,9 +16,10 @@
 
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-class NoChangedDeploymentsException extends Exception {
-    public NoChangedDeploymentsException(Deployments oldDeployments, Deployments newDeployments) {
-        super(String.format("Didn't find any differences between '%s' and '%s'.",
-                oldDeployments.toString(), newDeployments.toString()));
+import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
+
+public class NullEnvironment extends Environment {
+    public NullEnvironment() {
+        super("", new NullOctopusDate(), new NullOctopusDate());
     }
 }

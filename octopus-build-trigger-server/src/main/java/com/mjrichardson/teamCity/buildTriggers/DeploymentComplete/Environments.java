@@ -23,15 +23,14 @@ import jetbrains.buildServer.util.StringUtil;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-//todo: rename this to Environments?
-public class Deployments {
-    private ArrayList<Deployment> statusMap;
+public class Environments {
+    private ArrayList<Environment> statusMap;
 
-    public Deployments() {
+    public Environments() {
         this.statusMap = new ArrayList<>();
     }
 
-    public Deployments(String oldStoredData) throws ParseException {
+    public Environments(String oldStoredData) throws ParseException {
         this();
 
         if (!StringUtil.isEmptyOrSpaces(oldStoredData)) {
@@ -42,28 +41,28 @@ public class Deployments {
                     final String environmentId = split[0];
                     final OctopusDate latestDeployment = OctopusDate.Parse(split[1]);
                     final OctopusDate latestSuccessfulDeployment = OctopusDate.Parse(split[2]);
-                    statusMap.add(new Deployment(environmentId, latestDeployment, latestSuccessfulDeployment));
+                    statusMap.add(new Environment(environmentId, latestDeployment, latestSuccessfulDeployment));
                 }
             }
         }
     }
 
-    public Deployments(Deployments oldDeployments) {
+    public Environments(Environments oldEnvironments) {
         this();
-        addOrUpdate(oldDeployments);
+        addOrUpdate(oldEnvironments);
     }
 
-    public Deployments(Deployment deployment) {
+    public Environments(Environment environment) {
         this();
-        addOrUpdate(deployment);
+        addOrUpdate(environment);
     }
 
     @Override
     public String toString() {
         String result = "";
 
-        for (Deployment deployment : statusMap) {
-            result = String.format("%s%s|", result, deployment.toString());
+        for (Environment environment : statusMap) {
+            result = String.format("%s%s|", result, environment.toString());
         }
         return result.replaceAll("\\|+$", "");
     }
@@ -83,21 +82,21 @@ public class Deployments {
             return false;
         }
 
-        final Deployments other = (Deployments) obj;
+        final Environments other = (Environments) obj;
 
         if (this.statusMap.size() != other.statusMap.size()) {
             return false;
         }
 
-        for (Deployment deployment : statusMap) {
+        for (Environment environment : statusMap) {
             Boolean found = false;
-            for (Deployment otherDeployment : other.statusMap) {
-                if (otherDeployment.environmentId.equals(deployment.environmentId)) {
+            for (Environment otherDeployment : other.statusMap) {
+                if (otherDeployment.environmentId.equals(environment.environmentId)) {
                     found = true;
-                    if (!otherDeployment.latestDeployment.equals(deployment.latestDeployment)) {
+                    if (!otherDeployment.latestDeployment.equals(environment.latestDeployment)) {
                         return false;
                     }
-                    if (!otherDeployment.latestSuccessfulDeployment.equals(deployment.latestSuccessfulDeployment)) {
+                    if (!otherDeployment.latestSuccessfulDeployment.equals(environment.latestSuccessfulDeployment)) {
                         return false;
                     }
                 }
@@ -110,22 +109,22 @@ public class Deployments {
         return true;
     }
 
-    public Deployment getDeploymentForEnvironment(String environmentId) {
-        for (Deployment deployment : statusMap) {
-            if (deployment.environmentId.equals(environmentId)) {
-                return deployment;
+    public Environment getEnvironment(String environmentId) {
+        for (Environment environment : statusMap) {
+            if (environment.environmentId.equals(environmentId)) {
+                return environment;
             }
         }
-        return new NullDeployment();
+        return new NullEnvironment();
     }
 
     public void addOrUpdate(String environmentId, OctopusDate latestDeployment, Boolean isCompleted, Boolean finishedSuccessfully) {
         if (!isCompleted)
             return;
 
-        Deployment targetDeployment = getDeploymentForEnvironment(environmentId);
-        if (targetDeployment.getClass().equals(NullDeployment.class)) {
-            targetDeployment = new Deployment(environmentId, latestDeployment, finishedSuccessfully ? latestDeployment : new NullOctopusDate());
+        Environment targetDeployment = getEnvironment(environmentId);
+        if (targetDeployment.getClass().equals(NullEnvironment.class)) {
+            targetDeployment = new Environment(environmentId, latestDeployment, finishedSuccessfully ? latestDeployment : new NullOctopusDate());
             statusMap.add(targetDeployment);
         } else {
             if (targetDeployment.isLatestDeploymentOlderThan(latestDeployment)) {
@@ -137,22 +136,22 @@ public class Deployments {
         }
     }
 
-    public void addOrUpdate(Deployments moreResults) {
-        for (Deployment deployment : moreResults.statusMap) {
-            addOrUpdate(deployment.environmentId, deployment.latestDeployment, deployment.latestSuccessfulDeployment);
+    public void addOrUpdate(Environments moreResults) {
+        for (Environment environment : moreResults.statusMap) {
+            addOrUpdate(environment.environmentId, environment.latestDeployment, environment.latestSuccessfulDeployment);
         }
     }
 
-    public void addOrUpdate(Deployment deployment) {
-        if (deployment.getClass().equals(NullDeployment.class))
+    public void addOrUpdate(Environment environment) {
+        if (environment.getClass().equals(NullEnvironment.class))
             return;
-        addOrUpdate(deployment.environmentId, deployment.latestDeployment, deployment.latestSuccessfulDeployment);
+        addOrUpdate(environment.environmentId, environment.latestDeployment, environment.latestSuccessfulDeployment);
     }
 
     private void addOrUpdate(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
-        Deployment targetDeployment = getDeploymentForEnvironment(environmentId);
-        if (targetDeployment.getClass().equals(NullDeployment.class)) {
-            targetDeployment = new Deployment(environmentId, latestDeployment, latestSuccessfulDeployment);
+        Environment targetDeployment = getEnvironment(environmentId);
+        if (targetDeployment.getClass().equals(NullEnvironment.class)) {
+            targetDeployment = new Environment(environmentId, latestDeployment, latestSuccessfulDeployment);
             statusMap.add(targetDeployment);
         } else {
             if (targetDeployment.isLatestDeploymentOlderThan(latestDeployment)) {
@@ -166,8 +165,8 @@ public class Deployments {
 
     public boolean haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment() {
         boolean result = true;
-        for (Deployment deployment : statusMap) {
-            result = result & deployment.hasHadAtLeastOneSuccessfulDeployment();
+        for (Environment environment : statusMap) {
+            result = result & environment.hasHadAtLeastOneSuccessfulDeployment();
         }
         return result;
     }
@@ -176,59 +175,59 @@ public class Deployments {
         addOrUpdate(environmentId, new NullOctopusDate(), new NullOctopusDate());
     }
 
-    public Deployments trimToOnlyHaveMaximumOneChangedEnvironment(Deployments oldDeployments) {
-        return trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, false);
+    public Environments trimToOnlyHaveMaximumOneChangedEnvironment(Environments oldEnvironments) {
+        return trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments, false);
     }
 
-    public Deployments trimToOnlyHaveMaximumOneChangedEnvironment(Deployments oldDeployments, Boolean prioritiseSuccessfulDeployments) {
-        Deployments newDeployments = new Deployments(oldDeployments);
+    public Environments trimToOnlyHaveMaximumOneChangedEnvironment(Environments oldEnvironments, Boolean prioritiseSuccessfulDeployments) {
+        Environments newEnvironments = new Environments(oldEnvironments);
 
-        final String oldStringRepresentation = oldDeployments.toString();
+        final String oldStringRepresentation = oldEnvironments.toString();
 
         if (prioritiseSuccessfulDeployments) {
-            for (Deployment deployment : statusMap) {
-                Deployment oldDeployment = oldDeployments.getDeploymentForEnvironment(deployment.environmentId);
+            for (Environment environment : statusMap) {
+                Environment oldDeployment = oldEnvironments.getEnvironment(environment.environmentId);
 
-                if (deployment.isLatestSuccessfulDeploymentNewerThan(oldDeployment.latestSuccessfulDeployment)) {
-                    newDeployments.addOrUpdate(deployment);
-                    String newStringRepresentation = newDeployments.toString();
+                if (environment.isLatestSuccessfulDeploymentNewerThan(oldDeployment.latestSuccessfulDeployment)) {
+                    newEnvironments.addOrUpdate(environment);
+                    String newStringRepresentation = newEnvironments.toString();
                     if (!oldStringRepresentation.equals(newStringRepresentation)) {
-                        return newDeployments;
+                        return newEnvironments;
                     }
                 }
             }
         }
 
-        for (Deployment deployment : statusMap) {
-            newDeployments.addOrUpdate(deployment);
-            String newStringRepresentation = newDeployments.toString();
+        for (Environment environment : statusMap) {
+            newEnvironments.addOrUpdate(environment);
+            String newStringRepresentation = newEnvironments.toString();
             if (!oldStringRepresentation.equals(newStringRepresentation)) {
-                return newDeployments;
+                return newEnvironments;
             }
         }
-        return newDeployments;
+        return newEnvironments;
 
     }
 
-    public Deployment getChangedDeployment(Deployments oldDeployments) throws ParseException, NoChangedDeploymentsException {
-        Deployments newDeployments = new Deployments(oldDeployments);
-        final String oldStringRepresentation = oldDeployments.toString();
+    public Environment getChangedDeployment(Environments oldEnvironments) throws ParseException, NoChangedEnvironmentsException {
+        Environments newEnvironments = new Environments(oldEnvironments);
+        final String oldStringRepresentation = oldEnvironments.toString();
 
-        for (Deployment deployment : statusMap) {
-            newDeployments.addOrUpdate(deployment);
-            String newStringRepresentation = newDeployments.toString();
+        for (Environment environment : statusMap) {
+            newEnvironments.addOrUpdate(environment);
+            String newStringRepresentation = newEnvironments.toString();
             if (!oldStringRepresentation.equals(newStringRepresentation)) {
-                return deployment;
+                return environment;
             }
         }
-        throw new NoChangedDeploymentsException(oldDeployments, newDeployments);
+        throw new NoChangedEnvironmentsException(oldEnvironments, newEnvironments);
     }
 
     public int size() {
         return statusMap.size();
     }
 
-    public Deployment[] toArray() {
-        return statusMap.toArray(new Deployment[0]);
+    public Environment[] toArray() {
+        return statusMap.toArray(new Environment[0]);
     }
 }

@@ -21,17 +21,16 @@ import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 
 import java.util.Map;
 
-//todo: rename this to Environment?
-public class Deployment {
+public class Environment {
     public final String environmentId;
     public OctopusDate latestDeployment;//todo:consider if we can make this class idempotent
     public OctopusDate latestSuccessfulDeployment;
 
-    public Deployment(String environmentId, OctopusDate latestDeployment) {
+    public Environment(String environmentId, OctopusDate latestDeployment) {
         this(environmentId, latestDeployment, new NullOctopusDate());
     }
 
-    public Deployment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
+    public Environment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
         this.environmentId = environmentId;
         this.latestDeployment = latestDeployment;
         this.latestSuccessfulDeployment = latestSuccessfulDeployment;
@@ -45,7 +44,7 @@ public class Deployment {
         return this.latestSuccessfulDeployment.compareTo(compareDate) < 0;
     }
 
-    public boolean isSuccessful() {
+    public boolean wasLatestDeploymentSuccessful() {
         return this.latestSuccessfulDeployment.compareTo(this.latestDeployment) == 0;
     }
 
@@ -62,7 +61,7 @@ public class Deployment {
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
-        if (obj.getClass() != Deployment.class && obj.getClass() != NullDeployment.class)
+        if (obj.getClass() != Environment.class && obj.getClass() != NullEnvironment.class)
             return false;
         return obj.toString().equals(toString());
     }
@@ -71,16 +70,16 @@ public class Deployment {
         return this.latestSuccessfulDeployment.compareTo(compareDate) > 0;
     }
 
-    public static Deployment Parse(Map map) {
+    public static Environment Parse(Map map) {
         OctopusDate createdDate = OctopusDate.Parse(map.get("Created").toString());
         Boolean isCompleted = Boolean.parseBoolean(map.get("IsCompleted").toString());
         Boolean isSuccessful = map.get("State").toString().equals("Success");
         String environmentId = map.get("EnvironmentId").toString();
 
         if (!isCompleted)
-            return new NullDeployment();
+            return new NullEnvironment();
         if (isSuccessful)
-            return new Deployment(environmentId, createdDate, createdDate);
-        return new Deployment(environmentId, createdDate);
+            return new Environment(environmentId, createdDate, createdDate);
+        return new Environment(environmentId, createdDate);
     }
 }

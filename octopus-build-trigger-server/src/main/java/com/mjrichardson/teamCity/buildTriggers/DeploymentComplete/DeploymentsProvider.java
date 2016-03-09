@@ -7,5 +7,5 @@ import com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException;
 import java.text.ParseException;
 
 public interface DeploymentsProvider {
-    Deployments getDeployments(String octopusProject, Deployments oldDeployments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException;
+    Environments getDeployments(String octopusProject, Environments oldEnvironments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException;
 }

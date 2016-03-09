@@ -45,27 +45,27 @@ public class DeploymentsProviderImplTest {
     public void get_deployments_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds());
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
-        Assert.assertNotNull(newDeployments);
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
+        Assert.assertNotNull(newEnvironments);
     }
 
     public void get_deployments_from_empty_start() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
-        Assert.assertEquals(newDeployments.size(), 1);
-        Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment.environmentId, "Environments-1");
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 1);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment.environmentId, "Environments-1");
 
         //2015-12-08T08:09:39.624+00:00
-        Assert.assertEquals(deployment.latestDeployment.toString(),
+        Assert.assertEquals(environment.latestDeployment.toString(),
                 new OctopusDate(2016, 1, 21, 13, 31, 56, 22).toString(),
                 "Latest deployment is not as expected");
         //2015-11-12T09:22:00.865+00:00
-        Assert.assertEquals(deployment.latestSuccessfulDeployment.toString(),
+        Assert.assertEquals(environment.latestSuccessfulDeployment.toString(),
                 new OctopusDate(2016, 1, 21, 13, 31, 56, 22).toString(),
                 "Latest successful deployment is not as expected");
     }
@@ -73,163 +73,163 @@ public class DeploymentsProviderImplTest {
     public void get_deployments_from_empty_start_with_no_releases() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithNoReleases, oldDeployments);
-        Assert.assertEquals(newDeployments.size(), 1);
-        Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoReleases, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 1);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
     }
 
     public void get_deployments_from_empty_start_with_no_deployments() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithNoDeployments, oldDeployments);
-        Assert.assertEquals(newDeployments.size(), 1);
-        Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoDeployments, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 1);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
     }
 
     @Test(expectedExceptions = ProjectNotFoundException.class)
     public void get_deployments_with_invalid_project() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
+        Environments oldEnvironments = new Environments();
 
-        deploymentsProviderImpl.getDeployments(ProjectThatDoesNotExist, oldDeployments);
+        deploymentsProviderImpl.getDeployments(ProjectThatDoesNotExist, oldEnvironments);
     }
 
     @Test(expectedExceptions = InvalidOctopusUrlException.class)
     public void get_deployments_with_octopus_url_with_invalid_host() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory("http://octopus.example.com", octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
+        Environments oldEnvironments = new Environments();
 
-        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
+        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
     }
 
     @Test(expectedExceptions = InvalidOctopusUrlException.class)
     public void get_deployments_with_octopus_url_with_invalid_path() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl + "/not-an-octopus-instance", octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
+        Environments oldEnvironments = new Environments();
 
-        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
+        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
     }
 
     @Test(expectedExceptions = InvalidOctopusApiKeyException.class)
     public void get_deployments_with_invalid_octopus_api_key() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, "invalid-api-key");
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
+        Environments oldEnvironments = new Environments();
 
-        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
+        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
     }
 
     @Test(expectedExceptions = DeploymentsProviderException.class)
     public void rethrows_throwable_exceptions_as_deployment_provider_exception() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(new OutOfMemoryError());
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
+        Environments oldEnvironments = new Environments();
 
-        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
+        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
     }
 
     public void get_deployments_when_up_to_date() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments("Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00");
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldDeployments);
-        Assert.assertEquals(newDeployments.size(), 1);
-        Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 13, 31, 56, 22), new OctopusDate(2016, 1, 21, 13, 31, 56, 22)));
+        Environments oldEnvironments = new Environments("Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00");
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 1);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 13, 31, 56, 22), new OctopusDate(2016, 1, 21, 13, 31, 56, 22)));
     }
 
     public void get_deployments_when_no_successful_deployments_have_occurred() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithNoSuccessfulDeployments, oldDeployments);
-        Assert.assertEquals(newDeployments.size(), 1);
-        Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 13, 32, 59, 991), new OctopusDate(1970, 1, 1)));
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoSuccessfulDeployments, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 1);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 13, 32, 59, 991), new OctopusDate(1970, 1, 1)));
     }
 
     public void get_deployments_when_no_successful_deployments_on_first_page_of_results() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithNoRecentSuccessfulDeployments, oldDeployments);
-        Assert.assertEquals(newDeployments.size(), 1);
-        Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 18, 1, 887), new OctopusDate(2016, 1, 21, 13, 35, 27, 179)));
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoRecentSuccessfulDeployments, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 1);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 14, 18, 1, 887), new OctopusDate(2016, 1, 21, 13, 35, 27, 179)));
     }
 
     public void get_deployments_when_multiple_environments() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldDeployments);
-        Assert.assertEquals(newDeployments.size(), 2);
-        Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
-        deployment = newDeployments.getDeploymentForEnvironment("Environments-21");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700)));
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 2);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
+        environment = newEnvironments.getEnvironment("Environments-21");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700)));
     }
 
     public void get_deployments_when_no_releases() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithNoReleases, oldDeployments);
-        Assert.assertEquals(newDeployments.size(), 1);
-        Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoReleases, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 1);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
     }
 
     public void when_there_are_two_new_deployments_since_last_check_it_returns_only_one() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Deployments oldDeployments = new Deployments(oldData);
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldDeployments);
-        Assert.assertEquals(newDeployments.size(), 2);
-        Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
-        deployment = newDeployments.getDeploymentForEnvironment("Environments-21");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700)));
+        Environments oldEnvironments = new Environments(oldData);
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 2);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
+        environment = newEnvironments.getEnvironment("Environments-21");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700)));
 
-        final Deployments trimmedDeployments = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments);
-        Assert.assertEquals(trimmedDeployments.size(), 2);
-        deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
-        deployment = trimmedDeployments.getDeploymentForEnvironment("Environments-21");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0)));
+        final Environments trimmedEnvironments = newEnvironments.trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments);
+        Assert.assertEquals(trimmedEnvironments.size(), 2);
+        environment = trimmedEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
+        environment = trimmedEnvironments.getEnvironment("Environments-21");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0)));
     }
 
     public void get_deployments_when_multiple_environments_with_most_recent_deployment_successful() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Deployments oldDeployments = new Deployments();
-        Deployments newDeployments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndMostRecentDeploymentSuccessful, oldDeployments);
-        Assert.assertEquals(newDeployments.size(), 2);
-        Deployment deployment = newDeployments.getDeploymentForEnvironment("Environments-1");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-1", new OctopusDate(2016, 1, 21, 14, 24, 30, 935), new OctopusDate(2016, 1, 21, 14, 24, 30, 935)));
-        deployment = newDeployments.getDeploymentForEnvironment("Environments-21");
-        Assert.assertNotNull(deployment);
-        Assert.assertEquals(deployment, new Deployment("Environments-21", new OctopusDate(2016, 1, 21, 14, 24, 10, 872), new OctopusDate(2016, 1, 21, 14, 24, 10, 872)));
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndMostRecentDeploymentSuccessful, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 2);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 14, 24, 30, 935), new OctopusDate(2016, 1, 21, 14, 24, 30, 935)));
+        environment = newEnvironments.getEnvironment("Environments-21");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 21, 14, 24, 10, 872), new OctopusDate(2016, 1, 21, 14, 24, 10, 872)));
     }
 }

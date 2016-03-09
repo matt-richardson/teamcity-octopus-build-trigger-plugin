@@ -5,23 +5,23 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test
-public class NullDeploymentTest {
+public class NullEnvironmentTest {
     public void null_release_sets_fields_to_empty() {
-        Deployment sut = new NullDeployment();
+        Environment sut = new NullEnvironment();
         Assert.assertEquals(sut.environmentId, "");
         Assert.assertEquals(sut.latestDeployment.getClass(), NullOctopusDate.class);
         Assert.assertEquals(sut.latestSuccessfulDeployment.getClass(), NullOctopusDate.class);
     }
 
     public void equals_returns_true_for_equal_null_deployment() {
-        Deployment sut = new NullDeployment();
-        Deployment other = new NullDeployment();
+        Environment sut = new NullEnvironment();
+        Environment other = new NullEnvironment();
         Assert.assertTrue(sut.equals(other));
     }
 
     public void equals_returns_true_for_when_other_has_null_dates() {
-        Deployment sut = new NullDeployment();
-        Deployment other = new Deployment("", new NullOctopusDate(), new NullOctopusDate());
+        Environment sut = new NullEnvironment();
+        Environment other = new Environment("", new NullOctopusDate(), new NullOctopusDate());
         Assert.assertTrue(sut.equals(other));
     }
 }

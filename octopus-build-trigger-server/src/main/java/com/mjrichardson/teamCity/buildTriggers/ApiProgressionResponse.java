@@ -17,8 +17,8 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Deployment;
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Deployments;
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environment;
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environments;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class ApiProgressionResponse {
     private static final Logger LOG = Logger.getInstance(ApiProgressionResponse.class.getName());
-    public Deployments deployments;
+    public Environments environments;
     public Boolean haveCompleteInformation;
 
     public ApiProgressionResponse(String progressionResponse) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, IOException {
@@ -41,11 +41,11 @@ public class ApiProgressionResponse {
         JSONParser parser = new JSONParser();
         Map response = (Map) parser.parse(progressionResponse);
 
-        deployments = new Deployments();
+        environments = new Environments();
         List environments = (List) response.get("Environments");
         for (Object environment : environments) {
             Map environmentMap = (Map) environment;
-            deployments.addEnvironment(environmentMap.get("Id").toString());
+            this.environments.addEnvironment(environmentMap.get("Id").toString());
         }
 
         List releasesAndDeployments = (List) response.get("Releases");
@@ -61,7 +61,7 @@ public class ApiProgressionResponse {
             return true;
         }
 
-        if (deployments.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment()) {
+        if (this.environments.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment()) {
             LOG.debug("All deployments have finished successfully - no need to parse deployment response");
             return true;
         }
@@ -77,8 +77,8 @@ public class ApiProgressionResponse {
             Map deps = (Map) releaseAndDeploymentPairMap.get("Deployments");
             for (Object key : deps.keySet()) {
                 foundDeployment = true;
-                Deployment deployment = Deployment.Parse((Map) deps.get(key));
-                deployments.addOrUpdate(deployment);
+                Environment environment = Environment.Parse((Map) deps.get(key));
+                environments.addOrUpdate(environment);
             }
         }
         return foundDeployment;

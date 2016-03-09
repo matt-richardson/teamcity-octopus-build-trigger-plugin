@@ -60,36 +60,36 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
 
         try {
             final String oldStoredData = dataStorage.getValue(dataStorageKey);
-            final Deployments oldDeployments = new Deployments(oldStoredData);
+            final Environments oldEnvironments = new Environments(oldStoredData);
 
             final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
             DeploymentsProvider provider = deploymentsProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
 
-            final Deployments newDeployments = provider.getDeployments(octopusProject, oldDeployments);
+            final Environments newEnvironments = provider.getDeployments(octopusProject, oldEnvironments);
 
             //only store that one deployment to one environment has happened here, not multiple environment.
             //otherwise, we could inadvertently miss deployments
-            final Deployments newStoredData = newDeployments.trimToOnlyHaveMaximumOneChangedEnvironment(oldDeployments, triggerOnlyOnSuccessfulDeployment);
+            final Environments newStoredData = newEnvironments.trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments, triggerOnlyOnSuccessfulDeployment);
 
-            if (!newDeployments.toString().equals(oldStoredData)) {
+            if (!newEnvironments.toString().equals(oldStoredData)) {
                 dataStorage.putValue(dataStorageKey, newStoredData.toString());
 
                 //todo: see if its possible to to check the property on the context that says whether its new?
                 //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
-                //do not trigger build after first adding trigger (oldDeployments == null)
+                //do not trigger build after first adding trigger (oldEnvironments == null)
                 if (oldStoredData == null) {
                     LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                     return DeploymentCompleteSpecCheckResult.createEmptyResult();
                 }
 
-                final Deployment deployment = newStoredData.getChangedDeployment(oldDeployments);
-                if (triggerOnlyOnSuccessfulDeployment && !deployment.isSuccessful()) {
+                final Environment environment = newStoredData.getChangedDeployment(oldEnvironments);
+                if (triggerOnlyOnSuccessfulDeployment && !environment.wasLatestDeploymentSuccessful()) {
                     LOG.debug("New deployments found, but they weren't successful, and we are only triggering on successful builds. Server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                     return DeploymentCompleteSpecCheckResult.createEmptyResult();
                 }
 
                 LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-                final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, deployment.environmentId, deployment.isSuccessful());
+                final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, environment.environmentId, environment.wasLatestDeploymentSuccessful());
                 //todo: investigate passing multiple bits to createUpdatedResult()
                 return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
             }
