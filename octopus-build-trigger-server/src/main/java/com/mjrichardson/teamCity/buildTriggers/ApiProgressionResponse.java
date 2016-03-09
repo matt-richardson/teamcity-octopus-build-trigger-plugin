@@ -27,6 +27,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
+//todo: this does more than just load the response... refactor.
 public class ApiProgressionResponse {
     private static final Logger LOG = Logger.getInstance(ApiProgressionResponse.class.getName());
     public Environments environments;
