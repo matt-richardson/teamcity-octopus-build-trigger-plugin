@@ -44,8 +44,8 @@ class ReleaseCreatedTriggerPropertiesProcessor implements PropertiesProcessor {
 
     private void checkConnectivity(Map<String, String> properties, ArrayList<InvalidProperty> invalidProps, String url, String apiKey) {
         try {
-            final Integer connectionTimeout = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
-            final OctopusConnectivityChecker connectivityChecker = octopusConnectivityCheckerFactory.create(url, apiKey, connectionTimeout);
+            final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
+            final OctopusConnectivityChecker connectivityChecker = octopusConnectivityCheckerFactory.create(url, apiKey, connectionTimeoutInMilliseconds);
 
             final String err = connectivityChecker.checkOctopusConnectivity();
             if (StringUtil.isNotEmpty(err)) {
