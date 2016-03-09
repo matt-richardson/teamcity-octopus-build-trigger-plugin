@@ -3,7 +3,6 @@ package com.mjrichardson.teamCity.buildTriggers;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-//todo: needs tests
 public class OctopusDeployments implements Iterable<OctopusDeployment> {
     private ArrayList<OctopusDeployment> statusMap;
 
