@@ -2,7 +2,6 @@ package com.mjrichardson.teamCity.buildTriggers;
 
 import java.util.Map;
 
-//todo: needs tests
 //todo: rename
 public class OctopusDeployment {
     final String id;
