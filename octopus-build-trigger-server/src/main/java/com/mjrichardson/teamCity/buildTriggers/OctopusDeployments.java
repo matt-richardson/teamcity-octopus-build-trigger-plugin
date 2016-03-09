@@ -3,6 +3,8 @@ package com.mjrichardson.teamCity.buildTriggers;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+//todo: rename
+//todo: move under 'Model' namespace?
 public class OctopusDeployments implements Iterable<OctopusDeployment> {
     private ArrayList<OctopusDeployment> statusMap;
 
