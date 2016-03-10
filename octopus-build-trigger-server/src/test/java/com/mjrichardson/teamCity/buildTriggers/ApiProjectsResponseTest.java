@@ -16,8 +16,8 @@ public class ApiProjectsResponseTest {
         Assert.assertEquals(sut.projects.size(), 30);
         Project[] array = sut.projects.toArray();
         Assert.assertEquals(array[0].id, "Projects-143");
-        Assert.assertEquals(array[0].progressionApiLink, "/api/progression/Projects-24");
-        Assert.assertEquals(array[0].releasesApiLink, "/api/projects/Projects-24/releases");
+        Assert.assertEquals(array[0].progressionApiLink, "/api/progression/Projects-143");
+        Assert.assertEquals(array[0].releasesApiLink, "/api/projects/Projects-143/releases");
         Assert.assertEquals(sut.nextLink, "/api/projects?skip=30");
     }
 
