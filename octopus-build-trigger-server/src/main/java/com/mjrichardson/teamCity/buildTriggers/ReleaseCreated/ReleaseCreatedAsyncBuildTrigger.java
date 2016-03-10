@@ -25,8 +25,8 @@ class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreate
     }
 
     @NotNull
-    public String getRequestorString(@NotNull ReleaseCreatedSpec deploymentCompleteSpec) {
-        return deploymentCompleteSpec.getRequestorString();
+    public String getRequestorString(@NotNull ReleaseCreatedSpec releaseCreatedSpec) {
+        return releaseCreatedSpec.getRequestorString();
     }
 
     public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
