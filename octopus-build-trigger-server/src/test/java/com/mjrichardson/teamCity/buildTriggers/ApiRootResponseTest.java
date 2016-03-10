@@ -10,12 +10,12 @@ public class ApiRootResponseTest {
         final String json = "{\n" +
                 "  \"Links\": {\n" +
                 "    \"Deployments\": \"/api/flooble\",\n" +
-                "    \"Progression\": \"/api/whatsit\"\n" +
+                "    \"Machines\": \"/api/whatsit\"\n" +
                 "  }\n" +
                 "}\n";
         ApiRootResponse sut = new ApiRootResponse(json);
         Assert.assertEquals(sut.deploymentsApiLink, "/api/flooble");
-        Assert.assertEquals(sut.progressionApiLink, "/api/whatsit");
+        Assert.assertEquals(sut.machinesApiLink, "/api/whatsit");
     }
 
     public void trims_off_optional_params() throws ParseException {
@@ -26,7 +26,6 @@ public class ApiRootResponseTest {
                 "}\n";
         ApiRootResponse sut = new ApiRootResponse(json);
         Assert.assertEquals(sut.deploymentsApiLink, "/api/deployments");
-        Assert.assertEquals(sut.progressionApiLink, "/api/progression");
     }
 
     public void uses_default_values_if_not_found() throws ParseException {
@@ -37,6 +36,6 @@ public class ApiRootResponseTest {
 
         ApiRootResponse sut = new ApiRootResponse(json);
         Assert.assertEquals(sut.deploymentsApiLink, "/api/deployments");
-        Assert.assertEquals(sut.progressionApiLink, "/api/progression");
+        Assert.assertEquals(sut.machinesApiLink, "/api/machines");
     }
 }
