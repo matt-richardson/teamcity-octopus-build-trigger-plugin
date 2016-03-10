@@ -9,6 +9,7 @@
         <packages>
             <package name="com.mjrichardson.teamCity.buildTriggers"/>
             <package name="com.mjrichardson.teamCity.buildTriggers.DeploymentComplete"/>
+            <package name="com.mjrichardson.teamCity.buildTriggers.MachineAdded"/>
             <package name="com.mjrichardson.teamCity.buildTriggers.ReleaseCreated"/>
         </packages>
     </test>

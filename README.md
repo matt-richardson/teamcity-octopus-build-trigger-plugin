@@ -6,7 +6,7 @@ A TeamCity plugin that polls Octopus Deploy, and triggers a TeamCity build when:
 - [x] a deployment to an environment is complete
 - [x] a successful deployment to an environment is complete
 - [x] a release is created
-- [ ] a new tentacle is added
+- [x] a new tentacle is added
 
 This is very much a work in progress, but feel free to give it a go, and let me know if you face any issues.
 Constructive criticism received gratefully - this is my first real java project, and there's a lot I'm unaware of in that ecosystem.
@@ -19,7 +19,6 @@ See [TeamCity documentation](https://confluence.jetbrains.com/display/TCD9/Insta
 
 # Outstanding items
 
-- overall test coverage isn't great
 - test older versions of Octopus
 - pass details of trigger item (ie, release name), to build. At the moment, you need to parse a configuration parameter `teamcity.build.triggeredBy`, which is designed to be a human readable rather than machine readable.
 - improve logging

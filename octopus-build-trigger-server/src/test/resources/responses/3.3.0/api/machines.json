@@ -1,0 +1,50 @@
+{
+  "ItemType": "Machine",
+  "IsStale": false,
+  "TotalResults": 1,
+  "ItemsPerPage": 30,
+  "Items": [
+    {
+      "Id": "Machines-1",
+      "Name": "Octopus Server",
+      "Thumbprint": "07ECBF3A00D8868F1AC6DE228F40F630E2794F0F",
+      "Uri": "https://localhost:10933/",
+      "IsDisabled": false,
+      "EnvironmentIds": [
+        "Environments-1",
+        "Environments-21"
+      ],
+      "Roles": [
+        "octopus-server"
+      ],
+      "Status": "Online",
+      "HasLatestCalamari": true,
+      "StatusSummary": "Octopus was able to successfully establish a connection with this machine on 09 March 2016 22:04",
+      "Endpoint": {
+        "CommunicationStyle": "TentaclePassive",
+        "Uri": "https://localhost:10933/",
+        "Thumbprint": "07ECBF3A00D8868F1AC6DE228F40F630E2794F0F",
+        "TentacleVersionDetails": {
+          "UpgradeLocked": false,
+          "Version": "3.3.0-beta0002",
+          "UpgradeSuggested": false,
+          "UpgradeRequired": false
+        },
+        "Id": null,
+        "LastModifiedOn": null,
+        "LastModifiedBy": null,
+        "Links": {}
+      },
+      "Links": {
+        "Self": "/api/machines/Machines-1",
+        "Connection": "/api/machines/Machines-1/connection"
+      }
+    }
+  ],
+  "Links": {
+    "Self": "/api/machines",
+    "Template": "/api/machines{?skip}",
+    "Page.Current": "/api/machines?skip=0",
+    "Page.0": "/api/machines?skip=0"
+  }
+}

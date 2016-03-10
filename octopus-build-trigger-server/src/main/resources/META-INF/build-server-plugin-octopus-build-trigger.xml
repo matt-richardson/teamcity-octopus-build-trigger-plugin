@@ -6,4 +6,5 @@
     <import resource="classpath*:META-INF/spring-server-async-trigger.xml"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTriggerService"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.ReleaseCreatedBuildTriggerService"/>
+    <bean class="com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachineAddedBuildTriggerService"/>
 </beans>

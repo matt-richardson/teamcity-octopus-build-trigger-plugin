@@ -25,8 +25,8 @@ import java.util.Map;
 public class ApiRootResponse {
     public final String deploymentsApiLink;
     public final String progressionApiLink; //todo: not used outside of tests
-    public final String progressionApiLink;
     public final String projectsApiLink;
+    public final String machinesApiLink;
 
     private static final Logger LOG = Logger.getInstance(ApiRootResponse.class.getName());
 
@@ -34,6 +34,7 @@ public class ApiRootResponse {
         deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments");
         progressionApiLink = parseLink(apiResponse, "Progression", "/api/progression");
         projectsApiLink = parseLink(apiResponse, "Projects", "/api/projects");
+        machinesApiLink = parseLink(apiResponse, "Machines", "/api/machines");
     }
 
     private String parseLink(String apiResponse, String linkName, String defaultResponse) throws ParseException {

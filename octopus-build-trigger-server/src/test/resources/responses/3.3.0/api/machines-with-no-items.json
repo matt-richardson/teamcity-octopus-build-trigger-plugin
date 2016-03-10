@@ -1,0 +1,14 @@
+{
+  "ItemType": "Machine",
+  "IsStale": false,
+  "TotalResults": 0,
+  "ItemsPerPage": 30,
+  "Items": [
+  ],
+  "Links": {
+    "Self": "/api/machines",
+    "Template": "/api/machines{?skip}",
+    "Page.Current": "/api/machines?skip=0",
+    "Page.0": "/api/machines?skip=0"
+  }
+}
