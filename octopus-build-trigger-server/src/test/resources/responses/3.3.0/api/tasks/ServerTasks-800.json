@@ -1,0 +1,34 @@
+{
+  "Id": "ServerTasks-800",
+  "Name": "Deploy",
+  "Description": "Deploy Project with many failed deployments release 0.0.9 to local",
+  "Arguments": {
+    "DeploymentId": "Deployments-223"
+  },
+  "State": "Failed",
+  "Completed": "09 March 2015 22:26",
+  "QueueTime": "2016-03-09T22:26:08.802+00:00",
+  "StartTime": "2016-03-09T22:26:33.523+00:00",
+  "LastUpdatedTime": "2016-03-09T22:26:37.406+00:00",
+  "CompletedTime": "2016-03-09T22:26:37.406+00:00",
+  "ServerNode": "DESKTOP-4VQNCHP",
+  "Duration": "4 seconds",
+  "ErrorMessage": "The deployment failed because one or more steps failed. Please see the deployment log for details.",
+  "HasBeenPickedUpByProcessor": true,
+  "IsCompleted": true,
+  "FinishedSuccessfully": false,
+  "HasPendingInterruptions": false,
+  "CanRerun": false,
+  "HasWarningsOrErrors": true,
+  "Links": {
+    "Self": "/api/tasks/ServerTasks-800",
+    "Web": "/app#/tasks/ServerTasks-800",
+    "Raw": "/api/tasks/ServerTasks-800/raw",
+    "Rerun": "/api/tasks/rerun/ServerTasks-800",
+    "Cancel": "/api/tasks/ServerTasks-800/cancel",
+    "QueuedBehind": "/api/tasks/ServerTasks-800/queued-behind{?skip}",
+    "Details": "/api/tasks/ServerTasks-800/details{?verbose,tail}",
+    "Artifacts": "/api/artifacts?regarding=ServerTasks-800",
+    "Interruptions": "/api/tasks"
+  }
+}

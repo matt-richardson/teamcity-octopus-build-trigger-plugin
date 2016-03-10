@@ -1,0 +1,73 @@
+{
+  "Environments": [
+    {
+      "Id": "Environments-1",
+      "Name": "local"
+    }
+  ],
+  "Releases": [
+    {
+      "Release": {
+        "Id": "Releases-244",
+        "Assembled": "2016-03-09T22:26:43.000+00:00",
+        "ReleaseNotes": null,
+        "ProjectId": "Projects-153",
+        "ChannelId": "Channels-153",
+        "ProjectVariableSetSnapshotId": "variableset-Projects-153-s-0-Q57FT",
+        "LibraryVariableSetSnapshotIds": [],
+        "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-153-s-1-HG58U",
+        "SelectedPackages": [],
+        "Version": "0.0.31",
+        "Links": {
+          "Self": "/api/releases/Releases-244{?force}",
+          "Project": "/api/projects/Projects-153",
+          "Progression": "/api/releases/Releases-244/progression",
+          "Deployments": "/api/releases/Releases-244/deployments{?skip}",
+          "DeploymentTemplate": "/api/releases/Releases-244/deployments/template",
+          "Artifacts": "/api/artifacts?regarding=Releases-244",
+          "ProjectVariableSnapshot": "/api/variables/variableset-Projects-153-s-0-Q57FT",
+          "ProjectDeploymentProcessSnapshot": "/api/deploymentprocesses/deploymentprocess-Projects-153-s-1-HG58U",
+          "Web": "/app#/releases/Releases-244",
+          "SnapshotVariables": "/api/releases/Releases-244/snapshot-variables",
+          "Defects": "/api/releases/Releases-244/defects",
+          "ReportDefect": "/api/releases/Releases-244/defects",
+          "ResolveDefect": "/api/releases/Releases-244/defects/resolve"
+        }
+      },
+      "Deployments": {
+        "Environments-1": {
+          "Id": "Deployments-245",
+          "ProjectId": "Projects-153",
+          "EnvironmentId": "Environments-1",
+          "ReleaseId": "Releases-244",
+          "DeploymentId": "Deployments-245",
+          "TaskId": "ServerTasks-822",
+          "ReleaseVersion": "0.0.31",
+          "Created": "2016-03-09T22:26:43.504+00:00",
+          "QueueTime": "2016-03-09T22:26:43.489+00:00",
+          "CompletedTime": "2016-03-09T22:27:52.165+00:00",
+          "State": "Failed",
+          "HasPendingInterruptions": false,
+          "HasWarningsOrErrors": true,
+          "ErrorMessage": "The deployment failed because one or more steps failed. Please see the deployment log for details.",
+          "Duration": "1 minute",
+          "IsCurrent": true,
+          "IsPrevious": false,
+          "IsCompleted": true,
+          "Links": {
+            "Self": "/api/deployments/Deployments-245",
+            "Release": "/api/releases/Releases-244",
+            "Task": "/api/tasks/ServerTasks-822"
+          }
+        }
+      },
+      "NextDeployments": [
+        "Environments-1"
+      ],
+      "HasUnresolvedDefect": false,
+      "ReleaseRetentionPeriod": null,
+      "TentacleRetentionPeriod": null
+    }
+  ],
+  "Links": {}
+}

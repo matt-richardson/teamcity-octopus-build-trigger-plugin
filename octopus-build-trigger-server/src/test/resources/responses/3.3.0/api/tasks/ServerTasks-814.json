@@ -1,0 +1,34 @@
+{
+  "Id": "ServerTasks-814",
+  "Name": "Deploy",
+  "Description": "Deploy Project with many failed deployments release 0.0.23 to local",
+  "Arguments": {
+    "DeploymentId": "Deployments-237"
+  },
+  "State": "Failed",
+  "Completed": "09 March 2015 22:27",
+  "QueueTime": "2016-03-09T22:26:29.564+00:00",
+  "StartTime": "2016-03-09T22:27:24.435+00:00",
+  "LastUpdatedTime": "2016-03-09T22:27:27.197+00:00",
+  "CompletedTime": "2016-03-09T22:27:27.197+00:00",
+  "ServerNode": "DESKTOP-4VQNCHP",
+  "Duration": "3 seconds",
+  "ErrorMessage": "The deployment failed because one or more steps failed. Please see the deployment log for details.",
+  "HasBeenPickedUpByProcessor": true,
+  "IsCompleted": true,
+  "FinishedSuccessfully": false,
+  "HasPendingInterruptions": false,
+  "CanRerun": false,
+  "HasWarningsOrErrors": true,
+  "Links": {
+    "Self": "/api/tasks/ServerTasks-814",
+    "Web": "/app#/tasks/ServerTasks-814",
+    "Raw": "/api/tasks/ServerTasks-814/raw",
+    "Rerun": "/api/tasks/rerun/ServerTasks-814",
+    "Cancel": "/api/tasks/ServerTasks-814/cancel",
+    "QueuedBehind": "/api/tasks/ServerTasks-814/queued-behind{?skip}",
+    "Details": "/api/tasks/ServerTasks-814/details{?verbose,tail}",
+    "Artifacts": "/api/artifacts?regarding=ServerTasks-814",
+    "Interruptions": "/api/tasks"
+  }
+}

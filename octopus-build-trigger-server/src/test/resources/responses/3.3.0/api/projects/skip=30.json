@@ -1,7 +1,7 @@
 {
   "ItemType": "Project",
   "IsStale": false,
-  "TotalResults": 39,
+  "TotalResults": 40,
   "ItemsPerPage": 30,
   "Items": [
     {
@@ -68,6 +68,39 @@
         "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-121",
         "Web": "/app#/projects/Projects-121",
         "Logo": "/api/projects/Projects-121/logo"
+      }
+    },
+    {
+      "Id": "Projects-153",
+      "VariableSetId": "variableset-Projects-153",
+      "DeploymentProcessId": "deploymentprocess-Projects-153",
+      "IncludedLibraryVariableSetIds": [],
+      "DefaultToSkipIfAlreadyInstalled": false,
+      "VersioningStrategy": {
+        "DonorPackageStepId": null,
+        "Template": "#{Octopus.Version.LastMajor}.#{Octopus.Version.LastMinor}.#{Octopus.Version.NextPatch}"
+      },
+      "ReleaseCreationStrategy": {
+        "ReleaseCreationPackageStepId": null,
+        "ChannelId": null
+      },
+      "Name": "Project with many failed deployments",
+      "Slug": "project-with-many-failed-deployments",
+      "Description": "",
+      "IsDisabled": false,
+      "ProjectGroupId": "ProjectGroups-1",
+      "LifecycleId": "Lifecycles-1",
+      "AutoCreateRelease": false,
+      "Links": {
+        "Self": "/api/projects/Projects-153",
+        "Releases": "/api/projects/Projects-153/releases{/version}{?skip}",
+        "Channels": "/api/projects/Projects-153/channels",
+        "OrderChannels": "/api/projects/Projects-153/channels/order",
+        "Variables": "/api/variables/variableset-Projects-153",
+        "Progression": "/api/progression/Projects-153",
+        "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-153",
+        "Web": "/app#/projects/Projects-153",
+        "Logo": "/api/projects/Projects-153/logo"
       }
     },
     {

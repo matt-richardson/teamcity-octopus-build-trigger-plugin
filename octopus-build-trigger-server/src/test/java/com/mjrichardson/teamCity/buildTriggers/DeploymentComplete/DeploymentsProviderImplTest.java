@@ -40,6 +40,7 @@ public class DeploymentsProviderImplTest {
     static String ProjectWithNoRecentSuccessfulDeployments = "Projects-26";
     static String ProjectWithNoReleases = "Projects-101";
     static String ProjectThatDoesNotExist = "Projects-00";
+    static String ProjectWithManyDeploymentsWhereAllHaveFailed = "Projects-153";
 
     @Test(groups = {"needs-real-server"})
     public void get_deployments_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
@@ -231,5 +232,16 @@ public class DeploymentsProviderImplTest {
         environment = newEnvironments.getEnvironment("Environments-21");
         Assert.assertNotNull(environment);
         Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 21, 14, 24, 10, 872), new OctopusDate(2016, 1, 21, 14, 24, 10, 872)));
+    }
+
+    public void get_deployments_when_project_has_many_deployments() throws Exception {
+        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
+        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithManyDeploymentsWhereAllHaveFailed, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 1);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 3, 9, 22, 26, 43, 504), new NullOctopusDate()));
     }
 }

@@ -27,7 +27,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-//todo: needs improved test coverage
 public class DeploymentsProviderImpl implements DeploymentsProvider {
     @NotNull
     private static final Logger LOG = Logger.getInstance(DeploymentsProviderImpl.class.getName());
