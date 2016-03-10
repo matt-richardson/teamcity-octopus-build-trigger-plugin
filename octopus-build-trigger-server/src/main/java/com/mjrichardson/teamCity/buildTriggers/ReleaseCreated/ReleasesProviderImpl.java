@@ -11,7 +11,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-//todo: needs improved test coverage
 public class ReleasesProviderImpl implements ReleasesProvider {
     @NotNull
     private static final Logger LOG = Logger.getInstance(ReleasesProviderImpl.class.getName());
