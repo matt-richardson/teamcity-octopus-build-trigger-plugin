@@ -31,6 +31,7 @@ public final class OctopusBuildTriggerUtil {
     private static final Integer DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS = 60 * 1000;
 
     public static Integer getConnectionTimeoutInMilliseconds() {
+        //todo: this is logging a warning to console in the tests
         return TeamCityProperties.getInteger(CONNECTION_TIMEOUT_PROP, DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS);
     }
 }

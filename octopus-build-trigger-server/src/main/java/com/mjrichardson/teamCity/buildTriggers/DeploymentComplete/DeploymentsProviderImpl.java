@@ -63,6 +63,8 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         if (apiProgressionResponse.haveCompleteInformation)
             return apiProgressionResponse.environments;
 
+        //todo: figure out if this ever returns better information than the above call...
+        //some kind of metrics, maybe?
         return getEnvironmentsFromApi(projectId, oldEnvironments, contentProvider, apiRootResponse, apiProgressionResponse);
     }
 

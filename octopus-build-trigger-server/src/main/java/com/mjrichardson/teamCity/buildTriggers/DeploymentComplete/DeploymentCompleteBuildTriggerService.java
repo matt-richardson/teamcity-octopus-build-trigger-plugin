@@ -90,6 +90,7 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
 
     @NotNull
     private int getPollInterval() {
+        //todo: this is logging a warning to console in the tests
         return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL_IN_SECONDS);
     }
 
