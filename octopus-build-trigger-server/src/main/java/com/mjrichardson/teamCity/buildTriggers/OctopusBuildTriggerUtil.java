@@ -34,4 +34,9 @@ public final class OctopusBuildTriggerUtil {
         //todo: this is logging a warning to console in the tests
         return TeamCityProperties.getInteger(CONNECTION_TIMEOUT_PROP, DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS);
     }
+
+    public static int getPollInterval() {
+        //todo: this is logging a warning to console in the tests
+        return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL_IN_SECONDS);
+    }
 }

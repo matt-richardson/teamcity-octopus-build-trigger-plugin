@@ -1,18 +1,15 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerService;
 import jetbrains.buildServer.buildTriggers.BuildTriggeringPolicy;
 import jetbrains.buildServer.buildTriggers.async.AsyncBuildTrigger;
 import jetbrains.buildServer.buildTriggers.async.AsyncBuildTriggerFactory;
 import jetbrains.buildServer.serverSide.PropertiesProcessor;
-import jetbrains.buildServer.serverSide.TeamCityProperties;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
-
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.DEFAULT_POLL_INTERVAL_IN_SECONDS;
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.POLL_INTERVAL_PROP;
 
 public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService {
     @NotNull
@@ -74,7 +71,7 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
 
     @NotNull
     private int getPollInterval() {
-        return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL_IN_SECONDS);
+        return OctopusBuildTriggerUtil.getPollInterval();
     }
 
     @NotNull
