@@ -56,11 +56,11 @@ public class FakeContentProvider implements HttpContentProvider {
             throw new ProjectNotFoundException("Projects-00");
         }
 
+        final String resourceName = "/responses/3.3.0/" + s.replace(octopusUrl + "/", "").replace("?", "/") + ".json";
         try {
-            final String resourceName = "/responses/3.3.0/" + s.replace(octopusUrl + "/", "").replace("?", "/") + ".json";
             InputStream resource = getClass().getResourceAsStream(resourceName);
             return IOUtils.toString(resource);
-        } catch (IOException e) {
+        } catch (NullPointerException | IOException e) {
             throw new InvalidOctopusUrlException(new URI(s), e);
         }
     }
