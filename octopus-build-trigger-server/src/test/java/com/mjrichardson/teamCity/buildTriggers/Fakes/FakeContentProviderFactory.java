@@ -22,6 +22,8 @@ public class FakeContentProviderFactory extends HttpContentProviderFactory {
     public FakeContentProviderFactory(OutOfMemoryError exception) {
         super("", "", connectionTimeoutInMilliseconds);
         this.exception = exception;
+        this.octopusUrl = "http://fake-url";
+        this.octopusApiKey = "api-key";
     }
 
     @Override

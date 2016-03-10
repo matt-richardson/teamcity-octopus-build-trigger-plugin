@@ -19,10 +19,6 @@ public class FakeContentProvider implements HttpContentProvider {
         this.octopusApiKey = octopusApiKey;
     }
 
-    public FakeContentProvider() {
-        this(null);
-    }
-
     public FakeContentProvider(Throwable exception) {
         this.exception = exception;
         this.octopusUrl = "http://fake-url";
@@ -71,6 +67,6 @@ public class FakeContentProvider implements HttpContentProvider {
 
     @Override
     public String getUrl() {
-        return null;
+        return octopusUrl;
     }
 }

@@ -13,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 @Test
 public class OctopusConnectivityCheckerTest {
     public void check_octopus_connectivity_returns_null_when_content_provider_returns_content() {
-        FakeContentProvider contentProvider = new FakeContentProvider();
+        FakeContentProvider contentProvider = new FakeContentProvider("http://fake-url", "API-KEY");
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
         Assert.assertEquals(sut.checkOctopusConnectivity(), null);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
