@@ -12,6 +12,7 @@ public class Releases {
         this("");
     }
 
+    //todo: this ctor should move to a Parse method.
     public Releases(String oldStoredData) {
         this.statusMap = new ArrayList<>();
 

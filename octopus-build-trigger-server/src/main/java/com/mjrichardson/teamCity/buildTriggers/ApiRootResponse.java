@@ -24,6 +24,7 @@ import java.util.Map;
 
 public class ApiRootResponse {
     public final String deploymentsApiLink;
+    public final String progressionApiLink; //todo: not used outside of tests
     public final String progressionApiLink;
     public final String projectsApiLink;
 
