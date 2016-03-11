@@ -50,7 +50,6 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
 
             //only store that one machine was added here, not multiple.
             //otherwise, we could inadvertently miss new machines
-            //todo: move inside Machines class
             final Machine newMachine = newMachines.getNextMachine(oldMachines);
             final Machines trimmedMachines = Machines.Parse(oldStoredData);
             trimmedMachines.add(newMachine);
