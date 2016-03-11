@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class Environment {
     public final String environmentId;
-    public OctopusDate latestDeployment;//todo:consider if we can make this class idempotent
+    public OctopusDate latestDeployment;
     public OctopusDate latestSuccessfulDeployment;
 
     public Environment(String environmentId, OctopusDate latestDeployment) {
@@ -50,6 +50,15 @@ public class Environment {
 
     public boolean hasHadAtLeastOneSuccessfulDeployment() {
         return this.latestSuccessfulDeployment.compareTo(new NullOctopusDate()) > 0;
+    }
+
+    public void update(OctopusDate latestDeployment, Boolean finishedSuccessfully) {
+        if (isLatestDeploymentOlderThan(latestDeployment)) {
+            this.latestDeployment = latestDeployment;
+        }
+        if (finishedSuccessfully && isLatestSuccessfulDeploymentOlderThen(latestDeployment)) {
+            latestSuccessfulDeployment = latestDeployment;
+        }
     }
 
     @Override

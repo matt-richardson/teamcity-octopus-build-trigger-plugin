@@ -128,12 +128,7 @@ public class Environments {
             targetDeployment = new Environment(environmentId, latestDeployment, finishedSuccessfully ? latestDeployment : new NullOctopusDate());
             statusMap.add(targetDeployment);
         } else {
-            if (targetDeployment.isLatestDeploymentOlderThan(latestDeployment)) {
-                targetDeployment.latestDeployment = latestDeployment;
-            }
-            if (finishedSuccessfully && targetDeployment.isLatestSuccessfulDeploymentOlderThen(latestDeployment)) {
-                targetDeployment.latestSuccessfulDeployment = latestDeployment;
-            }
+            targetDeployment.update(latestDeployment, finishedSuccessfully);
         }
     }
 
