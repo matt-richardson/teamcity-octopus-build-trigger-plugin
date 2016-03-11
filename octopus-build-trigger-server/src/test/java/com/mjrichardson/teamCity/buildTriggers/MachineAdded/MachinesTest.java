@@ -40,14 +40,9 @@ public class MachinesTest {
         Assert.assertEquals(machines.toString(), "");
     }
 
-    public void no_arg_ctor_returns_empty() throws Exception {
+    public void new_instance_is_empty() throws Exception {
         Machines machines = new Machines();
         Assert.assertEquals(machines.toString(), "");
-        Assert.assertTrue(machines.isEmpty());
-    }
-
-    public void is_empty_returns_true_when_no_machines() throws Exception {
-        Machines machines = Machines.Parse("");
         Assert.assertTrue(machines.isEmpty());
     }
 
@@ -59,7 +54,7 @@ public class MachinesTest {
         Assert.assertFalse(machines.isEmpty());
     }
 
-    public void passing_single_machine_to_ctor_adds_to_collection() throws Exception {
+    public void add_adds_to_collection() throws Exception {
         final Machine machine = new Machine("machine-1", "machineOne");
         Machines machines = new Machines();
         machines.add(machine);
@@ -75,6 +70,27 @@ public class MachinesTest {
 
         Machine machine = newMachines.getNextMachine(oldMachines);
         Assert.assertEquals(machine.getClass(), NullMachine.class);
+    }
+
+    public void get_next_machine_returns_new_machine() throws Exception {
+        final Machine oldMachine = new Machine("machine-2", "MachineTwo");
+        final Machine newMachine = new Machine("machine-3", "MachineThree");
+        Machines newMachines = Machines.Parse(String.format("%s|%s", newMachine.toString(), oldMachine.toString()));
+        Machines oldMachines = Machines.Parse(oldMachine.toString());
+
+        Machine machine = newMachines.getNextMachine(oldMachines);
+        Assert.assertEquals(machine, newMachine);
+    }
+
+    public void get_next_machine_returns_next_machine() throws Exception {
+        final Machine oldMachine = new Machine("machine-1", "MachineOne");
+        final Machine firstNewMachine = new Machine("machine-2", "MachineTwo");
+        final Machine secondNewMachine = new Machine("machine-3", "MachineThree");
+        Machines newMachines = Machines.Parse(String.format("%s|%s|%s", oldMachine.toString(), firstNewMachine.toString(), secondNewMachine.toString()));
+        Machines oldMachines = Machines.Parse(oldMachine.toString());
+
+        Machine machine = newMachines.getNextMachine(oldMachines);
+        Assert.assertEquals(machine, firstNewMachine);
     }
 
     public void to_array_converts_machines_to_array_successfully() {
