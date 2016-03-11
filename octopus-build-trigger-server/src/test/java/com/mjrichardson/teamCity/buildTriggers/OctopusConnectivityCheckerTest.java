@@ -59,9 +59,12 @@ public class OctopusConnectivityCheckerTest {
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
-    @Test(groups = {"needs-internet-access"})
-    public void check_octopus_connectivity_against_live_octopus_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        OctopusConnectivityChecker sut = new OctopusConnectivityChecker("https://demo.octopusdeploy.com", "", 6000);
+    @Test(groups = {"needs-real-server"})
+    public void check_octopus_connectivity_against_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        final String realOctopusUrl = "http://windows10vm.local/";
+        final Integer timeoutInMilliseconds = 30000;
+
+        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(realOctopusUrl, "", timeoutInMilliseconds);
         String result = sut.checkOctopusConnectivity();
         Assert.assertEquals(result, null);
     }
