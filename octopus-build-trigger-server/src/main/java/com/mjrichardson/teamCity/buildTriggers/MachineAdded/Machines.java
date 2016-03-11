@@ -9,24 +9,20 @@ public class Machines {
     private ArrayList<Machine> statusMap;
 
     public Machines() {
-        this("");
+        this.statusMap = new ArrayList<>();
     }
 
-    //todo: this ctor should move to a Parse method.
-    public Machines(String oldStoredData) {
-        this.statusMap = new ArrayList<>();
+    public static Machines Parse(String oldStoredData) {
+        Machines result = new Machines();
 
         if (!StringUtil.isEmptyOrSpaces(oldStoredData)) {
             for (String pair : oldStoredData.split("\\|")) {
                 if (pair.length() > 0) {
-                    statusMap.add(Machine.Parse(pair));
+                    result.add(Machine.Parse(pair));
                 }
             }
         }
-    }
-
-    public Machines(Machine oldMachine) {
-        this(oldMachine.toString());
+        return result;
     }
 
     @Override

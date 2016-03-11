@@ -97,7 +97,7 @@ public class MachinesProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
 
-        Machines oldMachines = new Machines((new Machine("Machines-1", "Octopus Server")).toString());
+        Machines oldMachines = Machines.Parse((new Machine("Machines-1", "Octopus Server")).toString());
         Machines newMachines = MachinesProviderImpl.getMachines();
         Assert.assertEquals(newMachines.size(), 1);
         Machine machine = newMachines.getNextMachine(oldMachines);
@@ -111,7 +111,7 @@ public class MachinesProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
 
-        Machines oldMachines = new Machines((new Machine("Machines-1", "Octopus Server").toString()));
+        Machines oldMachines = Machines.Parse((new Machine("Machines-1", "Octopus Server").toString()));
         Machines newMachines = MachinesProviderImpl.getMachines();
         Assert.assertEquals(newMachines.size(), 1);
         Machine machine = newMachines.getNextMachine(oldMachines);

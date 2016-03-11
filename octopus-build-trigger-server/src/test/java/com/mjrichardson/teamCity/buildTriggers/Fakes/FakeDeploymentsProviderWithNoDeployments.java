@@ -18,6 +18,6 @@ public class FakeDeploymentsProviderWithNoDeployments implements DeploymentsProv
 
     @Override
     public Environments getDeployments(String octopusProject, Environments oldEnvironments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
-        return new Environments("");
+        return new Environments();
     }
 }

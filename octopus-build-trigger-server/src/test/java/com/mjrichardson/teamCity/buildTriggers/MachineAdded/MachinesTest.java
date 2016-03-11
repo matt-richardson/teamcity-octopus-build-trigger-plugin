@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 public class MachinesTest {
     public void can_convert_single_machine_from_string_and_back_again() throws Exception {
         final String expected = new Machine("machine-id", "machine-name").toString();
-        Machines machines = new Machines(expected);
+        Machines machines = Machines.Parse(expected);
         Assert.assertEquals(machines.toString(), expected);
     }
 
@@ -31,12 +31,12 @@ public class MachinesTest {
         final String expected = String.format("%s|%s",
                 new Machine("machine-1", "MachineOne").toString(),
                 new Machine("machine-2", "MachineTwo").toString());
-        Machines machines = new Machines(expected);
+        Machines machines = Machines.Parse(expected);
         Assert.assertEquals(machines.toString(), expected);
     }
 
     public void can_convert_from_empty_string_and_back_again() throws Exception {
-        Machines machines = new Machines("");
+        Machines machines = Machines.Parse("");
         Assert.assertEquals(machines.toString(), "");
     }
 
@@ -47,7 +47,7 @@ public class MachinesTest {
     }
 
     public void is_empty_returns_true_when_no_machines() throws Exception {
-        Machines machines = new Machines("");
+        Machines machines = Machines.Parse("");
         Assert.assertTrue(machines.isEmpty());
     }
 
@@ -55,13 +55,14 @@ public class MachinesTest {
         final String expected = String.format("%s|%s",
                 new Machine("machine-1", "MachineOne").toString(),
                 new Machine("machine-2", "MachineTwo").toString());
-        Machines machines = new Machines(expected);
+        Machines machines = Machines.Parse(expected);
         Assert.assertFalse(machines.isEmpty());
     }
 
     public void passing_single_machine_to_ctor_adds_to_collection() throws Exception {
         final Machine machine = new Machine("machine-1", "machineOne");
-        Machines machines = new Machines(machine);
+        Machines machines = new Machines();
+        machines.add(machine);
         Assert.assertEquals(machines.size(), 1);
         Assert.assertEquals(machines.toString(), machine.toString());
     }
@@ -69,8 +70,8 @@ public class MachinesTest {
     public void get_next_machine_returns_null_machine_if_no_new_machines() throws Exception {
         final Machine oldMachine = new Machine("machine-2", "MachineTwo");
         final Machine newMachine = new Machine("machine-3", "MachineThree");
-        Machines newMachines = new Machines(String.format("%s|%s", newMachine.toString(), oldMachine.toString()));
-        Machines oldMachines = new Machines(String.format("%s|%s", newMachine.toString(), oldMachine.toString()));
+        Machines newMachines = Machines.Parse(String.format("%s|%s", newMachine.toString(), oldMachine.toString()));
+        Machines oldMachines = Machines.Parse(String.format("%s|%s", newMachine.toString(), oldMachine.toString()));
 
         Machine machine = newMachines.getNextMachine(oldMachines);
         Assert.assertEquals(machine.getClass(), NullMachine.class);
@@ -79,7 +80,7 @@ public class MachinesTest {
     public void to_array_converts_machines_to_array_successfully() {
         final Machine oldMachine = new Machine("machine-2", "MachineTwo");
         final Machine newMachine = new Machine("machine-3", "MachineThree");
-        Machines machines = new Machines(String.format("%s|%s", oldMachine.toString(), newMachine.toString()));
+        Machines machines = Machines.Parse(String.format("%s|%s", oldMachine.toString(), newMachine.toString()));
         Machine[] array = machines.toArray();
         Assert.assertEquals(array.length, 2);
         Assert.assertEquals(array[0], oldMachine);

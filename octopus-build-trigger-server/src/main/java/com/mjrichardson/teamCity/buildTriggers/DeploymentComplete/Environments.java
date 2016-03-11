@@ -30,9 +30,18 @@ public class Environments {
         this.statusMap = new ArrayList<>();
     }
 
-    //todo: this ctor should move to a Parse method.
-    public Environments(String oldStoredData) throws ParseException {
+    public Environments(Environments oldEnvironments) {
         this();
+        addOrUpdate(oldEnvironments);
+    }
+
+    public Environments(Environment environment) {
+        this();
+        addOrUpdate(environment);
+    }
+
+    public static Environments Parse(String oldStoredData) throws ParseException {
+        Environments result = new Environments();
 
         if (!StringUtil.isEmptyOrSpaces(oldStoredData)) {
 
@@ -42,20 +51,11 @@ public class Environments {
                     final String environmentId = split[0];
                     final OctopusDate latestDeployment = OctopusDate.Parse(split[1]);
                     final OctopusDate latestSuccessfulDeployment = OctopusDate.Parse(split[2]);
-                    statusMap.add(new Environment(environmentId, latestDeployment, latestSuccessfulDeployment));
+                    result.addOrUpdate(new Environment(environmentId, latestDeployment, latestSuccessfulDeployment));
                 }
             }
         }
-    }
-
-    public Environments(Environments oldEnvironments) {
-        this();
-        addOrUpdate(oldEnvironments);
-    }
-
-    public Environments(Environment environment) {
-        this();
-        addOrUpdate(environment);
+        return result;
     }
 
     @Override

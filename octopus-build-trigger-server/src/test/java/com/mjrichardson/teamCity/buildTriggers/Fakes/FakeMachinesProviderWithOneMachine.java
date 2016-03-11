@@ -12,6 +12,9 @@ import java.text.ParseException;
 public class FakeMachinesProviderWithOneMachine implements MachinesProvider {
     @Override
     public Machines getMachines() throws MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
-        return new Machines(new Machine("Machine-1", "MachineOne"));
+        Machine machine = new Machine("Machine-1", "MachineOne");
+        Machines machines = new Machines();
+        machines.add(machine);
+        return machines;
     }
 }

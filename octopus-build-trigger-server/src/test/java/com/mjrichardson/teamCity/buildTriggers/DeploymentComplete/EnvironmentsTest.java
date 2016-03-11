@@ -27,18 +27,18 @@ import java.text.ParseException;
 public class EnvironmentsTest {
     public void can_convert_single_environment_from_string_and_back_again() throws Exception {
         final String expected = "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00";
-        Environments environments = new Environments(expected);
+        Environments environments = Environments.Parse(expected);
         Assert.assertEquals(environments.toString(), expected);
     }
 
     public void can_convert_multiple_environments_from_string_and_back_again() throws Exception {
         final String expected = "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00|Environments-2;2015-12-07T14:12:14.624+00:00;2015-12-07T14:12:14.624+00:00";
-        Environments environments = new Environments(expected);
+        Environments environments = Environments.Parse(expected);
         Assert.assertEquals(environments.toString(), expected);
     }
 
     public void can_convert_from_empty_string_and_back_again() throws Exception {
-        Environments environments = new Environments("");
+        Environments environments = Environments.Parse("");
         Assert.assertEquals(environments.toString(), "");
     }
 
@@ -49,13 +49,13 @@ public class EnvironmentsTest {
     }
 
     public void is_empty_returns_true_when_no_deployments() throws Exception {
-        Environments environments = new Environments("");
+        Environments environments = Environments.Parse("");
         Assert.assertTrue(environments.isEmpty());
     }
 
     public void is_empty_returns_false_when_has_deployments() throws Exception {
         final String expected = "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00|Environments-2;2015-12-07T14:12:14.624+00:00;2015-12-07T14:12:14.624+00:00";
-        Environments environments = new Environments(expected);
+        Environments environments = Environments.Parse(expected);
         Assert.assertFalse(environments.isEmpty());
     }
 
@@ -68,9 +68,9 @@ public class EnvironmentsTest {
 
     public void trim_multiple_deployments_to_return_only_one_changed_environment() throws Exception {
         final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments oldEnvironments = new Environments(oldData);
+        Environments oldEnvironments = Environments.Parse(oldData);
         final String newData = "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-21T14:25:40.247+00:00|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00";
-        Environments newEnvironments = new Environments(newData);
+        Environments newEnvironments = Environments.Parse(newData);
 
         final Environments trimmedEnvironments = newEnvironments.trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments);
         Assert.assertEquals(trimmedEnvironments.size(), 2);
@@ -84,9 +84,9 @@ public class EnvironmentsTest {
 
     public void trim_multiple_deployments_to_return_only_one_changed_environment_can_prioritise_successful_deployments() throws Exception {
         final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments oldEnvironments = new Environments(oldData);
+        Environments oldEnvironments = Environments.Parse(oldData);
         final String newData = "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00";
-        Environments newEnvironments = new Environments(newData);
+        Environments newEnvironments = Environments.Parse(newData);
 
         final Boolean prioritiseSuccessfulDeployments = true;
         final Environments trimmedEnvironments = newEnvironments.trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments, prioritiseSuccessfulDeployments);
@@ -101,9 +101,9 @@ public class EnvironmentsTest {
 
     public void trim_multiple_deployments_to_return_only_one_changed_environment_can_skip_successful_deployment_prioritisation() throws Exception {
         final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments oldEnvironments = new Environments(oldData);
+        Environments oldEnvironments = Environments.Parse(oldData);
         final String newData = "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00";
-        Environments newEnvironments = new Environments(newData);
+        Environments newEnvironments = Environments.Parse(newData);
 
         final Boolean prioritiseSuccessfulDeployments = false;
         final Environments trimmedEnvironments = newEnvironments.trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments, prioritiseSuccessfulDeployments);
@@ -118,9 +118,9 @@ public class EnvironmentsTest {
 
     public void trim_multiple_deployments_to_return_only_one_changed_environment_returns_input_when_none_changed() throws Exception {
         final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments oldEnvironments = new Environments(oldData);
+        Environments oldEnvironments = Environments.Parse(oldData);
         final String newData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments newEnvironments = new Environments(newData);
+        Environments newEnvironments = Environments.Parse(newData);
 
         final Boolean prioritiseSuccessfulDeployments = true;
         final Environments trimmedEnvironments = newEnvironments.trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments, prioritiseSuccessfulDeployments);
@@ -135,9 +135,9 @@ public class EnvironmentsTest {
 
     public void get_changed_deployment_returns_first_environment_thats_changed() throws Exception {
         final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments oldEnvironments = new Environments(oldData);
+        Environments oldEnvironments = Environments.Parse(oldData);
         final String newData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00";
-        Environments newEnvironments = new Environments(newData);
+        Environments newEnvironments = Environments.Parse(newData);
 
         Environment environment = newEnvironments.getChangedDeployment(oldEnvironments);
         Assert.assertNotNull(environment);
@@ -147,16 +147,16 @@ public class EnvironmentsTest {
     @Test(expectedExceptions = NoChangedEnvironmentsException.class)
     public void get_changed_deployment_throws_exception_when_none_changed() throws Exception {
         final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments oldEnvironments = new Environments(oldData);
+        Environments oldEnvironments = Environments.Parse(oldData);
         final String newData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments newEnvironments = new Environments(newData);
+        Environments newEnvironments = Environments.Parse(newData);
 
         newEnvironments.getChangedDeployment(oldEnvironments);
     }
 
     public void to_array_converts_deployments_to_array_successfully() throws ParseException {
         final String data = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments environments = new Environments(data);
+        Environments environments = Environments.Parse(data);
         Environment[] array = environments.toArray();
         Assert.assertEquals(array.length, 2);
         Assert.assertEquals(array[0], new Environment("Environments-1", new OctopusDate(2016, 1, 19, 14, 0, 0), new OctopusDate(2016, 1, 19)));

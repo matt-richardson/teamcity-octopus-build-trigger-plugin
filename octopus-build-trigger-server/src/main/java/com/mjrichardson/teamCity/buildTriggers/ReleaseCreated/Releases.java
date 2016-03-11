@@ -9,24 +9,21 @@ public class Releases {
     private ArrayList<Release> statusMap;
 
     public Releases() {
-        this("");
+        this.statusMap = new ArrayList<>();
     }
 
-    //todo: this ctor should move to a Parse method.
-    public Releases(String oldStoredData) {
-        this.statusMap = new ArrayList<>();
+    public static Releases Parse(String data) {
+        Releases releases = new Releases();
 
-        if (!StringUtil.isEmptyOrSpaces(oldStoredData)) {
-            for (String pair : oldStoredData.split("\\|")) {
+        if (!StringUtil.isEmptyOrSpaces(data)) {
+            for (String pair : data.split("\\|")) {
                 if (pair.length() > 0) {
-                    statusMap.add(Release.Parse(pair));
+                    releases.add(Release.Parse(pair));
                 }
             }
         }
-    }
 
-    public Releases(Release oldRelease) {
-        this(oldRelease.toString());
+        return releases;
     }
 
     @Override

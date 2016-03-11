@@ -141,7 +141,7 @@ public class DeploymentsProviderImplTest {
     public void get_deployments_when_up_to_date() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
-        Environments oldEnvironments = new Environments("Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00");
+        Environments oldEnvironments = Environments.Parse("Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00");
         Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
@@ -200,7 +200,7 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory);
         final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments oldEnvironments = new Environments(oldData);
+        Environments oldEnvironments = Environments.Parse(oldData);
         Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldEnvironments);
         Assert.assertEquals(newEnvironments.size(), 2);
         Environment environment = newEnvironments.getEnvironment("Environments-1");

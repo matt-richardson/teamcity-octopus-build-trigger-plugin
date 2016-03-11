@@ -42,7 +42,7 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
 
         try {
             String oldStoredData = dataStorage.getValue(dataStorageKey);
-            final Machines oldMachines = new Machines(oldStoredData);
+            final Machines oldMachines = Machines.Parse(oldStoredData);
             final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
 
             MachinesProvider provider = MachinesProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
@@ -52,7 +52,7 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
             //otherwise, we could inadvertently miss new machines
             //todo: move inside Machines class
             final Machine newMachine = newMachines.getNextMachine(oldMachines);
-            final Machines trimmedMachines = new Machines(oldStoredData);
+            final Machines trimmedMachines = Machines.Parse(oldStoredData);
             trimmedMachines.add(newMachine);
             final String newStoredData = trimmedMachines.toString();
 

@@ -60,7 +60,7 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
 
         try {
             final String oldStoredData = dataStorage.getValue(dataStorageKey);
-            final Environments oldEnvironments = new Environments(oldStoredData);
+            final Environments oldEnvironments = Environments.Parse(oldStoredData);
 
             final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
             DeploymentsProvider provider = deploymentsProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
