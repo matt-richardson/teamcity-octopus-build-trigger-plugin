@@ -76,6 +76,7 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
             return MachineAddedSpecCheckResult.createEmptyResult();
 
         } catch (Exception e) {
+            LOG.error("Failed to check for new machines added", e);
             return MachineAddedSpecCheckResult.createThrowableResult(e);
         }
     }

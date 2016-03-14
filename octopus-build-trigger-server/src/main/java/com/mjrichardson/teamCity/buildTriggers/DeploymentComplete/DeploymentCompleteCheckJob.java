@@ -98,6 +98,7 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
             return DeploymentCompleteSpecCheckResult.createEmptyResult();
 
         } catch (Exception e) {
+            LOG.error("Failed to check for new deployments completed", e);
             return DeploymentCompleteSpecCheckResult.createThrowableResult(e);
         }
     }

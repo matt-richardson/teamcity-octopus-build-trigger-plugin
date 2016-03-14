@@ -74,6 +74,7 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
             return ReleaseCreatedSpecCheckResult.createEmptyResult();
 
         } catch (Exception e) {
+            LOG.error("Failed to check for new releases created", e);
             return ReleaseCreatedSpecCheckResult.createThrowableResult(e);
         }
     }

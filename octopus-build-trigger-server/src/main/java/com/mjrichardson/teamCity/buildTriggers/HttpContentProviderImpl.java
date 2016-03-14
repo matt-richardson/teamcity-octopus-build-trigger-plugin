@@ -120,14 +120,18 @@ public class HttpContentProviderImpl implements HttpContentProvider {
             LOG.info("request to " + uri + " returned " + content);
             return content;
         } catch (UnknownHostException e) {
+            LOG.warn("Unknown host exception while getting response from " + uri);
             throw new InvalidOctopusUrlException(uri, e);
+        } catch (Exception e) {
+            LOG.warn("Exception while getting response from " + uri);
+            throw e;
         } finally {
             httpGet.releaseConnection();
             if (httpClient != null) {
                 try {
                     httpClient.close();
                 } catch (IOException e) {
-                    //
+                    LOG.warn("Exception while calling httpClient.close() - not much we can do", e);
                 }
             }
         }
