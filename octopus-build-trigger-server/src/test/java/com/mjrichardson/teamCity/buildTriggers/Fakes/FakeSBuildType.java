@@ -104,6 +104,7 @@ class FakeSBuildType implements SBuildType {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void setPaused(boolean b, User user) {
 
     }
@@ -248,6 +249,7 @@ class FakeSBuildType implements SBuildType {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void moveToProject(@NotNull SProject sProject, boolean b) throws InvalidVcsRootScopeException {
 
     }
@@ -287,6 +289,7 @@ class FakeSBuildType implements SBuildType {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void attachToTemplate(@NotNull BuildTypeTemplate buildTypeTemplate, boolean b) throws InvalidVcsRootScopeException, CannotAttachToTemplateException {
 
     }
@@ -991,18 +994,21 @@ class FakeSBuildType implements SBuildType {
 
     @NotNull
     @Override
+    @SuppressWarnings("deprecation")
     public LabelingType getLabelingType() {
         return null;
     }
 
     @NotNull
     @Override
+    @SuppressWarnings("deprecation")
     public String getLabelPattern() {
         return null;
     }
 
     @NotNull
     @Override
+    @SuppressWarnings("deprecation")
     public List<VcsRoot> getLabelingRoots() {
         return null;
     }
