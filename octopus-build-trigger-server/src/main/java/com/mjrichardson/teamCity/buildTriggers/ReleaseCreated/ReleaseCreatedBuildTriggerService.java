@@ -1,6 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerService;
@@ -17,11 +18,15 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
     @NotNull
     private final PluginDescriptor myPluginDescriptor;
     @NotNull
+    private final AnalyticsTracker analyticsTracker;
+    @NotNull
     private final BuildTriggeringPolicy myPolicy;
 
     public ReleaseCreatedBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
-                                             @NotNull final AsyncBuildTriggerFactory triggerFactory) {
+                                             @NotNull final AsyncBuildTriggerFactory triggerFactory,
+                                             @NotNull final AnalyticsTracker analyticsTracker) {
         myPluginDescriptor = pluginDescriptor;
+        this.analyticsTracker = analyticsTracker;
         myPolicy = triggerFactory.createBuildTrigger(ReleaseCreatedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
 
@@ -76,6 +81,6 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
 
     @NotNull
     private ReleaseCreatedAsyncBuildTrigger getBuildTrigger() {
-        return new ReleaseCreatedAsyncBuildTrigger(getDisplayName(), getPollInterval());
+        return new ReleaseCreatedAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker);
     }
 }

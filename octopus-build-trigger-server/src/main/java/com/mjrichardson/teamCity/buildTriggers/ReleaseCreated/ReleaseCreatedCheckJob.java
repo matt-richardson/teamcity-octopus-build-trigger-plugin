@@ -1,6 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
@@ -22,17 +23,19 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
     private final String buildType;
     private final CustomDataStorage dataStorage;
     private final Map<String, String> props;
+    private final AnalyticsTracker analyticsTracker;
 
-    public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
-        this(new ReleasesProviderFactory(), displayName, buildType, dataStorage, properties);
+    public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
+        this(new ReleasesProviderFactory(), displayName, buildType, dataStorage, properties, analyticsTracker);
     }
 
-    public ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
+    public ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
         this.releasesProviderFactory = releasesProviderFactory;
         this.displayName = displayName;
         this.buildType = buildType;
         this.dataStorage = dataStorage;
         this.props = properties;
+        this.analyticsTracker = analyticsTracker;
     }
 
     @NotNull
@@ -60,6 +63,8 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
                 //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
                 //do not trigger build after first adding trigger (oldReleases == null)
                 if (oldStoredData == null) {
+                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
+
                     LOG.debug("No previous releases known for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                     return ReleaseCreatedSpecCheckResult.createEmptyResult();
                 }
@@ -70,11 +75,16 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
                 return ReleaseCreatedSpecCheckResult.createUpdatedResult(releaseCreatedSpec);
             }
 
+            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
+
             LOG.info("No new releases on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
             return ReleaseCreatedSpecCheckResult.createEmptyResult();
 
         } catch (Exception e) {
             LOG.error("Failed to check for new releases created", e);
+
+            analyticsTracker.postException(e);
+
             return ReleaseCreatedSpecCheckResult.createThrowableResult(e);
         }
     }

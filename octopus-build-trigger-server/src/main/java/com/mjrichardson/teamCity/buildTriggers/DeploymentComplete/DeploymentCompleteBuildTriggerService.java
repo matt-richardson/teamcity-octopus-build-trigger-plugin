@@ -17,6 +17,7 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerService;
@@ -33,11 +34,15 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
     @NotNull
     private final PluginDescriptor myPluginDescriptor;
     @NotNull
+    private final AnalyticsTracker analyticsTracker;
+    @NotNull
     private final BuildTriggeringPolicy myPolicy;
 
     public DeploymentCompleteBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
-                                                 @NotNull final AsyncBuildTriggerFactory triggerFactory) {
+                                                 @NotNull final AsyncBuildTriggerFactory triggerFactory,
+                                                 @NotNull final AnalyticsTracker analyticsTracker) {
         myPluginDescriptor = pluginDescriptor;
+        this.analyticsTracker = analyticsTracker;
         myPolicy = triggerFactory.createBuildTrigger(DeploymentCompleteSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
 
@@ -92,6 +97,6 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
 
     @NotNull
     private DeploymentCompleteAsyncBuildTrigger getBuildTrigger() {
-        return new DeploymentCompleteAsyncBuildTrigger(getDisplayName(), getPollInterval());
+        return new DeploymentCompleteAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker);
     }
 }

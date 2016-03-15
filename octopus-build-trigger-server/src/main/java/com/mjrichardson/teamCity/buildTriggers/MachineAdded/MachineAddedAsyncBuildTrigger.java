@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import jetbrains.buildServer.buildTriggers.async.*;
@@ -12,10 +13,12 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OC
 class MachineAddedAsyncBuildTrigger implements AsyncBuildTrigger<MachineAddedSpec> {
     private final String displayName;
     private final int pollIntervalInSeconds;
+    private final AnalyticsTracker analyticsTracker;
 
-    public MachineAddedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds) {
+    public MachineAddedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker) {
         this.displayName = displayName;
         this.pollIntervalInSeconds = pollIntervalInSeconds;
+        this.analyticsTracker = analyticsTracker;
     }
 
     @NotNull
@@ -37,7 +40,8 @@ class MachineAddedAsyncBuildTrigger implements AsyncBuildTrigger<MachineAddedSpe
         return new MachineAddedCheckJob(displayName,
                 asyncTriggerParameters.getBuildType().toString(),
                 asyncTriggerParameters.getCustomDataStorage(),
-                asyncTriggerParameters.getTriggerDescriptor().getProperties());
+                asyncTriggerParameters.getTriggerDescriptor().getProperties(),
+                analyticsTracker);
     }
 
     @NotNull

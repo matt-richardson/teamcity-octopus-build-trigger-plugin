@@ -19,6 +19,9 @@
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.9" level="project" />
     <orderEntry type="library" name="Maven: jetbrains.buildServer.buildTriggers.async:openapi:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.brsanthu:google-analytics-java:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.5" level="project" />
   </component>
   <component name="POM File Configuration" pomFile="" />
 </module>

@@ -18,6 +18,7 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
@@ -38,18 +39,20 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
     private final String buildType;
     private final CustomDataStorage dataStorage;
     private final Map<String, String> props;
+    private final AnalyticsTracker analyticsTracker;
     private final DeploymentsProviderFactory deploymentsProviderFactory;
 
-    public DeploymentCompleteCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
-        this(new DeploymentsProviderFactory(), displayName, buildType, dataStorage, properties);
+    public DeploymentCompleteCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
+        this(new DeploymentsProviderFactory(analyticsTracker), displayName, buildType, dataStorage, properties, analyticsTracker);
     }
 
-    public DeploymentCompleteCheckJob(DeploymentsProviderFactory deploymentsProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
+    public DeploymentCompleteCheckJob(DeploymentsProviderFactory deploymentsProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
         this.deploymentsProviderFactory = deploymentsProviderFactory;
         this.displayName = displayName;
         this.buildType = buildType;
         this.dataStorage = dataStorage;
         this.props = properties;
+        this.analyticsTracker = analyticsTracker;
     }
 
     @NotNull
@@ -78,6 +81,8 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
                 //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
                 //do not trigger build after first adding trigger (oldEnvironments == null)
                 if (oldStoredData == null) {
+                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.TriggerAdded);
+
                     LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                     return DeploymentCompleteSpecCheckResult.createEmptyResult();
                 }
@@ -87,6 +92,8 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
                     LOG.debug("New deployments found, but they weren't successful, and we are only triggering on successful builds. Server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                     return DeploymentCompleteSpecCheckResult.createEmptyResult();
                 }
+
+                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.BuildTriggered);
 
                 LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
                 final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, environment.environmentId, environment.wasLatestDeploymentSuccessful());
@@ -99,6 +106,8 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
 
         } catch (Exception e) {
             LOG.error("Failed to check for new deployments completed", e);
+
+            analyticsTracker.postException(e);
             return DeploymentCompleteSpecCheckResult.createThrowableResult(e);
         }
     }

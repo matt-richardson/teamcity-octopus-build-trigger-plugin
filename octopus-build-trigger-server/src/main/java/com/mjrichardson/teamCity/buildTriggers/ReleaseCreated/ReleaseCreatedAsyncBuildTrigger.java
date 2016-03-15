@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import jetbrains.buildServer.buildTriggers.async.*;
@@ -13,10 +14,12 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OC
 class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreatedSpec> {
     private final String displayName;
     private final int pollIntervalInSeconds;
+    private final AnalyticsTracker analyticsTracker;
 
-    public ReleaseCreatedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds) {
+    public ReleaseCreatedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker) {
         this.displayName = displayName;
         this.pollIntervalInSeconds = pollIntervalInSeconds;
+        this.analyticsTracker = analyticsTracker;
     }
 
     @NotNull
@@ -38,7 +41,8 @@ class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreate
         return new ReleaseCreatedCheckJob(displayName,
                 asyncTriggerParameters.getBuildType().toString(),
                 asyncTriggerParameters.getCustomDataStorage(),
-                asyncTriggerParameters.getTriggerDescriptor().getProperties());
+                asyncTriggerParameters.getTriggerDescriptor().getProperties(),
+                analyticsTracker);
     }
 
     @NotNull

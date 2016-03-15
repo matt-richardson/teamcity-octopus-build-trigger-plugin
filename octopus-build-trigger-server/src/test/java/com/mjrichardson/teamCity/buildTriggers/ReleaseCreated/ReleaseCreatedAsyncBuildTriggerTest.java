@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAsyncTriggerParameters;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
@@ -21,14 +22,14 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void make_trigger_exception_throws_build_trigger_exception() {
         String displayName = "the display name";
         int pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds);
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
         sut.makeTriggerException(new ParseException("the exception message"));
     }
 
     public void get_requestor_string_returns_requestor_string_from_deployment_complete_spec() {
         String displayName = "the display name";
         int pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds);
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
         String result = sut.getRequestorString(new ReleaseCreatedSpec("the-url", "the-project"));
 
         Assert.assertEquals(result, "Release of project the-project created on the-url");
@@ -37,7 +38,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void poll_interval_returns_passed_in_poll_interval() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds);
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
         Integer result = sut.getPollInterval(new FakeAsyncTriggerParameters());
 
         Assert.assertEquals(result, pollIntervalInSeconds);
@@ -46,7 +47,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void create_job_returns_instance_of_deployment_complete_check_job() throws CheckJobCreationException {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds);
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
         CheckJob<ReleaseCreatedSpec> result = sut.createJob(new FakeAsyncTriggerParameters());
 
         Assert.assertEquals(result.getClass(), ReleaseCreatedCheckJob.class);
@@ -55,7 +56,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void create_crash_on_submit_result_returns_deployment_complete_spec_check_result() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds);
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
         CheckResult<ReleaseCreatedSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"));
 
         Assert.assertTrue(result.hasCheckErrors());
@@ -65,7 +66,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void describe_trigger_returns_description_based_on_properties() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds);
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
@@ -79,7 +80,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void describe_trigger_returns_description_based_on_properties2() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds);
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");

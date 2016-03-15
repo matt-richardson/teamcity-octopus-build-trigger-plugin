@@ -31,9 +31,11 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
     @NotNull
     private static final Logger LOG = Logger.getInstance(DeploymentsProviderImpl.class.getName());
     private final HttpContentProviderFactory httpContentProviderFactory;
+    private final AnalyticsTracker analyticsTracker;
 
-    public DeploymentsProviderImpl(HttpContentProviderFactory httpContentProviderFactory) {
+    public DeploymentsProviderImpl(HttpContentProviderFactory httpContentProviderFactory, AnalyticsTracker analyticsTracker) {
         this.httpContentProviderFactory = httpContentProviderFactory;
+        this.analyticsTracker = analyticsTracker;
     }
 
     public Environments getDeployments(String projectId, Environments oldEnvironments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
@@ -61,6 +63,8 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
 
         if (apiProgressionResponse.haveCompleteInformation)
             return apiProgressionResponse.environments;
+
+        analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallingBackToDeploymentsApi);
 
         //todo: figure out if this ever returns better information than the above call...
         //some kind of metrics, maybe?

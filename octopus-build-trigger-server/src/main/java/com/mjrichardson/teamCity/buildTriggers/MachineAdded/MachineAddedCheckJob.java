@@ -1,6 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
@@ -11,7 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
+import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_APIKEY;
+import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
 class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
     @NotNull
@@ -22,17 +24,19 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
     private final String buildType;
     private final CustomDataStorage dataStorage;
     private final Map<String, String> props;
+    private final AnalyticsTracker analyticsTracker;
 
-    public MachineAddedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
-        this(new MachinesProviderFactory(), displayName, buildType, dataStorage, properties);
+    public MachineAddedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
+        this(new MachinesProviderFactory(), displayName, buildType, dataStorage, properties, analyticsTracker);
     }
 
-    public MachineAddedCheckJob(MachinesProviderFactory MachinesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties) {
+    public MachineAddedCheckJob(MachinesProviderFactory MachinesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
         this.MachinesProviderFactory = MachinesProviderFactory;
         this.displayName = displayName;
         this.buildType = buildType;
         this.dataStorage = dataStorage;
         this.props = properties;
+        this.analyticsTracker = analyticsTracker;
     }
 
     @NotNull
@@ -62,9 +66,13 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
                 //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
                 //do not trigger build after first adding trigger (oldMachines == null)
                 if (oldStoredData == null) {
+                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
+
                     LOG.debug("No previously known machines known for server " + octopusUrl + ": null" + " -> " + newStoredData);
                     return MachineAddedSpecCheckResult.createEmptyResult();
                 }
+
+                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
 
                 LOG.info("New Machine " + newMachine.name + " created on " + octopusUrl + ": " + oldStoredData + " -> " + newStoredData);
                 final MachineAddedSpec MachineAddedSpec = new MachineAddedSpec(octopusUrl, newMachine.name);
@@ -77,6 +85,9 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
 
         } catch (Exception e) {
             LOG.error("Failed to check for new machines added", e);
+
+            analyticsTracker.postException(e);
+
             return MachineAddedSpecCheckResult.createThrowableResult(e);
         }
     }
