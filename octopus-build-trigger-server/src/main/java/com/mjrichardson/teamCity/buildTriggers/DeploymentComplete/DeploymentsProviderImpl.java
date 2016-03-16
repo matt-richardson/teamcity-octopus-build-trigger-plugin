@@ -65,10 +65,12 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
             return apiProgressionResponse.environments;
 
         analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallingBackToDeploymentsApi);
+        Environments environmentsFromApi = getEnvironmentsFromApi(projectId, oldEnvironments, contentProvider, apiRootResponse, apiProgressionResponse);
+        //figure out if this ever returns better information than the above call...
+        //todo: send a different tag if successful
+        //analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallbackSuccessful);
 
-        //todo: figure out if this ever returns better information than the above call...
-        //some kind of metrics, maybe?
-        return getEnvironmentsFromApi(projectId, oldEnvironments, contentProvider, apiRootResponse, apiProgressionResponse);
+        return environmentsFromApi;
     }
 
     private Project getProject(String projectId, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {

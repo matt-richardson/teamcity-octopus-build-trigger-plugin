@@ -9,6 +9,8 @@ public class ApiTaskResponse {
     public Boolean isCompleted;
     public Boolean finishedSuccessfully;
 
+    //todo: add long lived caching
+
     public ApiTaskResponse(String taskResponse) throws ParseException {
         JSONParser parser = new JSONParser();
 

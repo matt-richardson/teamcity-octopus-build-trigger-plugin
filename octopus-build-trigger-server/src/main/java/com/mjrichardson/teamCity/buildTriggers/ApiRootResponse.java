@@ -29,6 +29,8 @@ public class ApiRootResponse {
 
     private static final Logger LOG = Logger.getInstance(ApiRootResponse.class.getName());
 
+    //todo: add medium term caching
+
     public ApiRootResponse(String apiResponse) throws ParseException {
         deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments");
         projectsApiLink = parseLink(apiResponse, "Projects", "/api/projects");
