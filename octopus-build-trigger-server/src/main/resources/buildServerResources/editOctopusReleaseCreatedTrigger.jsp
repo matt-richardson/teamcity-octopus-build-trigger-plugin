@@ -162,7 +162,6 @@ window.octopusBuildTrigger = function() {
 }();
 
 $j(document).ready(function() {
-  //todo: add event listeners, rather than using onchange handlers
   window.octopusBuildTrigger.projectListUpdater.reloadProjectList();
 });
 </script>
