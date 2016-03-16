@@ -92,7 +92,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
         CloseableHttpClient httpClient = getHttpClient(this.connectionTimeoutInMilliseconds);
 
         try {
-            LOG.info("Getting response from url " + uri);
+            LOG.debug("Getting response from url " + uri);
             final HttpContext httpContext = HttpClientContext.create();
             httpGet.addHeader("X-Octopus-ApiKey", this.apiKey);
 
@@ -117,7 +117,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
 
             final HttpEntity entity = response.getEntity();
             final String content = EntityUtils.toString(entity);
-            LOG.info("request to " + uri + " returned " + content);
+            LOG.debug("request to " + uri + " returned " + content);
             return content;
         } catch (UnknownHostException e) {
             LOG.warn("Unknown host exception while getting response from " + uri);
