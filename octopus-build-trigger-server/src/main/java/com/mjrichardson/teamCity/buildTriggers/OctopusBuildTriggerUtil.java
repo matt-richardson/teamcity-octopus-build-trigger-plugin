@@ -19,16 +19,18 @@ package com.mjrichardson.teamCity.buildTriggers;
 import jetbrains.buildServer.serverSide.TeamCityProperties;
 
 public final class OctopusBuildTriggerUtil {
-    public static String OCTOPUS_URL = "octopus.build.trigger.url";
-    public static String OCTOPUS_APIKEY = "octopus.build.trigger.apikey";
-    public static String OCTOPUS_PROJECT_ID = "octopus.build.trigger.project.url";
-    public static String OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT = "octopus.build.trigger.only.on.successful.deployment";
+    public static final String OCTOPUS_URL = "octopus.build.trigger.url";
+    public static final String OCTOPUS_APIKEY = "octopus.build.trigger.apikey";
+    public static final String OCTOPUS_PROJECT_ID = "octopus.build.trigger.project.url";
+    public static final String OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT = "octopus.build.trigger.only.on.successful.deployment";
 
-    public static String POLL_INTERVAL_PROP = "octopus.build.trigger.poll.interval.in.seconds";
+    public static final String POLL_INTERVAL_PROP = "octopus.build.trigger.poll.interval.in.seconds";
     public static final Integer DEFAULT_POLL_INTERVAL_IN_SECONDS = 30;
 
     private static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout.in.milliseconds";
     private static final Integer DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS = 60 * 1000;
+
+    public static final String ANALYTICS_ENABLED_PROP = "octopus.build.trigger.analytics.enabled";
 
     public static Integer getConnectionTimeoutInMilliseconds() {
         //todo: this is logging a warning to console in the tests
@@ -38,5 +40,9 @@ public final class OctopusBuildTriggerUtil {
     public static int getPollInterval() {
         //todo: this is logging a warning to console in the tests
         return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL_IN_SECONDS);
+    }
+
+    public static boolean getAnalyticsEnabled() {
+        return TeamCityProperties.getBooleanOrTrue(ANALYTICS_ENABLED_PROP);
     }
 }

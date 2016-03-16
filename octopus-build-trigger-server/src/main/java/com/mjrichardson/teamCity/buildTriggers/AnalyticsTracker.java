@@ -9,7 +9,8 @@ public interface AnalyticsTracker {
 
     enum EventAction {
         BuildTriggered,
-        TriggerAdded, FallingBackToDeploymentsApi,
+        TriggerAdded,
+        FallingBackToDeploymentsApi,
     }
 
     void postEvent(EventCategory eventCategory, EventAction eventAction);

@@ -22,10 +22,13 @@ See [TeamCity documentation](https://confluence.jetbrains.com/display/TCD9/Insta
 - test older versions of Octopus
 - pass details of trigger item (ie, release name), to build. At the moment, you need to parse a configuration parameter `teamcity.build.triggeredBy`, which is designed to be a human readable rather than machine readable.
 - improve logging
+- show a message when an update is available
 
 # Logging
 
 If you want to turn on logging, add the following to `<TeamCity server home>\conf\teamcity-server-log4j.xml`:
+
+<!-- todo: fix up the formatting on the class name -->
 
 ```xml
 <appender name="OCTOPUS_DEPLOY.LOG" class="jetbrains.buildServer.util.TCRollingFileAppender">
@@ -40,3 +43,8 @@ If you want to turn on logging, add the following to `<TeamCity server home>\con
   <appender-ref ref="OCTOPUS_DEPLOY.LOG" />
 </category>
  ```
+
+# Analytics
+
+This project uses Google Analytics to track feature usage and exceptions.
+<!-- todo: need to expand on what is tracked and why -->

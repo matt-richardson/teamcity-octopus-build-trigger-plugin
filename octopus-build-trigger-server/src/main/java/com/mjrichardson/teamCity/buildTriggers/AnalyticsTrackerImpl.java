@@ -1,10 +1,16 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
-import com.brsanthu.googleanalytics.*;
+import com.brsanthu.googleanalytics.EventHit;
+import com.brsanthu.googleanalytics.ExceptionHit;
+import com.brsanthu.googleanalytics.GoogleAnalytics;
+import com.brsanthu.googleanalytics.GoogleAnalyticsConfig;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.serverSide.SBuildServer;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AnalyticsTrackerImpl implements AnalyticsTracker {
     private final String trackingId = "UA-75050025-1";
@@ -12,73 +18,75 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     private static final Logger LOG = Logger.getInstance(AnalyticsTrackerImpl.class.getName());
     private final String pluginVersion;
     private final String teamCityVersion;
+    private final String applicationName = "teamcity-octopus-build-trigger-plugin";
+    private static final Pattern ipAddressPattern = Pattern.compile("\\d*\\.\\d*\\.\\d*\\.\\d*");
+    private static final Pattern urlPattern = Pattern.compile("(http|https)://(.*?)/");
+    private GoogleAnalytics ga = null;
 
+    //todo: test that users have the ability to disable analytics
     public AnalyticsTrackerImpl(@NotNull final PluginDescriptor pluginDescriptor, SBuildServer buildServer) {
         this.pluginVersion = pluginDescriptor.getPluginVersion();
         this.teamCityVersion = buildServer.getFullServerVersion();
 
         LOG.info(String.format("AnalyticsTrackerImpl instantiated for plugin version %s in teamcity version %s",
                 pluginVersion, teamCityVersion));
-
-        //run this on a background thread, as it was getting some crazy spring initialisation errors:
-        //Caused by: java.lang.LinkageError: loader constraint violation: when resolving method
-        //  "org.slf4j.impl.StaticLoggerBinder.getLoggerFactory()Lorg/slf4j/ILoggerFactory;" the class loader
-        //  (instance of jetbrains/buildServer/plugins/classLoaders/PluginStandaloneClassLoader) of the current class,
-        //  org/slf4j/LoggerFactory, and the class loader (instance of org/apache/catalina/loader/WebappClassLoader)
-        //  for the method's defining class, org/slf4j/impl/StaticLoggerBinder, have different Class objects for the
-        //  type org/slf4j/ILoggerFactory used in the signature
-        //at org.slf4j.LoggerFactory.getILoggerFactory(LoggerFactory.java:299)
-        //at org.slf4j.LoggerFactory.getLogger(LoggerFactory.java:269)
-        //at org.slf4j.LoggerFactory.getLogger(LoggerFactory.java:281)
-        //at com.brsanthu.googleanalytics.GoogleAnalytics.<clinit>(GoogleAnalytics.java:70)
-        //at com.mjrichardson.teamCity.buildTriggers.AnalyticsTrackerImpl.<init>(AnalyticsTrackerImpl.java:15)
-        //at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-        //at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-        //at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-        //at java.lang.reflect.Constructor.newInstance(Constructor.java:422)
-        //at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:148)
-        //... 49 more
-
-        AppViewSubmitter myRunnable = new AppViewSubmitter(trackingId, pluginVersion, teamCityVersion);
-        Thread thread = new Thread(myRunnable);
-        thread.start();
+        try {
+            GoogleAnalyticsConfig config = new GoogleAnalyticsConfig()
+                    .setEnabled(OctopusBuildTriggerUtil.getAnalyticsEnabled());
+            ga = new GoogleAnalytics(config, trackingId);
+        }
+        catch (Throwable e) {
+            LOG.warn("Analytics initialisation failed. Disabling analytics", e);
+        }
     }
 
     public void postEvent(EventCategory eventCategory, EventAction eventAction){
-        LOG.info(String.format("Analytics event - %s: %s", eventCategory.name(), eventAction.name()));
-        GoogleAnalytics ga = new GoogleAnalytics(trackingId);
-        ga.postAsync(new EventHit(eventCategory.name(), eventAction.name()));
+        LOG.info(String.format("Posting analytics event - %s: %s", eventCategory.name(), eventAction.name()));
+        if (ga == null)
+            return;
+        try {
+            EventHit request = new EventHit(eventCategory.name(), eventAction.name())
+                    .applicationName(applicationName)
+                    .applicationVersion(pluginVersion)
+                    .customDimension(0, teamCityVersion);
+            ga.postAsync(request);
+        }
+        catch (Throwable e) {
+            LOG.warn("Analytics postEvent failed", e);
+        }
     }
 
     public void postException(Exception e) {
-        LOG.info(String.format("Analytics exception - %s", e.getMessage()));
-        GoogleAnalytics ga = new GoogleAnalytics(trackingId);
-        ga.postAsync(new ExceptionHit(e.toString()));
+        LOG.info(String.format("Posting analytics exception - %s", e.getMessage()));
+        if (ga == null)
+            return;
+        try {
+            String exceptionDetail = maskException(e);
+            ExceptionHit request = new ExceptionHit(exceptionDetail)
+                    .applicationName(applicationName)
+                    .applicationVersion(pluginVersion)
+                    .customDimension(0, teamCityVersion);
+            ga.postAsync(request);
+        }
+        catch (Throwable ex) {
+            LOG.warn("Analytics postException failed", ex);
+        }
     }
 
-    class AppViewSubmitter implements Runnable {
-        private final String trackingId;
-        private final String pluginVersion;
-        private final String teamCityVersion;
+    static String maskException(Exception e) {
+        String result = e.toString();
+        Matcher ipAddressMatcher = ipAddressPattern.matcher(result);
+        String ipAddress = "";
+        if (ipAddressMatcher.find())
+            ipAddress = ipAddressMatcher.group(0);
 
-        public AppViewSubmitter(String trackingId, String pluginVersion, String teamCityVersion) {
-            this.trackingId = trackingId;
-            this.pluginVersion = pluginVersion;
-            this.teamCityVersion = teamCityVersion;
-        }
+        Matcher urlMatcher = urlPattern.matcher(result);
+        String url = "";
+        if (urlMatcher.find())
+            url = urlMatcher.group(2);
 
-        public void run() {
-            LOG.info(String.format("AppViewSubmitter submitting AppViewHit(%s, %s)", pluginVersion, teamCityVersion));
-
-            try {
-                GoogleAnalytics ga = new GoogleAnalytics(trackingId);
-                LOG.info(String.format("Created GoogleAnalytics object for %s", trackingId));
-                GoogleAnalyticsResponse result = ga.post(new AppViewHit("TeamCityOctopusBuildTrigger", pluginVersion, teamCityVersion));
-                LOG.info("Logging AppViewHit returned " + result.toString());
-            }
-            catch(Throwable e) {
-                LOG.error("Error logging AppViewHit", e);
-            }
-        }
+        return result
+                .replace(ipAddress, "*****")
+                .replaceAll(url, "*****");
     }
 }
