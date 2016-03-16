@@ -119,7 +119,7 @@ window.octopusBuildTrigger = function() {
 }();
 
 $j(document).ready(function() {
-  window.octopusBuildTrigger.projectListUpdater.reloadProjectList();
+  window.octopusBuildTrigger.connectivityChecker.check();
 });
 </script>
 
