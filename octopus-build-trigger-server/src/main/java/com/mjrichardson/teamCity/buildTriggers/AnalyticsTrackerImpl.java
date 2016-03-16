@@ -85,8 +85,17 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
         if (urlMatcher.find())
             url = urlMatcher.group(2);
 
+        Pattern urlPatternWithPort = Pattern.compile("(" + url + ":\\d*) ");
+
+        Matcher urlPatternMatcher = urlPatternWithPort.matcher(result);
+        String urlWithPort = "";
+        if (urlPatternMatcher.find())
+            urlWithPort = urlPatternMatcher.group(1);
+
         return result
                 .replace(ipAddress, "*****")
-                .replaceAll(url, "*****");
+                .replace(urlWithPort, "*****:*****")
+                .replace(url, "*****")
+        ;
     }
 }
