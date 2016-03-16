@@ -23,7 +23,6 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     private static final Pattern urlPattern = Pattern.compile("(http|https)://(.*?)/");
     private GoogleAnalytics ga = null;
 
-    //todo: test that users have the ability to disable analytics
     public AnalyticsTrackerImpl(@NotNull final PluginDescriptor pluginDescriptor, SBuildServer buildServer) {
         this.pluginVersion = pluginDescriptor.getPluginVersion();
         this.teamCityVersion = buildServer.getFullServerVersion();
