@@ -27,11 +27,12 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
         this.pluginVersion = pluginDescriptor.getPluginVersion();
         this.teamCityVersion = buildServer.getFullServerVersion();
 
-        LOG.info(String.format("AnalyticsTrackerImpl instantiated for plugin version %s in teamcity version %s",
-                pluginVersion, teamCityVersion));
+        boolean enabled = OctopusBuildTriggerUtil.getAnalyticsEnabled();
+        LOG.info(String.format("AnalyticsTrackerImpl instantiated for plugin version %s in teamcity version %s. Tracking enabled: %s.",
+                pluginVersion, teamCityVersion, enabled));
         try {
             GoogleAnalyticsConfig config = new GoogleAnalyticsConfig()
-                    .setEnabled(OctopusBuildTriggerUtil.getAnalyticsEnabled());
+                    .setEnabled(enabled);
             ga = new GoogleAnalytics(config, trackingId);
         }
         catch (Throwable e) {
