@@ -28,14 +28,12 @@ See [TeamCity documentation](https://confluence.jetbrains.com/display/TCD9/Insta
 
 If you want to turn on logging, add the following to `<TeamCity server home>\conf\teamcity-server-log4j.xml`:
 
-<!-- todo: fix up the formatting on the class name -->
-
 ```xml
 <appender name="OCTOPUS_DEPLOY.LOG" class="jetbrains.buildServer.util.TCRollingFileAppender">
   <param name="file" value="${teamcity_logs}teamcity-octopusDeploy.log" />
   <param name="maxBackupIndex" value="3" />
   <layout class="org.apache.log4j.PatternLayout">
-    <param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n" />
+    <param name="ConversionPattern" value="[%d] %6p - %c - %m %n" />
   </layout>
 </appender>
 <category name="com.mjrichardson.teamCity.buildTriggers" additivity="false">
