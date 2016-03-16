@@ -44,5 +44,12 @@ If you want to turn on logging, add the following to `<TeamCity server home>\con
 
 # Analytics
 
-This project uses Google Analytics to track feature usage and exceptions.
-<!-- todo: need to expand on what is tracked and why -->
+This project uses [Google Analytics](https://www.google.co.uk/analytics/) to track feature usage and exceptions.
+This information is used only to understand real world usage and guide future improvements.
+
+Only basic feature usage information is tracked, with no personally identifiable information shared.
+Any exceptions are masked to remove sensitive data.
+
+If you want to disable analytics, you can set the `octopus.build.trigger.analytics.enabled` [internal
+property](https://confluence.jetbrains.com/display/TCD9/Configuring+TeamCity+Server+Startup+Properties#ConfiguringTeamCityServerStartupProperties-TeamCityinternalpropertiesinternal.properties)
+to `false`.
