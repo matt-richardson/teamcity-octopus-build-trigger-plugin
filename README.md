@@ -50,6 +50,22 @@ This information is used only to understand real world usage and guide future im
 Only basic feature usage information is tracked, with no personally identifiable information shared.
 Any exceptions are masked to remove sensitive data.
 
+Specifically, these events are tracked:
+* Exceptions (The top level exception message (without the stack tracce) with IP address and urls masked)
+* When a new trigger is added
+* When a new build is triggered
+* When the DeploymentProvider needs to fallback to using the `/api/Deployments` endpoint when the `/api/progession`
+endpoint does not return enough information
+
+The information tracked includes:
+* TeamCity version
+* Plugin version
+* A random 'sessions id', which changes every time the TeamCity server is restarted
+* The `user.region` or `user.country` java system properties (if set)
+* The `user.language` java system property
+* The `user.language` java system property
+* The `file.encoding` java system property
+
 If you want to disable analytics, you can set the `octopus.build.trigger.analytics.enabled` [internal
 property](https://confluence.jetbrains.com/display/TCD9/Configuring+TeamCity+Server+Startup+Properties#ConfiguringTeamCityServerStartupProperties-TeamCityinternalpropertiesinternal.properties)
-to `false`.
+to `false`. This requires a restart.
