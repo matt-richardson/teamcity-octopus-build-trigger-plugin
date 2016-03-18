@@ -102,7 +102,7 @@ window.octopusBuildTrigger = function() {
     }
 
     function handleNetworkFailureResponse(xhr, response) {
-      setError("Unable to connect. Please ensure the url and apikey are correct.", null);
+      setError("Unable to connect. Please ensure the url and API key are correct.", null);
     }
 
     function handle401Response(xhr, response) {
