@@ -47,7 +47,9 @@
 <tr class="noBorder" >
     <th><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>">Project: </label></th>
     <td>
-      <props:selectProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>" />
+      <props:selectProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>">
+        <props:option value="${propertiesBean.properties['octopus.build.trigger.project.url']}"></props:option>
+      </props:selectProperty>
       <span class="smallNote">
       </span>
       <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>"></span>
@@ -62,15 +64,15 @@ window.octopusBuildTrigger = function() {
     var apiKey;
 
     function handleProjectResponse(response) {
-      var dropdown = $$('[name="prop:<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>"]')[0];
-      $j('[name="prop:<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>"]').empty();
+      var dropdown = $$('[name="prop:<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>"]')[0]
+      var oldValue = $j(dropdown).val();
+      $j(dropdown).empty();
 
-      //todo: remember old selected value
-      //todo: use jquery/prototype
       for(i=0; i < response.responseJSON.length; i++) {
         var option = document.createElement("option");
         option.text = response.responseJSON[i].Name;
         option.value = response.responseJSON[i].Id;
+        option.selected = (option.value == oldValue);
         dropdown.add(option);
       };
       clearError();
