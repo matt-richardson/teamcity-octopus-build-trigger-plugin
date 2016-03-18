@@ -129,4 +129,45 @@
             </plugin>
         </plugins>
     </build>
+
+    <name>TeamCity Octopus Deploy Build Trigger Server</name>
+    <url>https://github.com/matt-richardson/teamcity-octopus-build-trigger-plugin</url>
+    <description>A TeamCity plugin that polls Octopus Deploy, and triggers a TeamCity build when certain events occur in Octopus</description>
+    <inceptionYear>Dec 2015</inceptionYear>
+    <organization>
+        <url>http://www.mjrichardson.com</url>
+        <name>Matt Richardson</name>
+    </organization>
+    <scm>
+        <url>https://github.com/matt-richardson/teamcity-octopus-build-trigger-plugin</url>
+        <connection>scm:git:git@github.com:matt-richardson/teamcity-octopus-build-trigger-plugin</connection>
+        <developerConnection>scm:git:git@github.com:matt-richardson/teamcity-octopus-build-trigger-plugin</developerConnection>
+        <!-- todo: add tag element
+        <tag>${finalName}</tag>
+        -->
+    </scm>
+    <issueManagement>
+        <system>github.com</system>
+        <url>https://github.com/matt-richardson/teamcity-octopus-build-trigger-plugin/issues</url>
+    </issueManagement>
+    <developers>
+        <developer>
+            <name>Matt Richardson</name>
+            <organizationUrl>http://www.mjrichardson.com</organizationUrl>
+            <url>http://www.mjrichardson.com</url>
+            <roles>
+                <role>Initiator</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+    </developers>
+    <!-- todo: add licences element
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    -->
 </project>
