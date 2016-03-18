@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+//todo:check against multiple versions of Octopus
 public class FakeContentProvider implements HttpContentProvider {
     private Throwable exception = null;
     public String requestedUriPath = null;

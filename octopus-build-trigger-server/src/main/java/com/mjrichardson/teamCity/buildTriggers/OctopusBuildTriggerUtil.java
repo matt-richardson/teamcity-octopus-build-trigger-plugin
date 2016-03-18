@@ -28,6 +28,7 @@ public final class OctopusBuildTriggerUtil {
     public static final Integer DEFAULT_POLL_INTERVAL_IN_SECONDS = 30;
 
     private static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout.in.milliseconds";
+    //todo: reduce connection timeout
     private static final Integer DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS = 60 * 1000;
 
     public static final String ANALYTICS_ENABLED_PROP = "octopus.build.trigger.analytics.enabled";
