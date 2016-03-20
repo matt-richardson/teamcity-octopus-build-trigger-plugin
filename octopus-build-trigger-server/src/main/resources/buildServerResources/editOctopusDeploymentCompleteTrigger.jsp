@@ -28,7 +28,7 @@
 <tr class="noBorder" >
     <th><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>">Octopus Url: <l:star/></label></th>
     <td>
-      <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>" className="longField" onchange="window.octopusBuildTrigger.projectListUpdater.reloadProjectList();" />
+      <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>" className="longField" onchange="window.octopusBuildTrigger.reloadProjectList();" />
       <span class="smallNote">
           e.g. https://example.org
       </span>
@@ -39,7 +39,7 @@
 <tr class="noBorder" >
     <th><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>">API Key: <l:star/></label></th>
     <td>
-       <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>" className="longField" onchange="window.octopusBuildTrigger.projectListUpdater.reloadProjectList();" />
+       <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>" className="longField" onchange="window.octopusBuildTrigger.reloadProjectList();" />
        <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>"></span>
     </td>
 </tr>
@@ -59,119 +59,14 @@
 <tr class="noBorder" >
     <td colspan="2">
       <props:checkboxProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT%>" />
-      <label for="<%=OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT%>">Trigger only on successful deployments</lable>
+      <label for="<%=OctopusBuildTriggerUtil.OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT%>">Trigger only on successful deployments</label>
     </td>
 </tr>
 
 <script type="text/javascript">
+    var projectIdPropertyName = '<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>';
+    var octopusUrlPropertyName = '<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>';
+    var octopusApiKeyPropertyName = '<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>';
 
-window.octopusBuildTrigger = function() {
-  var projectListUpdater = function() {
-    var url;
-    var apiKey;
-
-    function handleProjectResponse(response) {
-      var dropdown = $$('[name="prop:<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>"]')[0]
-      var oldValue = $j(dropdown).val();
-      $j(dropdown).empty();
-
-      for(i=0; i < response.responseJSON.length; i++) {
-        var option = document.createElement("option");
-        option.text = response.responseJSON[i].Name;
-        option.value = response.responseJSON[i].Id;
-        option.selected = (option.value == oldValue);
-        dropdown.add(option);
-      };
-      clearError();
-    }
-
-    function clearError() {
-      $j('[id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>"]').text("");
-      $j('[id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>"]').text("");
-    }
-
-    function setError(urlError, apiKeyError) {
-      if (urlError) {
-        $j('[id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>"]').text(urlError);
-        $j('[id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>"]').text("");
-      }
-      else {
-        $j('[id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>"]').text("");
-        $j('[id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>"]').text(apiKeyError);
-      }
-    }
-
-    function handleNetworkFailureResponse(xhr, response) {
-      setError("Unable to connect. Please ensure the url and API key are correct.", null);
-    }
-
-    function handle401Response(xhr, response) {
-      setError(null, "Invalid api key");
-    }
-
-    function handle404Response(xhr, response) {
-      setError("Unable to connect to url: 404 Not Found", null);
-    }
-
-    function handleFailureResponse(xhr, response) {
-      debugger;
-      setError("Unable to connect to url: unknown failure", null);
-    }
-
-    function handleExceptionResponse(response, err) {
-      debugger;
-      setError("Unable to connect to url: exception", null);
-    }
-
-    function handleApiResponse(response) {
-      var projectsLink = response.responseJSON.Links.Projects.replace(/\{.*/, '') + '/all';
-      new Ajax.Request(url + '/' + projectsLink + '?apikey=' + apiKey, {
-        requestHeaders: {
-            'X-Prototype-Version': null,
-            'X-Requested-With': null
-        },
-        onSuccess: handleProjectResponse,
-        on0: handleNetworkFailureResponse,
-        on303: handle401Response,
-        on401: handle401Response,
-        on404: handle404Response,
-        onFailure: handleFailureResponse,
-        onException: handleExceptionResponse,
-        method: 'GET'
-      });
-    }
-
-    function reloadProjectList() {
-      url = $$('[name="prop:<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>"]')[0].value.replace(/\/$/, '');
-      apiKey = $$('[name="prop:<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>"]')[0].value;
-
-      new Ajax.Request(url + '/api?apikey=' + apiKey, {
-          requestHeaders: {
-              'X-Prototype-Version': null,
-              'X-Requested-With': null
-          },
-          onSuccess: handleApiResponse,
-          on0: handleNetworkFailureResponse,
-          on303: handle401Response,
-          on401: handle401Response,
-          on404: handle404Response,
-          onFailure: handleFailureResponse,
-          onException: handleExceptionResponse,
-          method: 'GET'
-      });
-    }
-    return {
-      reloadProjectList : reloadProjectList
-    }
-  }();
-
-  return {
-    projectListUpdater : projectListUpdater
-  }
-}();
-
-$j(document).ready(function() {
-  window.octopusBuildTrigger.projectListUpdater.reloadProjectList();
-});
+    <jsp:include page="octopusBuildTrigger.js" />
 </script>
-
