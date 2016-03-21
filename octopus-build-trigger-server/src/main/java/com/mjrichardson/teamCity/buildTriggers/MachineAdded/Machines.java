@@ -5,6 +5,8 @@ import jetbrains.buildServer.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 
+//todo: make sure we handle when machines get deleted
+
 public class Machines {
     private ArrayList<Machine> statusMap;
 
