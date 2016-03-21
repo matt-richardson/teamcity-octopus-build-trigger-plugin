@@ -42,6 +42,7 @@ class MachineAddedTriggerPropertiesProcessor implements PropertiesProcessor {
         return invalidProps;
     }
 
+    //todo: remove unused param (check elsewhere as well)
     private void checkConnectivity(Map<String, String> properties, ArrayList<InvalidProperty> invalidProps, String url, String apiKey) {
         try {
             final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();

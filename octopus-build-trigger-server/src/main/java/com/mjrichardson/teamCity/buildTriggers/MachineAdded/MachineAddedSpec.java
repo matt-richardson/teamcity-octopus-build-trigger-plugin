@@ -7,7 +7,7 @@ class MachineAddedSpec {
     @NotNull
     private final String url;
     @Nullable
-    private final String name;
+    final String name; //todo: rename to machineName
 
 //    MachineAddedSpec(@NotNull String url) {
 //        this(url, null);

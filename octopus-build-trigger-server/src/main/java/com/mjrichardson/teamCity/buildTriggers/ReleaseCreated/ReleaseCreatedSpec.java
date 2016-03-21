@@ -7,7 +7,7 @@ class ReleaseCreatedSpec {
     @NotNull
     private final String url;
     @NotNull
-    private final String project;
+    private final String project; //todo:rename to projectid
     @Nullable
     private final String version;
 

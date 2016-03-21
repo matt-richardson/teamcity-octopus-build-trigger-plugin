@@ -23,7 +23,7 @@ class DeploymentCompleteSpec {
     @NotNull
     private final String url;
     @NotNull
-    private final String project;
+    private final String project; //todo: rename to projectid
     @Nullable
     private final Boolean wasSuccessful;
     @Nullable
