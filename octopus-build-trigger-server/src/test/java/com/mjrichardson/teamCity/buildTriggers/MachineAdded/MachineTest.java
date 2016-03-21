@@ -3,7 +3,9 @@ package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Test
 public class MachineTest {
@@ -47,12 +49,22 @@ public class MachineTest {
     }
 
     public void can_create_from_map() {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
         map.put("Id", "Machines-21");
         map.put("Name", "MachineName");
+        List<String> environmentIds = new ArrayList<>();
+        environmentIds.add("Env-1");
+        environmentIds.add("Env-2");
+        map.put("EnvironmentIds", environmentIds);
+        List<String> roleIds = new ArrayList<>();
+        roleIds.add("Role-1");
+        map.put("Roles", roleIds);
         Machine sut = Machine.Parse(map);
         Assert.assertEquals(sut.id, "Machines-21");
         Assert.assertEquals(sut.name, "MachineName");
+        Assert.assertEquals(sut.environmentIds[0], "Env-1");
+        Assert.assertEquals(sut.environmentIds[1], "Env-2");
+        Assert.assertEquals(sut.roleIds[0], "Role-1");
     }
 
     public void equals_returns_false_when_other_object_is_not_a_machine() {

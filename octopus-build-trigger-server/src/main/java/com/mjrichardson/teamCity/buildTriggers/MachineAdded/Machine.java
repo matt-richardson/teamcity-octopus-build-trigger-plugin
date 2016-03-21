@@ -1,14 +1,24 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Machine implements Comparable<Machine> {
     public final String id;
     public final String name;
+    public final String[] environmentIds;
+    public final String[] roleIds;
 
-    public Machine(String MachineId, String version) {
-        this.id = MachineId;
-        this.name = version;
+    public Machine(String id, String name) {
+        this(id, name, new String[0], new String[0]);
+    }
+
+    public Machine(String id, String name, String[] environmentIds, String[] roleIds) {
+        this.id = id;
+        this.name = name;
+        this.environmentIds = environmentIds;
+        this.roleIds = roleIds;
     }
 
     @Override
@@ -20,7 +30,19 @@ public class Machine implements Comparable<Machine> {
         String id = item.get("Id").toString();
         String name = item.get("Name").toString();
 
-        return new Machine(id, name);
+        List items = (List) item.get("EnvironmentIds");
+        ArrayList<String> environmentIds = new ArrayList<>();
+        for (Object environmentId : items) {
+            environmentIds.add((String)environmentId);
+        }
+
+        items = (List) item.get("Roles");
+        ArrayList<String> roleIds = new ArrayList<>();
+        for (Object roleId : items) {
+            roleIds.add((String)roleId);
+        }
+
+        return new Machine(id, name, environmentIds.toArray(new String[0]), roleIds.toArray(new String[0]));
     }
 
     public static Machine Parse(String pair) {
@@ -29,10 +51,10 @@ public class Machine implements Comparable<Machine> {
         }
         final Integer DONT_REMOVE_EMPTY_VALUES = -1;
         final String[] split = pair.split(";", DONT_REMOVE_EMPTY_VALUES);
-        final String MachineId = split[0];
-        final String version = split[1];
+        final String id = split[0];
+        final String name = split[1];
 
-        Machine result = new Machine(MachineId, version);
+        Machine result = new Machine(id, name);
         if (result.equals(new NullMachine()))
             return new NullMachine();
         return result;

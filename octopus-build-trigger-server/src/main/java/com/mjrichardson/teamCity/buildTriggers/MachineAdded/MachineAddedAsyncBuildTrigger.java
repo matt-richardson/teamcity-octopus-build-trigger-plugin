@@ -63,9 +63,10 @@ class MachineAddedAsyncBuildTrigger implements CustomAsyncBuildTrigger<MachineAd
     @Override
     public Map<String, String> getProperties(MachineAddedSpec machineAddedSpec) {
         HashMap hashMap = new HashMap();
-        //todo:add extra properties
-        hashMap.put(BUILD_PROPERTY_MACHINE_NAME, machineAddedSpec.name);
-        //hashMap.put(BUILD_PROPERTY_MACHINE_ID, machineAddedSpec.machineId);
+        hashMap.put(BUILD_PROPERTY_MACHINE_NAME, machineAddedSpec.machineName);
+        hashMap.put(BUILD_PROPERTY_MACHINE_ID, machineAddedSpec.machineId);
+        hashMap.put(BUILD_PROPERTY_MACHINE_ENVIRONMENT_IDS, machineAddedSpec.environmentIds);
+        hashMap.put(BUILD_PROPERTY_MACHINE_ROLE_IDS, machineAddedSpec.roleIds);
         return hashMap;
     }
 }

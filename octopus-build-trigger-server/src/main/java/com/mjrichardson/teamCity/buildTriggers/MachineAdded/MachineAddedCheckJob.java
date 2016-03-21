@@ -75,7 +75,7 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
                 analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
 
                 LOG.info("New Machine " + newMachine.name + " created on " + octopusUrl + ": " + oldStoredData + " -> " + newStoredData);
-                final MachineAddedSpec MachineAddedSpec = new MachineAddedSpec(octopusUrl, newMachine.name);
+                final MachineAddedSpec MachineAddedSpec = new MachineAddedSpec(octopusUrl, newMachine);
                 //todo: investigate passing multiple bits to createUpdatedResult()
                 return MachineAddedSpecCheckResult.createUpdatedResult(MachineAddedSpec);
             }
