@@ -33,6 +33,24 @@ public final class OctopusBuildTriggerUtil {
 
     public static final String ANALYTICS_ENABLED_PROP = "octopus.build.trigger.analytics.enabled";
 
+    public static final String BUILD_PROPERTY_MACHINE_NAME = "octopus.trigger.machine.name";
+    public static final String BUILD_PROPERTY_MACHINE_ID = "octopus.trigger.machine.id";
+    public static final String BUILD_PROPERTY_MACHINE_ROLE_IDS = "octopus.trigger.machine.role.ids";
+    public static final String BUILD_PROPERTY_MACHINE_ENVIRONMENT_IDS = "octopus.trigger.machine.environment.ids";
+
+    public static final String BUILD_PROPERTY_RELEASE_ID = "octopus.trigger.release.id";
+    public static final String BUILD_PROPERTY_RELEASE_VERSION = "octopus.trigger.release.version";
+    public static final String BUILD_PROPERTY_RELEASE_PROJECT_ID = "octopus.trigger.release.project.id";
+
+    public static final String BUILD_PROPERTY_DEPLOYMENT_ID = "octopus.trigger.deployment.id";
+    public static final String BUILD_PROPERTY_DEPLOYMENT_NAME = "octopus.trigger.deployment.name";
+    public static final String BUILD_PROPERTY_DEPLOYMENT_VERSION = "octopus.trigger.deployment.version";
+    public static final String BUILD_PROPERTY_DEPLOYMENT_PROJECT_ID = "octopus.trigger.deployment.project.id";
+    public static final String BUILD_PROPERTY_DEPLOYMENT_RELEASE_ID = "octopus.trigger.deployment.release.id";
+    public static final String BUILD_PROPERTY_DEPLOYMENT_ENVIRONMENT_NAME = "octopus.trigger.deployment.environment.name";
+    public static final String BUILD_PROPERTY_DEPLOYMENT_ENVIRONMENT_ID = "octopus.trigger.deployment.environment.id";
+    public static final String BUILD_PROPERTY_DEPLOYMENT_SUCCESSFUL = "octopus.trigger.deployment.successful";
+
     public static Integer getConnectionTimeoutInMilliseconds() {
         //todo: this is logging a warning to console in the tests
         return TeamCityProperties.getInteger(CONNECTION_TIMEOUT_PROP, DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS);

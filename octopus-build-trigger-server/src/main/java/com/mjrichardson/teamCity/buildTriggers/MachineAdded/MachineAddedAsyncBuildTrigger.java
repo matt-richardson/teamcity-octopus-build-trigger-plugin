@@ -1,16 +1,21 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
-import jetbrains.buildServer.buildTriggers.async.*;
+import jetbrains.buildServer.buildTriggers.async.AsyncTriggerParameters;
+import jetbrains.buildServer.buildTriggers.async.CheckJob;
+import jetbrains.buildServer.buildTriggers.async.CheckJobCreationException;
+import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
+import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-class MachineAddedAsyncBuildTrigger implements AsyncBuildTrigger<MachineAddedSpec> {
+class MachineAddedAsyncBuildTrigger implements CustomAsyncBuildTrigger<MachineAddedSpec> {
     private final String displayName;
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;
@@ -53,5 +58,14 @@ class MachineAddedAsyncBuildTrigger implements AsyncBuildTrigger<MachineAddedSpe
         Map<String, String> properties = buildTriggerDescriptor.getProperties();
         return String.format("Wait for a new machine to be added to server %s.",
                 properties.get(OCTOPUS_URL));
+    }
+
+    @Override
+    public Map<String, String> getProperties(MachineAddedSpec machineAddedSpec) {
+        HashMap hashMap = new HashMap();
+        //todo:add extra properties
+        hashMap.put(BUILD_PROPERTY_MACHINE_NAME, machineAddedSpec.name);
+        //hashMap.put(BUILD_PROPERTY_MACHINE_ID, machineAddedSpec.machineId);
+        return hashMap;
     }
 }

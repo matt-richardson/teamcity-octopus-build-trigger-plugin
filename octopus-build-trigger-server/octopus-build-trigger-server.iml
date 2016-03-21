@@ -91,6 +91,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework.security:spring-security-aspects:3.2.4.RELEASE" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework.security:spring-security-core:3.2.4.RELEASE" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jetbrains.teamcity:server-web-api:war:9.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jetbrains.teamcity.internal:server:9.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jetbrains.teamcity:tests-support:9.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: jmock:jmock:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.11" level="project" />

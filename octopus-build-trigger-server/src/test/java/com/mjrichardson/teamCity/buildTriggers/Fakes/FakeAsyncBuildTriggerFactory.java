@@ -1,13 +1,13 @@
 package com.mjrichardson.teamCity.buildTriggers.Fakes;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
+import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTriggerFactory;
 import jetbrains.buildServer.buildTriggers.BuildTriggeringPolicy;
-import jetbrains.buildServer.buildTriggers.async.AsyncBuildTrigger;
-import jetbrains.buildServer.buildTriggers.async.AsyncBuildTriggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FakeAsyncBuildTriggerFactory implements AsyncBuildTriggerFactory {
+public class FakeAsyncBuildTriggerFactory implements CustomAsyncBuildTriggerFactory {
 
     private final BuildTriggeringPolicy fakeBuildTriggeringPolicy;
 
@@ -21,7 +21,7 @@ public class FakeAsyncBuildTriggerFactory implements AsyncBuildTriggerFactory {
 
     @NotNull
     @Override
-    public <TItem> BuildTriggeringPolicy createBuildTrigger(@NotNull Class<TItem> aClass, @NotNull AsyncBuildTrigger<TItem> asyncBuildTrigger, @NotNull Logger logger, @Nullable Integer integer) {
+    public <TItem> BuildTriggeringPolicy createBuildTrigger(@NotNull Class<TItem> aClass, @NotNull CustomAsyncBuildTrigger<TItem> trigger, @NotNull Logger logger, @Nullable Integer invocationInterval) {
         return fakeBuildTriggeringPolicy;
     }
 }

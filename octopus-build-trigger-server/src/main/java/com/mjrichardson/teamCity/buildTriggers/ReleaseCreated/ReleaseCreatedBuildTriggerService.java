@@ -2,12 +2,12 @@ package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
+import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTriggerFactory;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerService;
 import jetbrains.buildServer.buildTriggers.BuildTriggeringPolicy;
-import jetbrains.buildServer.buildTriggers.async.AsyncBuildTrigger;
-import jetbrains.buildServer.buildTriggers.async.AsyncBuildTriggerFactory;
 import jetbrains.buildServer.serverSide.PropertiesProcessor;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +23,7 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
     private final BuildTriggeringPolicy myPolicy;
 
     public ReleaseCreatedBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
-                                             @NotNull final AsyncBuildTriggerFactory triggerFactory,
+                                             @NotNull final CustomAsyncBuildTriggerFactory triggerFactory,
                                              @NotNull final AnalyticsTracker analyticsTracker) {
         myPluginDescriptor = pluginDescriptor;
         this.analyticsTracker = analyticsTracker;
@@ -70,7 +70,7 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
     }
 
     @NotNull
-    private AsyncBuildTrigger<ReleaseCreatedSpec> getAsyncBuildTrigger() {
+    private CustomAsyncBuildTrigger<ReleaseCreatedSpec> getAsyncBuildTrigger() {
         return getBuildTrigger();
     }
 

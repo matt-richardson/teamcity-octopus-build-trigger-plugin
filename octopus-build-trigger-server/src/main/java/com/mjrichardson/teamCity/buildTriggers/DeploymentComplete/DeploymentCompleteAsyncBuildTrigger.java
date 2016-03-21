@@ -18,16 +18,21 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
-import jetbrains.buildServer.buildTriggers.async.*;
+import jetbrains.buildServer.buildTriggers.async.AsyncTriggerParameters;
+import jetbrains.buildServer.buildTriggers.async.CheckJob;
+import jetbrains.buildServer.buildTriggers.async.CheckJobCreationException;
+import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<DeploymentCompleteSpec> {
+class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrigger<DeploymentCompleteSpec> {
     private final String displayName;
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;
@@ -79,5 +84,20 @@ class DeploymentCompleteAsyncBuildTrigger implements AsyncBuildTrigger<Deploymen
         return String.format("Wait for a new deployment of %s on server %s.",
                 properties.get(OCTOPUS_PROJECT_ID),
                 properties.get(OCTOPUS_URL));
+    }
+
+    @Override
+    public Map<String, String> getProperties(DeploymentCompleteSpec deploymentCompleteSpec) {
+        HashMap hashMap = new HashMap();
+        //todo: add missing props
+//        hashMap.put(BUILD_PROPERTY_DEPLOYMENT_ID, deploymentCompleteSpec.id);
+//        hashMap.put(BUILD_PROPERTY_DEPLOYMENT_NAME, deploymentCompleteSpec.name);
+//        hashMap.put(BUILD_PROPERTY_DEPLOYMENT_VERSION, deploymentCompleteSpec.version);
+//        hashMap.put(BUILD_PROPERTY_DEPLOYMENT_PROJECT_ID, deploymentCompleteSpec.projectId);
+//        hashMap.put(BUILD_PROPERTY_DEPLOYMENT_RELEASE_ID, deploymentCompleteSpec.releaseId);
+//        hashMap.put(BUILD_PROPERTY_DEPLOYMENT_ENVIRONMENT_NAME, deploymentCompleteSpec.environmentName);
+//        hashMap.put(BUILD_PROPERTY_DEPLOYMENT_ENVIRONMENT_ID, deploymentCompleteSpec.environmentId);
+//        hashMap.put(BUILD_PROPERTY_DEPLOYMENT_SUCCESSFUL, deploymentCompleteSpec.wasSuccessful);
+        return hashMap;
     }
 }

@@ -1,17 +1,21 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
-import jetbrains.buildServer.buildTriggers.async.*;
+import jetbrains.buildServer.buildTriggers.async.AsyncTriggerParameters;
+import jetbrains.buildServer.buildTriggers.async.CheckJob;
+import jetbrains.buildServer.buildTriggers.async.CheckJobCreationException;
+import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID;
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
+import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreatedSpec> {
+class ReleaseCreatedAsyncBuildTrigger implements CustomAsyncBuildTrigger<ReleaseCreatedSpec> {
     private final String displayName;
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;
@@ -55,5 +59,15 @@ class ReleaseCreatedAsyncBuildTrigger implements AsyncBuildTrigger<ReleaseCreate
         return String.format("Wait for a new release of %s to be created on server %s.",
                 properties.get(OCTOPUS_PROJECT_ID),
                 properties.get(OCTOPUS_URL));
+    }
+
+    @Override
+    public Map<String, String> getProperties(ReleaseCreatedSpec releaseCreatedSpec) {
+        HashMap hashMap = new HashMap();
+        //todo: add missing props
+        //hashMap.put(BUILD_PROPERTY_RELEASE_ID, releaseCreatedSpec.id);
+        //hashMap.put(BUILD_PROPERTY_RELEASE_VERSION, releaseCreatedSpec.version);
+        //hashMap.put(BUILD_PROPERTY_RELEASE_PROJECT_ID, releaseCreatedSpec.projectId);
+        return hashMap;
     }
 }
