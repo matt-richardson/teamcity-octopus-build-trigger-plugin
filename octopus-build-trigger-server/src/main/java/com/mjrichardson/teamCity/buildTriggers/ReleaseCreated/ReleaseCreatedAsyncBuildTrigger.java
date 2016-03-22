@@ -64,10 +64,9 @@ class ReleaseCreatedAsyncBuildTrigger implements CustomAsyncBuildTrigger<Release
     @Override
     public Map<String, String> getProperties(ReleaseCreatedSpec releaseCreatedSpec) {
         HashMap hashMap = new HashMap();
-        //todo: add missing props
-        //hashMap.put(BUILD_PROPERTY_RELEASE_ID, releaseCreatedSpec.id);
-        //hashMap.put(BUILD_PROPERTY_RELEASE_VERSION, releaseCreatedSpec.version);
-        //hashMap.put(BUILD_PROPERTY_RELEASE_PROJECT_ID, releaseCreatedSpec.projectId);
+        hashMap.put(BUILD_PROPERTY_RELEASE_ID, releaseCreatedSpec.releaseId);
+        hashMap.put(BUILD_PROPERTY_RELEASE_VERSION, releaseCreatedSpec.version);
+        hashMap.put(BUILD_PROPERTY_RELEASE_PROJECT_ID, releaseCreatedSpec.projectId);
         return hashMap;
     }
 }

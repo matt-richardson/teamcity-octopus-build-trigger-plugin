@@ -20,7 +20,7 @@ public class ReleaseTest {
 
     public void can_parse_valid_string_to_release() {
         Release sut = Release.Parse("Releases-91;2016-01-21T13:32:59.991+00:00;1.0.0");
-        Assert.assertEquals(sut.id, "Releases-91");
+        Assert.assertEquals(sut.releaseId, "Releases-91");
         Assert.assertEquals(sut.version, "1.0.0");
         Assert.assertEquals(sut.assembledDate, new OctopusDate(2016, 01, 21, 13, 32, 59, 991));
     }
@@ -53,10 +53,12 @@ public class ReleaseTest {
         map.put("Id", "Releases-21");
         map.put("Assembled", "2016-01-20T14:32:59.991+00:00");
         map.put("Version", "1.0.3");
+        map.put("ProjectId", "Projects-2");
         Release sut = Release.Parse(map);
-        Assert.assertEquals(sut.id, "Releases-21");
+        Assert.assertEquals(sut.releaseId, "Releases-21");
         Assert.assertEquals(sut.version, "1.0.3");
         Assert.assertEquals(sut.assembledDate, new OctopusDate(2016, 01, 20, 14, 32, 59, 991));
+        Assert.assertEquals(sut.projectId, "Projects-2");
     }
 
     public void equals_returns_false_when_other_object_is_not_a_release() {

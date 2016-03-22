@@ -42,7 +42,7 @@ public class Releases {
 
     public boolean contains(Release other) {
         for (Release release : statusMap) {
-            if (release.id.equals(other.id))
+            if (release.releaseId.equals(other.releaseId))
                 return true;
         }
         return false;

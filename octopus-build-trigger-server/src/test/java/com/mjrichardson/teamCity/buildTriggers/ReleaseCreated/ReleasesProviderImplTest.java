@@ -54,7 +54,7 @@ public class ReleasesProviderImplTest {
         Assert.assertEquals(newReleases.size(), 1);
         Release release = newReleases.getNextRelease(oldRelease);
         Assert.assertNotNull(release);
-        Assert.assertEquals(release.id, "Releases-63");
+        Assert.assertEquals(release.releaseId, "Releases-63");
         Assert.assertEquals(release.assembledDate, new OctopusDate(2016, 1, 21, 13, 31, 50, 304));
         Assert.assertEquals(release.version, "0.0.1");
     }
@@ -133,7 +133,7 @@ public class ReleasesProviderImplTest {
         Assert.assertEquals(newReleases.size(), 31);
         Release release = newReleases.getNextRelease(oldRelease);
         Assert.assertNotNull(release);
-        Assert.assertEquals(release.id, "Releases-148");
+        Assert.assertEquals(release.releaseId, "Releases-148");
         Assert.assertEquals(release.version, "0.0.2");
         Assert.assertEquals(release.assembledDate, new OctopusDate(2016, 2, 22, 21, 6, 45, 598));
     }
@@ -147,7 +147,7 @@ public class ReleasesProviderImplTest {
         Assert.assertEquals(newReleases.size(), 31);
         Release release = newReleases.getNextRelease(oldRelease);
         Assert.assertNotNull(release);
-        Assert.assertEquals(release.id, "Releases-147");
+        Assert.assertEquals(release.releaseId, "Releases-147");
         Assert.assertEquals(release.version, "0.0.1");
         Assert.assertEquals(release.assembledDate, new OctopusDate(2016, 2, 22, 21, 6, 39, 43));
     }

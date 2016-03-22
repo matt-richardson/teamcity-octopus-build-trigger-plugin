@@ -15,9 +15,9 @@ public class ApiProjectReleasesResponseTest {
         Assert.assertEquals(sut.nextLink, null);
         Assert.assertEquals(sut.releases.size(), 2);
         Release[] releases = sut.releases.toArray();
-        Assert.assertEquals(releases[0].id, "Releases-70");
+        Assert.assertEquals(releases[0].releaseId, "Releases-70");
         Assert.assertEquals(releases[0].version, "0.0.2");
-        Assert.assertEquals(releases[1].id, "Releases-69");
+        Assert.assertEquals(releases[1].releaseId, "Releases-69");
         Assert.assertEquals(releases[1].version, "0.0.1");
     }
 

@@ -5,27 +5,34 @@ import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import java.util.Map;
 
 public class Release implements Comparable<Release> {
-    public final String id;
+    public final String releaseId;
     public final OctopusDate assembledDate;
     public final String version;
+    public final String projectId;
 
     public Release(String releaseId, OctopusDate assembledDate, String version) {
-        this.id = releaseId;
+        this(releaseId, assembledDate, version, null);
+    }
+
+    public Release(String releaseId, OctopusDate assembledDate, String version, String projectId) {
+        this.releaseId = releaseId;
         this.assembledDate = assembledDate;
         this.version = version;
+        this.projectId = projectId;
     }
 
     @Override
     public String toString() {
-        return id + ";" + assembledDate.toString() + ";" + version;
+        return releaseId + ";" + assembledDate.toString() + ";" + version;
     }
 
     public static Release Parse(Map item) {
-        String id = item.get("Id").toString();
+        String releaseId = item.get("Id").toString();
         OctopusDate assembledDate = OctopusDate.Parse(item.get("Assembled").toString());
         String version = item.get("Version").toString();
+        String projectId = item.get("ProjectId").toString();
 
-        return new Release(id, assembledDate, version);
+        return new Release(releaseId, assembledDate, version, projectId);
     }
 
     public static Release Parse(String pair) {

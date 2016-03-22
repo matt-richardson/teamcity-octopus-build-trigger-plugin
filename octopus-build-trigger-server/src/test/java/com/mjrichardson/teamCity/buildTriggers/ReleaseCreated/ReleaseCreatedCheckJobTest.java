@@ -136,7 +136,7 @@ public class ReleaseCreatedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
+        properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
         //this is when the trigger is created
         CheckResult<ReleaseCreatedSpec> result = sut.perform();
@@ -151,7 +151,7 @@ public class ReleaseCreatedCheckJobTest {
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);
         ReleaseCreatedSpec updated[] = result.getUpdated().toArray(new ReleaseCreatedSpec[0]);
-        Assert.assertEquals(updated[0].getRequestorString(), "Release 1.0.0 of project the-project-id created on the-url");
+        Assert.assertEquals(updated[0].getRequestorString(), "Release 1.0.0 of project Project-1 created on the-url");
     }
 
     public void perform_returns_updated_result_if_new_release() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
@@ -163,7 +163,7 @@ public class ReleaseCreatedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
+        properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
         CheckResult<ReleaseCreatedSpec> result = sut.perform();
@@ -171,7 +171,7 @@ public class ReleaseCreatedCheckJobTest {
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);
         ReleaseCreatedSpec updated[] = result.getUpdated().toArray(new ReleaseCreatedSpec[0]);
-        Assert.assertEquals(updated[0].getRequestorString(), "Release 1.1.0 of project the-project-id created on the-url");
+        Assert.assertEquals(updated[0].getRequestorString(), "Release 1.1.0 of project Project-1 created on the-url");
     }
 
     public void allow_schedule_returns_false() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

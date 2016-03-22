@@ -13,7 +13,7 @@ public class ReleaseCreatedSpecCheckResultTest {
     }
 
     public void create_updated_result_returns_an_object_with_updates_but_no_errors() {
-        ReleaseCreatedSpec releaseCreatedSpec = new ReleaseCreatedSpec("the-url", "the-project", "the-version");
+        ReleaseCreatedSpec releaseCreatedSpec = new ReleaseCreatedSpec("the-url", "the-project", "the-version", "the-release-id");
         ReleaseCreatedSpecCheckResult result = ReleaseCreatedSpecCheckResult.createUpdatedResult(releaseCreatedSpec);
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertTrue(result.updatesDetected());

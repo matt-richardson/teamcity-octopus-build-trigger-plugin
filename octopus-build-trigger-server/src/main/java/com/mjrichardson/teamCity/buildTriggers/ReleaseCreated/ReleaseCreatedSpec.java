@@ -7,23 +7,30 @@ class ReleaseCreatedSpec {
     @NotNull
     private final String url;
     @NotNull
-    private final String project; //todo:rename to projectid
+    final String projectId;
     @Nullable
-    private final String version;
+    final String version;
+    @Nullable
+    final String releaseId;
 
-    ReleaseCreatedSpec(@NotNull String url, @NotNull String project) {
-        this(url, project, null);
+    ReleaseCreatedSpec(@NotNull String url, @NotNull String projectId) {
+        this(url, projectId, null, null);
     }
 
-    ReleaseCreatedSpec(@NotNull String url, @NotNull String project, @Nullable String version) {
+    ReleaseCreatedSpec(@NotNull String url, @NotNull Release release) {
+        this(url, release.projectId, release.version, release.releaseId);
+    }
+
+    ReleaseCreatedSpec(@NotNull String url, @NotNull String projectId, @Nullable String version, @Nullable String releaseId) {
         this.url = url;
-        this.project = project;
+        this.projectId = projectId;
         this.version = version;
+        this.releaseId = releaseId;
     }
 
     public String getRequestorString() {
         if (version == null)
-            return String.format("Release of project %s created on %s", project, url);
-        return String.format("Release %s of project %s created on %s", version, project, url);
+            return String.format("Release of project %s created on %s", projectId, url);
+        return String.format("Release %s of project %s created on %s", version, projectId, url);
     }
 }

@@ -72,7 +72,7 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
                 analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
 
                 LOG.info("New release " + newRelease.version + " created on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-                final ReleaseCreatedSpec releaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, octopusProject, newRelease.version);
+                final ReleaseCreatedSpec releaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, newRelease);
                 //todo: investigate passing multiple bits to createUpdatedResult()
                 return ReleaseCreatedSpecCheckResult.createUpdatedResult(releaseCreatedSpec);
             }
