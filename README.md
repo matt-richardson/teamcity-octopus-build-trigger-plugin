@@ -29,7 +29,6 @@ Octopus Deploy server (changing teamcity.example.com for your TeamCity server's 
 # Outstanding items
 
 - test older versions of Octopus
-- pass details of trigger item (ie, release name), to build. At the moment, you need to parse a configuration parameter `teamcity.build.triggeredBy`, which is designed to be a human readable rather than machine readable.
 - improve logging
 - show a message when an update is available
 

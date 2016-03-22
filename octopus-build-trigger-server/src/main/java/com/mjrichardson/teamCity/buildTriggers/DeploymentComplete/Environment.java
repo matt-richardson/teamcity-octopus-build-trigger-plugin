@@ -25,15 +25,30 @@ public class Environment {
     public final String environmentId;
     public OctopusDate latestDeployment;
     public OctopusDate latestSuccessfulDeployment;
+    String releaseId;
+    String deploymentId;
+    String version;
+    String projectId;
 
     public Environment(String environmentId, OctopusDate latestDeployment) {
-        this(environmentId, latestDeployment, new NullOctopusDate());
+        this(environmentId, latestDeployment, null, null, null, null);
+    }
+    public Environment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
+        this(environmentId, latestDeployment, latestSuccessfulDeployment, null, null, null, null);
     }
 
-    public Environment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
+    public Environment(String environmentId, OctopusDate latestDeployment, String releaseId, String deploymentId, String version, String projectId) {
+        this(environmentId, latestDeployment, new NullOctopusDate(), releaseId, deploymentId, version, projectId);
+    }
+
+    public Environment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment, String releaseId, String deploymentId, String version, String projectId) {
         this.environmentId = environmentId;
         this.latestDeployment = latestDeployment;
         this.latestSuccessfulDeployment = latestSuccessfulDeployment;
+        this.releaseId = releaseId;
+        this.deploymentId = deploymentId;
+        this.version = version;
+        this.projectId = projectId;
     }
 
     public boolean isLatestDeploymentOlderThan(OctopusDate compareDate) {
@@ -80,15 +95,20 @@ public class Environment {
     }
 
     public static Environment Parse(Map map) {
-        OctopusDate createdDate = OctopusDate.Parse(map.get("Created").toString());
         Boolean isCompleted = Boolean.parseBoolean(map.get("IsCompleted").toString());
-        Boolean isSuccessful = map.get("State").toString().equals("Success");
-        String environmentId = map.get("EnvironmentId").toString();
-
         if (!isCompleted)
             return new NullEnvironment();
+
+        OctopusDate createdDate = OctopusDate.Parse(map.get("Created").toString());
+        Boolean isSuccessful = map.get("State").toString().equals("Success");
+        String environmentId = map.get("EnvironmentId").toString();
+        String releaseId = map.get("ReleaseId").toString();
+        String deploymentId = map.get("DeploymentId").toString();
+        String version = map.get("ReleaseVersion").toString();
+        String projectId = map.get("ProjectId").toString();
+
         if (isSuccessful)
-            return new Environment(environmentId, createdDate, createdDate);
-        return new Environment(environmentId, createdDate);
+            return new Environment(environmentId, createdDate, createdDate, releaseId, deploymentId, version, projectId);
+        return new Environment(environmentId, createdDate, releaseId, deploymentId, version, projectId);
     }
 }

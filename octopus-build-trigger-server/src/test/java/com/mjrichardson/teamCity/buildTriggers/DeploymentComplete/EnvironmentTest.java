@@ -80,7 +80,7 @@ public class EnvironmentTest {
         Assert.assertEquals(environment.toString(), "env;2015-12-09T14:10:11.000+00:00;2015-12-12T09:04:03.000+00:00");
     }
 
-    public void parse_returns_null_deployment_if_is_not_completed() {
+    public void parse_returns_null_environment_if_is_not_completed() {
         HashMap<String, String> map = new HashMap<>();
         map.put("EnvironmentId", "Environment-1");
         map.put("Created", "2016-02-26T17:58:13.537+00:00");
@@ -96,10 +96,18 @@ public class EnvironmentTest {
         map.put("Created", "2016-02-26T17:58:13.537+00:00");
         map.put("IsCompleted", "true");
         map.put("State", "Success");
+        map.put("ReleaseId", "Release-1");
+        map.put("DeploymentId", "Deployment-1");
+        map.put("ReleaseVersion", "1.0.1");
+        map.put("ProjectId", "Project-8");
         Environment sut = Environment.Parse(map);
         Assert.assertEquals(sut.environmentId, "Environment-1");
         Assert.assertEquals(sut.latestDeployment, new OctopusDate(2016, 2, 26, 17, 58, 13, 537));
         Assert.assertEquals(sut.latestSuccessfulDeployment, new OctopusDate(2016, 2, 26, 17, 58, 13, 537));
+        Assert.assertEquals(sut.releaseId, "Release-1");
+        Assert.assertEquals(sut.deploymentId, "Deployment-1");
+        Assert.assertEquals(sut.version, "1.0.1");
+        Assert.assertEquals(sut.projectId, "Project-8");
     }
 
     public void parse_returns_deployment_with_null_latest_successful_deployment_if_not_successful() {
@@ -108,10 +116,18 @@ public class EnvironmentTest {
         map.put("Created", "2016-02-26T17:58:13.537+00:00");
         map.put("IsCompleted", "true");
         map.put("State", "Failed");
+        map.put("ReleaseId", "Release-1");
+        map.put("DeploymentId", "Deployment-1");
+        map.put("ReleaseVersion", "1.0.1");
+        map.put("ProjectId", "Project-8");
         Environment sut = Environment.Parse(map);
         Assert.assertEquals(sut.environmentId, "Environment-1");
         Assert.assertEquals(sut.latestDeployment, new OctopusDate(2016, 2, 26, 17, 58, 13, 537));
         Assert.assertEquals(sut.latestSuccessfulDeployment.getClass(), NullOctopusDate.class);
+        Assert.assertEquals(sut.releaseId, "Release-1");
+        Assert.assertEquals(sut.deploymentId, "Deployment-1");
+        Assert.assertEquals(sut.version, "1.0.1");
+        Assert.assertEquals(sut.projectId, "Project-8");
     }
 
     public void is_latest_successful_deployment_newer_than_returns_false_if_passed_date_is_newer() {

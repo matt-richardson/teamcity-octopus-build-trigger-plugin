@@ -96,7 +96,7 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
                 analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.BuildTriggered);
 
                 LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-                final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, environment.environmentId, environment.wasLatestDeploymentSuccessful());
+                final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, environment);
                 //todo: investigate passing multiple bits to createUpdatedResult()
                 return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
             }

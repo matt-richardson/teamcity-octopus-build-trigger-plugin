@@ -134,17 +134,18 @@ public class Environments {
 
     public void addOrUpdate(Environments moreResults) {
         for (Environment environment : moreResults.statusMap) {
-            addOrUpdate(environment.environmentId, environment.latestDeployment, environment.latestSuccessfulDeployment);
+            addOrUpdate(environment.environmentId, environment.latestDeployment, environment.latestSuccessfulDeployment, environment.deploymentId, environment.releaseId, environment.version, environment.projectId);
         }
     }
 
     public void addOrUpdate(Environment environment) {
         if (environment.getClass().equals(NullEnvironment.class))
             return;
-        addOrUpdate(environment.environmentId, environment.latestDeployment, environment.latestSuccessfulDeployment);
+        addOrUpdate(environment.environmentId, environment.latestDeployment, environment.latestSuccessfulDeployment,
+                environment.deploymentId, environment.releaseId, environment.version, environment.projectId);
     }
 
-    private void addOrUpdate(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
+    private void addOrUpdate(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment, String deploymentId, String releaseId, String version, String projectId) {
         Environment targetDeployment = getEnvironment(environmentId);
         if (targetDeployment.getClass().equals(NullEnvironment.class)) {
             targetDeployment = new Environment(environmentId, latestDeployment, latestSuccessfulDeployment);
@@ -157,6 +158,10 @@ public class Environments {
                 targetDeployment.latestSuccessfulDeployment = latestSuccessfulDeployment;
             }
         }
+        targetDeployment.projectId = projectId;
+        targetDeployment.deploymentId = deploymentId;
+        targetDeployment.version = version;
+        targetDeployment.releaseId = releaseId;
     }
 
     public boolean haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment() {
@@ -168,7 +173,7 @@ public class Environments {
     }
 
     public void addEnvironment(String environmentId) {
-        addOrUpdate(environmentId, new NullOctopusDate(), new NullOctopusDate());
+        addOrUpdate(environmentId, new NullOctopusDate(), new NullOctopusDate(), null, null, null, null);
     }
 
     public Environments trimToOnlyHaveMaximumOneChangedEnvironment(Environments oldEnvironments) {
