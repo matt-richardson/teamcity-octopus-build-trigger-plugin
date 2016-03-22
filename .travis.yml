@@ -1,7 +1,8 @@
 language: java
 jdk:
 - oraclejdk8
-before_install: 
+before_install:
+- mvn help:effective-pom
 - mvn versions:set -DnewVersion=0.1.$TRAVIS_BUILD_NUMBER
 install:
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -U
