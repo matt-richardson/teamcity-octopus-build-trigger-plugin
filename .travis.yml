@@ -3,6 +3,8 @@ jdk:
 - oraclejdk8
 before_install: 
 - mvn versions:set -DnewVersion=0.1.$TRAVIS_BUILD_NUMBER
+install:
+- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -U
 script: 
 - mvn package -DfinalName=octopus-build-trigger-0.1.$TRAVIS_BUILD_NUMBER
 branches:
