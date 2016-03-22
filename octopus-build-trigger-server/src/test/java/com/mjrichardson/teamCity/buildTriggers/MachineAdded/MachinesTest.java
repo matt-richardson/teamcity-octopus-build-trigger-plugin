@@ -159,4 +159,27 @@ public class MachinesTest {
         machines.add(newMachine);
         Assert.assertTrue(machines.contains(new Machine("machine-3", "MachineThree")));
     }
+
+    public void remove_removes_specified_machines() {
+        final Machine machineOne = new Machine("machine-1", "MachineOne");
+        final Machine machineTwo = new Machine("machine-2", "MachineTwo");
+        final Machine machineThree = new Machine("machine-3", "MachineThree");
+        Machines machines = new Machines();
+        machines.add(machineOne);
+        machines.add(machineTwo);
+        machines.add(machineThree);
+
+        Machines newMachines = new Machines();
+        newMachines.add(machineOne);
+        newMachines.add(machineTwo);
+
+        Machines deleted = machines.removeMachinesNotIn(newMachines);
+
+        Assert.assertEquals(machines.size(), 2);
+        Assert.assertTrue(machines.contains(machineOne));
+        Assert.assertTrue(machines.contains(machineTwo));
+
+        Assert.assertEquals(deleted.size(), 1);
+        Assert.assertTrue(deleted.contains(machineThree));
+    }
 }

@@ -57,32 +57,39 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
             final Machine newMachine = newMachines.getNextMachine(oldMachines);
             final Machines trimmedMachines = Machines.Parse(oldStoredData);
             trimmedMachines.add(newMachine);
-            final String newStoredData = trimmedMachines.toString();
+            String newStoredData = trimmedMachines.toString();
 
-            if (!newStoredData.equals(oldStoredData)) {
-                dataStorage.putValue(dataStorageKey, newStoredData);
+            if (newStoredData.equals(oldStoredData)) {
+                if (newMachines.size() < oldMachines.size())
+                {
+                    final Machines deletedMachines = trimmedMachines.removeMachinesNotIn(newMachines);
+                    newStoredData = trimmedMachines.toString();
+                    dataStorage.putValue(dataStorageKey, newStoredData);
 
-                //do not trigger build after first adding trigger (oldMachines == null)
-                if (oldStoredData == null) {
-                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
-
-                    LOG.debug("No previously known machines known for server " + octopusUrl + ": null" + " -> " + newStoredData);
-                    return MachineAddedSpecCheckResult.createEmptyResult();
+                    LOG.debug("Machines have been removed from Octopus: " + deletedMachines.toString());
                 }
 
-                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
-
-                LOG.info("New Machine " + newMachine.name + " created on " + octopusUrl + ": " + oldStoredData + " -> " + newStoredData);
-                final MachineAddedSpec MachineAddedSpec = new MachineAddedSpec(octopusUrl, newMachine);
-                return MachineAddedSpecCheckResult.createUpdatedResult(MachineAddedSpec);
+                LOG.debug("oldStoredData was '" + oldStoredData + "'");
+                LOG.debug("newStoredData was '" + newStoredData + "'");
+                LOG.info("No new machines on '" + octopusUrl + "'");
+                return MachineAddedSpecCheckResult.createEmptyResult();
             }
 
-            LOG.debug("oldStoredData was '" + oldStoredData + "'");
-            LOG.debug("newStoredData was '" + newStoredData + "'");
-            LOG.info("No new machines on '" + octopusUrl + "'");
+            dataStorage.putValue(dataStorageKey, newStoredData);
 
-            return MachineAddedSpecCheckResult.createEmptyResult();
+            //do not trigger build after first adding trigger (oldMachines == null)
+            if (oldStoredData == null) {
+                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
 
+                LOG.debug("No previously known machines known for server " + octopusUrl + ": null" + " -> " + newStoredData);
+                return MachineAddedSpecCheckResult.createEmptyResult();
+            }
+
+            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
+
+            LOG.info("New Machine " + newMachine.name + " created on " + octopusUrl + ": " + oldStoredData + " -> " + newStoredData);
+            final MachineAddedSpec MachineAddedSpec = new MachineAddedSpec(octopusUrl, newMachine);
+            return MachineAddedSpecCheckResult.createUpdatedResult(MachineAddedSpec);
         } catch (Exception e) {
             LOG.error("Failed to check for new machines added", e);
 

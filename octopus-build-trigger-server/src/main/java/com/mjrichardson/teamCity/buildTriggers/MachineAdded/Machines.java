@@ -5,8 +5,6 @@ import jetbrains.buildServer.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 
-//todo: make sure we handle when machines get deleted
-
 public class Machines {
     private ArrayList<Machine> statusMap;
 
@@ -42,17 +40,18 @@ public class Machines {
     }
 
     public boolean contains(Machine other) {
-        for (Machine Machine : statusMap) {
-            if (Machine.id.equals(other.id))
+        for (int i = 0; i < statusMap.size(); i++) {
+            Machine machine = statusMap.get(i);
+            if (machine.id.equals(other.id))
                 return true;
         }
         return false;
     }
 
-    public void add(Machines Machines) {
-        for (Machine Machine : Machines.statusMap) {
-            if (!contains(Machine)) {
-                add(Machine);
+    public void add(Machines machines) {
+        for (Machine machine : machines.statusMap) {
+            if (!contains(machine)) {
+                add(machine);
             }
         }
     }
@@ -80,5 +79,21 @@ public class Machines {
 
     public Machine[] toArray() {
         return statusMap.toArray(new Machine[0]);
+    }
+
+    public Machines removeMachinesNotIn(Machines newMachines) {
+        Machines deletedMachines = new Machines();
+
+        for (int i = 0; i < statusMap.size(); i++) {
+            Machine machine = statusMap.get(i);
+            if (!newMachines.contains(machine))
+                deletedMachines.add(machine);
+        }
+
+        for (int i = 0; i < deletedMachines.size(); i++) {
+            Machine machine = deletedMachines.statusMap.get(i);
+            statusMap.remove(machine);
+        }
+        return deletedMachines;
     }
 }

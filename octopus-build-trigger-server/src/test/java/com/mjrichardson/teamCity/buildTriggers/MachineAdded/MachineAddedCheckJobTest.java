@@ -132,6 +132,27 @@ public class MachineAddedCheckJobTest {
         Assert.assertEquals(updated[0].getRequestorString(), "Machine MachineOne added to the-url");
     }
 
+    public void perform_returns_empty_result_if_machine_deleted() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+
+        Machines machines = new Machines();
+        machines.add(new Machine("Machine-1", "MachineOne"));
+        machines.add(new Machine("Machine-2", "MachineTwo"));//this one is deleted
+
+        CustomDataStorage dataStorage = new FakeCustomDataStorage(machines.toString());
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithOneMachine());
+        String displayName = "the-display-name";
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, "the-build-type", dataStorage, properties, new FakeAnalyticsTracker());
+        CheckResult<MachineAddedSpec> result = sut.perform();
+        Assert.assertFalse(result.updatesDetected());
+        Assert.assertFalse(result.hasCheckErrors());
+        //check we are storing the correct data for next time round
+        Assert.assertEquals(dataStorage.getValue(displayName + "|" + "the-url"), new Machine("Machine-1", "MachineOne").toString());
+    }
+
     public void perform_returns_updated_result_if_new_machine() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
         String displayName = "the-display-name";
