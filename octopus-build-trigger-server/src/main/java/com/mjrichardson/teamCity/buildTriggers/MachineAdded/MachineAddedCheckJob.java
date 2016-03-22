@@ -76,7 +76,6 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
 
                 LOG.info("New Machine " + newMachine.name + " created on " + octopusUrl + ": " + oldStoredData + " -> " + newStoredData);
                 final MachineAddedSpec MachineAddedSpec = new MachineAddedSpec(octopusUrl, newMachine);
-                //todo: investigate passing multiple bits to createUpdatedResult()
                 return MachineAddedSpecCheckResult.createUpdatedResult(MachineAddedSpec);
             }
 

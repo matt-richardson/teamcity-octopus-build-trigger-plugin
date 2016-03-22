@@ -73,7 +73,6 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
 
                 LOG.info("New release " + newRelease.version + " created on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
                 final ReleaseCreatedSpec releaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, newRelease);
-                //todo: investigate passing multiple bits to createUpdatedResult()
                 return ReleaseCreatedSpecCheckResult.createUpdatedResult(releaseCreatedSpec);
             }
 

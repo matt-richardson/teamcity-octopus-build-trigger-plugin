@@ -97,7 +97,6 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
 
                 LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
                 final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, environment);
-                //todo: investigate passing multiple bits to createUpdatedResult()
                 return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
             }
 
