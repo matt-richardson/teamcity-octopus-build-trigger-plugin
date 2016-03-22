@@ -77,7 +77,9 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
                 return ReleaseCreatedSpecCheckResult.createUpdatedResult(releaseCreatedSpec);
             }
 
-            LOG.info("No new releases on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
+            LOG.debug("oldStoredData was '" + oldStoredData + "'");
+            LOG.debug("newStoredData was '" + newStoredData + "'");
+            LOG.info("No new releases on '" + octopusUrl + "' for project '" + octopusProject + "'");
             return ReleaseCreatedSpecCheckResult.createEmptyResult();
 
         } catch (Exception e) {

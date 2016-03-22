@@ -80,7 +80,10 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
                 return MachineAddedSpecCheckResult.createUpdatedResult(MachineAddedSpec);
             }
 
-            LOG.info("No new machines on " + octopusUrl + ": " + oldStoredData + " -> " + newStoredData);
+            LOG.debug("oldStoredData was '" + oldStoredData + "'");
+            LOG.debug("newStoredData was '" + newStoredData + "'");
+            LOG.info("No new machines on '" + octopusUrl + "'");
+
             return MachineAddedSpecCheckResult.createEmptyResult();
 
         } catch (Exception e) {

@@ -101,7 +101,9 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
                 return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
             }
 
-            LOG.info("No new deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
+            LOG.debug("oldStoredData was '" + oldStoredData + "'");
+            LOG.debug("newStoredData was '" + newStoredData + "'");
+            LOG.info("No new deployments on '" + octopusUrl + "' for project '" + octopusProject + "'");
             return DeploymentCompleteSpecCheckResult.createEmptyResult();
 
         } catch (Exception e) {
