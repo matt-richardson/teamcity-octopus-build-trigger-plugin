@@ -16,6 +16,17 @@
             <name>project</name>
             <url>file:${project.basedir}/../repo</url>
         </repository>
+        <repository>
+            <!-- disable this one, as it appears to be setup centrally on the travis-ci servers -->
+            <id>codehaus-snapshots</id>
+            <url>https://nexus.codehaus.org/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <dependencies>
