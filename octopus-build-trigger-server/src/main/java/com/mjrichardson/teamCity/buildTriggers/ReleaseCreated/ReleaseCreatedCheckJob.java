@@ -115,8 +115,9 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
         return getCheckResult(octopusUrl, octopusApiKey, octopusProject, dataStorage);
     }
 
-    //todo: figure out if we need to toggle this while we are busy
     public boolean allowSchedule(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
+        //we always return false here - the AsyncPolledBuildTrigger class handles whether we are busy or not
+        //also, this is inverted, the method should be preventSchedule or something
         return false;
     }
 }
