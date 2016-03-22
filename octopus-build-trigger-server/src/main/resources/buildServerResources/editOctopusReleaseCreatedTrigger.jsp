@@ -1,4 +1,12 @@
 <%--
+  ~ Copyright 2016 Matt Richardson.
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~
+  ~ Based on code graciously open sourced by JetBrains s.r.o
+  ~ (http://svn.jetbrains.org/teamcity/plugins/url-build-trigger/trunk/url-build-trigger-server/resource/buildServerResources/editUrlBuildTrigger.jsp)
+  ~
+  ~ Original licence:
+  ~
   ~ Copyright 2000-2013 JetBrains s.r.o.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
