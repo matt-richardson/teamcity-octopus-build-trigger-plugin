@@ -149,9 +149,7 @@
         <url>https://github.com/matt-richardson/teamcity-octopus-build-trigger-plugin</url>
         <connection>scm:git:git@github.com:matt-richardson/teamcity-octopus-build-trigger-plugin</connection>
         <developerConnection>scm:git:git@github.com:matt-richardson/teamcity-octopus-build-trigger-plugin</developerConnection>
-        <!-- todo: add tag element
-        <tag>${finalName}</tag>
-        -->
+        <tag>HEAD</tag>
     </scm>
     <issueManagement>
         <system>github.com</system>
