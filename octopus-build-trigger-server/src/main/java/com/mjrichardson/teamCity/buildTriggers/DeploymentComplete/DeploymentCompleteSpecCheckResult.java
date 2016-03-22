@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Map;
 
 class DeploymentCompleteSpecCheckResult extends CheckResult<DeploymentCompleteSpec> {
-    DeploymentCompleteSpecCheckResult() {
+    private DeploymentCompleteSpecCheckResult() {
         super();
     }
 
@@ -45,7 +45,7 @@ class DeploymentCompleteSpecCheckResult extends CheckResult<DeploymentCompleteSp
 
     @NotNull
     static DeploymentCompleteSpecCheckResult createUpdatedResult(@NotNull DeploymentCompleteSpec deploymentCompleteSpec) {
-        return new DeploymentCompleteSpecCheckResult(Collections.singleton(deploymentCompleteSpec), Collections.<DeploymentCompleteSpec, DetectionException>emptyMap());
+        return new DeploymentCompleteSpecCheckResult(Collections.singleton(deploymentCompleteSpec), Collections.emptyMap());
     }
 
     @NotNull
