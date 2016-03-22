@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+//todo: make sure we handle when deployments get deleted
+
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
