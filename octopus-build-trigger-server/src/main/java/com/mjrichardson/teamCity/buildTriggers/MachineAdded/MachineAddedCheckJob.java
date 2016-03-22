@@ -62,8 +62,6 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
             if (!newStoredData.equals(oldStoredData)) {
                 dataStorage.putValue(dataStorageKey, newStoredData);
 
-                //todo: see if its possible to to check the property on the context that says whether its new?
-                //http://javadoc.jetbrains.net/teamcity/openapi/current/jetbrains/buildServer/buildTriggers/PolledTriggerContext.html#getPreviousCallTime()
                 //do not trigger build after first adding trigger (oldMachines == null)
                 if (oldStoredData == null) {
                     analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
