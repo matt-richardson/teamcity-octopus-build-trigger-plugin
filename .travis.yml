@@ -2,7 +2,8 @@ language: java
 jdk:
 - oraclejdk8
 before_install:
-- mvn help:effective-pom
+before_install:
+- sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
 - mvn versions:set -DnewVersion=0.1.$TRAVIS_BUILD_NUMBER
 install:
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -U
