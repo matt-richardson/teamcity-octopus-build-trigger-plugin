@@ -50,12 +50,69 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
 
         analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallingBackToDeploymentsApi);
         Environments environmentsFromApi = getEnvironmentsFromApi(projectId, oldEnvironments, contentProvider, apiRootResponse, apiProgressionResponse);
-        //figure out if this ever returns better information than the above call...
-        //todo: send a different tag if successful
-        //analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallbackSuccessful);
+
+        logOutcomeOfFallback(apiProgressionResponse.environments, environmentsFromApi);
 
         return environmentsFromApi;
     }
+
+    void logOutcomeOfFallback(Environments environmentsFromProgressionApi, Environments environmentsFromDeploymentsApi) {
+        if (environmentsFromProgressionApi.size() != environmentsFromDeploymentsApi.size()) {
+            LOG.info(String.format("Got %d environments from deployments api, but %d environments from progression api.",
+                    environmentsFromDeploymentsApi.size(), environmentsFromProgressionApi.size()));
+            LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
+            LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentNumberOfEnvironments);
+        }
+        else if (environmentsFromProgressionApi.equals(environmentsFromDeploymentsApi)) {
+            LOG.info("Fallback to deployments api produced same results");
+            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
+        }
+        else
+        {
+            for (Environment environmentFromProgressionApi : environmentsFromProgressionApi) {
+                Environment environmentFromDeploymentApi = environmentsFromDeploymentsApi.getEnvironment(environmentFromProgressionApi.environmentId);
+                if (environmentFromDeploymentApi.equals(environmentFromProgressionApi)) {
+                    LOG.info(String.format("Environment %s from deployments api is same as the environment from the progression api",
+                            environmentFromDeploymentApi.environmentId));
+                }
+                else if (environmentFromDeploymentApi.getClass() == NullEnvironment.class) {
+                    LOG.info("Got different environments from deployments api and progression api.");
+                    LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
+                    LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentEnvironments);
+                    return;
+                }
+                else if (environmentFromProgressionApi.isLatestSuccessfulDeploymentOlderThen(environmentFromDeploymentApi.latestSuccessfulDeployment)) {
+                    LOG.info(String.format("Environment %s from deployments api has a newer latestSuccessfulDeployment date (%s) than the environment from the progression api (%s)",
+                            environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.latestSuccessfulDeployment, environmentFromProgressionApi.latestSuccessfulDeployment));
+                    LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
+                    LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
+                    return;
+                }
+                else if (environmentFromProgressionApi.isLatestDeploymentOlderThan(environmentFromDeploymentApi.latestDeployment)) {
+                    LOG.info(String.format("Environment %s from deployments api has a newer latestDeployment date (%s) than the environment from the progression api (%s)",
+                            environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.latestDeployment, environmentFromProgressionApi.latestDeployment));
+                    LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
+                    LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
+                    return;
+                }
+                else {
+                    LOG.info(String.format("Environment %s from deployments api (%s) is worse than the environment from the progression api (%s)",
+                            environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.toString(), environmentFromProgressionApi.toString()));
+                    LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
+                    LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedWorseResults);
+                    return;
+                }
+            }
+            LOG.warn("Not expecting to get to this circumstance!");
+            assert false;
+        }
+    }
+
 
     private Project getProject(String projectId, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {
         String projectsResponse = contentProvider.getContent(apiRootResponse.projectsApiLink);

@@ -11,6 +11,11 @@ public interface AnalyticsTracker {
         BuildTriggered,
         TriggerAdded,
         FallingBackToDeploymentsApi,
+        FallBackToDeploymentsApiProducedBetterInformation,
+        FallBackToDeploymentsApiProducedSameResults,
+        FallBackToDeploymentsApiProducedWorseResults,
+        FallBackToDeploymentsApiProducedDifferentNumberOfEnvironments,
+        FallBackToDeploymentsApiProducedDifferentEnvironments
     }
 
     void postEvent(EventCategory eventCategory, EventAction eventAction);

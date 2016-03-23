@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 
 @Test
 public class DeploymentsProviderImplTest {
@@ -229,4 +230,102 @@ public class DeploymentsProviderImplTest {
         Assert.assertNotNull(environment);
         Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 3, 9, 22, 26, 43, 504), new NullOctopusDate()));
     }
+
+    public void log_outcome_of_fallback_handles_different_number_responses() {
+        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
+        FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
+        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
+
+        Environments environmentsFromProgressionApi = new Environments();
+        environmentsFromProgressionApi.addEnvironment("Environment-1");
+        Environments environmentsFromDeploymentsApi = new Environments();
+        environmentsFromProgressionApi.addEnvironment("Environment-1");
+        environmentsFromProgressionApi.addEnvironment("Environment-2");
+
+        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
+        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentNumberOfEnvironments);
+    }
+
+    public void log_outcome_of_fallback_handles_identical_repsonses() throws ParseException {
+        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
+        FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
+        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
+
+        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        Environments environmentsFromProgressionApi = Environments.Parse(oldData);
+        Environments environmentsFromDeploymentsApi = Environments.Parse(oldData);
+
+        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
+        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
+    }
+
+    public void log_outcome_of_fallback_handles_different_environments() throws ParseException {
+        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
+        FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
+        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
+
+        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        Environments environmentsFromProgressionApi = Environments.Parse(oldData);
+        final String newData = "Environments-2;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        Environments environmentsFromDeploymentsApi = Environments.Parse(newData);
+
+        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
+        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentEnvironments);
+    }
+
+    public void log_outcome_of_fallback_handles_response_with_newer_latest_deployment_date() throws ParseException {
+        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
+        FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
+        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
+
+        final String progressionApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        Environments environmentsFromProgressionApi = Environments.Parse(progressionApiResult);
+        final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T15:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
+
+        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
+        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
+    }
+
+    public void log_outcome_of_fallback_handles_response_with_newer_successful_latest_deployment_date() throws ParseException {
+        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
+        FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
+        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
+
+        final String progressionApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        Environments environmentsFromProgressionApi = Environments.Parse(progressionApiResult);
+        final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T15:00:00.000+00:00;2016-01-20T15:00:00.000+00:00";
+        Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
+
+        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
+        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
+    }
+
+    public void log_outcome_of_fallback_handles_response_with_older_latest_deployment_date() throws ParseException {
+        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
+        FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
+        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
+
+        final String progressionApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        Environments environmentsFromProgressionApi = Environments.Parse(progressionApiResult);
+        final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T13:00:00.000+00:00;2016-01-20T13:00:00.000+00:00";
+        Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
+
+        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
+        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedWorseResults);
+    }
+
+
 }

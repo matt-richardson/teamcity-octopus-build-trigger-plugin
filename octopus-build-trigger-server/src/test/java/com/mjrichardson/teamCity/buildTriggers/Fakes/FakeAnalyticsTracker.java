@@ -3,9 +3,16 @@ package com.mjrichardson.teamCity.buildTriggers.Fakes;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 
 public class FakeAnalyticsTracker implements AnalyticsTracker {
+
+    public int receivedPostCount;
+    public EventAction eventAction;
+    public EventCategory eventCategory;
+
     @Override
     public void postEvent(EventCategory eventCategory, EventAction eventAction) {
-        //no-op
+        this.receivedPostCount++;
+        this.eventCategory = eventCategory;
+        this.eventAction = eventAction;
     }
 
     @Override

@@ -6,8 +6,9 @@ import jetbrains.buildServer.util.StringUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class Environments {
+public class Environments implements Iterable<Environment>{
     private ArrayList<Environment> statusMap;
 
     public Environments() {
@@ -215,4 +216,10 @@ public class Environments {
     public Environment[] toArray() {
         return statusMap.toArray(new Environment[0]);
     }
+
+    @Override
+    public Iterator<Environment> iterator() {
+        return statusMap.iterator();
+    }
+
 }
