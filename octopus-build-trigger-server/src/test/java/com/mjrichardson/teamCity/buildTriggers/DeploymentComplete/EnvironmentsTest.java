@@ -338,4 +338,45 @@ public class EnvironmentsTest {
         other.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28)));
         Assert.assertTrue(sut.equals(other));
     }
+
+    public void contains_returns_false_if_no_match() {
+        final Environment oldEnvironment = new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28));
+        final Environment newEnvironment = new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25));
+        Environments environments = new Environments();
+        environments.addOrUpdate(oldEnvironment);
+        environments.addOrUpdate(newEnvironment);
+        Assert.assertFalse(environments.contains(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28))));
+    }
+
+    public void contains_returns_true_if_match() {
+        final Environment oldEnvironment = new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28));
+        final Environment newEnvironment = new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25));
+        Environments environments = new Environments();
+        environments.addOrUpdate(oldEnvironment);
+        environments.addOrUpdate(newEnvironment);
+        Assert.assertTrue(environments.contains(new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25))));
+    }
+
+    public void remove_removes_specified_environments() {
+        final Environment environmentOne = new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28));
+        final Environment environmentTwo = new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28));
+        final Environment environmentThree = new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25));
+        Environments environments = new Environments();
+        environments.addOrUpdate(environmentOne);
+        environments.addOrUpdate(environmentTwo);
+        environments.addOrUpdate(environmentThree);
+
+        Environments newEnvironments = new Environments();
+        newEnvironments.addOrUpdate(environmentOne);
+        newEnvironments.addOrUpdate(environmentTwo);
+
+        Environments deleted = environments.removeEnvironmentsNotIn(newEnvironments);
+
+        Assert.assertEquals(environments.size(), 2);
+        Assert.assertTrue(environments.contains(environmentOne));
+        Assert.assertTrue(environments.contains(environmentTwo));
+
+        Assert.assertEquals(deleted.size(), 1);
+        Assert.assertTrue(deleted.contains(environmentThree));
+    }
 }

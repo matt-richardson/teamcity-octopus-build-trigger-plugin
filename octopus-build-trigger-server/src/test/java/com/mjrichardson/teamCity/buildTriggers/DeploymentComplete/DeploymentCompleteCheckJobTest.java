@@ -1,6 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
+import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import org.testng.Assert;
@@ -211,6 +212,42 @@ public class DeploymentCompleteCheckJobTest {
         Assert.assertEquals(result.getUpdated().size(), 1);
         DeploymentCompleteSpec updated[] = result.getUpdated().toArray(new DeploymentCompleteSpec[0]);
         Assert.assertEquals(updated[0].getRequestorString(), "Successful deployment of the-project-id to Environments-1 on the-url");
+    }
+
+    public void perform_returns_empty_result_if_environment_deleted() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        DeploymentsProvider deploymentsProvider = new FakeDeploymentsProviderWithTwoDeployments(); //env-1 + env-2
+        DeploymentsProviderFactory deploymentsProviderFactory = new FakeDeploymentsProviderFactory(deploymentsProvider);
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        String storedDataValue = new Environment("Environments-1", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25)).toString();
+        CustomDataStorage dataStorage = new FakeCustomDataStorage(storedDataValue);
+
+        Map<String, String> properties = new HashMap<>();
+        String octopusUrl = "the-url";
+        properties.put(OCTOPUS_URL, octopusUrl);
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        String octopusProject = "the-project-id";
+        properties.put(OCTOPUS_PROJECT_ID, octopusProject);
+        properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
+        DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        Assert.assertTrue(result.updatesDetected());
+        Assert.assertFalse(result.hasCheckErrors());
+        Assert.assertEquals(result.getUpdated().size(), 1);
+        DeploymentCompleteSpec updated[] = result.getUpdated().toArray(new DeploymentCompleteSpec[0]);
+        Assert.assertEquals(updated[0].getRequestorString(), "Successful deployment of the-project-id to Environments-2 on the-url");
+
+        deploymentsProvider = new FakeDeploymentsProviderWithOneDeployment(); //env-1, so env-2 is deleted
+        deploymentsProviderFactory = new FakeDeploymentsProviderFactory(deploymentsProvider);
+
+        sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        result = sut.perform();
+        Assert.assertFalse(result.updatesDetected());
+        Assert.assertFalse(result.hasCheckErrors());
+        Assert.assertEquals(result.getUpdated().size(), 0);
+
+        String key = displayName + "|" + octopusUrl + "|" + octopusProject;
+        Assert.assertEquals(dataStorage.getValue(key), "Environments-1;2016-02-25T00:00:00.000+00:00;2016-02-25T00:00:00.000+00:00");
     }
 
     public void allow_schedule_returns_false() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

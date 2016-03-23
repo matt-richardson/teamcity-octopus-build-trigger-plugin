@@ -81,36 +81,47 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
 
             //only store that one deployment to one environment has happened here, not multiple environment.
             //otherwise, we could inadvertently miss deployments
-            final Environments newStoredData = newEnvironments.trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments, triggerOnlyOnSuccessfulDeployment);
+            final Environments trimmedEnvironments = newEnvironments.trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments, triggerOnlyOnSuccessfulDeployment);
 
-            if (!newEnvironments.toString().equals(oldStoredData)) {
-                dataStorage.putValue(dataStorageKey, newStoredData.toString());
+            String newStoredData = trimmedEnvironments.toString();
+            if (newStoredData.equals(oldStoredData)) {
+                //note: deleting an environment deletes it from the progression api response, but not the deployment api response
+                if (newEnvironments.size() < oldEnvironments.size()) {
+                    final Environments deletedEnvironments = trimmedEnvironments.removeEnvironmentsNotIn(newEnvironments);
+                    newStoredData = trimmedEnvironments.toString();
+                    dataStorage.putValue(dataStorageKey, newStoredData);
 
-                //do not trigger build after first adding trigger (oldEnvironments == null)
-                if (oldStoredData == null) {
-                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.TriggerAdded);
-
-                    LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
-                    return DeploymentCompleteSpecCheckResult.createEmptyResult();
+                    LOG.debug("Environments have been removed from Octopus: " + deletedEnvironments.toString());
                 }
-
-                final Environment environment = newStoredData.getChangedDeployment(oldEnvironments);
-                if (triggerOnlyOnSuccessfulDeployment && !environment.wasLatestDeploymentSuccessful()) {
-                    LOG.debug("New deployments found, but they weren't successful, and we are only triggering on successful builds. Server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
-                    return DeploymentCompleteSpecCheckResult.createEmptyResult();
-                }
-
-                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.BuildTriggered);
-
-                LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
-                final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, environment);
-                return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
+                LOG.debug("oldStoredData was '" + oldStoredData + "'");
+                LOG.debug("trimmedEnvironments was '" + trimmedEnvironments + "'");
+                LOG.info("No new deployments on '" + octopusUrl + "' for project '" + octopusProject + "'");
+                return DeploymentCompleteSpecCheckResult.createEmptyResult();
             }
 
-            LOG.debug("oldStoredData was '" + oldStoredData + "'");
-            LOG.debug("newStoredData was '" + newStoredData + "'");
-            LOG.info("No new deployments on '" + octopusUrl + "' for project '" + octopusProject + "'");
-            return DeploymentCompleteSpecCheckResult.createEmptyResult();
+            dataStorage.putValue(dataStorageKey, newStoredData);
+
+            //do not trigger build after first adding trigger (oldEnvironments == null)
+            if (oldStoredData == null) {
+                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.TriggerAdded);
+
+                LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + trimmedEnvironments);
+                return DeploymentCompleteSpecCheckResult.createEmptyResult();
+            }
+
+            final Environment environment = trimmedEnvironments.getChangedDeployment(oldEnvironments);
+            if (triggerOnlyOnSuccessfulDeployment && !environment.wasLatestDeploymentSuccessful()) {
+                LOG.debug("New deployments found, but they weren't successful, and we are only triggering on successful builds. Server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + trimmedEnvironments);
+                return DeploymentCompleteSpecCheckResult.createEmptyResult();
+            }
+
+            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.BuildTriggered);
+
+            LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + trimmedEnvironments);
+            final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, environment);
+            return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
+
+
 
         } catch (Exception e) {
             LOG.error("Failed to check for new deployments completed", e);

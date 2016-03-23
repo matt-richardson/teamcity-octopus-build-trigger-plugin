@@ -222,4 +222,28 @@ public class Environments implements Iterable<Environment>{
         return statusMap.iterator();
     }
 
+    public boolean contains(Environment other) {
+        for (int i = 0; i < statusMap.size(); i++) {
+            Environment environment = statusMap.get(i);
+            if (environment.environmentId.equals(other.environmentId))
+                return true;
+        }
+        return false;
+    }
+
+    public Environments removeEnvironmentsNotIn(Environments newEnvironments) {
+        Environments deletedEnvironments = new Environments();
+
+        for (int i = 0; i < statusMap.size(); i++) {
+            Environment environment = statusMap.get(i);
+            if (!newEnvironments.contains(environment))
+                deletedEnvironments.addOrUpdate(environment);
+        }
+
+        for (int i = 0; i < deletedEnvironments.size(); i++) {
+            Environment environment = deletedEnvironments.statusMap.get(i);
+            statusMap.remove(environment);
+        }
+        return deletedEnvironments;}
+
 }
