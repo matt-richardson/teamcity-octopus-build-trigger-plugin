@@ -96,14 +96,13 @@ class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrigger<Dep
 
     @Override
     public Map<String, String> getProperties(DeploymentCompleteSpec deploymentCompleteSpec) {
+        //todo: add deployment name
+        //todo: add environment name - needs to remove the fallback though
         HashMap hashMap = new HashMap();
         hashMap.put(BUILD_PROPERTY_DEPLOYMENT_ID, deploymentCompleteSpec.deploymentId);
-        //hashMap.put(BUILD_PROPERTY_DEPLOYMENT_NAME, deploymentCompleteSpec.name);
         hashMap.put(BUILD_PROPERTY_DEPLOYMENT_VERSION, deploymentCompleteSpec.version);
         hashMap.put(BUILD_PROPERTY_DEPLOYMENT_PROJECT_ID, deploymentCompleteSpec.projectId);
         hashMap.put(BUILD_PROPERTY_DEPLOYMENT_RELEASE_ID, deploymentCompleteSpec.releaseId);
-        // todo: if we can remove the fallback from progression api, we can add this
-        // hashMap.put(BUILD_PROPERTY_DEPLOYMENT_ENVIRONMENT_NAME, deploymentCompleteSpec.environmentName);
         hashMap.put(BUILD_PROPERTY_DEPLOYMENT_ENVIRONMENT_ID, deploymentCompleteSpec.environmentId);
         hashMap.put(BUILD_PROPERTY_DEPLOYMENT_SUCCESSFUL, deploymentCompleteSpec.wasSuccessful.toString());
         return hashMap;
