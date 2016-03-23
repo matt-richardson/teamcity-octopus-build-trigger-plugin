@@ -8,9 +8,6 @@ A TeamCity plugin that polls Octopus Deploy, and triggers a TeamCity build when:
 - [x] a release is created
 - [x] a new tentacle is added
 
-This is very much a work in progress, but feel free to give it a go, and let me know if you face any issues.
-Constructive criticism received gratefully - this is my first real java project, and there's a lot I'm unaware of in that ecosystem.
-
 # Installation
 
 Download the [latest release](https://github.com/matt-richardson/teamcity-octopus-build-trigger-plugin/releases/latest), and drop it into your [<TeamCity Data Directory>](https://confluence.jetbrains.com/display/TCD9/TeamCity+Data+Directory)/plugins folder. Restart TeamCity.
@@ -23,7 +20,7 @@ You may run into an issue where you get 'Unable to connect. Please ensure the ur
 configuring the build triggers, even though the URL and API key are correct. If this is the case, please ensure you [configure CORS](http://help.octopusdeploy.com/discussions/problems/42234-access-control-allow-origin-headers-not-being-sent-with-options-responses-from-api-321#comment_38476446)
 on the Octopus Deploy server.
 
-You will need most like need to execute `Octopus.Server.exe configure --webCorsWhitelist=teamcity.example.com` on your
+You will most likely need to execute `Octopus.Server.exe configure --webCorsWhitelist=teamcity.example.com` on your
 Octopus Deploy server (changing teamcity.example.com for your TeamCity server's URL).
 
 # Outstanding items
@@ -64,6 +61,7 @@ Specifically, these events are tracked:
 * When a new build is triggered
 * When the DeploymentProvider needs to fallback to using the `/api/Deployments` endpoint when the `/api/progession`
 endpoint does not return enough information
+* Whether the result of the fallback returned the same, better or worse information
 
 The information tracked includes:
 * TeamCity version
@@ -77,3 +75,22 @@ The information tracked includes:
 If you want to disable analytics, you can set the `octopus.build.trigger.analytics.enabled` [internal
 property](https://confluence.jetbrains.com/display/TCD9/Configuring+TeamCity+Server+Startup+Properties#ConfiguringTeamCityServerStartupProperties-TeamCityinternalpropertiesinternal.properties)
 to `false`. This requires a restart.
+
+# Feedback
+
+Constructive criticism gratefully received. This is my first real java project, so while this project has taught me
+a lot, there's still a whole lot more I'm unaware of in that ecosystem.
+
+# Acknowledgements
+
+Grateful thanks to JetBrains, especially Yegor Yarko for their assistance with helping me while I was learning.
+
+Also thanks for providing the [UrlBuildTrigger](http://svn.jetbrains.org/teamcity/plugins/url-build-trigger) plugin
+as a sample, which was the basis of this plugin.
+
+# License
+
+This project is licensed under the Apache 2.0 license.
+
+Portions of this code are modified from the [UrlBuildTrigger](http://svn.jetbrains.org/teamcity/plugins/url-build-trigger)
+plugin, which is Copyright (c) 2000-2013 JetBrains s.r.o., and released under the Apache 2.0 license as well.
