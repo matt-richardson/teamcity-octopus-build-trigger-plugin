@@ -13,7 +13,7 @@ public class ApiRootResponse {
 
     private static final Logger LOG = Logger.getInstance(ApiRootResponse.class.getName());
 
-    //todo: add medium term caching
+    //todo: cache for an hour - this will rarely change
 
     public ApiRootResponse(String apiResponse) throws ParseException {
         deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments");

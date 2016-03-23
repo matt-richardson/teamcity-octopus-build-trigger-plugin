@@ -38,7 +38,9 @@ public class MachinesProviderImplTest {
 
     @Test(enabled = false)
     public void get_machines_from_empty_start_with_no_machines() throws ProjectNotFoundException, MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
-        //todo: need to figure out how to make this one work
+        //todo: need to restructure the FakeContentProviderFactory to allow you to override the response
+        //      as the test data structure only allows one definition of "machines.json"
+        //      then we can enable this test again
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
         Machines newMachines = MachinesProviderImpl.getMachines();
@@ -91,7 +93,9 @@ public class MachinesProviderImplTest {
 
     @Test(enabled = false)
     public void get_machines_when_more_than_one_page_of_machines() throws Exception {
-        //todo: need to figure out how to make this one work
+        //todo: need to restructure the FakeContentProviderFactory to allow you to override the response
+        //      as the test data structure only allows one definition of "machines.json"
+        //      then we can enable this test again
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
 
