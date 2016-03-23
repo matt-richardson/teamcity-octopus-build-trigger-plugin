@@ -84,8 +84,7 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
             String newStoredData = trimmedMachines.toString();
 
             if (newStoredData.equals(oldStoredData)) {
-                if (newMachines.size() < oldMachines.size())
-                {
+                if (newMachines.size() < oldMachines.size()) {
                     final Machines deletedMachines = trimmedMachines.removeMachinesNotIn(newMachines);
                     newStoredData = trimmedMachines.toString();
                     dataStorage.putValue(dataStorageKey, newStoredData);
