@@ -28,6 +28,7 @@ Octopus Deploy server (changing teamcity.example.com for your TeamCity server's 
 - test older versions of Octopus
 - improve logging
 - show a message when an update is available
+- add mutation testing using something like [Jester](http://jester.sourceforge.net/)
 
 # Logging
 
