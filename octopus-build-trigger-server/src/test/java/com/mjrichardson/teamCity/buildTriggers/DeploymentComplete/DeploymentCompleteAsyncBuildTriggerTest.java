@@ -78,7 +78,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         Assert.assertEquals(result, "Wait for a new deployment of the-project on server the-server.");
     }
 
-    public void describe_trigger_returns_description_based_on_properties2() {
+    public void describe_trigger_returns_description_based_on_properties_for_successful_deployment() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
