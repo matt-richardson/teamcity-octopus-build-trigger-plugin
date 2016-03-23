@@ -12,6 +12,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
@@ -92,4 +93,22 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
         Assert.assertEquals(result, "Wait for a new release of the-project to be created on server the-server.");
     }
 
+    public void get_properties_returns_expected_properties() {
+        String displayName = "the display name";
+        Integer pollIntervalInSeconds = 100;
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+
+        String[] environmentIds = new String[1];
+        environmentIds[0] = "environment-1";
+        String[] roleIds = new String[2];
+        roleIds[0] = "role-one";
+        roleIds[1] = "role-two";
+
+        ReleaseCreatedSpec spec = new ReleaseCreatedSpec("the-url", "the-project-id", "the-version", "the-release-id");
+        Map<String, String> result = sut.getProperties(spec);
+
+        Assert.assertEquals(result.get(BUILD_PROPERTY_RELEASE_ID), "the-release-id");
+        Assert.assertEquals(result.get(BUILD_PROPERTY_RELEASE_PROJECT_ID), "the-project-id");
+        Assert.assertEquals(result.get(BUILD_PROPERTY_RELEASE_VERSION), "the-version");
+    }
 }

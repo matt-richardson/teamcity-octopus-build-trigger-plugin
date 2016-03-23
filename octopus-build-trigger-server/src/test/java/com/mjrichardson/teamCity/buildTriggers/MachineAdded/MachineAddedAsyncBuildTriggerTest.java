@@ -12,6 +12,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
@@ -92,4 +93,23 @@ public class MachineAddedAsyncBuildTriggerTest {
         Assert.assertEquals(result, "Wait for a new machine to be added to server the-server.");
     }
 
+    public void get_properties_returns_expected_properties() {
+        String displayName = "the display name";
+        Integer pollIntervalInSeconds = 100;
+        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+
+        String[] environmentIds = new String[1];
+        environmentIds[0] = "environment-1";
+        String[] roleIds = new String[2];
+        roleIds[0] = "role-one";
+        roleIds[1] = "role-two";
+
+        MachineAddedSpec spec = new MachineAddedSpec("the-url", "the-machine-name", "the-machine-id", environmentIds, roleIds);
+        Map<String, String> result = sut.getProperties(spec);
+
+        Assert.assertEquals(result.get(BUILD_PROPERTY_MACHINE_ID), "the-machine-id");
+        Assert.assertEquals(result.get(BUILD_PROPERTY_MACHINE_NAME), "the-machine-name");
+        Assert.assertEquals(result.get(BUILD_PROPERTY_MACHINE_ENVIRONMENT_IDS), "environment-1");
+        Assert.assertEquals(result.get(BUILD_PROPERTY_MACHINE_ROLE_IDS), "role-one,role-two");
+    }
 }

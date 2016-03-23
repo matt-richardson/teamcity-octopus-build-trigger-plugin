@@ -12,6 +12,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
@@ -92,4 +93,19 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         Assert.assertEquals(result, "Wait for a new successful deployment of the-project on server the-server.");
     }
 
+    public void get_properties_returns_expected_properties() {
+        String displayName = "the display name";
+        Integer pollIntervalInSeconds = 100;
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+
+        DeploymentCompleteSpec spec = new DeploymentCompleteSpec("the-url", "the-project-id", "the-environment-id", true, "the-deployment-id", "the-version", "the-release-id");
+        Map<String, String> result = sut.getProperties(spec);
+
+        Assert.assertEquals(result.get(BUILD_PROPERTY_DEPLOYMENT_ID), "the-deployment-id");
+        Assert.assertEquals(result.get(BUILD_PROPERTY_DEPLOYMENT_VERSION), "the-version");
+        Assert.assertEquals(result.get(BUILD_PROPERTY_DEPLOYMENT_PROJECT_ID), "the-project-id");
+        Assert.assertEquals(result.get(BUILD_PROPERTY_DEPLOYMENT_RELEASE_ID), "the-release-id");
+        Assert.assertEquals(result.get(BUILD_PROPERTY_DEPLOYMENT_ENVIRONMENT_ID), "the-environment-id");
+        Assert.assertEquals(result.get(BUILD_PROPERTY_DEPLOYMENT_SUCCESSFUL), "true");
+    }
 }
