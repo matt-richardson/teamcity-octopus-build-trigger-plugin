@@ -22,6 +22,8 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     private static final Pattern ipAddressPattern = Pattern.compile("\\d*\\.\\d*\\.\\d*\\.\\d*");
     private static final Pattern urlPattern = Pattern.compile("(http|https)://(.*?)/");
     private GoogleAnalytics ga = null;
+    private String octopusVersion = "not-set";
+    private String octopusApiVersion = "not-set";
 
     public AnalyticsTrackerImpl(@NotNull final PluginDescriptor pluginDescriptor, SBuildServer buildServer) {
         this.pluginVersion = pluginDescriptor.getPluginVersion();
@@ -48,7 +50,9 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
             EventHit request = new EventHit(eventCategory.name(), eventAction.name())
                     .applicationName(applicationName)
                     .applicationVersion(pluginVersion)
-                    .customDimension(0, teamCityVersion);
+                    .customDimension(0, teamCityVersion)
+                    .customDimension(1, octopusVersion)
+                    .customDimension(2, octopusApiVersion);
             ga.postAsync(request);
         }
         catch (Throwable e) {
@@ -65,12 +69,24 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
             ExceptionHit request = new ExceptionHit(exceptionDetail)
                     .applicationName(applicationName)
                     .applicationVersion(pluginVersion)
-                    .customDimension(0, teamCityVersion);
+                    .customDimension(0, teamCityVersion)
+                    .customDimension(1, octopusVersion)
+                    .customDimension(2, octopusApiVersion);
             ga.postAsync(request);
         }
         catch (Throwable ex) {
             LOG.warn("Analytics postException failed", ex);
         }
+    }
+
+    @Override
+    public void setOctopusVersion(String octopusVersion) {
+        this.octopusVersion = octopusVersion;
+    }
+
+    @Override
+    public void setOctopusApiVersion(String octopusApiVersion) {
+        this.octopusApiVersion = octopusApiVersion;
     }
 
     static String maskException(Exception e) {

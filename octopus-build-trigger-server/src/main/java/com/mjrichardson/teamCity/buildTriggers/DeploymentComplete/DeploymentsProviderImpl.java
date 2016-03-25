@@ -130,7 +130,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
     @NotNull
     private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {
         final String apiResponse = contentProvider.getContent("/api");
-        return new ApiRootResponse(apiResponse);
+        return new ApiRootResponse(apiResponse, analyticsTracker);
     }
 
     @NotNull

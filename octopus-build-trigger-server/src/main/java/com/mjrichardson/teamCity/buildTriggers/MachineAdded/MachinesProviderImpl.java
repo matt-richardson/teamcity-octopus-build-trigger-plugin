@@ -15,9 +15,11 @@ public class MachinesProviderImpl implements MachinesProvider {
     @NotNull
     private static final Logger LOG = Logger.getInstance(MachinesProviderImpl.class.getName());
     private final HttpContentProviderFactory httpContentProviderFactory;
+    private final AnalyticsTracker analyticsTracker;
 
-    public MachinesProviderImpl(HttpContentProviderFactory httpContentProviderFactory) {
+    public MachinesProviderImpl(HttpContentProviderFactory httpContentProviderFactory, AnalyticsTracker analyticsTracker) {
         this.httpContentProviderFactory = httpContentProviderFactory;
+        this.analyticsTracker = analyticsTracker;
     }
 
     public Machines getMachines() throws InvalidOctopusApiKeyException, InvalidOctopusUrlException, MachinesProviderException {
@@ -55,7 +57,7 @@ public class MachinesProviderImpl implements MachinesProvider {
     @NotNull
     private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {
         final String apiResponse = contentProvider.getContent("/api");
-        return new ApiRootResponse(apiResponse);
+        return new ApiRootResponse(apiResponse, analyticsTracker);
     }
 
     private boolean shouldGetNextMachinesPage(ApiMachinesResponse apiMachinesResponse, Machines machines) {

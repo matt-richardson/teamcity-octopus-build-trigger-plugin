@@ -21,4 +21,8 @@ public interface AnalyticsTracker {
     void postEvent(EventCategory eventCategory, EventAction eventAction);
 
     void postException(Exception e);
+
+    void setOctopusVersion(String octopusVersion);
+
+    void setOctopusApiVersion(String octopusApiVersion);
 }

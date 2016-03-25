@@ -15,9 +15,11 @@ public class ReleasesProviderImpl implements ReleasesProvider {
     @NotNull
     private static final Logger LOG = Logger.getInstance(ReleasesProviderImpl.class.getName());
     private final HttpContentProviderFactory httpContentProviderFactory;
+    private final AnalyticsTracker analyticsTracker;
 
-    public ReleasesProviderImpl(HttpContentProviderFactory httpContentProviderFactory) {
+    public ReleasesProviderImpl(HttpContentProviderFactory httpContentProviderFactory, AnalyticsTracker analyticsTracker) {
         this.httpContentProviderFactory = httpContentProviderFactory;
+        this.analyticsTracker = analyticsTracker;
     }
 
     public Releases getReleases(String projectId, Release oldRelease) throws InvalidOctopusApiKeyException, InvalidOctopusUrlException, ProjectNotFoundException, ReleasesProviderException {
@@ -70,7 +72,7 @@ public class ReleasesProviderImpl implements ReleasesProvider {
     @NotNull
     private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {
         final String apiResponse = contentProvider.getContent("/api");
-        return new ApiRootResponse(apiResponse);
+        return new ApiRootResponse(apiResponse, analyticsTracker);
     }
 
     private boolean shouldGetNextProjectsPage(ApiProjectsResponse apiProjectsResponse, Projects projects, String projectId) {

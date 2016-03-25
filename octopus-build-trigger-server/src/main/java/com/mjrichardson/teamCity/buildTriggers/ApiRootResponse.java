@@ -15,16 +15,20 @@ public class ApiRootResponse {
 
     //todo: cache for an hour - this will rarely change
 
-    public ApiRootResponse(String apiResponse) throws ParseException {
-        deploymentsApiLink = parseLink(apiResponse, "Deployments", "/api/deployments");
-        projectsApiLink = parseLink(apiResponse, "Projects", "/api/projects");
-        machinesApiLink = parseLink(apiResponse, "Machines", "/api/machines");
+    public ApiRootResponse(String apiResponse, AnalyticsTracker analyticsTracker) throws ParseException {
+        JSONParser parser = new JSONParser();
+        LOG.debug("Parsing '" + apiResponse + "'");
+        Map response = (Map) parser.parse(apiResponse);
+
+        deploymentsApiLink = parseLink(response, "Deployments", "/api/deployments");
+        projectsApiLink = parseLink(response, "Projects", "/api/projects");
+        machinesApiLink = parseLink(response, "Machines", "/api/machines");
+        analyticsTracker.setOctopusVersion((String)response.get("Version"));
+        analyticsTracker.setOctopusApiVersion((String)response.get("ApiVersion"));
     }
 
-    private String parseLink(String apiResponse, String linkName, String defaultResponse) throws ParseException {
-        LOG.debug("Parsing '" + apiResponse + "' for link '" + linkName + "'");
-        JSONParser parser = new JSONParser();
-        Map response = (Map) parser.parse(apiResponse);
+    private String parseLink(Map response, String linkName, String defaultResponse) throws ParseException {
+        LOG.debug("Extracting link '" + linkName + "'");
         final String link = (String) ((Map) response.get("Links")).get(linkName);
         if (link == null) {
             LOG.debug("Didn't find a link in response for '" + linkName + "'. Using default '" + defaultResponse + "'");

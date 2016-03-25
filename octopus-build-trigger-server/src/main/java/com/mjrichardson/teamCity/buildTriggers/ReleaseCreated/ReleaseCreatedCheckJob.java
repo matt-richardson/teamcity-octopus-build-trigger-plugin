@@ -50,7 +50,7 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
     private final AnalyticsTracker analyticsTracker;
 
     public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
-        this(new ReleasesProviderFactory(), displayName, buildType, dataStorage, properties, analyticsTracker);
+        this(new ReleasesProviderFactory(analyticsTracker), displayName, buildType, dataStorage, properties, analyticsTracker);
     }
 
     public ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {

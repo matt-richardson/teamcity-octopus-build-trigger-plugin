@@ -51,7 +51,7 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
     private final AnalyticsTracker analyticsTracker;
 
     public MachineAddedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
-        this(new MachinesProviderFactory(), displayName, buildType, dataStorage, properties, analyticsTracker);
+        this(new MachinesProviderFactory(analyticsTracker), displayName, buildType, dataStorage, properties, analyticsTracker);
     }
 
     public MachineAddedCheckJob(MachinesProviderFactory MachinesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {

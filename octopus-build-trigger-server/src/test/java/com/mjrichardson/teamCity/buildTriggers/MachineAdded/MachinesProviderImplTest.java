@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeContentProviderFactory;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import org.testng.Assert;
@@ -19,14 +20,14 @@ public class MachinesProviderImplTest {
     @Test(groups = {"needs-real-server"})
     public void get_machines_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds());
-        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
+        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Machines newMachines = MachinesProviderImpl.getMachines();
         Assert.assertNotNull(newMachines);
     }
 
     public void get_machines_from_empty_start() throws ProjectNotFoundException, MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
-        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
+        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Machines oldMachines = new Machines();
         Machines newMachines = MachinesProviderImpl.getMachines();
         Assert.assertEquals(newMachines.size(), 1);
@@ -42,7 +43,7 @@ public class MachinesProviderImplTest {
         //      as the test data structure only allows one definition of "machines.json"
         //      then we can enable this test again
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
-        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
+        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Machines newMachines = MachinesProviderImpl.getMachines();
         Assert.assertEquals(newMachines.size(), 0);
     }
@@ -50,7 +51,7 @@ public class MachinesProviderImplTest {
     @Test(expectedExceptions = InvalidOctopusUrlException.class)
     public void get_machines_with_octopus_url_with_invalid_host() throws ProjectNotFoundException, MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory("http://octopus.example.com", octopusApiKey);
-        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
+        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
         MachinesProviderImpl.getMachines();
     }
@@ -58,7 +59,7 @@ public class MachinesProviderImplTest {
     @Test(expectedExceptions = InvalidOctopusUrlException.class)
     public void get_machines_with_octopus_url_with_invalid_path() throws ProjectNotFoundException, MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl + "/not-an-octopus-instance", octopusApiKey);
-        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
+        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
         MachinesProviderImpl.getMachines();
     }
@@ -66,7 +67,7 @@ public class MachinesProviderImplTest {
     @Test(expectedExceptions = InvalidOctopusApiKeyException.class)
     public void get_machines_with_invalid_octopus_api_key() throws ProjectNotFoundException, MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, "invalid-api-key");
-        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
+        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
         MachinesProviderImpl.getMachines();
     }
@@ -74,14 +75,14 @@ public class MachinesProviderImplTest {
     @Test(expectedExceptions = MachinesProviderException.class)
     public void rethrows_throwable_exceptions_as_deployment_provider_exception() throws ProjectNotFoundException, MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(new OutOfMemoryError());
-        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
+        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
         MachinesProviderImpl.getMachines();
     }
 
     public void get_machines_when_up_to_date() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
-        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
+        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
         Machines oldMachines = Machines.Parse((new Machine("Machines-1", "Octopus Server")).toString());
         Machines newMachines = MachinesProviderImpl.getMachines();
@@ -97,7 +98,7 @@ public class MachinesProviderImplTest {
         //      as the test data structure only allows one definition of "machines.json"
         //      then we can enable this test again
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
-        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory);
+        MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
         Machines oldMachines = Machines.Parse((new Machine("Machines-1", "Octopus Server").toString()));
         Machines newMachines = MachinesProviderImpl.getMachines();
