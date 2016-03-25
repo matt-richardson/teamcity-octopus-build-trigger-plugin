@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
@@ -172,6 +173,59 @@ public class ReleaseCreatedCheckJobTest {
         Assert.assertEquals(result.getUpdated().size(), 1);
         ReleaseCreatedSpec updated[] = result.getUpdated().toArray(new ReleaseCreatedSpec[0]);
         Assert.assertEquals(updated[0].getRequestorString(), "Release 1.1.0 of project Project-1 created on the-url");
+    }
+
+    public void perform_logs_analytics_if_new_release() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        properties.put(OCTOPUS_PROJECT_ID, "Project-1");
+        properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        sut.perform();
+        Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.BuildTriggered);
+        Assert.assertEquals(analyticsTracker.eventCategory, AnalyticsTracker.EventCategory.ReleaseCreatedTrigger);
+    }
+
+    public void perform_does_not_log_analytics_if_no_new_releases() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithOneRelease());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        sut.perform();
+        Assert.assertEquals(analyticsTracker.receivedPostCount, 0);
+    }
+
+    public void perform_logs_analytics_if_a_new_trigger_is_added() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage();
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        sut.perform();
+        Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.TriggerAdded);
+        Assert.assertEquals(analyticsTracker.eventCategory, AnalyticsTracker.EventCategory.ReleaseCreatedTrigger);
     }
 
     public void allow_schedule_returns_false() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

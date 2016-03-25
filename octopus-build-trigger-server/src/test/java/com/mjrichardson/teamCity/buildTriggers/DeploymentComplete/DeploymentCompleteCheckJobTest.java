@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
@@ -212,6 +213,62 @@ public class DeploymentCompleteCheckJobTest {
         Assert.assertEquals(result.getUpdated().size(), 1);
         DeploymentCompleteSpec updated[] = result.getUpdated().toArray(new DeploymentCompleteSpec[0]);
         Assert.assertEquals(updated[0].getRequestorString(), "Successful deployment of the-project-id to Environments-1 on the-url");
+    }
+
+    public void perform_logs_analytics_if_new_deployment() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        DeploymentsProviderFactory deploymentsProviderFactory = new FakeDeploymentsProviderFactory(new FakeDeploymentsProviderWithOneDeployment());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage("Environments-1;2016-02-01T00:00:00.000+00:00;2016-02-01T00:00:00.000+00:00;");
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
+        properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
+
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        sut.perform();
+        Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.BuildTriggered);
+        Assert.assertEquals(analyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
+    }
+
+    public void perform_does_not_log_analytics_if_no_new_deployments_available() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        DeploymentsProviderFactory deploymentsProviderFactory = new FakeDeploymentsProviderFactory(new FakeDeploymentsProviderWithOneDeployment());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage("Environments-1;2016-02-25T00:00:00.000+00:00;2016-02-25T00:00:00.000+00:00");
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        sut.perform();
+        Assert.assertEquals(analyticsTracker.receivedPostCount, 0);
+    }
+
+    public void perform_logs_analytics_if_a_new_trigger_is_added() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        DeploymentsProviderFactory deploymentsProviderFactory = new FakeDeploymentsProviderFactory(new FakeDeploymentsProviderWithOneDeployment());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage();
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+
+        sut.perform();
+        Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.TriggerAdded);
+        Assert.assertEquals(analyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
+
     }
 
     public void perform_returns_empty_result_if_environment_deleted() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

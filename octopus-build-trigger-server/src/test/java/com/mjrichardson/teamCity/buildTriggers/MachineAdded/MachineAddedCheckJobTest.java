@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
@@ -133,7 +134,6 @@ public class MachineAddedCheckJobTest {
     }
 
     public void perform_returns_empty_result_if_machine_deleted() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-
         Machines machines = new Machines();
         machines.add(new Machine("Machine-1", "MachineOne"));
         machines.add(new Machine("Machine-2", "MachineTwo"));//this one is deleted
@@ -169,6 +169,57 @@ public class MachineAddedCheckJobTest {
         Assert.assertEquals(result.getUpdated().size(), 1);
         MachineAddedSpec updated[] = result.getUpdated().toArray(new MachineAddedSpec[0]);
         Assert.assertEquals(updated[0].getRequestorString(), "Machine MachineTwo added to the-url");
+    }
+
+    public void perform_logs_analytics_if_new_machine() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("machine-1", "MachineOne")).toString());
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        sut.perform();
+        Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.BuildTriggered);
+        Assert.assertEquals(analyticsTracker.eventCategory, AnalyticsTracker.EventCategory.MachineAddedTrigger);
+    }
+
+    public void perform_does_not_log_analytics_if_no_new_machines() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithOneMachine());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("Machine-1", "MachineOne")).toString());
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        sut.perform();
+        Assert.assertEquals(analyticsTracker.receivedPostCount, 0);
+    }
+
+    public void perform_logs_analytics_if_a_new_trigger_is_added() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage();
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+
+        sut.perform();
+        Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
+        Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.TriggerAdded);
+        Assert.assertEquals(analyticsTracker.eventCategory, AnalyticsTracker.EventCategory.MachineAddedTrigger);
+
     }
 
     public void allow_schedule_returns_false() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
