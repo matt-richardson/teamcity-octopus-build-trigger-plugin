@@ -175,6 +175,27 @@ public class ReleaseCreatedCheckJobTest {
         Assert.assertEquals(updated[0].getRequestorString(), "Release 1.1.0 of project Project-1 created on the-url");
     }
 
+    public void perform_returns_empty_result_if_release_deleted() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        properties.put(OCTOPUS_PROJECT_ID, "Project-1");
+        properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        sut.perform();
+
+        releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithOneRelease());
+        sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        Assert.assertFalse(result.updatesDetected());
+        Assert.assertFalse(result.hasCheckErrors());
+    }
+
     public void perform_logs_analytics_if_new_release() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         String displayName = "the-display-name";

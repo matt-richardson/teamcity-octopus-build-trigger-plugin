@@ -4,8 +4,6 @@ import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 
 import java.util.Map;
 
-//todo: make sure we handle when releases get deleted
-
 public class Release implements Comparable<Release> {
     public final String releaseId;
     public final OctopusDate assembledDate;
