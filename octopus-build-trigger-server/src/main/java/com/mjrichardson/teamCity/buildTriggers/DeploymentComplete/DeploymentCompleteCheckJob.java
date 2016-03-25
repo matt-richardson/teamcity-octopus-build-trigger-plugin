@@ -22,8 +22,6 @@
  * limitations under the License.
  */
 
-//todo: make sure we handle when deployments get deleted
-
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
@@ -120,9 +118,6 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
             LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + trimmedEnvironments);
             final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, environment);
             return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
-
-
-
         } catch (Exception e) {
             LOG.error("Failed to check for new deployments completed", e);
 
