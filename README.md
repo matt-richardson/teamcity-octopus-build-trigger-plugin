@@ -75,7 +75,7 @@ The information tracked includes:
 
 If you want to disable analytics, you can set the `octopus.build.trigger.analytics.enabled` [internal
 property](https://confluence.jetbrains.com/display/TCD9/Configuring+TeamCity+Server+Startup+Properties#ConfiguringTeamCityServerStartupProperties-TeamCityinternalpropertiesinternal.properties)
-to `false`. This requires a restart.
+to `false`. This does not require a restart.
 
 # Feedback
 

@@ -43,9 +43,16 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     }
 
     public void postEvent(EventCategory eventCategory, EventAction eventAction){
-        LOG.info(String.format("Posting analytics event - %s: %s", eventCategory.name(), eventAction.name()));
         if (ga == null)
             return;
+
+        checkEnabledState();
+
+        if (!ga.getConfig().isEnabled())
+            return;
+
+        LOG.info(String.format("Posting analytics event - %s: %s", eventCategory.name(), eventAction.name()));
+
         try {
             EventHit request = new EventHit(eventCategory.name(), eventAction.name())
                     .applicationName(applicationName)
@@ -61,9 +68,16 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     }
 
     public void postException(Exception e) {
-        LOG.info(String.format("Posting analytics exception - %s", e.getMessage()));
         if (ga == null)
             return;
+
+        checkEnabledState();
+
+        if (!ga.getConfig().isEnabled())
+            return;
+
+        LOG.info(String.format("Posting analytics exception - %s", e.getMessage()));
+
         try {
             String exceptionDetail = maskException(e);
             ExceptionHit request = new ExceptionHit(exceptionDetail)
@@ -76,6 +90,15 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
         }
         catch (Throwable ex) {
             LOG.warn("Analytics postException failed", ex);
+        }
+    }
+
+    private void checkEnabledState() {
+        boolean newState = OctopusBuildTriggerUtil.getAnalyticsEnabled();
+        boolean oldState = ga.getConfig().isEnabled();
+        if (newState != oldState) {
+            LOG.info(String.format("Changing analytics enabled state to %s.", newState));
+            ga.getConfig().setEnabled(newState);
         }
     }
 
