@@ -48,15 +48,15 @@ public class CustomAsyncPolledBuildTrigger<TItem> extends AsyncPolledBuildTrigge
                         .createBuildCustomizer(buildType, user);
                 customizer.setParameters(jobResult.properties);
                 try {
-                    log.info("Creating build promotion");
+                    log.debug("Creating build promotion");
                     BuildPromotionEx promotion = (BuildPromotionEx)customizer.createPromotion();
-                    log.info("Build created - " + promotion.getId());
+                    log.debug("Build promotion " + promotion.getId() + " created");
 
                     final BuildTypeEx bt = (promotion).getBuildType();
 
-                    log.info("Adding to queue");
+                    log.debug("Adding '" + bt.toString() + "' to queue");
                     SQueuedBuild addResult = bt.addToQueue(promotion, jobResult.triggeredBy);
-                    log.info("Added to queue - " + addResult.toString());
+                    log.info("Added '" + addResult.toString() + "' to queue");
                 }
                 catch(Exception e) {
                     log.error("Failed to create the build promotion", e);
