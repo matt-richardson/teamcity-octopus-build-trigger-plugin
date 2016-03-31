@@ -40,7 +40,7 @@ import java.util.Map;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrigger<DeploymentCompleteSpec> {
+public class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrigger<DeploymentCompleteSpec> {
     private final String displayName;
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;

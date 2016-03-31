@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 public class CustomAsyncPolledBuildTrigger<TItem> extends AsyncPolledBuildTrigger<TItem> {
-    private final Logger log;
-    private final CustomAsyncBuildTrigger<TItem> asyncBuildTrigger;
-    private final ServiceLocator serviceLocator;
+    final Logger log;
+    final CustomAsyncBuildTrigger<TItem> asyncBuildTrigger;
+    final ServiceLocator serviceLocator;
 
     public CustomAsyncPolledBuildTrigger(ExecutorService executorService,
                                          Logger log,

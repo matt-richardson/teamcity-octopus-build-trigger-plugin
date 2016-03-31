@@ -27,7 +27,7 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-class DeploymentCompleteSpec {
+public class DeploymentCompleteSpec {
     @NotNull
     private final String url;
     @NotNull
