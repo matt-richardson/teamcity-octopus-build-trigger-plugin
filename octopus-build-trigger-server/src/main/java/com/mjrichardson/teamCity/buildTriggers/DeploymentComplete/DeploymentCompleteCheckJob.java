@@ -93,7 +93,11 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
                 }
                 LOG.debug("oldStoredData was '" + oldStoredData + "'");
                 LOG.debug("trimmedEnvironments was '" + trimmedEnvironments + "'");
-                LOG.info("No new deployments on '" + octopusUrl + "' for project '" + octopusProject + "'");
+                if (triggerOnlyOnSuccessfulDeployment)
+                    LOG.info("No new successful deployments on '" + octopusUrl + "' for project '" + octopusProject + "'");
+                else
+                    LOG.info("No new deployments on '" + octopusUrl + "' for project '" + octopusProject + "'");
+
                 return DeploymentCompleteSpecCheckResult.createEmptyResult();
             }
 
