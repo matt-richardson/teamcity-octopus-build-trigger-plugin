@@ -93,7 +93,7 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
         }
     }
 
-    private void checkEnabledState() {
+    private synchronized void checkEnabledState() {
         boolean newState = OctopusBuildTriggerUtil.getAnalyticsEnabled();
         boolean oldState = ga.getConfig().isEnabled();
         if (newState != oldState) {
