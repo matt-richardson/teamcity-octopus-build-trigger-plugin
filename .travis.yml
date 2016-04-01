@@ -10,7 +10,7 @@ script:
 - mvn package -DfinalName=octopus-build-trigger-$RELEASE_VERSION -DfinalVersion=$RELEASE_VERSION
 branches:
   except:
-  - /^.*-[0-9]*\.[0-9]*\.[0-9]*$/
+  - /^[0-9]*\.[0-9]*\.[0-9]\+build.[0-9]*$/
 before_deploy:
 - git config --global user.email "builds@travis-ci.com"
 - git config --global user.name "Travis CI"
