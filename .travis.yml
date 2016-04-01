@@ -25,6 +25,7 @@ deploy:
   file: target/octopus-build-trigger.zip
   skip_cleanup: true
   on:
+    branch: master
     tags: false
     repo: matt-richardson/teamcity-octopus-build-trigger-plugin
 env:
