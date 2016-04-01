@@ -36,7 +36,7 @@
                 <replacements>
                     <replacement>
                         <token>@Version@</token>
-                        <value>${finalName}</value>
+                        <value>${finalVersion}</value>
                     </replacement>
                 </replacements>                        
             </configuration>
