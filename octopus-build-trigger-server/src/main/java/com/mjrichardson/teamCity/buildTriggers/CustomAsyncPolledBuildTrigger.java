@@ -52,10 +52,8 @@ public class CustomAsyncPolledBuildTrigger<TItem> extends AsyncPolledBuildTrigge
                     BuildPromotionEx promotion = (BuildPromotionEx)customizer.createPromotion();
                     log.debug("Build promotion " + promotion.getId() + " created");
 
-                    final BuildTypeEx bt = (promotion).getBuildType();
-
-                    log.debug("Adding '" + bt.toString() + "' to queue");
-                    SQueuedBuild addResult = bt.addToQueue(promotion, jobResult.triggeredBy);
+                    log.debug("Adding '" + buildType.toString() + "' to queue");
+                    SQueuedBuild addResult = ((BuildTypeEx)buildType).addToQueue(promotion, jobResult.triggeredBy);
                     log.info("Added '" + addResult.toString() + "' to queue");
                 }
                 catch(Exception e) {
