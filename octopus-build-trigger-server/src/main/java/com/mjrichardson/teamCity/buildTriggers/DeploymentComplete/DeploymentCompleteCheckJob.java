@@ -119,7 +119,10 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
 
             analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.BuildTriggered);
 
-            LOG.info("New deployments on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + trimmedEnvironments);
+            if (triggerOnlyOnSuccessfulDeployment && environment.wasLatestDeploymentSuccessful())
+                LOG.info(String.format("New successful deployment on %s for project %s: %s -> %s", octopusUrl, octopusProject, oldStoredData, trimmedEnvironments));
+            else
+                LOG.info(String.format("New deployment on %s for project %s: %s -> %s", octopusUrl, octopusProject, oldStoredData, trimmedEnvironments));
             final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, environment);
             return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
         } catch (Exception e) {
