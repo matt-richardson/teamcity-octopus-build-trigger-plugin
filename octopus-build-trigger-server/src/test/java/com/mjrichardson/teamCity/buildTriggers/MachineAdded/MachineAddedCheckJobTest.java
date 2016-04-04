@@ -2,6 +2,8 @@ package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
+import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import org.testng.Assert;
@@ -11,6 +13,7 @@ import org.testng.annotations.Test;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -131,6 +134,26 @@ public class MachineAddedCheckJobTest {
         Assert.assertEquals(result.getUpdated().size(), 1);
         MachineAddedSpec updated[] = result.getUpdated().toArray(new MachineAddedSpec[0]);
         Assert.assertEquals(updated[0].getRequestorString(), "Machine MachineOne added to the-url");
+    }
+
+    public void perform_updates_storage_with_all_known_machines_if_no_previous_stored_data() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, ParseException, MachinesProviderException {
+        //this situation is when trigger is first setup
+        FakeMachinesProviderWithTwoMachines machinesProvider = new FakeMachinesProviderWithTwoMachines();
+        MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(machinesProvider);
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage();
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        //this is when the trigger is created
+        CheckResult<MachineAddedSpec> result = sut.perform();
+        Assert.assertFalse(result.updatesDetected());
+        Assert.assertFalse(result.hasCheckErrors());
+
+        Assert.assertEquals(dataStorage.getValue(displayName + "|" + "the-url"), machinesProvider.getMachines().toString());
     }
 
     public void perform_returns_empty_result_if_machine_deleted() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

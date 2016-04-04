@@ -98,15 +98,16 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
                 return MachineAddedSpecCheckResult.createEmptyResult();
             }
 
-            dataStorage.putValue(dataStorageKey, newStoredData);
-
             //do not trigger build after first adding trigger (oldMachines == null)
             if (oldStoredData == null) {
+                //store all existing machines, so we only trigger on new ones added after this point
+                dataStorage.putValue(dataStorageKey, newMachines.toString());
                 analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
 
                 LOG.debug("No previously known machines known for server " + octopusUrl + ": null" + " -> " + newStoredData);
                 return MachineAddedSpecCheckResult.createEmptyResult();
             }
+            dataStorage.putValue(dataStorageKey, newStoredData);
 
             analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
 
