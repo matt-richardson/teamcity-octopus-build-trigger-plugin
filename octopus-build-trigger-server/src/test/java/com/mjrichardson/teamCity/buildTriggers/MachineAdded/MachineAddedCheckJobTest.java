@@ -44,7 +44,7 @@ public class MachineAddedCheckJobTest {
     }
 
     @Test(dataProvider = "NullAndEmpty")
-    public void perform_returns_an_error_result_if_octopus_apikey_is_invalid(String value) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public void perform_returns_an_error_result_if_octopus_api_key_is_invalid(String value) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithNoMachines());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
