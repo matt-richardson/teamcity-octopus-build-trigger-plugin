@@ -19,6 +19,7 @@ public class ProjectsTest {
 
         HashMap<String, Object> projectMap = new HashMap<>();
         projectMap.put("Id", id);
+        projectMap.put("Name", "Project name");
         projectMap.put("Links", linksMap);
 
         return Project.Parse(projectMap);

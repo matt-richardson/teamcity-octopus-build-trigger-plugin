@@ -1,8 +1,9 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class Projects {
+public class Projects implements Iterable<Project> {
     private ArrayList<Project> statusMap;
 
     public Projects() {
@@ -46,5 +47,10 @@ public class Projects {
 
     public Project[] toArray() {
         return statusMap.toArray(new Project[0]);
+    }
+
+    @Override
+    public Iterator<Project> iterator() {
+        return statusMap.iterator();
     }
 }

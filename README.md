@@ -14,15 +14,6 @@ Download the [latest release](https://github.com/matt-richardson/teamcity-octopu
 
 See [TeamCity documentation](https://confluence.jetbrains.com/display/TCD9/Installing+Additional+Plugins) for more info.
 
-# CORS (Cross Origin Resource Sharing)
-
-You may run into an issue where you get 'Unable to connect. Please ensure the url and API key are correct.' errors when
-configuring the build triggers, even though the URL and API key are correct. If this is the case, please ensure you [configure CORS](http://help.octopusdeploy.com/discussions/problems/42234-access-control-allow-origin-headers-not-being-sent-with-options-responses-from-api-321#comment_38476446)
-on the Octopus Deploy server.
-
-You will most likely need to execute `Octopus.Server.exe configure --webCorsWhitelist=teamcity.example.com` on your
-Octopus Deploy server (changing teamcity.example.com for your TeamCity server's URL).
-
 # Outstanding items
 
 - test older versions of Octopus

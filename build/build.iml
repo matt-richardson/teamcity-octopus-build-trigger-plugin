@@ -21,6 +21,9 @@
     <orderEntry type="library" name="Maven: jetbrains.buildServer.buildTriggers.async:openapi:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.brsanthu:google-analytics-java:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.4.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.4.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.4.0" level="project" />
   </component>
   <component name="POM File Configuration" pomFile="" />
 </module>

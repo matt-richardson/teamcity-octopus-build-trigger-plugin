@@ -9,4 +9,6 @@
     <bean class="com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachineAddedBuildTriggerService"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.AnalyticsTrackerImpl" scope="singleton" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTriggerFactoryImpl" />
+    <bean class="com.mjrichardson.teamCity.buildTriggers.ProjectsController" init-method="register" />
+    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
 </beans>

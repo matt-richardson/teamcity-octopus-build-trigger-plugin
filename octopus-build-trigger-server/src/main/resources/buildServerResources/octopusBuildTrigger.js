@@ -5,17 +5,24 @@ window.octopusBuildTrigger = function() {
 
   function handleProjectResponse(response) {
     var dropdown = $$('[name="prop:' + projectIdPropertyName + '"]')[0]
-    var oldValue = $j(dropdown).val();
     $j(dropdown).empty();
-
-    for(i=0; i < response.responseJSON.length; i++) {
-      var option = document.createElement("option");
-      option.text = response.responseJSON[i].Name;
-      option.value = response.responseJSON[i].Id;
-      option.selected = (option.value == oldValue);
-      dropdown.add(option);
-    };
-    clearError();
+    var oldValue = $j(dropdown).attr('data-old-value');
+    if (response.responseJSON.type) {
+        if (response.responseJSON.type == 'Url')
+            setError(response.responseJSON.message, '');
+        else
+            setError('', response.responseJSON.message);
+    }
+    else {
+        for(i=0; i < response.responseJSON.length; i++) {
+          var option = document.createElement("option");
+          option.text = response.responseJSON[i].name;
+          option.value = response.responseJSON[i].id;
+          option.selected = (option.value == oldValue);
+          dropdown.add(option);
+        };
+        clearError();
+    }
   }
 
   function clearError() {
@@ -54,32 +61,23 @@ window.octopusBuildTrigger = function() {
     setError("Unable to connect to url: exception", null);
   }
 
-  function handleApiResponse(response) {
-    var projectsLink = response.responseJSON.Links.Projects.replace(/\{.*/, '') + '/all';
-    new Ajax.Request(url + '/' + projectsLink + '?apikey=' + apiKey, {
-      requestHeaders: {
-          'X-Prototype-Version': null,
-          'X-Requested-With': null
-      },
-      onSuccess: handleProjectResponse,
-      on0: handleNetworkFailureResponse,
-      on303: handle401Response,
-      on401: handle401Response,
-      on404: handle404Response,
-      onFailure: handleFailureResponse,
-      onException: handleExceptionResponse,
-      method: 'GET'
-    });
-  }
-
   function getApiResponse(successHandler) {
     url = $$('[name="prop:' + octopusUrlPropertyName + '"]')[0].value.replace(/\/$/, '');
     apiKey = $$('[name="prop:' + octopusApiKeyPropertyName + '"]')[0].value;
 
-    new Ajax.Request(url + '/api?apikey=' + apiKey, {
+    if (url == '' || apiKey == '') {
+        clearError();
+        return;
+    }
+
+    new Ajax.Request('/octopus-build-trigger/projects.html', {
         requestHeaders: {
             'X-Prototype-Version': null,
             'X-Requested-With': null
+        },
+        parameters: {
+            octopusUrl: url,
+            octopusApiKey: apiKey
         },
         onSuccess: successHandler,
         on0: handleNetworkFailureResponse,
@@ -93,7 +91,7 @@ window.octopusBuildTrigger = function() {
   }
 
   function reloadProjectList() {
-    getApiResponse(handleApiResponse);
+    getApiResponse(handleProjectResponse);
   }
 
   function checkConnectivity() {
@@ -107,9 +105,12 @@ window.octopusBuildTrigger = function() {
 }();
 
 $j(document).ready(function() {
+  debugger;
   var dropdown = $j('[name="prop:' + projectIdPropertyName + '"]');
-  if (dropdown.length > 0)
+  if (dropdown.length > 0) {
+    $j(dropdown).attr('data-old-value', $j(dropdown).val())
     window.octopusBuildTrigger.reloadProjectList();
+  }
   else
     window.octopusBuildTrigger.checkConnectivity();
 });

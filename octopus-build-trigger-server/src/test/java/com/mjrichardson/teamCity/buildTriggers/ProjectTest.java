@@ -14,11 +14,13 @@ public class ProjectTest {
 
         HashMap<String, Object> projectMap = new HashMap<>();
         projectMap.put("Id", "Projects-24");
+        projectMap.put("Name", "Test Project");
         projectMap.put("Links", linksMap);
 
         Project result = Project.Parse(projectMap);
 
         Assert.assertEquals(result.id, "Projects-24");
+        Assert.assertEquals(result.name, "Test Project");
         Assert.assertEquals(result.progressionApiLink, "/api/Progression/project-24");
         Assert.assertEquals(result.releasesApiLink, "/api/Projects/project-24/releases");
     }
