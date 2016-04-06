@@ -3,6 +3,18 @@ window.octopusBuildTrigger = function() {
   var url;
   var apiKey;
 
+  function handleCheckConnectivityResponse(response) {
+    if (response.responseJSON.type) {
+      if (response.responseJSON.type == 'Url')
+          setError(response.responseJSON.message, '');
+      else
+          setError('', response.responseJSON.message);
+    }
+    else {
+        clearError();
+    }
+  }
+
   function handleProjectResponse(response) {
     var dropdown = $$('[name="prop:' + projectIdPropertyName + '"]')[0]
     $j(dropdown).empty();
@@ -26,11 +38,13 @@ window.octopusBuildTrigger = function() {
   }
 
   function clearError() {
+    $j('#octopus-build-trigger-busy').hide();
     $j('[id="error_' + octopusUrlPropertyName + '"]').text("");
     $j('[id="error_' + octopusApiKeyPropertyName + '"]').text("");
   }
 
   function setError(urlError, apiKeyError) {
+    $j('#octopus-build-trigger-busy').hide();
     if (urlError) {
       $j('[id="error_' + octopusUrlPropertyName + '"]').text(urlError);
       $j('[id="error_' + octopusApiKeyPropertyName + '"]').text("");
@@ -64,11 +78,11 @@ window.octopusBuildTrigger = function() {
   function getApiResponse(successHandler) {
     url = $$('[name="prop:' + octopusUrlPropertyName + '"]')[0].value.replace(/\/$/, '');
     apiKey = $$('[name="prop:' + octopusApiKeyPropertyName + '"]')[0].value;
-
     if (url == '' || apiKey == '') {
         clearError();
         return;
     }
+    $j('#octopus-build-trigger-busy').show();
 
     new Ajax.Request('/octopus-build-trigger/projects.html', {
         requestHeaders: {
@@ -95,7 +109,7 @@ window.octopusBuildTrigger = function() {
   }
 
   function checkConnectivity() {
-    getApiResponse(clearError);
+    getApiResponse(handleCheckConnectivityResponse);
   }
 
   return {
@@ -105,7 +119,6 @@ window.octopusBuildTrigger = function() {
 }();
 
 $j(document).ready(function() {
-  debugger;
   var dropdown = $j('[name="prop:' + projectIdPropertyName + '"]');
   if (dropdown.length > 0) {
     $j(dropdown).attr('data-old-value', $j(dropdown).val())

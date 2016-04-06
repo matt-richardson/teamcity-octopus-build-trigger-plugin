@@ -34,8 +34,8 @@
 </tr>
 
 <tr class="noBorder" >
-    <th><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>">Octopus Url: <l:star/></label></th>
-    <td>
+    <th nowrap="nowrap"><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>">Octopus Url: <l:star/></label></th>
+    <td nowrap="nowrap">
       <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>" className="longField" onchange="window.octopusBuildTrigger.checkConnectivity();" />
       <span class="smallNote">
           e.g. https://example.org
@@ -45,8 +45,11 @@
 </tr>
 
 <tr class="noBorder" >
-    <th><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>">API Key: <l:star/></label></th>
-    <td>
+    <th nowrap="nowrap">
+        <label for="<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>">API Key: <l:star/></label>
+        <img src="/img/spinner.gif" id="octopus-build-trigger-busy" style="display:none;vertical-align:middle;float:right" title="loading..." />
+    </th>
+    <td nowrap="nowrap">
        <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>" className="longField" onchange="window.octopusBuildTrigger.checkConnectivity();" />
        <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>"></span>
     </td>
