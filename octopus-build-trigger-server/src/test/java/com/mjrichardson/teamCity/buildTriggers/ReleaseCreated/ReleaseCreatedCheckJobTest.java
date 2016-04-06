@@ -1,8 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
-import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.*;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
-import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import org.testng.Assert;
@@ -12,6 +11,7 @@ import org.testng.annotations.Test;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -153,6 +153,29 @@ public class ReleaseCreatedCheckJobTest {
         Assert.assertEquals(result.getUpdated().size(), 1);
         ReleaseCreatedSpec updated[] = result.getUpdated().toArray(new ReleaseCreatedSpec[0]);
         Assert.assertEquals(updated[0].getRequestorString(), "Release 1.0.0 of project Project-1 created on the-url");
+    }
+
+    public void perform_updates_storage_with_all_known_machines_if_no_previous_stored_data() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidOctopusApiKeyException, ProjectNotFoundException, InvalidOctopusUrlException, ParseException, ReleasesProviderException {
+        //this situation is when trigger is first setup
+        FakeReleasesProviderWithTwoReleases releasesProvider = new FakeReleasesProviderWithTwoReleases();
+        ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(releasesProvider);
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage();
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put(OCTOPUS_URL, "the-url");
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        properties.put(OCTOPUS_PROJECT_ID, "Project-1");
+        properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        //this is when the trigger is created
+        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        Assert.assertFalse(result.updatesDetected());
+        Assert.assertFalse(result.hasCheckErrors());
+
+        Release ignored = new Release(null, new NullOctopusDate(), null);
+        Assert.assertEquals(dataStorage.getValue(displayName + "|" + "the-url"), releasesProvider.getReleases("the-url", ignored).toString());
     }
 
     public void perform_returns_updated_result_if_new_release() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

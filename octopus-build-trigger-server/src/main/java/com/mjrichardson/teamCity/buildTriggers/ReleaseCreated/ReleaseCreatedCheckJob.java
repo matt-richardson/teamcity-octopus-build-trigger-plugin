@@ -81,16 +81,17 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
             final String newStoredData = newRelease.toString();
 
             if (!newRelease.toString().equals(oldStoredData)) {
-                dataStorage.putValue(dataStorageKey, newStoredData);
-
                 //do not trigger build after first adding trigger (oldReleases == null)
                 if (oldStoredData == null) {
+                    //store all existing releases, so we only trigger for new releases from this point in time
+                    dataStorage.putValue(dataStorageKey, newReleases.toString());
                     analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
 
                     LOG.debug("No previous releases known for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                     return ReleaseCreatedSpecCheckResult.createEmptyResult();
                 }
 
+                dataStorage.putValue(dataStorageKey, newStoredData);
                 analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
 
                 LOG.info("New release " + newRelease.version + " created on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
