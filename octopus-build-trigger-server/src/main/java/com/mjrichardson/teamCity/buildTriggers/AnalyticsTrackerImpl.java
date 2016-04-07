@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AnalyticsTrackerImpl implements AnalyticsTracker {
-    private final String trackingId = "UA-75050025-1";
+    private final String trackingId;
     @NotNull
     private static final Logger LOG = Logger.getInstance(AnalyticsTrackerImpl.class.getName());
     private final String pluginVersion;
@@ -28,6 +28,7 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     public AnalyticsTrackerImpl(@NotNull final PluginDescriptor pluginDescriptor, SBuildServer buildServer) {
         this.pluginVersion = pluginDescriptor.getPluginVersion();
         this.teamCityVersion = buildServer.getFullServerVersion();
+        this.trackingId = pluginDescriptor.getParameterValue("AnalyticsTrackingId");
 
         boolean enabled = OctopusBuildTriggerUtil.getAnalyticsEnabled();
         LOG.info(String.format("AnalyticsTrackerImpl instantiated for plugin version %s in teamcity version %s. Tracking enabled: %s.",

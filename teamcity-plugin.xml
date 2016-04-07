@@ -35,4 +35,7 @@
         </vendor>
     </info>
     <deployment use-separate-classloader="true"/>
+    <parameters>
+        <parameter name="AnalyticsTrackingId">@AnalyticsTrackingId@</parameter>
+    </parameters>
 </teamcity-plugin>

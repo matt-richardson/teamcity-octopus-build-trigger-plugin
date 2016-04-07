@@ -38,6 +38,10 @@
                         <token>@Version@</token>
                         <value>${finalVersion}</value>
                     </replacement>
+                    <replacement>
+                        <token>@AnalyticsTrackingId@</token>
+                        <value>${env.AnalyticsTrackingId}</value>
+                    </replacement>
                 </replacements>                        
             </configuration>
         </plugin>
