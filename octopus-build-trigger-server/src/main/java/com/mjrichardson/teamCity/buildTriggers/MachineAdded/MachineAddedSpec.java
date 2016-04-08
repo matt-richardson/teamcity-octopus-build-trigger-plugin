@@ -63,4 +63,15 @@ class MachineAddedSpec {
     public String getRequestorString() {
         return String.format("Machine %s added to %s", machineName, url);
     }
+
+    @Override
+    public String toString() {
+        return "{ " +
+                  "url: '" + url + "', " +
+                  "machineName: '" + machineName + "', " +
+                  "machineId: '" + machineId + "', " +
+                  "environmentIds: '" + environmentIds + "', " +
+                  "roleIds: '" + roleIds + "'" +
+               " }";
+    }
 }

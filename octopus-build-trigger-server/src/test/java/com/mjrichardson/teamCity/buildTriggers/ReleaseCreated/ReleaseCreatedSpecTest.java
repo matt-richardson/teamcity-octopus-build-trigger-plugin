@@ -14,4 +14,10 @@ public class ReleaseCreatedSpecTest {
         ReleaseCreatedSpec sut = new ReleaseCreatedSpec("theurl", "theprojectid", "theversion", "thereleaseid");
         Assert.assertEquals(sut.getRequestorString(), "Release theversion of project theprojectid created on theurl");
     }
+
+    public void to_string_converts_correctly() {
+        ReleaseCreatedSpec sut = new ReleaseCreatedSpec("theurl", "theprojectid", "theversion", "thereleaseid");
+        String result = sut.toString();
+        Assert.assertEquals(result, "{ url: 'theurl', projectId: 'theprojectid', version: 'theversion', releaseId: 'thereleaseid' }");
+    }
 }

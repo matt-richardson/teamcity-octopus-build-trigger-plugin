@@ -57,4 +57,14 @@ class ReleaseCreatedSpec {
             return String.format("Release of project %s created on %s", projectId, url);
         return String.format("Release %s of project %s created on %s", version, projectId, url);
     }
+
+    @Override
+    public String toString() {
+        return "{ " +
+                  "url: '" + url + "', " +
+                  "projectId: '" + projectId + "', " +
+                  "version: '" + version + "', " +
+                  "releaseId: '" + releaseId + "'" +
+               " }";
+    }
 }

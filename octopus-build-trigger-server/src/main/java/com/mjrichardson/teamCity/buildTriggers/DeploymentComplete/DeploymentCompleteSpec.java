@@ -76,4 +76,17 @@ public class DeploymentCompleteSpec {
             return String.format("Successful deployment of %s to %s on %s", projectId, environmentId, url);
         return String.format("Deployment of %s to %s on %s", projectId, environmentId, url);
     }
+
+    @Override
+    public String toString() {
+        return "{ " +
+                  "url: '" + url + "', " +
+                  "projectId: '" + projectId + "', " +
+                  "wasSuccessful: '" + wasSuccessful + "', " +
+                  "environmentId: '" + environmentId + "', " +
+                  "deploymentId: '" + deploymentId + "', " +
+                  "version: '" + version + "', " +
+                  "releaseId: '" + releaseId + "'" +
+                " }";
+    }
 }
