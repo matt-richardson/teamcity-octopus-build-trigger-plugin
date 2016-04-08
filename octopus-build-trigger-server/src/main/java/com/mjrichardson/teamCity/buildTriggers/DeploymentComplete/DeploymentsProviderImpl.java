@@ -166,11 +166,17 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
             ApiTaskResponse task = new ApiTaskResponse(taskResponse);
             LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "': isCompleted = '" + task.isCompleted + "', finishedSuccessfully = '" + task.finishedSuccessfully + "'");
 
-            result.addOrUpdate(deployment.environmentId, deployment.createdDate, task.isCompleted, task.finishedSuccessfully);
+            if (task.isCompleted) {
+                String releaseResponse = contentProvider.getContent(deployment.releaseLink);
+                ApiReleaseResponse release = new ApiReleaseResponse(releaseResponse);
 
-            if (result.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment()) {
-                LOG.debug("All deployments have finished successfully - no need to keep iterating");
-                return true;
+                Environment environment = Environment.CreateFrom(deployment, task, release);
+                result.addOrUpdate(environment);
+
+                if (result.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment()) {
+                    LOG.debug("All deployments have finished successfully - no need to keep iterating");
+                    return true;
+                }
             }
         } else {
             LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "' was older than the last known deployment to this environment");

@@ -10,9 +10,13 @@ public class DeploymentsTest {
     private Deployment getOctopusDeployment(String id, String environmentId, OctopusDate created, String serverTaskLink) {
         HashMap<String, Object> linksMap = new HashMap<>();
         linksMap.put("Task", "/api/tasks/ServerTasks-770");
+        linksMap.put("Release", "/api/releases/Release-18");
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("Id", id);
+        map.put("EnvironmentId", "Environments-1");
+        map.put("ProjectId", "Project-12");
+        map.put("ReleaseId", "Release-12");
         map.put("EnvironmentId", "Environments-1");
         map.put("Created", "2016-03-09T05:29:31.768+00:00");
         map.put("Links", linksMap);

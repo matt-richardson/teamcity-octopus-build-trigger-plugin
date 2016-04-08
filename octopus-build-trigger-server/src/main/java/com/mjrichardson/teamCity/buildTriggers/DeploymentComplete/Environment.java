@@ -1,7 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
-import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
+import com.mjrichardson.teamCity.buildTriggers.*;
 
 import java.util.Map;
 
@@ -17,6 +16,7 @@ public class Environment {
     public Environment(String environmentId, OctopusDate latestDeployment) {
         this(environmentId, latestDeployment, null, null, null, null);
     }
+
     public Environment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
         this(environmentId, latestDeployment, latestSuccessfulDeployment, null, null, null, null);
     }
@@ -94,5 +94,23 @@ public class Environment {
         if (isSuccessful)
             return new Environment(environmentId, createdDate, createdDate, releaseId, deploymentId, version, projectId);
         return new Environment(environmentId, createdDate, releaseId, deploymentId, version, projectId);
+    }
+
+    public static Environment CreateFrom(Deployment deployment, ApiTaskResponse task, ApiReleaseResponse release) {
+        OctopusDate createdDate = deployment.createdDate;
+        Boolean isSuccessful = task.finishedSuccessfully;
+        String environmentId = deployment.environmentId;
+        String releaseId = deployment.releaseId;
+        String deploymentId = deployment.deploymentId;
+        String version = release.version;
+        String projectId = deployment.projectId;
+
+        return new Environment(environmentId,
+                createdDate,
+                isSuccessful ? createdDate : new NullOctopusDate(),
+                releaseId,
+                deploymentId,
+                version,
+                projectId);
     }
 }

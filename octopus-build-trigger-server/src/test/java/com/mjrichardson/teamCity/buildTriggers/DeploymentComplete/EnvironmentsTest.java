@@ -1,10 +1,10 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
-import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
+import com.mjrichardson.teamCity.buildTriggers.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 @Test
@@ -378,5 +378,22 @@ public class EnvironmentsTest {
 
         Assert.assertEquals(deleted.size(), 1);
         Assert.assertTrue(deleted.contains(environmentThree));
+    }
+
+    public void can_create_from_deployment_task_and_release() throws org.json.simple.parser.ParseException, IOException {
+        Deployment deployment = new Deployment("the-deployment-id", "the-environment-id", new OctopusDate(2016, 8, 4), "the-task-link", "the-release-id", "the-project-id", "the-release-link");
+        String json = ResourceHandler.getResource("api/tasks/ServerTasks-272");
+        ApiTaskResponse task = new ApiTaskResponse(json);
+        json = ResourceHandler.getResource("api/releases/Releases-222");
+        ApiReleaseResponse release = new ApiReleaseResponse(json);
+        Environment result = Environment.CreateFrom(deployment, task, release);
+
+        Assert.assertEquals(result.projectId, "the-project-id");
+        Assert.assertEquals(result.environmentId, "the-environment-id");
+        Assert.assertEquals(result.latestDeployment, new OctopusDate(2016, 8, 4));
+        Assert.assertEquals(result.latestSuccessfulDeployment, new NullOctopusDate());
+        Assert.assertEquals(result.releaseId, "the-release-id");
+        Assert.assertEquals(result.deploymentId, "the-deployment-id");
+        Assert.assertEquals(result.version, "0.0.9");
     }
 }
