@@ -230,15 +230,9 @@ public class EnvironmentsTest {
         Assert.assertTrue(sut.isEmpty());
     }
 
-    public void add_or_update_does_nothing_if_passed_deployment_is_not_complete() {
-        Environments sut = new Environments();
-        sut.addOrUpdate("env-id", new OctopusDate(2016, 2, 29), false, false);
-        Assert.assertTrue(sut.isEmpty());
-    }
-
     public void add_or_update_adds_if_not_exists() {
         Environments sut = new Environments();
-        sut.addOrUpdate("env-id", new OctopusDate(2016, 2, 29), true, false);
+        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
         Assert.assertEquals(sut.size(), 1);
 
         Environment[] environments = sut.toArray();
@@ -249,7 +243,7 @@ public class EnvironmentsTest {
 
     public void add_or_update_updates_if_passed_latest_deployment_date_is_newer() {
         Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 28)));
-        sut.addOrUpdate("env-id", new OctopusDate(2016, 2, 29), true, false);
+        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
         Assert.assertEquals(sut.size(), 1);
 
         Environment[] environments = sut.toArray();
@@ -260,7 +254,7 @@ public class EnvironmentsTest {
 
     public void add_or_update_updates_if_passed_latest_deployment_date_is_newer_and_deployment_successful() {
         Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28)));
-        sut.addOrUpdate("env-id", new OctopusDate(2016, 2, 29), true, true);
+        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29)));
         Assert.assertEquals(sut.size(), 1);
 
         Environment[] environments = sut.toArray();
@@ -271,7 +265,7 @@ public class EnvironmentsTest {
 
     public void add_or_update_does_not_overwrite_if_passed_date_is_older() {
         Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29)));
-        sut.addOrUpdate("env-id", new OctopusDate(2016, 2, 26), true, true);
+        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26)));
         Assert.assertEquals(sut.size(), 1);
 
         Environment[] environments = sut.toArray();
@@ -292,30 +286,30 @@ public class EnvironmentsTest {
 
     public void equals_returns_false_if_passed_deployments_has_different_size() {
         Environments sut = new Environments();
-        sut.addOrUpdate("env-1", new OctopusDate(2016, 2, 29), true, false);
-        sut.addOrUpdate("env-2", new OctopusDate(2016, 2, 26), true, true);
+        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
+        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26)));
         Environments other = new Environments();
-        other.addOrUpdate("env-1", new OctopusDate(2016, 2, 29), true, false);
+        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
         Assert.assertFalse(sut.equals(other));
     }
 
     public void equals_returns_false_if_different_environments() {
         Environments sut = new Environments();
-        sut.addOrUpdate("env-1", new OctopusDate(2016, 2, 29), true, false);
-        sut.addOrUpdate("env-2", new OctopusDate(2016, 2, 26), true, true);
+        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
+        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26)));
         Environments other = new Environments();
-        other.addOrUpdate("env-1", new OctopusDate(2016, 2, 29), true, false);
-        other.addOrUpdate("env-3", new OctopusDate(2016, 2, 25), true, false);
+        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
+        other.addOrUpdate(new Environment("env-3", new OctopusDate(2016, 2, 25), new NullOctopusDate()));
         Assert.assertFalse(sut.equals(other));
     }
 
     public void equals_returns_false_if_latest_deployment_date_different() {
         Environments sut = new Environments();
-        sut.addOrUpdate("env-1", new OctopusDate(2016, 2, 29), true, false);
-        sut.addOrUpdate("env-2", new OctopusDate(2016, 2, 26), true, false);
+        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
+        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 26), new NullOctopusDate()));
         Environments other = new Environments();
-        other.addOrUpdate("env-1", new OctopusDate(2016, 2, 29), true, false);
-        other.addOrUpdate("env-2", new OctopusDate(2016, 2, 25), true, false);
+        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
+        other.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 25), new NullOctopusDate()));
         Assert.assertFalse(sut.equals(other));
     }
 

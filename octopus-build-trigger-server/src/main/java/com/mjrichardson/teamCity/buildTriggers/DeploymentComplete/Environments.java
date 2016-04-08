@@ -104,19 +104,6 @@ public class Environments implements Iterable<Environment>{
         return new NullEnvironment();
     }
 
-    public void addOrUpdate(String environmentId, OctopusDate latestDeployment, Boolean isCompleted, Boolean finishedSuccessfully) {
-        if (!isCompleted)
-            return;
-
-        Environment targetDeployment = getEnvironment(environmentId);
-        if (targetDeployment.getClass().equals(NullEnvironment.class)) {
-            targetDeployment = new Environment(environmentId, latestDeployment, finishedSuccessfully ? latestDeployment : new NullOctopusDate());
-            statusMap.add(targetDeployment);
-        } else {
-            targetDeployment.update(latestDeployment, finishedSuccessfully);
-        }
-    }
-
     public void addOrUpdate(Environments moreResults) {
         for (Environment environment : moreResults.statusMap) {
             addOrUpdate(environment.environmentId, environment.latestDeployment, environment.latestSuccessfulDeployment, environment.deploymentId, environment.releaseId, environment.version, environment.projectId);
