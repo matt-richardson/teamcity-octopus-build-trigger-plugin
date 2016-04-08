@@ -18,7 +18,7 @@ public class DeploymentTest {
         map.put("Links", linksMap);
 
         Deployment result = Deployment.Parse(map);
-        Assert.assertEquals(result.id, "Deployments-211");
+        Assert.assertEquals(result.deploymentId, "Deployments-211");
         Assert.assertEquals(result.environmentId, "Environments-1");
         Assert.assertEquals(result.createdDate, new OctopusDate(2016, 3, 9, 5, 29, 31, 768));
         Assert.assertEquals(result.taskLink, "/api/tasks/ServerTasks-770");

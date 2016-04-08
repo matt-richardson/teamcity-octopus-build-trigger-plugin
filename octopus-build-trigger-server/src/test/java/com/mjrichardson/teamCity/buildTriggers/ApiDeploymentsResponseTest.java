@@ -18,7 +18,7 @@ public class ApiDeploymentsResponseTest {
         Assert.assertEquals(sut.nextLink, null);
         Assert.assertEquals(sut.deployments.size(), 1);
         Deployment[] deployments = sut.deployments.toArray();
-        Assert.assertEquals(deployments[0].id, "Deployments-82");
+        Assert.assertEquals(deployments[0].deploymentId, "Deployments-82");
         Assert.assertEquals(deployments[0].environmentId, "Environments-1");
         Assert.assertEquals(deployments[0].createdDate, new OctopusDate(2016,1,21,13,32,59,991));
         Assert.assertEquals(deployments[0].taskLink, "/api/tasks/ServerTasks-272");

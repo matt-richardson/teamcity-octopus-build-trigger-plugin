@@ -18,7 +18,7 @@ public class Deployments implements Iterable<Deployment> {
 
     public boolean contains(String octopusDeploymentId) {
         for (Deployment deployment : statusMap) {
-            if (deployment.id.equals(octopusDeploymentId))
+            if (deployment.deploymentId.equals(octopusDeploymentId))
                 return true;
         }
         return false;

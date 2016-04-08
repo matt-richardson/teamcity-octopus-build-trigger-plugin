@@ -44,7 +44,7 @@ public class DeploymentsTest {
 
         Integer counter = 1;
         for (Deployment octopusdeployment : deployments) {
-            Assert.assertEquals(octopusdeployment.id, "Deployments-" + counter++);
+            Assert.assertEquals(octopusdeployment.deploymentId, "Deployments-" + counter++);
         }
     }
 
@@ -55,7 +55,7 @@ public class DeploymentsTest {
 
         Deployment[] array = deployments.toArray();
         Assert.assertEquals(array.length, 2);
-        Assert.assertEquals(array[0].id, "Deployments-1");
-        Assert.assertEquals(array[1].id, "Deployments-2");
+        Assert.assertEquals(array[0].deploymentId, "Deployments-1");
+        Assert.assertEquals(array[1].deploymentId, "Deployments-2");
     }
 }
