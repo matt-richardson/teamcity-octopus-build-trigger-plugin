@@ -86,7 +86,11 @@ public class CustomAsyncPolledBuildTrigger<TItem> extends AsyncPolledBuildTrigge
             this.log.debug("changes detected in " + updated);
             TItem update = updated.iterator().next();
             summary.triggeredBy = asyncBuildTrigger.getRequestorString(update);
-            summary.properties = asyncBuildTrigger.getProperties(update);
+            Map<String, String> properties = asyncBuildTrigger.getProperties(update);
+            for (Map.Entry<String, String> entry : properties.entrySet()) {
+                this.log.debug("property['" + entry.getKey() + "'] = '" + entry.getValue() + "'");
+            }
+            summary.properties = properties;
         } else {
             this.log.debug("changes not detected");
         }
