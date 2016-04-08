@@ -149,6 +149,11 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         String deploymentsResponse = contentProvider.getContent(apiRootResponse.deploymentsApiLink + "?Projects=" + projectId);
         ApiDeploymentsResponse response = new ApiDeploymentsResponse(deploymentsResponse);
         Environments result = new Environments();
+        //we trust that the progression response is going to return the current environments
+        for (Environment environment : apiProgressionResponse.environments) {
+            result.addEnvironment(environment.environmentId);
+        }
+
         for (Deployment item : response.deployments) {
             if (ProcessDeployment(contentProvider, oldEnvironments, result, item))
                 return result;
