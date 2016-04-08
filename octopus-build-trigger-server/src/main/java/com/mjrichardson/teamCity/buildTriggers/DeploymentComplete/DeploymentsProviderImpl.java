@@ -49,24 +49,38 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
             return apiProgressionResponse.environments;
 
         analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallingBackToDeploymentsApi);
-        Environments environmentsFromApi = getEnvironmentsFromApi(projectId, oldEnvironments, contentProvider, apiRootResponse, apiProgressionResponse);
+        Environments environmentsFromDeploymentsApi = getEnvironmentsFromApi(projectId, oldEnvironments, contentProvider, apiRootResponse, apiProgressionResponse);
 
-        logOutcomeOfFallback(apiProgressionResponse.environments, environmentsFromApi);
+        AnalyticsTracker.EventAction result = determineOutcomeOfFallback(apiProgressionResponse.environments, environmentsFromDeploymentsApi);
+        analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, result);
 
-        return environmentsFromApi;
+        //try and return the most useful response
+        if ((result == AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation) ||
+                (result == AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedMoreEnvironments)) {
+            return environmentsFromDeploymentsApi;
+        }
+
+        return apiProgressionResponse.environments;
     }
 
-    void logOutcomeOfFallback(Environments environmentsFromProgressionApi, Environments environmentsFromDeploymentsApi) {
-        if (environmentsFromProgressionApi.size() != environmentsFromDeploymentsApi.size()) {
+    AnalyticsTracker.EventAction determineOutcomeOfFallback(Environments environmentsFromProgressionApi, Environments environmentsFromDeploymentsApi) {
+        if (environmentsFromProgressionApi.size() < environmentsFromDeploymentsApi.size()) {
             LOG.info(String.format("Got %d environments from deployments api, but %d environments from progression api.",
                     environmentsFromDeploymentsApi.size(), environmentsFromProgressionApi.size()));
             LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
             LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
-            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentNumberOfEnvironments);
+            return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedMoreEnvironments;
+        }
+        else if (environmentsFromProgressionApi.size() > environmentsFromDeploymentsApi.size()) {
+            LOG.info(String.format("Got %d environments from deployments api, but %d environments from progression api.",
+                    environmentsFromDeploymentsApi.size(), environmentsFromProgressionApi.size()));
+            LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
+            LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+            return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedFewerEnvironments;
         }
         else if (environmentsFromProgressionApi.equals(environmentsFromDeploymentsApi)) {
             LOG.info("Fallback to deployments api produced same results");
-            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
+            return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults;
         }
         else
         {
@@ -80,37 +94,34 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
                     LOG.info("Got different environments from deployments api and progression api.");
                     LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
                     LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
-                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentEnvironments);
-                    return;
+                    return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentEnvironments;
                 }
                 else if (environmentFromProgressionApi.isLatestSuccessfulDeploymentOlderThen(environmentFromDeploymentApi.latestSuccessfulDeployment)) {
                     LOG.info(String.format("Environment %s from deployments api has a newer latestSuccessfulDeployment date (%s) than the environment from the progression api (%s)",
                             environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.latestSuccessfulDeployment, environmentFromProgressionApi.latestSuccessfulDeployment));
                     LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
                     LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
-                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
-                    return;
+                    return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation;
                 }
                 else if (environmentFromProgressionApi.isLatestDeploymentOlderThan(environmentFromDeploymentApi.latestDeployment)) {
                     LOG.info(String.format("Environment %s from deployments api has a newer latestDeployment date (%s) than the environment from the progression api (%s)",
                             environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.latestDeployment, environmentFromProgressionApi.latestDeployment));
                     LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
                     LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
-                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
-                    return;
+                    return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation;
                 }
                 else {
                     LOG.info(String.format("Environment %s from deployments api (%s) is worse than the environment from the progression api (%s)",
                             environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.toString(), environmentFromProgressionApi.toString()));
                     LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
                     LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
-                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedWorseResults);
-                    return;
+                    return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedWorseResults;
                 }
             }
             LOG.warn("Not expecting to get to this circumstance!");
             assert false;
         }
+        return AnalyticsTracker.EventAction.FallBackStatusUnknown;
     }
 
 

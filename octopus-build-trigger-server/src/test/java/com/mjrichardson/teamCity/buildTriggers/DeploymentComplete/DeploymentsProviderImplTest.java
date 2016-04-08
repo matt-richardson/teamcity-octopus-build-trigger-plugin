@@ -231,7 +231,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 3, 9, 22, 26, 43, 504), new NullOctopusDate()));
     }
 
-    public void log_outcome_of_fallback_handles_different_number_responses() {
+    public void determine_outcome_of_fallback_handles_more_responses() {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
@@ -239,16 +239,29 @@ public class DeploymentsProviderImplTest {
         Environments environmentsFromProgressionApi = new Environments();
         environmentsFromProgressionApi.addEnvironment("Environment-1");
         Environments environmentsFromDeploymentsApi = new Environments();
-        environmentsFromProgressionApi.addEnvironment("Environment-1");
-        environmentsFromProgressionApi.addEnvironment("Environment-2");
+        environmentsFromDeploymentsApi.addEnvironment("Environment-1");
+        environmentsFromDeploymentsApi.addEnvironment("Environment-2");
 
-        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
-        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
-        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
-        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentNumberOfEnvironments);
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedMoreEnvironments);
     }
 
-    public void log_outcome_of_fallback_handles_identical_repsonses() throws ParseException {
+    public void determine_outcome_of_fallback_handles_fewer_responses() {
+        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
+        FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
+        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
+
+        Environments environmentsFromProgressionApi = new Environments();
+        environmentsFromProgressionApi.addEnvironment("Environment-1");
+        environmentsFromProgressionApi.addEnvironment("Environment-2");
+        Environments environmentsFromDeploymentsApi = new Environments();
+        environmentsFromDeploymentsApi.addEnvironment("Environment-1");
+
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedFewerEnvironments);
+    }
+
+    public void determine_outcome_of_fallback_handles_identical_responses() throws ParseException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
@@ -257,13 +270,11 @@ public class DeploymentsProviderImplTest {
         Environments environmentsFromProgressionApi = Environments.Parse(oldData);
         Environments environmentsFromDeploymentsApi = Environments.Parse(oldData);
 
-        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
-        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
-        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
-        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
     }
 
-    public void log_outcome_of_fallback_handles_different_environments() throws ParseException {
+    public void determine_outcome_of_fallback_handles_different_environments() throws ParseException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
@@ -273,13 +284,11 @@ public class DeploymentsProviderImplTest {
         final String newData = "Environments-2;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
         Environments environmentsFromDeploymentsApi = Environments.Parse(newData);
 
-        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
-        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
-        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
-        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentEnvironments);
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentEnvironments);
     }
 
-    public void log_outcome_of_fallback_handles_response_with_newer_latest_deployment_date() throws ParseException {
+    public void determine_outcome_of_fallback_handles_response_with_newer_latest_deployment_date() throws ParseException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
@@ -289,13 +298,11 @@ public class DeploymentsProviderImplTest {
         final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T15:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
         Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
 
-        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
-        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
-        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
-        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
     }
 
-    public void log_outcome_of_fallback_handles_response_with_newer_successful_latest_deployment_date() throws ParseException {
+    public void determine_outcome_of_fallback_handles_response_with_newer_successful_latest_deployment_date() throws ParseException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
@@ -305,13 +312,11 @@ public class DeploymentsProviderImplTest {
         final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T15:00:00.000+00:00;2016-01-20T15:00:00.000+00:00";
         Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
 
-        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
-        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
-        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
-        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
     }
 
-    public void log_outcome_of_fallback_handles_response_with_older_latest_deployment_date() throws ParseException {
+    public void determine_outcome_of_fallback_handles_response_with_older_latest_deployment_date() throws ParseException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
@@ -321,11 +326,7 @@ public class DeploymentsProviderImplTest {
         final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T13:00:00.000+00:00;2016-01-20T13:00:00.000+00:00";
         Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
 
-        deploymentsProviderImpl.logOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
-        Assert.assertEquals(fakeAnalyticsTracker.receivedPostCount, 1);
-        Assert.assertEquals(fakeAnalyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
-        Assert.assertEquals(fakeAnalyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedWorseResults);
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedWorseResults);
     }
-
-
 }
