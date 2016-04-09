@@ -1,7 +1,7 @@
 {
   "ItemType": "Project",
   "IsStale": false,
-  "TotalResults": 40,
+  "TotalResults": 41,
   "ItemsPerPage": 30,
   "Items": [
     {
@@ -200,6 +200,39 @@
         "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-27",
         "Web": "/app#/projects/Projects-27",
         "Logo": "/api/projects/Projects-27/logo"
+      }
+    },
+    {
+      "Id": "Projects-161",
+      "VariableSetId": "variableset-Projects-161",
+      "DeploymentProcessId": "deploymentprocess-Projects-161",
+      "IncludedLibraryVariableSetIds": [],
+      "DefaultToSkipIfAlreadyInstalled": false,
+      "VersioningStrategy": {
+        "DonorPackageStepId": null,
+        "Template": "#{Octopus.Version.LastMajor}.#{Octopus.Version.LastMinor}.#{Octopus.Version.NextPatch}"
+      },
+      "ReleaseCreationStrategy": {
+        "ReleaseCreationPackageStepId": null,
+        "ChannelId": null
+      },
+      "Name": "Project with multiple environments and no deployments to one environment",
+      "Slug": "project-with-multiple-environments-and-no-deployments-to-one-environment",
+      "Description": "",
+      "IsDisabled": false,
+      "ProjectGroupId": "ProjectGroups-1",
+      "LifecycleId": "Lifecycles-21",
+      "AutoCreateRelease": false,
+      "Links": {
+        "Self": "/api/projects/Projects-161",
+        "Releases": "/api/projects/Projects-161/releases{/version}{?skip}",
+        "Channels": "/api/projects/Projects-161/channels",
+        "OrderChannels": "/api/projects/Projects-161/channels/order",
+        "Variables": "/api/variables/variableset-Projects-161",
+        "Progression": "/api/progression/Projects-161",
+        "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-161",
+        "Web": "/app#/projects/Projects-161",
+        "Logo": "/api/projects/Projects-161/logo"
       }
     },
     {

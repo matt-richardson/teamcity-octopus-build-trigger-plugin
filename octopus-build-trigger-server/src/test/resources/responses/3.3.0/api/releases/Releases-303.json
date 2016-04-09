@@ -1,0 +1,27 @@
+{
+  "Id": "Releases-303",
+  "Assembled": "2015-04-09T07:42:02.307+00:00",
+  "ReleaseNotes": null,
+  "ProjectId": "Projects-161",
+  "ChannelId": "Channels-161",
+  "ProjectVariableSetSnapshotId": "variableset-Projects-161-s-0-T2BGK",
+  "LibraryVariableSetSnapshotIds": [],
+  "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-161-s-3-JBY4G",
+  "SelectedPackages": [],
+  "Version": "0.0.3",
+  "Links": {
+    "Self": "/api/releases/Releases-303{?force}",
+    "Project": "/api/projects/Projects-161",
+    "Progression": "/api/releases/Releases-303/progression",
+    "Deployments": "/api/releases/Releases-303/deployments{?skip}",
+    "DeploymentTemplate": "/api/releases/Releases-303/deployments/template",
+    "Artifacts": "/api/artifacts?regarding=Releases-303",
+    "ProjectVariableSnapshot": "/api/variables/variableset-Projects-161-s-0-T2BGK",
+    "ProjectDeploymentProcessSnapshot": "/api/deploymentprocesses/deploymentprocess-Projects-161-s-3-JBY4G",
+    "Web": "/app#/releases/Releases-303",
+    "SnapshotVariables": "/api/releases/Releases-303/snapshot-variables",
+    "Defects": "/api/releases/Releases-303/defects",
+    "ReportDefect": "/api/releases/Releases-303/defects",
+    "ResolveDefect": "/api/releases/Releases-303/defects/resolve"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "Id": "ServerTasks-1073",
+  "Name": "Deploy",
+  "Description": "Deploy Project with multiple environments and no deployments to one environment release 0.0.2 to local",
+  "Arguments": {
+    "DeploymentId": "Deployments-302"
+  },
+  "State": "Failed",
+  "Completed": "09 April 2015 08:41",
+  "QueueTime": "2015-04-09T07:41:07.636+00:00",
+  "StartTime": "2015-04-09T07:41:07.667+00:00",
+  "LastUpdatedTime": "2015-04-09T07:41:37.590+00:00",
+  "CompletedTime": "2015-04-09T07:41:37.590+00:00",
+  "ServerNode": "DESKTOP-4VQNCHP",
+  "Duration": "30 seconds",
+  "ErrorMessage": "The deployment failed because one or more steps failed. Please see the deployment log for details.",
+  "HasBeenPickedUpByProcessor": true,
+  "IsCompleted": true,
+  "FinishedSuccessfully": false,
+  "HasPendingInterruptions": false,
+  "CanRerun": false,
+  "HasWarningsOrErrors": true,
+  "Links": {
+    "Self": "/api/tasks/ServerTasks-1073",
+    "Web": "/app#/tasks/ServerTasks-1073",
+    "Raw": "/api/tasks/ServerTasks-1073/raw",
+    "Rerun": "/api/tasks/rerun/ServerTasks-1073",
+    "Cancel": "/api/tasks/ServerTasks-1073/cancel",
+    "QueuedBehind": "/api/tasks/ServerTasks-1073/queued-behind{?skip}",
+    "Details": "/api/tasks/ServerTasks-1073/details{?verbose,tail}",
+    "Artifacts": "/api/artifacts?regarding=ServerTasks-1073",
+    "Interruptions": "/api/tasks"
+  }
+}

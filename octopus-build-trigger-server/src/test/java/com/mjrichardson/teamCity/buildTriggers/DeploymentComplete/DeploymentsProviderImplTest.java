@@ -23,6 +23,7 @@ public class DeploymentsProviderImplTest {
     static String ProjectWithNoSuccessfulDeployments = "Projects-25";
     static String ProjectWithMultipleEnvironments = "Projects-28";
     static String ProjectWithMultipleEnvironmentsAndMostRecentDeploymentSuccessful = "Projects-27";
+    static String ProjectWithMultipleEnvironmentsAndNoDeploymentsToOneEnvironment = "Projects-161";
     static String ProjectWithNoRecentSuccessfulDeployments = "Projects-26";
     static String ProjectWithNoReleases = "Projects-101";
     static String ProjectThatDoesNotExist = "Projects-00";
@@ -180,6 +181,38 @@ public class DeploymentsProviderImplTest {
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
         Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
+    }
+
+    public void get_deployments_when_multiple_environments_and_no_deployments_to_one_of_the_environments() throws Exception {
+        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, analyticsTracker);
+        Environments oldEnvironments = new Environments();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndNoDeploymentsToOneEnvironment, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 2);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2015, 4, 9, 7, 42, 13, 557), new OctopusDate(2015, 4, 9, 7, 42, 13, 557)));
+        environment = newEnvironments.getEnvironment("Environments-21");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
+        Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
+    }
+
+    public void get_deployments_when_multiple_environments_and_no_deployments_to_one_of_the_environments_on_the_second_call() throws Exception {
+        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
+        FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
+        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, analyticsTracker);
+        Environments oldEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndNoDeploymentsToOneEnvironment, new Environments());
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndNoDeploymentsToOneEnvironment, oldEnvironments);
+        Assert.assertEquals(newEnvironments.size(), 2);
+        Environment environment = newEnvironments.getEnvironment("Environments-1");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2015, 4, 9, 7, 42, 13, 557), new OctopusDate(2015, 4, 9, 7, 42, 13, 557)));
+        environment = newEnvironments.getEnvironment("Environments-21");
+        Assert.assertNotNull(environment);
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1)));
+        Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
     }
 
     public void when_there_are_two_new_deployments_since_last_check_it_returns_only_one() throws Exception {

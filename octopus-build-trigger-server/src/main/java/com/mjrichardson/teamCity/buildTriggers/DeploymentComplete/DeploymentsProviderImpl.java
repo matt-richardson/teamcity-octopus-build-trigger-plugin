@@ -173,6 +173,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
 
     private boolean ProcessDeployment(HttpContentProvider contentProvider, Environments oldEnvironments, Environments result, Deployment deployment) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         Environment lastKnownEnvironmentState = oldEnvironments.getEnvironment(deployment.environmentId);
+        result.addOrUpdate(lastKnownEnvironmentState);
         LOG.debug("Found deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "'");
 
         if (lastKnownEnvironmentState.isLatestDeploymentOlderThan(deployment.createdDate)) {
