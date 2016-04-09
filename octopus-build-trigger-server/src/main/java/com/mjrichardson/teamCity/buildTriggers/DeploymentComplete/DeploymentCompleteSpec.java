@@ -43,21 +43,12 @@ public class DeploymentCompleteSpec {
     @Nullable
     final String environmentId;
 
-    DeploymentCompleteSpec(@NotNull String url, @NotNull String projectId) {
-        this(url, projectId, null, null, null, null, null);
-    }
-
     DeploymentCompleteSpec(@NotNull String url, @NotNull String projectId, @NotNull Environment environment) {
         this(url, projectId, environment.environmentId, environment.wasLatestDeploymentSuccessful(),
                 environment.deploymentId, environment.version, environment.releaseId);
     }
 
-    DeploymentCompleteSpec(@NotNull String url, @NotNull String projectId, @Nullable String environmentId,
-                           @Nullable Boolean wasSuccessful) {
-        this(url, projectId, environmentId, wasSuccessful, null, null, null);
-    }
-
-    DeploymentCompleteSpec(@NotNull String url, @NotNull String projectId, @Nullable String environmentId,
+    private DeploymentCompleteSpec(@NotNull String url, @NotNull String projectId, @Nullable String environmentId,
                            @Nullable Boolean wasSuccessful, @Nullable String deploymentId, @Nullable String version,
                            @Nullable String releaseId) {
         this.url = url;

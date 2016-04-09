@@ -3,6 +3,7 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAsyncTriggerParameters;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerDescriptor;
+import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckJobCreationException;
@@ -31,9 +32,11 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         String displayName = "the display name";
         int pollIntervalInSeconds = 100;
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
-        String result = sut.getRequestorString(new DeploymentCompleteSpec("the-url", "the-project"));
+        Environment environment = new Environment("the-env-id", new OctopusDate(2016,4,9), new OctopusDate(2016,4,9), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
 
-        Assert.assertEquals(result, "Unsuccessful attempt to get deployments for the-project on the-url");
+        String result = sut.getRequestorString(new DeploymentCompleteSpec("the-url", "the-project", environment));
+
+        Assert.assertEquals(result, "Successful deployment of the-project to the-env-id on the-url");
     }
 
     public void poll_interval_returns_passed_in_poll_interval() {
@@ -97,8 +100,8 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
-
-        DeploymentCompleteSpec spec = new DeploymentCompleteSpec("the-url", "the-project-id", "the-environment-id", true, "the-deployment-id", "the-version", "the-release-id");
+        Environment environment = new Environment("the-environment-id", new OctopusDate(2016,4,9), new OctopusDate(2016,4,9), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        DeploymentCompleteSpec spec = new DeploymentCompleteSpec("the-url", "the-project-id", environment);
         Map<String, String> result = sut.getProperties(spec);
 
         Assert.assertEquals(result.get(BUILD_PROPERTY_DEPLOYMENT_ID), "the-deployment-id");

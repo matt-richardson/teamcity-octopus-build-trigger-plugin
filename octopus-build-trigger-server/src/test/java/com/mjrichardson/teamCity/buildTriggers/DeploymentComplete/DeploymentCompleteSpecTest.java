@@ -8,20 +8,16 @@ import org.testng.annotations.Test;
 public class DeploymentCompleteSpecTest {
 
     @Test
-    public void two_param_ctor_returns_error_message() throws Exception {
-        DeploymentCompleteSpec sut = new DeploymentCompleteSpec("theurl", "theproject");
-        Assert.assertEquals(sut.getRequestorString(), "Unsuccessful attempt to get deployments for theproject on theurl");
-    }
-
-    @Test
     public void when_successful_returns_success_message() throws Exception {
-        DeploymentCompleteSpec sut = new DeploymentCompleteSpec("theurl", "theproject", "theenv", true);
+        Environment environment = new Environment("theenv", new OctopusDate(2016,4,9), new OctopusDate(2016,4,9), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        DeploymentCompleteSpec sut = new DeploymentCompleteSpec("theurl", "theproject", environment);
         Assert.assertEquals(sut.getRequestorString(), "Successful deployment of theproject to theenv on theurl");
     }
 
     @Test
-    public void when_unsuccessful_returns_success_message() throws Exception {
-        DeploymentCompleteSpec sut = new DeploymentCompleteSpec("theurl", "theproject", "theenv", false);
+    public void when_unsuccessful_returns_non_successful_deployment_message() throws Exception {
+        Environment environment = new Environment("theenv", new OctopusDate(2016,4,9), new OctopusDate(2016,4,8), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        DeploymentCompleteSpec sut = new DeploymentCompleteSpec("theurl", "theproject", environment);
         Assert.assertEquals(sut.getRequestorString(), "Deployment of theproject to theenv on theurl");
     }
 

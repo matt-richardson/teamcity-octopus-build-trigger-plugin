@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
+import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -13,7 +14,9 @@ public class DeploymentCompleteSpecCheckResultTest {
     }
 
     public void create_updated_result_returns_an_object_with_updates_but_no_errors() {
-        DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec("the-url", "the-project", "the-env", true);
+        Environment environment = new Environment("the-env-id", new OctopusDate(2016,4,9), new OctopusDate(2016,4,9), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+
+        DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec("the-url", "the-project", environment);
         DeploymentCompleteSpecCheckResult result = DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertTrue(result.updatesDetected());
