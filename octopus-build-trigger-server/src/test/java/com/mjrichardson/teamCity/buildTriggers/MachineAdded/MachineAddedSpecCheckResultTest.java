@@ -13,7 +13,8 @@ public class MachineAddedSpecCheckResultTest {
     }
 
     public void create_updated_result_returns_an_object_with_updates_but_no_errors() {
-        MachineAddedSpec machineCreatedSpec = new MachineAddedSpec("the-id", "the-name");
+        Machine machine = new Machine("the-machine-id", "the-machine-name");
+        MachineAddedSpec machineCreatedSpec = new MachineAddedSpec("the-id", machine);
         MachineAddedSpecCheckResult result = MachineAddedSpecCheckResult.createUpdatedResult(machineCreatedSpec);
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertTrue(result.updatesDetected());

@@ -31,9 +31,10 @@ public class MachineAddedAsyncBuildTriggerTest {
         String displayName = "the display name";
         int pollIntervalInSeconds = 100;
         MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
-        String result = sut.getRequestorString(new MachineAddedSpec("the-url", "the-machine"));
+        Machine machine = new Machine("the-machine-id", "the-machine-name");
+        String result = sut.getRequestorString(new MachineAddedSpec("the-url", machine));
 
-        Assert.assertEquals(result, "Machine the-machine added to the-url");
+        Assert.assertEquals(result, "Machine the-machine-name added to the-url");
     }
 
     public void poll_interval_returns_passed_in_poll_interval() {
@@ -104,7 +105,9 @@ public class MachineAddedAsyncBuildTriggerTest {
         roleIds[0] = "role-one";
         roleIds[1] = "role-two";
 
-        MachineAddedSpec spec = new MachineAddedSpec("the-url", "the-machine-name", "the-machine-id", environmentIds, roleIds);
+        Machine machine = new Machine("the-machine-id", "the-machine-name", environmentIds, roleIds);
+
+        MachineAddedSpec spec = new MachineAddedSpec("the-url", machine);
         Map<String, String> result = sut.getProperties(spec);
 
         Assert.assertEquals(result.get(BUILD_PROPERTY_MACHINE_ID), "the-machine-id");

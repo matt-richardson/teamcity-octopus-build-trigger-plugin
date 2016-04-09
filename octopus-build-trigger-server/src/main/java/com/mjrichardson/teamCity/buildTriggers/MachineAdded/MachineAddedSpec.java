@@ -39,7 +39,7 @@ class MachineAddedSpec {
     @NotNull
     final String roleIds;
 
-    MachineAddedSpec(@NotNull String url,
+    private MachineAddedSpec(@NotNull String url,
                      @NotNull String machineName,
                      @Nullable String machineId,
                      @NotNull String[] environmentIds,
@@ -49,11 +49,6 @@ class MachineAddedSpec {
         this.machineId = machineId;
         this.environmentIds = String.join(",", environmentIds);
         this.roleIds = String.join(",", roleIds);
-    }
-
-    public MachineAddedSpec(String octopusUrl, String machineName) {
-        this(octopusUrl, machineName, null, new String[0], new String[0]);
-
     }
 
     public MachineAddedSpec(String octopusUrl, Machine machine) {

@@ -11,8 +11,9 @@ public class MachineAddedSpecTest {
 //    }
 
     public void can_create_requestor_string() {
-        MachineAddedSpec sut = new MachineAddedSpec("theurl", "thename");
-        Assert.assertEquals(sut.getRequestorString(), "Machine thename added to theurl");
+        Machine machine = new Machine("the-machine-id", "the-machine-name");
+        MachineAddedSpec sut = new MachineAddedSpec("theurl", machine);
+        Assert.assertEquals(sut.getRequestorString(), "Machine the-machine-name added to theurl");
     }
 
     public void to_string_converts_correctly() {
