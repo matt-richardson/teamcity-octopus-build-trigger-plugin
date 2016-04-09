@@ -43,8 +43,8 @@ public class DeploymentCompleteSpec {
     @Nullable
     final String environmentId;
 
-    DeploymentCompleteSpec(@NotNull String url, @NotNull String projectId, @NotNull Environment environment) {
-        this(url, projectId, environment.environmentId, environment.wasLatestDeploymentSuccessful(),
+    DeploymentCompleteSpec(@NotNull String url, @NotNull Environment environment) {
+        this(url, environment.projectId, environment.environmentId, environment.wasLatestDeploymentSuccessful(),
                 environment.deploymentId, environment.version, environment.releaseId);
     }
 

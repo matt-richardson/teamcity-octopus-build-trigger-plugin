@@ -34,9 +34,9 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
         Environment environment = new Environment("the-env-id", new OctopusDate(2016,4,9), new OctopusDate(2016,4,9), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
 
-        String result = sut.getRequestorString(new DeploymentCompleteSpec("the-url", "the-project", environment));
+        String result = sut.getRequestorString(new DeploymentCompleteSpec("the-url", environment));
 
-        Assert.assertEquals(result, "Successful deployment of the-project to the-env-id on the-url");
+        Assert.assertEquals(result, "Successful deployment of the-project-id to the-env-id on the-url");
     }
 
     public void poll_interval_returns_passed_in_poll_interval() {
@@ -101,7 +101,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         Integer pollIntervalInSeconds = 100;
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
         Environment environment = new Environment("the-environment-id", new OctopusDate(2016,4,9), new OctopusDate(2016,4,9), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
-        DeploymentCompleteSpec spec = new DeploymentCompleteSpec("the-url", "the-project-id", environment);
+        DeploymentCompleteSpec spec = new DeploymentCompleteSpec("the-url", environment);
         Map<String, String> result = sut.getProperties(spec);
 
         Assert.assertEquals(result.get(BUILD_PROPERTY_DEPLOYMENT_ID), "the-deployment-id");

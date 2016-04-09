@@ -127,7 +127,7 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
                 LOG.info(String.format("New successful deployment on %s for project %s: %s -> %s", octopusUrl, octopusProject, oldStoredData, trimmedEnvironments));
             else
                 LOG.info(String.format("New deployment on %s for project %s: %s -> %s", octopusUrl, octopusProject, oldStoredData, trimmedEnvironments));
-            final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, octopusProject, environment);
+            final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, environment);
             return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
         } catch (Exception e) {
             LOG.error("Failed to check for new deployments completed", e);
