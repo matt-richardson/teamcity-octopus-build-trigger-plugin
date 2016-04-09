@@ -32,11 +32,7 @@ public class Environments implements Iterable<Environment>{
 
             for (String pair : oldStoredData.split("\\|")) {
                 if (pair.length() > 0) {
-                    final String[] split = pair.split(";");
-                    final String environmentId = split[0];
-                    final OctopusDate latestDeployment = OctopusDate.Parse(split[1]);
-                    final OctopusDate latestSuccessfulDeployment = OctopusDate.Parse(split[2]);
-                    result.addOrUpdate(new Environment(environmentId, latestDeployment, latestSuccessfulDeployment));
+                    result.addOrUpdate(Environment.Parse(pair));
                 }
             }
         }
@@ -120,7 +116,7 @@ public class Environments implements Iterable<Environment>{
     private void addOrUpdate(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment, String deploymentId, String releaseId, String version, String projectId) {
         Environment targetDeployment = getEnvironment(environmentId);
         if (targetDeployment.getClass().equals(NullEnvironment.class)) {
-            targetDeployment = new Environment(environmentId, latestDeployment, latestSuccessfulDeployment);
+            targetDeployment = new Environment(environmentId, latestDeployment, latestSuccessfulDeployment, releaseId, deploymentId, version, projectId);
             statusMap.add(targetDeployment);
         } else {
             if (targetDeployment.isLatestDeploymentOlderThan(latestDeployment)) {
@@ -129,11 +125,11 @@ public class Environments implements Iterable<Environment>{
             if (targetDeployment.isLatestSuccessfulDeploymentOlderThen(latestSuccessfulDeployment)) {
                 targetDeployment.latestSuccessfulDeployment = latestSuccessfulDeployment;
             }
+            targetDeployment.projectId = projectId;
+            targetDeployment.deploymentId = deploymentId;
+            targetDeployment.version = version;
+            targetDeployment.releaseId = releaseId;
         }
-        targetDeployment.projectId = projectId;
-        targetDeployment.deploymentId = deploymentId;
-        targetDeployment.version = version;
-        targetDeployment.releaseId = releaseId;
     }
 
     public boolean haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment() {

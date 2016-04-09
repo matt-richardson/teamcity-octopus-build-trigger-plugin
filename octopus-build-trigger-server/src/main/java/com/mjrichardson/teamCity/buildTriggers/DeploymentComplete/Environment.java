@@ -13,18 +13,6 @@ public class Environment {
     String version;
     String projectId;
 
-    public Environment(String environmentId, OctopusDate latestDeployment) {
-        this(environmentId, latestDeployment, null, null, null, null);
-    }
-
-    public Environment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment) {
-        this(environmentId, latestDeployment, latestSuccessfulDeployment, null, null, null, null);
-    }
-
-    public Environment(String environmentId, OctopusDate latestDeployment, String releaseId, String deploymentId, String version, String projectId) {
-        this(environmentId, latestDeployment, new NullOctopusDate(), releaseId, deploymentId, version, projectId);
-    }
-
     public Environment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment, String releaseId, String deploymentId, String version, String projectId) {
         this.environmentId = environmentId;
         this.latestDeployment = latestDeployment;
@@ -62,7 +50,27 @@ public class Environment {
 
     @Override
     public String toString() {
-        return String.format("%s;%s;%s", environmentId, latestDeployment, latestSuccessfulDeployment);
+        return String.format("%s;%s;%s;%s;%s;%s;%s", environmentId, latestDeployment, latestSuccessfulDeployment, releaseId, deploymentId, version, projectId);
+    }
+
+    public static Environment Parse(String toStringRepresentation) {
+        final String[] split = toStringRepresentation.split(";");
+        final String environmentId = split[0];
+        final OctopusDate latestDeployment = OctopusDate.Parse(split[1]);
+        final OctopusDate latestSuccessfulDeployment = OctopusDate.Parse(split[2]);
+        String releaseId = null;
+        String deploymentId = null;
+        String version = null;
+        String projectId = null;
+
+        if (split.length > 3) {
+            releaseId = split[3];
+            deploymentId = split[4];
+            version = split[5];
+            projectId = split[6];
+        }
+
+        return new Environment(environmentId, latestDeployment, latestSuccessfulDeployment, releaseId, deploymentId, version, projectId);
     }
 
     @Override
@@ -93,7 +101,7 @@ public class Environment {
 
         if (isSuccessful)
             return new Environment(environmentId, createdDate, createdDate, releaseId, deploymentId, version, projectId);
-        return new Environment(environmentId, createdDate, releaseId, deploymentId, version, projectId);
+        return new Environment(environmentId, createdDate, new NullOctopusDate(), releaseId, deploymentId, version, projectId);
     }
 
     public static Environment CreateFrom(Deployment deployment, ApiTaskResponse task, ApiReleaseResponse release) {

@@ -20,8 +20,8 @@ public class FakeDeploymentsProviderWithTwoDeployments implements DeploymentsPro
 
     @Override
     public Environments getDeployments(String octopusProject, Environments oldEnvironments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
-        Environment environmentOne = new Environment("Environments-1", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25));
-        Environment environmentTwo = new Environment("Environments-2", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26));
+        Environment environmentOne = new Environment("Environments-1", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        Environment environmentTwo = new Environment("Environments-2", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
         Environments environments = new Environments();
         environments.addOrUpdate(environmentOne);
         environments.addOrUpdate(environmentTwo);

@@ -10,13 +10,13 @@ import java.text.ParseException;
 @Test
 public class EnvironmentsTest {
     public void can_convert_single_environment_from_string_and_back_again() throws Exception {
-        final String expected = "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00";
+        final String expected = "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environments = Environments.Parse(expected);
         Assert.assertEquals(environments.toString(), expected);
     }
 
     public void can_convert_multiple_environments_from_string_and_back_again() throws Exception {
-        final String expected = "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00|Environments-2;2015-12-07T14:12:14.624+00:00;2015-12-07T14:12:14.624+00:00";
+        final String expected = "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00;Releases-1;Deployments-1;0.0.1;Projects-1|Environments-2;2015-12-07T14:12:14.624+00:00;2015-12-07T14:12:14.624+00:00;Releases-2;Deployments-2;0.0.2;Projects-1";
         Environments environments = Environments.Parse(expected);
         Assert.assertEquals(environments.toString(), expected);
     }
@@ -43,33 +43,33 @@ public class EnvironmentsTest {
         Assert.assertFalse(environments.isEmpty());
     }
 
-    public void passing_single_deployment_to_ctor_adds_to_collection() throws Exception {
-        final Environment environment = new Environment("Environments-1", OctopusDate.Parse("2015-12-08T08:09:39.624+00:00"), OctopusDate.Parse("2015-11-12T09:22:00.865+00:00"));
+    public void passing_single_environment_to_ctor_adds_to_collection() throws Exception {
+        final Environment environment = new Environment("Environments-1", OctopusDate.Parse("2015-12-08T08:09:39.624+00:00"), OctopusDate.Parse("2015-11-12T09:22:00.865+00:00"), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
         Environments environments = new Environments(environment);
         Assert.assertEquals(environments.size(), 1);
-        Assert.assertEquals(environments.toString(), "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00");
+        Assert.assertEquals(environments.toString(), "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00;the-release-id;the-deployment-id;the-version;the-project-id");
     }
 
-    public void trim_multiple_deployments_to_return_only_one_changed_environment() throws Exception {
-        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+    public void trim_multiple_environments_to_return_only_one_changed_environment() throws Exception {
+        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments oldEnvironments = Environments.Parse(oldData);
-        final String newData = "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-21T14:25:40.247+00:00|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00";
+        final String newData = "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-21T14:25:40.247+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments newEnvironments = Environments.Parse(newData);
 
         final Environments trimmedEnvironments = newEnvironments.trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments);
         Assert.assertEquals(trimmedEnvironments.size(), 2);
         Environment environment = trimmedEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247)));
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 21, 14, 25, 40, 247), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         environment = trimmedEnvironments.getEnvironment("Environments-21");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0)));
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
     }
 
     public void trim_multiple_deployments_to_return_only_one_changed_environment_can_prioritise_successful_deployments() throws Exception {
-        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments oldEnvironments = Environments.Parse(oldData);
-        final String newData = "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00";
+        final String newData = "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments newEnvironments = Environments.Parse(newData);
 
         final Boolean prioritiseSuccessfulDeployments = true;
@@ -77,16 +77,16 @@ public class EnvironmentsTest {
         Assert.assertEquals(trimmedEnvironments.size(), 2);
         Environment environment = trimmedEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 19, 14, 0, 0, 0), new OctopusDate(2016, 1, 19, 0, 0, 0, 0)));
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 19, 14, 0, 0, 0), new OctopusDate(2016, 1, 19, 0, 0, 0, 0), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         environment = trimmedEnvironments.getEnvironment("Environments-21");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700)));
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
     }
 
     public void trim_multiple_deployments_to_return_only_one_changed_environment_can_skip_successful_deployment_prioritisation() throws Exception {
-        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments oldEnvironments = Environments.Parse(oldData);
-        final String newData = "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00";
+        final String newData = "Environments-1;2016-01-21T14:26:14.747+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments newEnvironments = Environments.Parse(newData);
 
         final Boolean prioritiseSuccessfulDeployments = false;
@@ -94,16 +94,16 @@ public class EnvironmentsTest {
         Assert.assertEquals(trimmedEnvironments.size(), 2);
         Environment environment = trimmedEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 19, 0, 0, 0, 0)));
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 21, 14, 26, 14, 747), new OctopusDate(2016, 1, 19, 0, 0, 0, 0), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         environment = trimmedEnvironments.getEnvironment("Environments-21");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0)));
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
     }
 
     public void trim_multiple_deployments_to_return_only_one_changed_environment_returns_input_when_none_changed() throws Exception {
-        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments oldEnvironments = Environments.Parse(oldData);
-        final String newData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String newData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments newEnvironments = Environments.Parse(newData);
 
         final Boolean prioritiseSuccessfulDeployments = true;
@@ -111,21 +111,26 @@ public class EnvironmentsTest {
         Assert.assertEquals(trimmedEnvironments.size(), 2);
         Environment environment = trimmedEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 19, 14, 0, 0, 0), new OctopusDate(2016, 1, 19, 0, 0, 0, 0)));
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 1, 19, 14, 0, 0, 0), new OctopusDate(2016, 1, 19, 0, 0, 0, 0), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         environment = trimmedEnvironments.getEnvironment("Environments-21");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0)));
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
     }
 
-    public void get_changed_deployment_returns_first_environment_thats_changed() throws Exception {
-        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
-        Environments oldEnvironments = Environments.Parse(oldData);
-        final String newData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-21T14:25:53.700+00:00;2016-01-21T14:25:53.700+00:00";
-        Environments newEnvironments = Environments.Parse(newData);
+    public void get_changed_deployment_returns_first_environment_that_has_changed() throws Exception {
+        Environments oldEnvironments = new Environments();
+        Environment env1 = new Environment("Environments-1", new OctopusDate(2016, 1, 19, 14, 0, 0, 0), new OctopusDate(2016, 1, 19), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        oldEnvironments.addOrUpdate(env1);
+        Environment oldEnv21 = new Environment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0, 0), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        oldEnvironments.addOrUpdate(oldEnv21);
+        Environments newEnvironments = new Environments();
+        newEnvironments.addOrUpdate(env1);
+        Environment newEnv21 = new Environment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        newEnvironments.addOrUpdate(newEnv21);
 
         Environment environment = newEnvironments.getChangedDeployment(oldEnvironments);
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(2016, 1, 21, 14, 25, 53, 700), new OctopusDate(2016, 1, 21, 14, 25, 53, 700)));
+        Assert.assertEquals(environment, newEnv21);
     }
 
     @Test(expectedExceptions = NoChangedEnvironmentsException.class)
@@ -139,12 +144,12 @@ public class EnvironmentsTest {
     }
 
     public void to_array_converts_deployments_to_array_successfully() throws ParseException {
-        final String data = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String data = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environments = Environments.Parse(data);
         Environment[] array = environments.toArray();
         Assert.assertEquals(array.length, 2);
-        Assert.assertEquals(array[0], new Environment("Environments-1", new OctopusDate(2016, 1, 19, 14, 0, 0), new OctopusDate(2016, 1, 19)));
-        Assert.assertEquals(array[1], new Environment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0)));
+        Assert.assertEquals(array[0], new Environment("Environments-1", new OctopusDate(2016, 1, 19, 14, 0, 0), new OctopusDate(2016, 1, 19), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        Assert.assertEquals(array[1], new Environment("Environments-21", new OctopusDate(2016, 1, 20, 14, 0, 0), new OctopusDate(2016, 1, 20, 14, 0, 0), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
     }
 
     public void add_environment_adds_with_null_dates() {
@@ -165,22 +170,22 @@ public class EnvironmentsTest {
 
     public void have_all_environments_had_at_least_one_successful_deployment_returns_true_if_all_match() {
         Environments sut = new Environments();
-        sut.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29)));
-        sut.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 1, 16)));
+        sut.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        sut.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 1, 16), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertTrue(sut.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment());
     }
 
     public void have_all_environments_had_at_least_one_successful_deployment_returns_false_if_not_all_match() {
         Environments sut = new Environments();
-        sut.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29)));
-        sut.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate()));
+        sut.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        sut.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertFalse(sut.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment());
     }
 
     public void add_or_update_with_multiple_deployments_adds_all() {
         Environments newEnvironments = new Environments();
-        newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29)));
-        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate()));
+        newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Environments sut = new Environments();
         sut.addOrUpdate(newEnvironments);
 
@@ -190,10 +195,10 @@ public class EnvironmentsTest {
 
     public void add_or_update_with_multiple_deployments_overwrites_if_latest_deployment_date_is_newer() {
         Environments newEnvironments = new Environments();
-        newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28)));
-        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate()));
+        newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
 
-        Environments sut = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28)));
+        Environments sut = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         sut.addOrUpdate(newEnvironments);
 
         Assert.assertEquals(sut.getEnvironment("Environment-1").latestDeployment, new OctopusDate(2016, 2, 29));
@@ -202,10 +207,10 @@ public class EnvironmentsTest {
 
     public void add_or_update_with_multiple_deployments_overwrites_if_latest_successful_deployment_date_is_newer() {
         Environments newEnvironments = new Environments();
-        newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29)));
-        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate()));
+        newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
 
-        Environments sut = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28)));
+        Environments sut = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         sut.addOrUpdate(newEnvironments);
 
         Assert.assertEquals(sut.getEnvironment("Environment-1").latestDeployment, new OctopusDate(2016, 2, 29));
@@ -214,10 +219,10 @@ public class EnvironmentsTest {
 
     public void add_or_update_with_multiple_deployments_doesnt_overwrite_if_dates_are_older() {
         Environments newEnvironments = new Environments();
-        newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 27), new OctopusDate(2016, 2, 27)));
-        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate()));
+        newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 27), new OctopusDate(2016, 2, 27), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
 
-        Environments sut = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28)));
+        Environments sut = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         sut.addOrUpdate(newEnvironments);
 
         Assert.assertEquals(sut.getEnvironment("Environment-1").latestDeployment, new OctopusDate(2016, 2, 28));
@@ -232,7 +237,7 @@ public class EnvironmentsTest {
 
     public void add_or_update_adds_if_not_exists() {
         Environments sut = new Environments();
-        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
+        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 29), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertEquals(sut.size(), 1);
 
         Environment[] environments = sut.toArray();
@@ -242,8 +247,10 @@ public class EnvironmentsTest {
     }
 
     public void add_or_update_updates_if_passed_latest_deployment_date_is_newer() {
-        Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 28)));
-        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
+        Environment environment = new Environment("env-id", new OctopusDate(2016, 2, 28), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        Environments sut = new Environments(environment);
+        environment = new Environment("env-id", new OctopusDate(2016, 2, 29), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        sut.addOrUpdate(environment);
         Assert.assertEquals(sut.size(), 1);
 
         Environment[] environments = sut.toArray();
@@ -253,8 +260,8 @@ public class EnvironmentsTest {
     }
 
     public void add_or_update_updates_if_passed_latest_deployment_date_is_newer_and_deployment_successful() {
-        Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28)));
-        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29)));
+        Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertEquals(sut.size(), 1);
 
         Environment[] environments = sut.toArray();
@@ -264,8 +271,8 @@ public class EnvironmentsTest {
     }
 
     public void add_or_update_does_not_overwrite_if_passed_date_is_older() {
-        Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29)));
-        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26)));
+        Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        sut.addOrUpdate(new Environment("env-id", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertEquals(sut.size(), 1);
 
         Environment[] environments = sut.toArray();
@@ -275,86 +282,86 @@ public class EnvironmentsTest {
     }
 
     public void equals_returns_false_if_passed_object_is_null() {
-        Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29)));
+        Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertFalse(sut.equals(null));
     }
 
     public void equals_returns_false_if_passed_object_is_different_class() {
-        Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29)));
+        Environments sut = new Environments(new Environment("env-id", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertFalse(sut.equals("a random string"));
     }
 
     public void equals_returns_false_if_passed_deployments_has_different_size() {
         Environments sut = new Environments();
-        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
-        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26)));
+        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Environments other = new Environments();
-        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
+        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertFalse(sut.equals(other));
     }
 
     public void equals_returns_false_if_different_environments() {
         Environments sut = new Environments();
-        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
-        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26)));
+        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 26), new OctopusDate(2016, 2, 26), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Environments other = new Environments();
-        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
-        other.addOrUpdate(new Environment("env-3", new OctopusDate(2016, 2, 25), new NullOctopusDate()));
+        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        other.addOrUpdate(new Environment("env-3", new OctopusDate(2016, 2, 25), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertFalse(sut.equals(other));
     }
 
     public void equals_returns_false_if_latest_deployment_date_different() {
         Environments sut = new Environments();
-        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
-        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 26), new NullOctopusDate()));
+        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 26), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Environments other = new Environments();
-        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate()));
-        other.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 25), new NullOctopusDate()));
+        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        other.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 25), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertFalse(sut.equals(other));
     }
 
     public void equals_returns_false_if_latest_successful_deployment_different() {
         Environments sut = new Environments();
-        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28)));
-        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28)));
+        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Environments other = new Environments();
-        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 27)));
-        other.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28)));
+        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 27), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        other.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertFalse(sut.equals(other));
     }
 
     public void equals_returns_true_if_contents_are_identical() {
         Environments sut = new Environments();
-        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28)));
-        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28)));
+        sut.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        sut.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Environments other = new Environments();
-        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28)));
-        other.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28)));
+        other.addOrUpdate(new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        other.addOrUpdate(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         Assert.assertTrue(sut.equals(other));
     }
 
     public void contains_returns_false_if_no_match() {
-        final Environment oldEnvironment = new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28));
-        final Environment newEnvironment = new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25));
+        final Environment oldEnvironment = new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        final Environment newEnvironment = new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
         Environments environments = new Environments();
         environments.addOrUpdate(oldEnvironment);
         environments.addOrUpdate(newEnvironment);
-        Assert.assertFalse(environments.contains(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28))));
+        Assert.assertFalse(environments.contains(new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id")));
     }
 
     public void contains_returns_true_if_match() {
-        final Environment oldEnvironment = new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28));
-        final Environment newEnvironment = new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25));
+        final Environment oldEnvironment = new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        final Environment newEnvironment = new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
         Environments environments = new Environments();
         environments.addOrUpdate(oldEnvironment);
         environments.addOrUpdate(newEnvironment);
-        Assert.assertTrue(environments.contains(new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25))));
+        Assert.assertTrue(environments.contains(new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25), "the-release-id", "the-deployment-id", "the-version", "the-project-id")));
     }
 
     public void remove_removes_specified_environments() {
-        final Environment environmentOne = new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28));
-        final Environment environmentTwo = new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28));
-        final Environment environmentThree = new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25));
+        final Environment environmentOne = new Environment("env-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        final Environment environmentTwo = new Environment("env-2", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
+        final Environment environmentThree = new Environment("env-3", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
         Environments environments = new Environments();
         environments.addOrUpdate(environmentOne);
         environments.addOrUpdate(environmentTwo);

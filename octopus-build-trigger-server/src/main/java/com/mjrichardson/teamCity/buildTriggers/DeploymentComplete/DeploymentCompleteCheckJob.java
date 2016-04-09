@@ -82,7 +82,17 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
             final Environments trimmedEnvironments = newEnvironments.trimToOnlyHaveMaximumOneChangedEnvironment(oldEnvironments, triggerOnlyOnSuccessfulDeployment);
 
             String newStoredData = trimmedEnvironments.toString();
-            if (newStoredData.equals(oldStoredData)) {
+
+            //do not trigger build after first adding trigger (oldEnvironments == null)
+            if (oldStoredData == null) {
+                dataStorage.putValue(dataStorageKey, newStoredData);
+                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.TriggerAdded);
+
+                LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + trimmedEnvironments);
+                return DeploymentCompleteSpecCheckResult.createEmptyResult();
+            }
+
+            if (trimmedEnvironments.equals(oldEnvironments)) {
                 //note: deleting an environment deletes it from the progression api response, but not the deployment api response
                 if (newEnvironments.size() < oldEnvironments.size()) {
                     final Environments deletedEnvironments = trimmedEnvironments.removeEnvironmentsNotIn(newEnvironments);
@@ -103,13 +113,7 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
 
             dataStorage.putValue(dataStorageKey, newStoredData);
 
-            //do not trigger build after first adding trigger (oldEnvironments == null)
-            if (oldStoredData == null) {
-                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.TriggerAdded);
 
-                LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + trimmedEnvironments);
-                return DeploymentCompleteSpecCheckResult.createEmptyResult();
-            }
 
             final Environment environment = trimmedEnvironments.getChangedDeployment(oldEnvironments);
             if (triggerOnlyOnSuccessfulDeployment && !environment.wasLatestDeploymentSuccessful()) {

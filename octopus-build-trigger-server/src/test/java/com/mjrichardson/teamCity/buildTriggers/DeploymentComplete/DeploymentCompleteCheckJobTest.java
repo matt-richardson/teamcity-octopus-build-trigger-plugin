@@ -297,7 +297,7 @@ public class DeploymentCompleteCheckJobTest {
         DeploymentsProviderFactory deploymentsProviderFactory = new FakeDeploymentsProviderFactory(deploymentsProvider);
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        String storedDataValue = new Environment("Environments-1", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25)).toString();
+        String storedDataValue = new Environment("Environments-1", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 25), "the-release-id", "the-deployment-id", "the-version", "the-project-id").toString();
         CustomDataStorage dataStorage = new FakeCustomDataStorage(storedDataValue);
 
         Map<String, String> properties = new HashMap<>();
@@ -325,7 +325,7 @@ public class DeploymentCompleteCheckJobTest {
         Assert.assertEquals(result.getUpdated().size(), 0);
 
         String key = displayName + "|" + octopusUrl + "|" + octopusProject;
-        Assert.assertEquals(dataStorage.getValue(key), "Environments-1;2016-02-25T00:00:00.000+00:00;2016-02-25T00:00:00.000+00:00");
+        Assert.assertEquals(dataStorage.getValue(key), "Environments-1;2016-02-25T00:00:00.000+00:00;2016-02-25T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id");
     }
 
     public void allow_schedule_returns_false() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

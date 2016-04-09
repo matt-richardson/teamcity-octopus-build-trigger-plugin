@@ -4,6 +4,6 @@ import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
 
 public class NullEnvironment extends Environment {
     public NullEnvironment() {
-        super("", new NullOctopusDate(), new NullOctopusDate());
+        super("", new NullOctopusDate(), new NullOctopusDate(), null, null, null, null);
     }
 }

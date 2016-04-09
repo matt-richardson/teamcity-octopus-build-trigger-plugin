@@ -20,7 +20,7 @@ public class FakeDeploymentsProviderWithOneFailedDeployment implements Deploymen
 
     @Override
     public Environments getDeployments(String octopusProject, Environments oldEnvironments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
-        Environment environment = new Environment("Environments-1", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 1));
+        Environment environment = new Environment("Environments-1", new OctopusDate(2016, 2, 25), new OctopusDate(2016, 2, 1), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
         return new Environments(environment);
     }
 }
