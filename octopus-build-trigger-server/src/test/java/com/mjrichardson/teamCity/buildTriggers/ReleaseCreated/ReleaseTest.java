@@ -62,18 +62,18 @@ public class ReleaseTest {
     }
 
     public void equals_returns_false_when_other_object_is_not_a_release() {
-        Release sut = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0");
+        Release sut = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0", "the-project-id");
         Assert.assertFalse(sut.equals(new Releases()));
     }
 
     public void equals_returns_false_when_other_object_is_null() {
-        Release sut = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0");
+        Release sut = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0", "the-project-id");
         Assert.assertFalse(sut.equals(null));
     }
 
     public void equals_returns_true_when_both_objects_are_same() {
-        Release sut = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0");
-        Release other = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0");
+        Release sut = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0", "the-project-id");
+        Release other = new Release("release-1", new OctopusDate(2016, 2, 26), "1.0.0", "the-project-id");
         Assert.assertTrue(sut.equals(other));
     }
 }

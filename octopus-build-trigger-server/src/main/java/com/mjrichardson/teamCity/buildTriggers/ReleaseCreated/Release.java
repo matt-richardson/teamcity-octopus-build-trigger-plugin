@@ -10,10 +10,6 @@ public class Release implements Comparable<Release> {
     public final String version;
     public final String projectId;
 
-    public Release(String releaseId, OctopusDate assembledDate, String version) {
-        this(releaseId, assembledDate, version, null);
-    }
-
     public Release(String releaseId, OctopusDate assembledDate, String version, String projectId) {
         this.releaseId = releaseId;
         this.assembledDate = assembledDate;
@@ -45,7 +41,11 @@ public class Release implements Comparable<Release> {
         final OctopusDate assembledDate = OctopusDate.Parse(split[1]);
         final String version = split[2];
 
-        Release result = new Release(releaseId, assembledDate, version);
+        String projectId = null;
+        if (split.length > 3)
+            projectId = split[3];
+
+        Release result = new Release(releaseId, assembledDate, version, projectId);
         if (result.equals(new NullRelease()))
             return new NullRelease();
         return result;

@@ -101,7 +101,7 @@ public class ReleasesProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         ReleasesProviderImpl ReleasesProviderImpl = new ReleasesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        Release oldRelease = new Release("Releases-63", new OctopusDate(2016, 1, 21, 13, 31, 50, 304), "0.0.1");
+        Release oldRelease = new Release("Releases-63", new OctopusDate(2016, 1, 21, 13, 31, 50, 304), "0.0.1", "the-project-id");
         Releases newReleases = ReleasesProviderImpl.getReleases(ProjectWithLatestReleaseSuccessful, oldRelease);
         Assert.assertEquals(newReleases.size(), 1);
         Release release = newReleases.getNextRelease(oldRelease);
@@ -113,7 +113,7 @@ public class ReleasesProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         ReleasesProviderImpl ReleasesProviderImpl = new ReleasesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        Release oldRelease = new Release("Releases-147", new OctopusDate(2016, 2, 22, 21, 6, 39, 43), "0.0.1");
+        Release oldRelease = new Release("Releases-147", new OctopusDate(2016, 2, 22, 21, 6, 39, 43), "0.0.1", "the-project-id");
         Releases newReleases = ReleasesProviderImpl.getReleases(ProjectWithManyReleases, oldRelease);
         Assert.assertEquals(newReleases.size(), 31);
         Release release = newReleases.getNextRelease(oldRelease);

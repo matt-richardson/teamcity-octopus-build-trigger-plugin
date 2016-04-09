@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
+import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -13,7 +14,8 @@ public class ReleaseCreatedSpecCheckResultTest {
     }
 
     public void create_updated_result_returns_an_object_with_updates_but_no_errors() {
-        ReleaseCreatedSpec releaseCreatedSpec = new ReleaseCreatedSpec("the-url", "the-project", "the-version", "the-release-id");
+        Release release = new Release("the-release-id", new OctopusDate(2016, 4, 9), "the-version", "the-project-id");
+        ReleaseCreatedSpec releaseCreatedSpec = new ReleaseCreatedSpec("the-url", release);
         ReleaseCreatedSpecCheckResult result = ReleaseCreatedSpecCheckResult.createUpdatedResult(releaseCreatedSpec);
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertTrue(result.updatesDetected());

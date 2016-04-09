@@ -97,7 +97,7 @@ public class ReleaseCreatedCheckJobTest {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithOneRelease());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
@@ -174,7 +174,7 @@ public class ReleaseCreatedCheckJobTest {
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
 
-        Release ignored = new Release(null, new NullOctopusDate(), null);
+        Release ignored = new NullRelease();
         Assert.assertEquals(dataStorage.getValue(displayName + "|" + "the-url"), releasesProvider.getReleases("the-url", ignored).toString());
     }
 
@@ -182,7 +182,7 @@ public class ReleaseCreatedCheckJobTest {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
@@ -202,7 +202,7 @@ public class ReleaseCreatedCheckJobTest {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
@@ -223,7 +223,7 @@ public class ReleaseCreatedCheckJobTest {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
@@ -242,7 +242,7 @@ public class ReleaseCreatedCheckJobTest {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithOneRelease());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
@@ -281,7 +281,7 @@ public class ReleaseCreatedCheckJobTest {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithNoReleases());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");

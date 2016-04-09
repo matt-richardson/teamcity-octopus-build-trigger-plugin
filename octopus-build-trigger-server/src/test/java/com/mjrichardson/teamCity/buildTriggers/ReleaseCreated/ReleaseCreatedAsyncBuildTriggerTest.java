@@ -3,6 +3,7 @@ package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAsyncTriggerParameters;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerDescriptor;
+import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckJobCreationException;
@@ -31,9 +32,10 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
         String displayName = "the display name";
         int pollIntervalInSeconds = 100;
         ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
-        String result = sut.getRequestorString(new ReleaseCreatedSpec("the-url", "the-project"));
+        Release release = new Release("the-release-id", new OctopusDate(2016, 4, 9), "the-version", "the-project-id");
+        String result = sut.getRequestorString(new ReleaseCreatedSpec("the-url", release));
 
-        Assert.assertEquals(result, "Release of project the-project created on the-url");
+        Assert.assertEquals(result, "Release the-version of project the-project-id created on the-url");
     }
 
     public void poll_interval_returns_passed_in_poll_interval() {
@@ -104,7 +106,8 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
         roleIds[0] = "role-one";
         roleIds[1] = "role-two";
 
-        ReleaseCreatedSpec spec = new ReleaseCreatedSpec("the-url", "the-project-id", "the-version", "the-release-id");
+        Release release = new Release("the-release-id", new OctopusDate(2016, 4, 9), "the-version", "the-project-id");
+        ReleaseCreatedSpec spec = new ReleaseCreatedSpec("the-url", release);
         Map<String, String> result = sut.getProperties(spec);
 
         Assert.assertEquals(result.get(BUILD_PROPERTY_RELEASE_ID), "the-release-id");

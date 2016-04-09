@@ -37,15 +37,11 @@ class ReleaseCreatedSpec {
     @Nullable
     final String releaseId;
 
-    ReleaseCreatedSpec(@NotNull String url, @NotNull String projectId) {
-        this(url, projectId, null, null);
-    }
-
     ReleaseCreatedSpec(@NotNull String url, @NotNull Release release) {
         this(url, release.projectId, release.version, release.releaseId);
     }
 
-    ReleaseCreatedSpec(@NotNull String url, @NotNull String projectId, @Nullable String version, @Nullable String releaseId) {
+    private ReleaseCreatedSpec(@NotNull String url, @NotNull String projectId, @Nullable String version, @Nullable String releaseId) {
         this.url = url;
         this.projectId = projectId;
         this.version = version;
