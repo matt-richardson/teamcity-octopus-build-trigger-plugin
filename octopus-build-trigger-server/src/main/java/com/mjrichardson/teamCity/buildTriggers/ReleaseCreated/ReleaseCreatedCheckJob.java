@@ -38,6 +38,7 @@ import java.util.Map;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
+//todo: add correlation id
 class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
     @NotNull
     private static final Logger LOG = Logger.getInstance(ReleaseCreatedCheckJob.class.getName());
@@ -80,17 +81,17 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
             final Release newRelease = newReleases.getNextRelease(oldRelease);
             final String newStoredData = newRelease.toString();
 
+            //todo: this needs to change to plain old equals
             if (!newRelease.toString().equals(oldStoredData)) {
                 //do not trigger build after first adding trigger (oldReleases == null)
                 if (oldStoredData == null) {
-                    //store all existing releases, so we only trigger for new releases from this point in time
-                    dataStorage.putValue(dataStorageKey, newReleases.toString());
+                    //store the latest releases, so we only trigger for new releases from this point in time
+                    dataStorage.putValue(dataStorageKey, newReleases.getLatestRelease().toString());
                     analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
 
                     LOG.debug("No previous releases known for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
                     return ReleaseCreatedSpecCheckResult.createEmptyResult();
                 }
-
                 dataStorage.putValue(dataStorageKey, newStoredData);
                 analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
 

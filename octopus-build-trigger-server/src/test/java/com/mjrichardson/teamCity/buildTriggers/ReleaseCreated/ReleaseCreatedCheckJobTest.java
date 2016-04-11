@@ -155,7 +155,7 @@ public class ReleaseCreatedCheckJobTest {
         Assert.assertEquals(updated[0].getRequestorString(), "Release 1.0.0 of project Project-1 created on the-url");
     }
 
-    public void perform_updates_storage_with_all_known_machines_if_no_previous_stored_data() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidOctopusApiKeyException, ProjectNotFoundException, InvalidOctopusUrlException, ParseException, ReleasesProviderException {
+    public void perform_updates_storage_with_latest_known_release_if_no_previous_stored_data() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidOctopusApiKeyException, ProjectNotFoundException, InvalidOctopusUrlException, ParseException, ReleasesProviderException {
         //this situation is when trigger is first setup
         FakeReleasesProviderWithTwoReleases releasesProvider = new FakeReleasesProviderWithTwoReleases();
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(releasesProvider);
@@ -174,8 +174,7 @@ public class ReleaseCreatedCheckJobTest {
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
 
-        Release ignored = new NullRelease();
-        Assert.assertEquals(dataStorage.getValue(displayName + "|" + "the-url"), releasesProvider.getReleases("the-url", ignored).toString());
+        Assert.assertEquals(dataStorage.getValue(displayName + "|" + "the-url"), new Release("release-2", new OctopusDate(2016, 3, 2), "1.1.0", "Project-1").toString());
     }
 
     public void perform_returns_updated_result_if_new_release() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

@@ -96,6 +96,26 @@ public class ReleasesTest {
         Assert.assertEquals(release, oldRelease);
     }
 
+    public void get_latest_release_returns_latest_release_ordered_by_date() throws Exception {
+        final Release oldRelease = new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id");
+        final Release currentRelease = new Release("release-2", new OctopusDate(2016, 3, 2), "1.1.0", "the-project-id");
+        final Release newRelease = new Release("release-3", new OctopusDate(2016, 3, 3), "1.2.0", "the-project-id");
+        final String newData = String.format("%s|%s|%s", oldRelease.toString(), currentRelease.toString(), newRelease.toString());
+        Releases newReleases = Releases.Parse(newData);
+
+        Release release = newReleases.getLatestRelease();
+        Assert.assertNotNull(release);
+        Assert.assertEquals(release, newRelease);
+    }
+
+    public void get_latest_release_returns_null_release_if_no_releases() throws Exception {
+        Releases newReleases = new Releases();
+
+        Release release = newReleases.getLatestRelease();
+        Assert.assertNotNull(release);
+        Assert.assertEquals(release.getClass(), NullRelease.class);
+    }
+
     public void to_array_converts_releases_to_array_successfully() throws NeedToDeleteAndRecreateTrigger {
         final Release oldRelease = new Release("release-2", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id");
         final Release newRelease = new Release("release-3", new OctopusDate(2016, 3, 3), "1.2.0", "the-project-id");

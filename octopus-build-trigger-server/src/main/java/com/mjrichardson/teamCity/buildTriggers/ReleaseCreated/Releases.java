@@ -87,4 +87,11 @@ public class Releases {
     public Release[] toArray() {
         return statusMap.toArray(new Release[0]);
     }
+
+    public Release getLatestRelease() {
+        if (size() == 0)
+            return new NullRelease();
+        Collections.sort(statusMap);
+        return statusMap.get(0);
+    }
 }
