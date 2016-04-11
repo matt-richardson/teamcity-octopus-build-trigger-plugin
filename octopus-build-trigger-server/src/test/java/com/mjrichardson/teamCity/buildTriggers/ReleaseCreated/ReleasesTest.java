@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -95,7 +96,7 @@ public class ReleasesTest {
         Assert.assertEquals(release, oldRelease);
     }
 
-    public void to_array_converts_releases_to_array_successfully() {
+    public void to_array_converts_releases_to_array_successfully() throws NeedToDeleteAndRecreateTrigger {
         final Release oldRelease = new Release("release-2", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id");
         final Release newRelease = new Release("release-3", new OctopusDate(2016, 3, 3), "1.2.0", "the-project-id");
         Releases releases = Releases.Parse(String.format("%s|%s", oldRelease.toString(), newRelease.toString()));

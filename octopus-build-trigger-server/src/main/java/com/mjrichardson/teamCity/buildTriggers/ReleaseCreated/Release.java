@@ -1,16 +1,22 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public class Release implements Comparable<Release> {
+    @NotNull
     public final String releaseId;
+    @NotNull
     public final OctopusDate assembledDate;
+    @NotNull
     public final String version;
+    @NotNull
     public final String projectId;
 
-    public Release(String releaseId, OctopusDate assembledDate, String version, String projectId) {
+    public Release(@NotNull String releaseId, @NotNull OctopusDate assembledDate, @NotNull String version, @NotNull String projectId) {
         this.releaseId = releaseId;
         this.assembledDate = assembledDate;
         this.version = version;
@@ -18,8 +24,9 @@ public class Release implements Comparable<Release> {
     }
 
     @Override
+    //todo: this should store projectid
     public String toString() {
-        return releaseId + ";" + assembledDate.toString() + ";" + version;
+        return releaseId + ";" + assembledDate.toString() + ";" + version + ";" + projectId;
     }
 
     public static Release Parse(Map item) {
@@ -31,7 +38,7 @@ public class Release implements Comparable<Release> {
         return new Release(releaseId, assembledDate, version, projectId);
     }
 
-    public static Release Parse(String pair) {
+    public static Release Parse(String pair) throws NeedToDeleteAndRecreateTrigger {
         if (pair == null || pair == "") {
             return new NullRelease();
         }
@@ -41,9 +48,10 @@ public class Release implements Comparable<Release> {
         final OctopusDate assembledDate = OctopusDate.Parse(split[1]);
         final String version = split[2];
 
-        String projectId = null;
-        if (split.length > 3)
-            projectId = split[3];
+        if (split.length < 4)
+            throw new NeedToDeleteAndRecreateTrigger();
+
+        final String projectId = split[3];
 
         Release result = new Release(releaseId, assembledDate, version, projectId);
         if (result.equals(new NullRelease()))
