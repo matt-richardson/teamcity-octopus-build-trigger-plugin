@@ -85,10 +85,10 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
 
             //do not trigger build after first adding trigger (oldEnvironments == null)
             if (oldStoredData == null) {
-                dataStorage.putValue(dataStorageKey, newStoredData);
+                dataStorage.putValue(dataStorageKey, newEnvironments.toString());
                 analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.TriggerAdded);
 
-                LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + trimmedEnvironments);
+                LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newEnvironments);
                 return DeploymentCompleteSpecCheckResult.createEmptyResult();
             }
 

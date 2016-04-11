@@ -1,8 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.*;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
-import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import org.testng.Assert;
@@ -12,6 +11,7 @@ import org.testng.annotations.Test;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -156,6 +156,27 @@ public class DeploymentCompleteCheckJobTest {
         Assert.assertEquals(result.getUpdated().size(), 1);
         DeploymentCompleteSpec updated[] = result.getUpdated().toArray(new DeploymentCompleteSpec[0]);
         Assert.assertEquals(updated[0].getRequestorString(), "Successful deployment of the-project-id to Environments-1 on the-url");
+    }
+
+    public void perform_returns_empty_result_if_no_previous_data_stored_and_stores_all_known_environments() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, ParseException, InvalidOctopusUrlException {
+        FakeDeploymentsProviderWithTwoDeployments deploymentsProvider = new FakeDeploymentsProviderWithTwoDeployments();
+        DeploymentsProviderFactory deploymentsProviderFactory = new FakeDeploymentsProviderFactory(deploymentsProvider);
+        String displayName = "the-display-name";
+        String buildType = "the-build-type";
+        CustomDataStorage dataStorage = new FakeCustomDataStorage();
+
+        Map<String, String> properties = new HashMap<>();
+        String octopusUrl = "the-url";
+        properties.put(OCTOPUS_URL, octopusUrl);
+        properties.put(OCTOPUS_APIKEY, "the-api-key");
+        String octopusProject = "the-project-id";
+        properties.put(OCTOPUS_PROJECT_ID, octopusProject);
+        DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+
+        sut.perform();
+        String key = displayName + "|" + octopusUrl + "|" + octopusProject;
+
+        Assert.assertEquals(dataStorage.getValue(key), deploymentsProvider.getDeployments(octopusProject, new Environments()).toString());
     }
 
     public void perform_returns_empty_result_if_new_deployment_but_it_failed_when_only_triggering_on_successful_builds() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
