@@ -177,7 +177,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         LOG.debug("Found deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "'");
 
         if (lastKnownEnvironmentState.isLatestDeploymentOlderThan(deployment.createdDate)) {
-            LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "' was newer than the last known deployment to this environment");
+            LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "' was newer than the last known deployment to this environment ('" + lastKnownEnvironmentState.latestDeployment + "')");
 
             String taskResponse = contentProvider.getContent(deployment.taskLink);
             ApiTaskResponse task = new ApiTaskResponse(taskResponse);
@@ -188,6 +188,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
                 ApiReleaseResponse release = new ApiReleaseResponse(releaseResponse);
 
                 Environment environment = Environment.CreateFrom(deployment, task, release);
+                LOG.debug("Updating results based on '" + environment + "'");
                 result.addOrUpdate(environment);
 
                 if (result.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment()) {
@@ -196,7 +197,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
                 }
             }
         } else {
-            LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "' was older than the last known deployment to this environment");
+            LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "' was older than the last known deployment to this environment ('" + lastKnownEnvironmentState.latestDeployment + "'");
         }
         return false;
     }
