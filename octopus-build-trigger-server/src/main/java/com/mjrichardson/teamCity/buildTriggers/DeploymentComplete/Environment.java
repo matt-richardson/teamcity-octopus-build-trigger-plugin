@@ -53,22 +53,19 @@ public class Environment {
         return String.format("%s;%s;%s;%s;%s;%s;%s", environmentId, latestDeployment, latestSuccessfulDeployment, releaseId, deploymentId, version, projectId);
     }
 
-    public static Environment Parse(String toStringRepresentation) {
+    public static Environment Parse(String toStringRepresentation) throws NeedToDeleteAndRecreateTrigger {
         final String[] split = toStringRepresentation.split(";");
+
+        if (split.length < 4)
+            throw new NeedToDeleteAndRecreateTrigger();
+
         final String environmentId = split[0];
         final OctopusDate latestDeployment = OctopusDate.Parse(split[1]);
         final OctopusDate latestSuccessfulDeployment = OctopusDate.Parse(split[2]);
-        String releaseId = null;
-        String deploymentId = null;
-        String version = null;
-        String projectId = null;
-
-        if (split.length > 3) {
-            releaseId = split[3];
-            deploymentId = split[4];
-            version = split[5];
-            projectId = split[6];
-        }
+        final String releaseId = split[3];
+        final String deploymentId = split[4];
+        final String version = split[5];
+        final String projectId = split[6];
 
         return new Environment(environmentId, latestDeployment, latestSuccessfulDeployment, releaseId, deploymentId, version, projectId);
     }

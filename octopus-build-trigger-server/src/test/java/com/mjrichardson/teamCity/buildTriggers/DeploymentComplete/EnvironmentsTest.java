@@ -38,7 +38,7 @@ public class EnvironmentsTest {
     }
 
     public void is_empty_returns_false_when_has_deployments() throws Exception {
-        final String expected = "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00|Environments-2;2015-12-07T14:12:14.624+00:00;2015-12-07T14:12:14.624+00:00";
+        final String expected = "Environments-1;2015-12-08T08:09:39.624+00:00;2015-11-12T09:22:00.865+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-2;2015-12-07T14:12:14.624+00:00;2015-12-07T14:12:14.624+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environments = Environments.Parse(expected);
         Assert.assertFalse(environments.isEmpty());
     }
@@ -135,15 +135,15 @@ public class EnvironmentsTest {
 
     @Test(expectedExceptions = NoChangedEnvironmentsException.class)
     public void get_changed_deployment_throws_exception_when_none_changed() throws Exception {
-        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments oldEnvironments = Environments.Parse(oldData);
-        final String newData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String newData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments newEnvironments = Environments.Parse(newData);
 
         newEnvironments.getChangedDeployment(oldEnvironments);
     }
 
-    public void to_array_converts_deployments_to_array_successfully() throws ParseException {
+    public void to_array_converts_deployments_to_array_successfully() throws ParseException, NeedToDeleteAndRecreateTrigger {
         final String data = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environments = Environments.Parse(data);
         Environment[] array = environments.toArray();

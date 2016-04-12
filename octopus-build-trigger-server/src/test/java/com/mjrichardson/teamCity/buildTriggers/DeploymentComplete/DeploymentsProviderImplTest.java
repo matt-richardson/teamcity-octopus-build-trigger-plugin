@@ -128,7 +128,7 @@ public class DeploymentsProviderImplTest {
     public void get_deployments_when_up_to_date() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
-        Environments oldEnvironments = Environments.Parse("Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00");
+        Environments oldEnvironments = Environments.Parse("Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00;the-release-id;the-deployment-id;the-version;the-project-id");
         Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
@@ -295,12 +295,12 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedFewerEnvironments);
     }
 
-    public void determine_outcome_of_fallback_handles_identical_responses() throws ParseException {
+    public void determine_outcome_of_fallback_handles_identical_responses() throws ParseException, NeedToDeleteAndRecreateTrigger {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
 
-        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromProgressionApi = Environments.Parse(oldData);
         Environments environmentsFromDeploymentsApi = Environments.Parse(oldData);
 
@@ -308,56 +308,56 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
     }
 
-    public void determine_outcome_of_fallback_handles_different_environments() throws ParseException {
+    public void determine_outcome_of_fallback_handles_different_environments() throws ParseException, NeedToDeleteAndRecreateTrigger {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
 
-        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromProgressionApi = Environments.Parse(oldData);
-        final String newData = "Environments-2;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String newData = "Environments-2;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromDeploymentsApi = Environments.Parse(newData);
 
         AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentEnvironments);
     }
 
-    public void determine_outcome_of_fallback_handles_response_with_newer_latest_deployment_date() throws ParseException {
+    public void determine_outcome_of_fallback_handles_response_with_newer_latest_deployment_date() throws ParseException, NeedToDeleteAndRecreateTrigger {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
 
-        final String progressionApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String progressionApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromProgressionApi = Environments.Parse(progressionApiResult);
-        final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T15:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T15:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
 
         AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
     }
 
-    public void determine_outcome_of_fallback_handles_response_with_newer_successful_latest_deployment_date() throws ParseException {
+    public void determine_outcome_of_fallback_handles_response_with_newer_successful_latest_deployment_date() throws ParseException, NeedToDeleteAndRecreateTrigger {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
 
-        final String progressionApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String progressionApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromProgressionApi = Environments.Parse(progressionApiResult);
-        final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T15:00:00.000+00:00;2016-01-20T15:00:00.000+00:00";
+        final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T15:00:00.000+00:00;2016-01-20T15:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
 
         AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
     }
 
-    public void determine_outcome_of_fallback_handles_response_with_older_latest_deployment_date() throws ParseException {
+    public void determine_outcome_of_fallback_handles_response_with_older_latest_deployment_date() throws ParseException, NeedToDeleteAndRecreateTrigger {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
 
-        final String progressionApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00";
+        final String progressionApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromProgressionApi = Environments.Parse(progressionApiResult);
-        final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00|Environments-21;2016-01-20T13:00:00.000+00:00;2016-01-20T13:00:00.000+00:00";
+        final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T13:00:00.000+00:00;2016-01-20T13:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
 
         AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);

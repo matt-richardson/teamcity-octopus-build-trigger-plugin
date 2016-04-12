@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
 import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.util.StringUtil;
@@ -25,7 +26,7 @@ public class Environments implements Iterable<Environment>{
         addOrUpdate(environment);
     }
 
-    public static Environments Parse(String oldStoredData) throws ParseException {
+    public static Environments Parse(String oldStoredData) throws ParseException, NeedToDeleteAndRecreateTrigger {
         Environments result = new Environments();
 
         if (!StringUtil.isEmptyOrSpaces(oldStoredData)) {
