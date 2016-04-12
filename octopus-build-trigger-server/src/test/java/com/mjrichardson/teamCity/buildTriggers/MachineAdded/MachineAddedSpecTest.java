@@ -5,11 +5,6 @@ import org.testng.annotations.Test;
 
 @Test
 public class MachineAddedSpecTest {
-//    public void can_create_requestor_string_when_version_not_supplied() {
-//        MachineAddedSpec sut = new MachineAddedSpec("theurl", "theproject");
-//        Assert.assertEquals(sut.getRequestorString(), "Machine of project theproject created on theurl");
-//    }
-
     public void can_create_requestor_string() {
         Machine machine = new Machine("the-machine-id", "the-machine-name");
         MachineAddedSpec sut = new MachineAddedSpec("theurl", machine);
