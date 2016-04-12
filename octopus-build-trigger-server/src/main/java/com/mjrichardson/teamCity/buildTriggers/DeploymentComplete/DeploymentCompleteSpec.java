@@ -61,8 +61,6 @@ public class DeploymentCompleteSpec {
     }
 
     public String getRequestorString() {
-        if (environmentId == null || environmentId == null)
-            return String.format("Unsuccessful attempt to get deployments for %s on %s", projectId, url);
         if (wasSuccessful)
             return String.format("Successful deployment of %s to %s on %s", projectId, environmentId, url);
         return String.format("Deployment of %s to %s on %s", projectId, environmentId, url);
