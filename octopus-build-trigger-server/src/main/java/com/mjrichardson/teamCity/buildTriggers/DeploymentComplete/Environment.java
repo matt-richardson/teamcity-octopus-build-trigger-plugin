@@ -1,19 +1,33 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.mjrichardson.teamCity.buildTriggers.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public class Environment {
+    @NotNull
     public final String environmentId;
+    @NotNull
     public OctopusDate latestDeployment;
+    @NotNull
     public OctopusDate latestSuccessfulDeployment;
+    @NotNull
     String releaseId;
+    @NotNull
     String deploymentId;
+    @NotNull
     String version;
+    @NotNull
     String projectId;
 
-    public Environment(String environmentId, OctopusDate latestDeployment, OctopusDate latestSuccessfulDeployment, String releaseId, String deploymentId, String version, String projectId) {
+    public Environment(@NotNull String environmentId,
+                       @NotNull OctopusDate latestDeployment,
+                       @NotNull OctopusDate latestSuccessfulDeployment,
+                       @NotNull String releaseId,
+                       @NotNull String deploymentId,
+                       @NotNull String version,
+                       @NotNull String projectId) {
         this.environmentId = environmentId;
         this.latestDeployment = latestDeployment;
         this.latestSuccessfulDeployment = latestSuccessfulDeployment;
@@ -58,6 +72,9 @@ public class Environment {
 
         if (split.length < 4)
             throw new NeedToDeleteAndRecreateTrigger();
+
+        //todo: determine if this is going to break the "things have changed test"
+        //todo: add test to ensure "null" is treated as null
 
         final String environmentId = split[0];
         final OctopusDate latestDeployment = OctopusDate.Parse(split[1]);

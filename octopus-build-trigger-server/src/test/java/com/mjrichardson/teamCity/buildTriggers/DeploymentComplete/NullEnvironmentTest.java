@@ -21,7 +21,7 @@ public class NullEnvironmentTest {
 
     public void equals_returns_true_for_when_other_has_null_dates() {
         Environment sut = new NullEnvironment();
-        Environment other = new Environment("", new NullOctopusDate(), new NullOctopusDate(), null, null, null, null);
+        Environment other = new Environment("", new NullOctopusDate(), new NullOctopusDate(), "", "", "", "");
         Assert.assertTrue(sut.equals(other));
     }
 }
