@@ -1,20 +1,26 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Machine implements Comparable<Machine> {
+    @NotNull
     public final String id;
+    @NotNull
     public final String name;
+    @NotNull
     public final String[] environmentIds;
+    @NotNull
     public final String[] roleIds;
 
     public Machine(String id, String name) {
         this(id, name, new String[0], new String[0]);
     }
 
-    public Machine(String id, String name, String[] environmentIds, String[] roleIds) {
+    public Machine(@NotNull String id, @NotNull String name, @NotNull String[] environmentIds, @NotNull String[] roleIds) {
         this.id = id;
         this.name = name;
         this.environmentIds = environmentIds;
