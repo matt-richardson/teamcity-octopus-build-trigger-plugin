@@ -14,6 +14,16 @@ Download the [latest release](https://github.com/matt-richardson/teamcity-octopu
 
 See [TeamCity documentation](https://confluence.jetbrains.com/display/TCD9/Installing+Additional+Plugins) for more info.
 
+# Usage
+
+Once the plugin is installed, add one of the triggers to your build. All 3 look similar to:
+
+![TeamCity trigger configuration](teamcity-trigger-configuration.png "TeamCity trigger configuration")
+
+Once a build is triggered, parameters will be passed to the build:
+
+![TeamCity build parameters](teamcity-build-params.png "TeamCity build parameters")
+
 # Outstanding items
 
 - test older versions of Octopus
