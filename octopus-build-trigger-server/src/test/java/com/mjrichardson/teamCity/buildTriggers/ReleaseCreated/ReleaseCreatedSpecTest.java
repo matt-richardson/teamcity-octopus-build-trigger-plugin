@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 @Test
 public class ReleaseCreatedSpecTest {
-    public void can_create_requestor_string_when_version_supplied() {
+    public void can_create_requestor_string() {
         Release release = new Release("the-release-id", new OctopusDate(2016, 4, 9), "the-version", "the-project-id");
         ReleaseCreatedSpec sut = new ReleaseCreatedSpec("the-url", release);
         Assert.assertEquals(sut.getRequestorString(), "Release the-version of project the-project-id created on the-url");
