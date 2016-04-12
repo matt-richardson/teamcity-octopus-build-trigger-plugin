@@ -25,14 +25,13 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 class MachineAddedSpec {
     @NotNull
     private final String url;
     @NotNull
     final String machineName;
-    @Nullable
+    @NotNull
     final String machineId;
     @NotNull
     final String environmentIds;
@@ -41,7 +40,7 @@ class MachineAddedSpec {
 
     private MachineAddedSpec(@NotNull String url,
                      @NotNull String machineName,
-                     @Nullable String machineId,
+                     @NotNull String machineId,
                      @NotNull String[] environmentIds,
                      @NotNull String[] roleIds) {
         this.url = url;
