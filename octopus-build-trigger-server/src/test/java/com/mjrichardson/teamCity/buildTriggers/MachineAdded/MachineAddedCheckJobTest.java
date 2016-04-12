@@ -81,7 +81,7 @@ public class MachineAddedCheckJobTest {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithOneMachine());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("Machine-1", "MachineOne")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("Machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
@@ -158,8 +158,8 @@ public class MachineAddedCheckJobTest {
 
     public void perform_returns_empty_result_if_machine_deleted() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         Machines machines = new Machines();
-        machines.add(new Machine("Machine-1", "MachineOne"));
-        machines.add(new Machine("Machine-2", "MachineTwo"));//this one is deleted
+        machines.add(new Machine("Machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" }));
+        machines.add(new Machine("Machine-2", "MachineTwo", new String[] { "env-id" }, new String[]{ "role-name" }));//this one is deleted
 
         CustomDataStorage dataStorage = new FakeCustomDataStorage(machines.toString());
 
@@ -173,14 +173,14 @@ public class MachineAddedCheckJobTest {
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         //check we are storing the correct data for next time round
-        Assert.assertEquals(dataStorage.getValue(displayName + "|" + "the-url"), new Machine("Machine-1", "MachineOne").toString());
+        Assert.assertEquals(dataStorage.getValue(displayName + "|" + "the-url"), new Machine("Machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" }).toString());
     }
 
     public void perform_returns_updated_result_if_new_machine() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("machine-1", "MachineOne")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
@@ -198,7 +198,7 @@ public class MachineAddedCheckJobTest {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("machine-1", "MachineOne")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
@@ -215,7 +215,7 @@ public class MachineAddedCheckJobTest {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithOneMachine());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("Machine-1", "MachineOne")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("Machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
@@ -254,7 +254,7 @@ public class MachineAddedCheckJobTest {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithNoMachines());
         String displayName = "the-display-name";
         String buildType = "the-build-type";
-        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("machine-1", "MachineOne")).toString());
+        CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");

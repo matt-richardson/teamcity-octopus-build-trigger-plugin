@@ -66,7 +66,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1), null, null, null, null));
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1), "", "", "", ""));
     }
 
     public void get_deployments_from_empty_start_with_no_deployments() throws ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
@@ -77,7 +77,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1), null, null, null, null));
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1), "", "", "", ""));
     }
 
     @Test(expectedExceptions = ProjectNotFoundException.class)
@@ -180,7 +180,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1), null, null, null, null));
+        Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1), "", "", "", ""));
     }
 
     public void get_deployments_when_multiple_environments_and_no_deployments_to_one_of_the_environments() throws Exception {
@@ -195,7 +195,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2015, 4, 9, 7, 42, 13, 557), new OctopusDate(2015, 4, 9, 7, 42, 13, 557), "Releases-303", "Deployments-303", "0.0.3", "Projects-161"));
         environment = newEnvironments.getEnvironment("Environments-21");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1), null, null, null, null));
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1), "", "", "", ""));
         Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
     }
 
@@ -211,7 +211,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2015, 4, 9, 7, 42, 13, 557), new OctopusDate(2015, 4, 9, 7, 42, 13, 557), "Releases-303", "Deployments-303", "0.0.3", "Projects-161"));
         environment = newEnvironments.getEnvironment("Environments-21");
         Assert.assertNotNull(environment);
-        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1), null, null, null, null));
+        Assert.assertEquals(environment, new Environment("Environments-21", new OctopusDate(1970, 1, 1), new OctopusDate(1970, 1, 1), "", "", "", ""));
         Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
     }
 

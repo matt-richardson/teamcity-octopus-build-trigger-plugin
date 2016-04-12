@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
 import jetbrains.buildServer.util.StringUtil;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class Machines {
         this.statusMap = new ArrayList<>();
     }
 
-    public static Machines Parse(String oldStoredData) {
+    public static Machines Parse(String oldStoredData) throws NeedToDeleteAndRecreateTrigger {
         Machines result = new Machines();
 
         if (!StringUtil.isEmptyOrSpaces(oldStoredData)) {

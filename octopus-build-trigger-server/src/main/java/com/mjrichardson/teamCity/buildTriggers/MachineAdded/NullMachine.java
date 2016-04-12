@@ -2,6 +2,6 @@ package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
 public class NullMachine extends Machine {
     public NullMachine() {
-        super("", "");
+        super("", "", new String[]{}, new String[]{});
     }
 }

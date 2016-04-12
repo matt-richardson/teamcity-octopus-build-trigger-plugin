@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -16,10 +17,6 @@ public class Machine implements Comparable<Machine> {
     @NotNull
     public final String[] roleIds;
 
-    public Machine(String id, String name) {
-        this(id, name, new String[0], new String[0]);
-    }
-
     public Machine(@NotNull String id, @NotNull String name, @NotNull String[] environmentIds, @NotNull String[] roleIds) {
         this.id = id;
         this.name = name;
@@ -29,7 +26,7 @@ public class Machine implements Comparable<Machine> {
 
     @Override
     public String toString() {
-        return id + ";" + name;
+        return String.format("%s;%s;%s;%s", id, name, String.join(",", environmentIds), String.join(",", roleIds));
     }
 
     public static Machine Parse(Map item) {
@@ -51,16 +48,23 @@ public class Machine implements Comparable<Machine> {
         return new Machine(id, name, environmentIds.toArray(new String[0]), roleIds.toArray(new String[0]));
     }
 
-    public static Machine Parse(String pair) {
+    public static Machine Parse(String pair) throws NeedToDeleteAndRecreateTrigger {
         if (pair == null || pair == "") {
             return new NullMachine();
         }
         final Integer DONT_REMOVE_EMPTY_VALUES = -1;
         final String[] split = pair.split(";", DONT_REMOVE_EMPTY_VALUES);
+
+        if (split.length < 4)
+            throw new NeedToDeleteAndRecreateTrigger();
+
         final String id = split[0];
         final String name = split[1];
+        final String[] environmentIds = split[2].split(",");
+        final String[] roles = split[3].split(",");
 
-        Machine result = new Machine(id, name);
+        Machine result = new Machine(id, name, environmentIds, roles);
+
         if (result.equals(new NullMachine()))
             return new NullMachine();
         return result;

@@ -142,7 +142,7 @@ public class Environments implements Iterable<Environment>{
     }
 
     public void addEnvironment(String environmentId) {
-        addOrUpdate(environmentId, new NullOctopusDate(), new NullOctopusDate(), null, null, null, null);
+        addOrUpdate(environmentId, new NullOctopusDate(), new NullOctopusDate(), "", "", "", "");
     }
 
     public Environments trimToOnlyHaveMaximumOneChangedEnvironment(Environments oldEnvironments) {

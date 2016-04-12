@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 @Test
 public class MachineAddedSpecTest {
     public void can_create_requestor_string() {
-        Machine machine = new Machine("the-machine-id", "the-machine-name");
+        Machine machine = new Machine("the-machine-id", "the-machine-name", new String[] { "env-id" }, new String[]{ "role-name" });
         MachineAddedSpec sut = new MachineAddedSpec("the-url", machine);
         Assert.assertEquals(sut.getRequestorString(), "Machine the-machine-name added to the-url");
     }
