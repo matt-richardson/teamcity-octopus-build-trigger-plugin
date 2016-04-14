@@ -9,8 +9,6 @@ public class ApiTaskResponse {
     public Boolean isCompleted;
     public Boolean finishedSuccessfully;
 
-    //todo: cache for a week - this will never change
-
     public ApiTaskResponse(String taskResponse) throws ParseException {
         JSONParser parser = new JSONParser();
 

@@ -13,8 +13,6 @@ public class ApiRootResponse {
 
     private static final Logger LOG = Logger.getInstance(ApiRootResponse.class.getName());
 
-    //todo: cache for an hour - this will rarely change
-
     public ApiRootResponse(String apiResponse, AnalyticsTracker analyticsTracker) throws ParseException {
         JSONParser parser = new JSONParser();
         LOG.debug("Parsing '" + apiResponse + "'");

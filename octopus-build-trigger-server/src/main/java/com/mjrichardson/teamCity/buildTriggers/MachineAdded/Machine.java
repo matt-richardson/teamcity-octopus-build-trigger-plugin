@@ -65,7 +65,6 @@ public class Machine implements Comparable<Machine> {
 
         Machine result = new Machine(id, name, environmentIds, roles);
 
-        //todo: is this null check required?
         if (result.equals(new NullMachine()))
             return new NullMachine();
         return result;

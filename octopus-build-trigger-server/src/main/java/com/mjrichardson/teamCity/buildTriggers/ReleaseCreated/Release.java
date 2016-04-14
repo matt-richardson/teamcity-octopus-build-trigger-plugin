@@ -24,7 +24,6 @@ public class Release implements Comparable<Release> {
     }
 
     @Override
-    //todo: this should store projectid
     public String toString() {
         return releaseId + ";" + assembledDate.toString() + ";" + version + ";" + projectId;
     }
