@@ -11,7 +11,7 @@ public class FakeDeploymentsProviderFactory extends DeploymentsProviderFactory {
     private final DeploymentsProvider deploymentsProvider;
 
     public FakeDeploymentsProviderFactory(DeploymentsProvider deploymentsProvider) {
-        super(new FakeAnalyticsTracker());
+        super(new FakeAnalyticsTracker(), new FakeCacheManager());
         this.deploymentsProvider = deploymentsProvider;
     }
 

@@ -26,6 +26,7 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
@@ -46,11 +47,13 @@ public class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrig
     private final AnalyticsTracker analyticsTracker;
     @NotNull
     private static final Logger LOG = Logger.getInstance(DeploymentCompleteAsyncBuildTrigger.class.getName());
+    private CacheManager cacheManager;
 
-    public DeploymentCompleteAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker) {
+    public DeploymentCompleteAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker, CacheManager cacheManager) {
         this.displayName = displayName;
         this.pollIntervalInSeconds = pollIntervalInSeconds;
         this.analyticsTracker = analyticsTracker;
+        this.cacheManager = cacheManager;
     }
 
     @NotNull
@@ -73,7 +76,8 @@ public class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrig
                 asyncTriggerParameters.getBuildType().toString(),
                 asyncTriggerParameters.getCustomDataStorage(),
                 asyncTriggerParameters.getTriggerDescriptor().getProperties(),
-                analyticsTracker);
+                analyticsTracker,
+                cacheManager);
     }
 
     @NotNull

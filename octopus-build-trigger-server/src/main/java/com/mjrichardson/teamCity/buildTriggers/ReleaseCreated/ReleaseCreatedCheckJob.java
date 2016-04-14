@@ -26,6 +26,7 @@ package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
@@ -50,8 +51,8 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
     private final Map<String, String> props;
     private final AnalyticsTracker analyticsTracker;
 
-    public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
-        this(new ReleasesProviderFactory(analyticsTracker), displayName, buildType, dataStorage, properties, analyticsTracker);
+    public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager) {
+        this(new ReleasesProviderFactory(analyticsTracker, cacheManager), displayName, buildType, dataStorage, properties, analyticsTracker);
     }
 
     public ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {

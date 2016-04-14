@@ -41,12 +41,12 @@ public class MachinesProviderImpl implements MachinesProvider {
         }
     }
 
-    private Machines getMachines(HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, ProjectNotFoundException {
-        String machinesResponse = contentProvider.getContent(apiRootResponse.machinesApiLink);
+    private Machines getMachines(HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, ProjectNotFoundException, InvalidCacheConfigurationException {
+        String machinesResponse = contentProvider.getContent(CacheManager.CacheNames.ApiMachines, apiRootResponse.machinesApiLink);
         ApiMachinesResponse apiMachinesResponse = new ApiMachinesResponse(machinesResponse);
         Machines machines = apiMachinesResponse.machines;
         while (shouldGetNextMachinesPage(apiMachinesResponse, machines)) {
-            machinesResponse = contentProvider.getContent(apiMachinesResponse.nextLink);
+            machinesResponse = contentProvider.getContent(CacheManager.CacheNames.ApiMachines, apiMachinesResponse.nextLink);
             apiMachinesResponse = new ApiMachinesResponse(machinesResponse);
             Machines newMachines = apiMachinesResponse.machines;
             machines.add(newMachines);
@@ -55,8 +55,8 @@ public class MachinesProviderImpl implements MachinesProvider {
     }
 
     @NotNull
-    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {
-        final String apiResponse = contentProvider.getContent("/api");
+    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        final String apiResponse = contentProvider.getContent(CacheManager.CacheNames.ApiRoot, "/api");
         return new ApiRootResponse(apiResponse, analyticsTracker);
     }
 

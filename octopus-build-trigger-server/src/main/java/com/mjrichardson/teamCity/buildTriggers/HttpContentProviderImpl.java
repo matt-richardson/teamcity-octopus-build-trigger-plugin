@@ -39,11 +39,13 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     private String apiKey;
     @NotNull
     private final Integer connectionTimeoutInMilliseconds;
+    private final CacheManager cacheManager;
 
-    public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeoutInMilliseconds) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeoutInMilliseconds, CacheManager cacheManager) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         this.octopusUrl = octopusUrl;
         this.apiKey = apiKey;
         this.connectionTimeoutInMilliseconds = connectionTimeoutInMilliseconds;
+        this.cacheManager = cacheManager;
     }
 
     private CloseableHttpClient getHttpClient(@NotNull Integer connectionTimeoutInMilliseconds) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
@@ -71,8 +73,13 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     }
 
     @NotNull
-    public String getContent(@NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public String getContent(CacheManager.CacheNames cacheName, @NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
         final URI uri = new URL(octopusUrl + uriPath).toURI();
+
+        final String cachedResponse = cacheManager.getFromCache(cacheName, uri);
+        if (cachedResponse != null)
+            return cachedResponse;
+
         final HttpGet httpGet = new HttpGet(uri);
         CloseableHttpClient httpClient = getHttpClient(this.connectionTimeoutInMilliseconds);
 
@@ -103,6 +110,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
             final HttpEntity entity = response.getEntity();
             final String content = EntityUtils.toString(entity);
             LOG.debug("request to " + uri + " returned " + content);
+            cacheManager.addToCache(cacheName, uri, content);
             return content;
         } catch (UnknownHostException e) {
             LOG.warn("Unknown host exception while getting response from " + uri);

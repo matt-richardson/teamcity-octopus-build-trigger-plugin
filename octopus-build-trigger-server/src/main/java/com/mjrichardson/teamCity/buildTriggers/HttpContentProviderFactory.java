@@ -14,14 +14,17 @@ public class HttpContentProviderFactory {
     private final String apiKey;
     @NotNull
     private final Integer connectionTimeout;
+    @NotNull
+    private final CacheManager cacheManager;
 
-    public HttpContentProviderFactory(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout) {
+    public HttpContentProviderFactory(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout, CacheManager cacheManager) {
         this.octopusUrl = octopusUrl;
         this.apiKey = apiKey;
         this.connectionTimeout = connectionTimeout;
+        this.cacheManager = cacheManager;
     }
 
     public HttpContentProvider getContentProvider() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        return new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout);
+        return new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout, cacheManager);
     }
 }

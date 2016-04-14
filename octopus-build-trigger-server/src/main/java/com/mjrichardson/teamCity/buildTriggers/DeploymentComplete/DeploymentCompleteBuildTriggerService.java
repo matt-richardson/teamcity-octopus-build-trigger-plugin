@@ -25,10 +25,7 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
-import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
-import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTriggerFactory;
-import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
+import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerService;
 import jetbrains.buildServer.buildTriggers.BuildTriggeringPolicy;
@@ -44,13 +41,17 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
     @NotNull
     private final AnalyticsTracker analyticsTracker;
     @NotNull
+    private final CacheManager cacheManager;
+    @NotNull
     private final BuildTriggeringPolicy myPolicy;
 
     public DeploymentCompleteBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
                                                  @NotNull final CustomAsyncBuildTriggerFactory triggerFactory,
-                                                 @NotNull final AnalyticsTracker analyticsTracker) {
+                                                 @NotNull final AnalyticsTracker analyticsTracker,
+                                                 @NotNull final CacheManager cacheManager) {
         myPluginDescriptor = pluginDescriptor;
         this.analyticsTracker = analyticsTracker;
+        this.cacheManager = cacheManager;
         myPolicy = triggerFactory.createBuildTrigger(DeploymentCompleteSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
 
@@ -80,7 +81,7 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
 
     @Override
     public PropertiesProcessor getTriggerPropertiesProcessor() {
-        return new DeploymentCompleteTriggerPropertiesProcessor();
+        return new DeploymentCompleteTriggerPropertiesProcessor(cacheManager);
     }
 
     @Override
@@ -105,6 +106,6 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
 
     @NotNull
     private DeploymentCompleteAsyncBuildTrigger getBuildTrigger() {
-        return new DeploymentCompleteAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker);
+        return new DeploymentCompleteAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker, cacheManager);
     }
 }

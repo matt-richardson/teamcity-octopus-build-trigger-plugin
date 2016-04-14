@@ -25,6 +25,7 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
@@ -43,11 +44,13 @@ class MachineAddedAsyncBuildTrigger implements CustomAsyncBuildTrigger<MachineAd
     private final String displayName;
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;
+    private final CacheManager cacheManager;
 
-    public MachineAddedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker) {
+    public MachineAddedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker, CacheManager cacheManager) {
         this.displayName = displayName;
         this.pollIntervalInSeconds = pollIntervalInSeconds;
         this.analyticsTracker = analyticsTracker;
+        this.cacheManager = cacheManager;
     }
 
     @NotNull
@@ -70,7 +73,8 @@ class MachineAddedAsyncBuildTrigger implements CustomAsyncBuildTrigger<MachineAd
                 asyncTriggerParameters.getBuildType().toString(),
                 asyncTriggerParameters.getCustomDataStorage(),
                 asyncTriggerParameters.getTriggerDescriptor().getProperties(),
-                analyticsTracker);
+                analyticsTracker,
+                cacheManager);
     }
 
     @NotNull
@@ -87,6 +91,7 @@ class MachineAddedAsyncBuildTrigger implements CustomAsyncBuildTrigger<MachineAd
     @Override
     public Map<String, String> getProperties(MachineAddedSpec machineAddedSpec) {
         HashMap hashMap = new HashMap();
+        //todo: unchecked error here
         hashMap.put(BUILD_PROPERTY_MACHINE_NAME, machineAddedSpec.machineName);
         hashMap.put(BUILD_PROPERTY_MACHINE_ID, machineAddedSpec.machineId);
         hashMap.put(BUILD_PROPERTY_MACHINE_ENVIRONMENT_IDS, machineAddedSpec.environmentIds);

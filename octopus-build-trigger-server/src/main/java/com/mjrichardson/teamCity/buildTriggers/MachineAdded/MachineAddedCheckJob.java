@@ -26,6 +26,7 @@ package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
@@ -50,8 +51,8 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
     private final Map<String, String> props;
     private final AnalyticsTracker analyticsTracker;
 
-    public MachineAddedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
-        this(new MachinesProviderFactory(analyticsTracker), displayName, buildType, dataStorage, properties, analyticsTracker);
+    public MachineAddedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager) {
+        this(new MachinesProviderFactory(analyticsTracker, cacheManager), displayName, buildType, dataStorage, properties, analyticsTracker);
     }
 
     public MachineAddedCheckJob(MachinesProviderFactory MachinesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {

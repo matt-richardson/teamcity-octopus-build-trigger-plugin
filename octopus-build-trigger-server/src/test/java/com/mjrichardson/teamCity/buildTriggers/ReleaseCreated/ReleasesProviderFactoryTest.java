@@ -2,6 +2,7 @@ package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -12,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 @Test
 public class ReleasesProviderFactoryTest {
     public void get_provider_returns_releases_provider() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        ReleasesProviderFactory sut = new ReleasesProviderFactory(new FakeAnalyticsTracker());
+        ReleasesProviderFactory sut = new ReleasesProviderFactory(new FakeAnalyticsTracker(), new FakeCacheManager());
         String url = "the-url";
         String apiKey = "the-api-key";
         Integer connectionTimeoutInMilliseconds = 100;

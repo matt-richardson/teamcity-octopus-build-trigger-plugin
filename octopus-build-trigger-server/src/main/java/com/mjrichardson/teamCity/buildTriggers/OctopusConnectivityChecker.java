@@ -10,8 +10,8 @@ public class OctopusConnectivityChecker {
     private static final Logger LOG = Logger.getInstance(OctopusConnectivityChecker.class.getName());
     private HttpContentProvider contentProvider;
 
-    public OctopusConnectivityChecker(String octopusUrl, String apiKey, Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        this(new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout));
+    public OctopusConnectivityChecker(String octopusUrl, String apiKey, Integer connectionTimeout, CacheManager cacheManager) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        this(new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout, cacheManager));
     }
 
     OctopusConnectivityChecker(HttpContentProvider contentProvider) {
@@ -21,7 +21,7 @@ public class OctopusConnectivityChecker {
     public String checkOctopusConnectivity() {
         try {
             LOG.info("checking connectivity to octopus at " + contentProvider.getUrl());
-            contentProvider.getContent("/api");
+            contentProvider.getContent(CacheManager.CacheNames.NoCache, "/api");
 
             return null;
 

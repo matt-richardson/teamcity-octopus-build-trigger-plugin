@@ -26,7 +26,7 @@ public class FakeContentProvider implements HttpContentProvider {
     }
 
     @Override
-    public String getContent(String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException {
+    public String getContent(CacheManager.CacheNames cacheName, String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException {
         requestedUriPath = uriPath;
         if (this.exception != null) {
             //there must be a better way of doing this

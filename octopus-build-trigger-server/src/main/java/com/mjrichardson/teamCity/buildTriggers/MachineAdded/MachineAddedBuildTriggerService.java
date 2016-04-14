@@ -41,13 +41,17 @@ public final class MachineAddedBuildTriggerService extends BuildTriggerService {
     @NotNull
     private final AnalyticsTracker analyticsTracker;
     @NotNull
+    private final CacheManager cacheManager;
+    @NotNull
     private final BuildTriggeringPolicy myPolicy;
 
     public MachineAddedBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
                                            @NotNull final CustomAsyncBuildTriggerFactory triggerFactory,
-                                           @NotNull final AnalyticsTracker analyticsTracker) {
+                                           @NotNull final AnalyticsTracker analyticsTracker,
+                                           @NotNull final CacheManager cacheManager) {
         myPluginDescriptor = pluginDescriptor;
         this.analyticsTracker = analyticsTracker;
+        this.cacheManager = cacheManager;
 
         myPolicy = triggerFactory.createBuildTrigger(MachineAddedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
@@ -78,7 +82,7 @@ public final class MachineAddedBuildTriggerService extends BuildTriggerService {
 
     @Override
     public PropertiesProcessor getTriggerPropertiesProcessor() {
-        return new MachineAddedTriggerPropertiesProcessor();
+        return new MachineAddedTriggerPropertiesProcessor(cacheManager);
     }
 
     @Override
@@ -103,6 +107,6 @@ public final class MachineAddedBuildTriggerService extends BuildTriggerService {
 
     @NotNull
     private MachineAddedAsyncBuildTrigger getBuildTrigger() {
-        return new MachineAddedAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker);
+        return new MachineAddedAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker, cacheManager);
     }
 }

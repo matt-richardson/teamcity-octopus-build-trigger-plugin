@@ -14,13 +14,13 @@ public class FakeContentProviderFactory extends HttpContentProviderFactory {
     private static Integer connectionTimeoutInMilliseconds = 100;
 
     public FakeContentProviderFactory(String octopusUrl, String octopusApiKey) {
-        super(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
+        super(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds, new FakeCacheManager());
         this.octopusUrl = octopusUrl;
         this.octopusApiKey = octopusApiKey;
     }
 
     public FakeContentProviderFactory(OutOfMemoryError exception) {
-        super("", "", connectionTimeoutInMilliseconds);
+        super("", "", connectionTimeoutInMilliseconds, new FakeCacheManager());
         this.exception = exception;
         this.octopusUrl = "http://fake-url";
         this.octopusApiKey = "api-key";

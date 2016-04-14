@@ -12,11 +12,13 @@ public class FakeOctopusConnectivityCheckerFactory extends OctopusConnectivityCh
     private final NoSuchAlgorithmException exception;
 
     public FakeOctopusConnectivityCheckerFactory(String connectivityCheckResult) {
+        super(new FakeCacheManager());
         this.connectivityCheckResult = connectivityCheckResult;
         this.exception = null;
     }
 
     public FakeOctopusConnectivityCheckerFactory(NoSuchAlgorithmException exception) {
+        super(new FakeCacheManager());
         this.exception = exception;
         this.connectivityCheckResult = null;
     }

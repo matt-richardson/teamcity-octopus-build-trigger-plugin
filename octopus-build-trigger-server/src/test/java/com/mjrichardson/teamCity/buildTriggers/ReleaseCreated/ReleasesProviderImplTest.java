@@ -1,6 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeContentProviderFactory;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import org.testng.Assert;
@@ -24,7 +25,7 @@ public class ReleasesProviderImplTest {
 
     @Test(groups = {"needs-real-server"})
     public void get_releases_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, ReleasesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
-        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds());
+        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), new FakeCacheManager());
         ReleasesProviderImpl ReleasesProviderImpl = new ReleasesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Release oldRelease = new NullRelease();
         Releases newReleases = ReleasesProviderImpl.getReleases(ProjectWithLatestReleaseSuccessful, oldRelease);

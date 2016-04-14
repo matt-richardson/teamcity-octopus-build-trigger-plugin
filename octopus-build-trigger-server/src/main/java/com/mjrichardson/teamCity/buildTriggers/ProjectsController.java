@@ -22,16 +22,19 @@ public class ProjectsController extends BaseController {
     private final WebControllerManager webManager;
     private final AnalyticsTracker analyticsTracker;
     private final ObjectMapper objectMapper;
+    private final CacheManager cacheManager;
     private static final Logger LOG = Logger.getInstance(ProjectsController.class.getName());
 
     public ProjectsController(SBuildServer server,
                               WebControllerManager webManager,
                               AnalyticsTracker analyticsTracker,
-                              ObjectMapper objectMapper) {
+                              ObjectMapper objectMapper,
+                              CacheManager cacheManager) {
         super(server);
         this.webManager = webManager;
         this.analyticsTracker = analyticsTracker;
         this.objectMapper = objectMapper;
+        this.cacheManager = cacheManager;
     }
 
     @Nullable
@@ -40,7 +43,8 @@ public class ProjectsController extends BaseController {
         LOG.info("ProjectsController.doHandle() called");
         String octopusUrl = httpServletRequest.getParameter("octopusUrl");
         String octopusApiKey = httpServletRequest.getParameter("octopusApiKey");
-        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(octopusUrl, octopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds());
+        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(octopusUrl, octopusApiKey,
+                OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), cacheManager);
         HttpContentProvider contentProvider = contentProviderFactory.getContentProvider();
 
         httpServletResponse.setHeader("content-type", "application/json");
@@ -80,18 +84,18 @@ public class ProjectsController extends BaseController {
     }
 
     @NotNull
-    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {
-        final String apiResponse = contentProvider.getContent("/api");
+    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        final String apiResponse = contentProvider.getContent(CacheManager.CacheNames.ApiRoot, "/api");
         return new ApiRootResponse(apiResponse, analyticsTracker);
     }
 
     //todo: de-dupe
-    private Projects getProjects(HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {
-        String projectsResponse = contentProvider.getContent(apiRootResponse.projectsApiLink);
+    private Projects getProjects(HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        String projectsResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink);
         ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
         Projects projects = apiProjectsResponse.projects;
         while (shouldGetNextProjectsPage(apiProjectsResponse)) {
-            projectsResponse = contentProvider.getContent(apiProjectsResponse.nextLink);
+            projectsResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink);
             apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
             Projects newProjects = apiProjectsResponse.projects;
             projects.add(newProjects);

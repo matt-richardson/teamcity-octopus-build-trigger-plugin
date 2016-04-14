@@ -24,6 +24,7 @@
 
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityChecker;
 import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityCheckerFactory;
@@ -39,8 +40,8 @@ class MachineAddedTriggerPropertiesProcessor implements PropertiesProcessor {
 
     private final OctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory;
 
-    public MachineAddedTriggerPropertiesProcessor() {
-        this(new OctopusConnectivityCheckerFactory());
+    public MachineAddedTriggerPropertiesProcessor(CacheManager cacheManager) {
+        this(new OctopusConnectivityCheckerFactory(cacheManager));
     }
 
     public MachineAddedTriggerPropertiesProcessor(OctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory) {

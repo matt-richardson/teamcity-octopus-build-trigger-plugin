@@ -41,8 +41,8 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         }
     }
 
-    private Environments getDeployments(String projectId, Environments oldEnvironments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, Project project) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, java.text.ParseException, ParseException {
-        final String progressionResponse = contentProvider.getContent(project.progressionApiLink);
+    private Environments getDeployments(String projectId, Environments oldEnvironments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, Project project) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, java.text.ParseException, ParseException, InvalidCacheConfigurationException {
+        final String progressionResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProgression, project.progressionApiLink);
         final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse);
 
         if (apiProgressionResponse.haveCompleteInformation)
@@ -125,12 +125,12 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
     }
 
 
-    private Project getProject(String projectId, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {
-        String projectsResponse = contentProvider.getContent(apiRootResponse.projectsApiLink);
+    private Project getProject(String projectId, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        String projectsResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink);
         ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
         Projects projects = apiProjectsResponse.projects;
         while (shouldGetNextProjectsPage(apiProjectsResponse, projects, projectId)) {
-            projectsResponse = contentProvider.getContent(apiProjectsResponse.nextLink);
+            projectsResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink);
             apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
             Projects newProjects = apiProjectsResponse.projects;
             projects.add(newProjects);
@@ -139,14 +139,14 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
     }
 
     @NotNull
-    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException {
-        final String apiResponse = contentProvider.getContent("/api");
+    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        final String apiResponse = contentProvider.getContent(CacheManager.CacheNames.ApiRoot, "/api");
         return new ApiRootResponse(apiResponse, analyticsTracker);
     }
 
     @NotNull
-    private Environments getEnvironmentsFromApi(String projectId, Environments oldEnvironments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, ApiProgressionResponse apiProgressionResponse) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        String deploymentsResponse = contentProvider.getContent(apiRootResponse.deploymentsApiLink + "?Projects=" + projectId);
+    private Environments getEnvironmentsFromApi(String projectId, Environments oldEnvironments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, ApiProgressionResponse apiProgressionResponse) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+        String deploymentsResponse = contentProvider.getContent(CacheManager.CacheNames.ApiDeployments, apiRootResponse.deploymentsApiLink + "?Projects=" + projectId);
         ApiDeploymentsResponse response = new ApiDeploymentsResponse(deploymentsResponse);
         Environments result = new Environments();
 
@@ -169,7 +169,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         }
 
         while (response.nextLink != null) {
-            deploymentsResponse = contentProvider.getContent(response.nextLink);
+            deploymentsResponse = contentProvider.getContent(CacheManager.CacheNames.ApiDeployments, response.nextLink);
             response = new ApiDeploymentsResponse(deploymentsResponse);
             for (Deployment item : response.deployments) {
                 if (ProcessDeployment(contentProvider, oldEnvironments, result, item))
@@ -180,19 +180,19 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         return result;
     }
 
-    private boolean ProcessDeployment(HttpContentProvider contentProvider, Environments oldEnvironments, Environments result, Deployment deployment) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    private boolean ProcessDeployment(HttpContentProvider contentProvider, Environments oldEnvironments, Environments result, Deployment deployment) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
         Environment lastKnownEnvironmentState = oldEnvironments.getEnvironment(deployment.environmentId);
         LOG.debug("Found deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "'");
 
         if (lastKnownEnvironmentState.isLatestDeploymentOlderThan(deployment.createdDate)) {
             LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "' was newer than the last known deployment to this environment ('" + lastKnownEnvironmentState.latestDeployment + "')");
 
-            String taskResponse = contentProvider.getContent(deployment.taskLink);
+            String taskResponse = contentProvider.getContent(CacheManager.CacheNames.ApiTask, deployment.taskLink);
             ApiTaskResponse task = new ApiTaskResponse(taskResponse);
             LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "': isCompleted = '" + task.isCompleted + "', finishedSuccessfully = '" + task.finishedSuccessfully + "'");
 
             if (task.isCompleted) {
-                String releaseResponse = contentProvider.getContent(deployment.releaseLink);
+                String releaseResponse = contentProvider.getContent(CacheManager.CacheNames.ApiRelease, deployment.releaseLink);
                 ApiReleaseResponse release = new ApiReleaseResponse(releaseResponse);
 
                 Environment environment = Environment.CreateFrom(deployment, task, release);

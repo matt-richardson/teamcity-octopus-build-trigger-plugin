@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeOctopusConnectivityCheckerFactory;
 import jetbrains.buildServer.serverSide.InvalidProperty;
 import org.testng.Assert;
@@ -15,7 +16,7 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 @Test
 public class DeploymentCompleteTriggerPropertiesProcessorTests {
     public void returns_error_when_url_is_null() {
-        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor();
+        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(new FakeCacheManager());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "api key");
         properties.put(OCTOPUS_PROJECT_ID, "project-id");
@@ -29,7 +30,7 @@ public class DeploymentCompleteTriggerPropertiesProcessorTests {
     }
 
     public void returns_error_when_api_key_is_null() {
-        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor();
+        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(new FakeCacheManager());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, null);
         properties.put(OCTOPUS_PROJECT_ID, "project-id");

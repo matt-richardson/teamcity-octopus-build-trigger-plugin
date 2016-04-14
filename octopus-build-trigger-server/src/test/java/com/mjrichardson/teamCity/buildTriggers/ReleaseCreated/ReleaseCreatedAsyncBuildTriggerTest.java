@@ -3,6 +3,7 @@ package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAsyncTriggerParameters;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerDescriptor;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
@@ -24,14 +25,14 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void make_trigger_exception_throws_build_trigger_exception() {
         String displayName = "the display name";
         int pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
         sut.makeTriggerException(new ParseException("the exception message"));
     }
 
     public void get_requestor_string_returns_requestor_string_from_deployment_complete_spec() {
         String displayName = "the display name";
         int pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
         Release release = new Release("the-release-id", new OctopusDate(2016, 4, 9), "the-version", "the-project-id");
         String result = sut.getRequestorString(new ReleaseCreatedSpec("the-url", release));
 
@@ -41,7 +42,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void poll_interval_returns_passed_in_poll_interval() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
         Integer result = sut.getPollInterval(new FakeAsyncTriggerParameters());
 
         Assert.assertEquals(result, pollIntervalInSeconds);
@@ -50,7 +51,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void create_job_returns_instance_of_deployment_complete_check_job() throws CheckJobCreationException {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
         CheckJob<ReleaseCreatedSpec> result = sut.createJob(new FakeAsyncTriggerParameters());
 
         Assert.assertEquals(result.getClass(), ReleaseCreatedCheckJob.class);
@@ -59,7 +60,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void create_crash_on_submit_result_returns_deployment_complete_spec_check_result() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
         CheckResult<ReleaseCreatedSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"));
 
         Assert.assertTrue(result.hasCheckErrors());
@@ -69,7 +70,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void describe_trigger_returns_description_based_on_properties() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
@@ -83,7 +84,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void describe_trigger_returns_description_based_on_properties2() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
@@ -98,7 +99,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
     public void get_properties_returns_expected_properties() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker());
+        ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
 
         String[] environmentIds = new String[1];
         environmentIds[0] = "environment-1";
