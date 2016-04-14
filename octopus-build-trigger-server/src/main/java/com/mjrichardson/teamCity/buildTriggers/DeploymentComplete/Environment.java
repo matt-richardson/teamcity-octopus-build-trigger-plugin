@@ -73,9 +73,6 @@ public class Environment {
         if (split.length < 4)
             throw new NeedToDeleteAndRecreateTrigger();
 
-        //todo: determine if this is going to break the "things have changed test"
-        //todo: add test to ensure "null" is treated as null
-
         final String environmentId = split[0];
         final OctopusDate latestDeployment = OctopusDate.Parse(split[1]);
         final OctopusDate latestSuccessfulDeployment = OctopusDate.Parse(split[2]);
