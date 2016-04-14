@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 
+//todo: allow modification of cache settings via internal properties
 public class CacheManagerImpl implements CacheManager {
     @NotNull
     private static final Logger LOG = Logger.getInstance(CacheManagerImpl.class.getName());
