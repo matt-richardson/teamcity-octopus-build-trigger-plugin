@@ -36,7 +36,7 @@ public class CustomAsyncPolledBuildTrigger<TItem> extends AsyncPolledBuildTrigge
 
     @Override
     public void triggerBuild(@NotNull PolledTriggerContext context) throws BuildTriggerException {
-        CheckResult result = checkJobStatus(context.getBuildType(), context.getTriggerDescriptor(), context.getCustomDataStorage());
+        CheckResult<TItem> result = checkJobStatus(context.getBuildType(), context.getTriggerDescriptor(), context.getCustomDataStorage());
         if (result != null) {
             JobResult jobResult = mapCheckResultToJobResult(result);
 

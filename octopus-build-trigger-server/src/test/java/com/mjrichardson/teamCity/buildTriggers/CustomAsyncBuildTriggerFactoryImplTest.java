@@ -7,7 +7,6 @@ import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeServiceLocator;
 import jetbrains.buildServer.ServiceLocator;
-import jetbrains.buildServer.buildTriggers.PolledBuildTrigger;
 import jetbrains.buildServer.buildTriggers.async.JobStatusStorageHolder;
 import jetbrains.buildServer.buildTriggers.async.impl.JobStatusStorageHolderImpl;
 import jetbrains.buildServer.serverSide.executors.ExecutorServices;
@@ -24,7 +23,7 @@ public class CustomAsyncBuildTriggerFactoryImplTest {
         JobStatusStorageHolder jobStatusStorageHolder = new JobStatusStorageHolderImpl();
         ServiceLocator serviceLocator = new FakeServiceLocator();
         CustomAsyncBuildTriggerFactoryImpl factory = new CustomAsyncBuildTriggerFactoryImpl(executorServices, jobStatusStorageHolder, serviceLocator);
-        Class clazz = DeploymentCompleteSpec.class;
+        Class<DeploymentCompleteSpec> clazz = DeploymentCompleteSpec.class;
 
         AnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
         String displayName = "display-name";
@@ -33,10 +32,10 @@ public class CustomAsyncBuildTriggerFactoryImplTest {
         Logger logger = Logger.getInstance(DeploymentCompleteAsyncBuildTrigger.class.getName());
         Integer invocationInterval = 60 * 1000;
 
-        PolledBuildTrigger result = factory.createBuildTrigger(clazz, trigger, logger, invocationInterval);
+        CustomAsyncPolledBuildTrigger<DeploymentCompleteSpec> result = factory.createBuildTrigger(clazz, trigger, logger, invocationInterval);
         Assert.assertNotNull(result);
 
-        CustomAsyncPolledBuildTrigger<DeploymentCompleteSpec> resultAsCustomTrigger = (CustomAsyncPolledBuildTrigger<DeploymentCompleteSpec>) result;
+        CustomAsyncPolledBuildTrigger<DeploymentCompleteSpec> resultAsCustomTrigger = result;
         Assert.assertEquals(resultAsCustomTrigger.log, logger);
         Assert.assertEquals(resultAsCustomTrigger.asyncBuildTrigger, trigger);
         Assert.assertEquals(resultAsCustomTrigger.serviceLocator, serviceLocator);

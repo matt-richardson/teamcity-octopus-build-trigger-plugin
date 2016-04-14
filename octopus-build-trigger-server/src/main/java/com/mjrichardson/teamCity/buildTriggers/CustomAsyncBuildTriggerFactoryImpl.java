@@ -2,7 +2,6 @@ package com.mjrichardson.teamCity.buildTriggers;
 
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.ServiceLocator;
-import jetbrains.buildServer.buildTriggers.PolledBuildTrigger;
 import jetbrains.buildServer.buildTriggers.async.JobStatusStorageHolder;
 import jetbrains.buildServer.buildTriggers.async.impl.AsyncBuildTriggerFactoryImpl;
 import jetbrains.buildServer.serverSide.executors.ExecutorServices;
@@ -27,8 +26,8 @@ public class CustomAsyncBuildTriggerFactoryImpl extends AsyncBuildTriggerFactory
     }
 
     @NotNull
-    public <TItem> PolledBuildTrigger createBuildTrigger(@NotNull Class<TItem> itemClazz, @NotNull CustomAsyncBuildTrigger<TItem> trigger, @NotNull Logger logger, @Nullable Integer invocationInterval) {
-        return new CustomAsyncPolledBuildTrigger(executorServices.getLowPriorityExecutorService(),
+    public <TItem> CustomAsyncPolledBuildTrigger<TItem> createBuildTrigger(@NotNull Class<TItem> itemClazz, @NotNull CustomAsyncBuildTrigger<TItem> trigger, @NotNull Logger logger, @Nullable Integer invocationInterval) {
+        return new CustomAsyncPolledBuildTrigger<>(executorServices.getLowPriorityExecutorService(),
                 logger,
                 jobStatusStorageHolder.getStorage(itemClazz),
                 invocationInterval,
