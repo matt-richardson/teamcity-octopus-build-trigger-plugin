@@ -102,7 +102,7 @@ public class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrig
     public Map<String, String> getProperties(DeploymentCompleteSpec deploymentCompleteSpec) {
         //todo: add deployment name
         //todo: add environment name - needs to remove the fallback though
-        HashMap hashMap = new HashMap();
+        HashMap<String,String> hashMap = new HashMap<>();
         hashMap.put(BUILD_PROPERTY_DEPLOYMENT_ID, deploymentCompleteSpec.deploymentId);
         hashMap.put(BUILD_PROPERTY_DEPLOYMENT_VERSION, deploymentCompleteSpec.version);
         hashMap.put(BUILD_PROPERTY_DEPLOYMENT_PROJECT_ID, deploymentCompleteSpec.projectId);
