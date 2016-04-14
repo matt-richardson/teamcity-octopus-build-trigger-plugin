@@ -192,6 +192,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
             LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "': isCompleted = '" + task.isCompleted + "', finishedSuccessfully = '" + task.finishedSuccessfully + "'");
 
             if (task.isCompleted) {
+                //todo: need some tests around this entire block, including the if
                 String releaseResponse = contentProvider.getContent(CacheManager.CacheNames.ApiRelease, deployment.releaseLink);
                 ApiReleaseResponse release = new ApiReleaseResponse(releaseResponse);
 
