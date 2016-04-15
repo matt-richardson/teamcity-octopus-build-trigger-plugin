@@ -11,7 +11,7 @@ import jetbrains.buildServer.buildTriggers.async.JobStatusStorageHolder;
 import jetbrains.buildServer.buildTriggers.async.impl.JobStatusStorageHolderImpl;
 import jetbrains.buildServer.serverSide.executors.ExecutorServices;
 import jetbrains.buildServer.serverSide.impl.executors.SimpleExecutorServices;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
