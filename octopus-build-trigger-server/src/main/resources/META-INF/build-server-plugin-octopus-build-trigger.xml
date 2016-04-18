@@ -10,6 +10,8 @@
     <bean class="com.mjrichardson.teamCity.buildTriggers.AnalyticsTrackerImpl" scope="singleton" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTriggerFactoryImpl" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.ProjectsController" init-method="register" />
+    <bean class="com.mjrichardson.teamCity.buildTriggers.MetricsController" init-method="register" />
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.CacheManagerImpl" scope="singleton" />
+    <bean id="metricRegistry" class="com.codahale.metrics.MetricRegistry"/>
 </beans>

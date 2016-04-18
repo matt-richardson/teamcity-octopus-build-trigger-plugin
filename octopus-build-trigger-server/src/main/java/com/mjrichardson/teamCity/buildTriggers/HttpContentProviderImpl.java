@@ -1,6 +1,7 @@
 
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.codahale.metrics.*;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -29,12 +30,16 @@ import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.codahale.metrics.MetricRegistry.name;
+
 public class HttpContentProviderImpl implements HttpContentProvider {
     @NotNull
     private static final Logger LOG = Logger.getInstance(HttpContentProviderImpl.class.getName());
-
+    private static final MetricRegistry metrics = new MetricRegistry();
+    private static final Meter requests = metrics.meter("api-requests");
+    private final Timer responses = metrics.timer(name(HttpContentProviderImpl.class, "api-responses"));
     private final String octopusUrl;
-    ;
+
     @NotNull
     private String apiKey;
     @NotNull
@@ -74,12 +79,14 @@ public class HttpContentProviderImpl implements HttpContentProvider {
 
     @NotNull
     public String getContent(CacheManager.CacheNames cacheName, @NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+        requests.mark();
         final URI uri = new URL(octopusUrl + uriPath).toURI();
 
         final String cachedResponse = cacheManager.getFromCache(cacheName, uri);
         if (cachedResponse != null)
             return cachedResponse;
 
+        final Timer.Context context = responses.time();
         final HttpGet httpGet = new HttpGet(uri);
         CloseableHttpClient httpClient = getHttpClient(this.connectionTimeoutInMilliseconds);
 
@@ -119,6 +126,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
             LOG.warn("Exception while getting response from " + uri);
             throw e;
         } finally {
+            context.stop();
             httpGet.releaseConnection();
             if (httpClient != null) {
                 try {
