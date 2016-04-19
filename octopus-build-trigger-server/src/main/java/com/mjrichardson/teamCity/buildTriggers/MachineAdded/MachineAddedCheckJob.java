@@ -24,6 +24,7 @@
 
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
@@ -51,8 +52,8 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
     private final Map<String, String> props;
     private final AnalyticsTracker analyticsTracker;
 
-    public MachineAddedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager) {
-        this(new MachinesProviderFactory(analyticsTracker, cacheManager), displayName, buildType, dataStorage, properties, analyticsTracker);
+    public MachineAddedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
+        this(new MachinesProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker);
     }
 
     public MachineAddedCheckJob(MachinesProviderFactory MachinesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {

@@ -24,6 +24,7 @@
 
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
+import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
@@ -51,8 +52,8 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
     private final Map<String, String> props;
     private final AnalyticsTracker analyticsTracker;
 
-    public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager) {
-        this(new ReleasesProviderFactory(analyticsTracker, cacheManager), displayName, buildType, dataStorage, properties, analyticsTracker);
+    public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
+        this(new ReleasesProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker);
     }
 
     public ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {

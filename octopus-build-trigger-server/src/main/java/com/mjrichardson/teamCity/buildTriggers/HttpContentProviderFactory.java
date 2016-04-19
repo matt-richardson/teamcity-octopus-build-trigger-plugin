@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.codahale.metrics.MetricRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.security.KeyManagementException;
@@ -16,15 +17,18 @@ public class HttpContentProviderFactory {
     private final Integer connectionTimeout;
     @NotNull
     private final CacheManager cacheManager;
+    @NotNull
+    private MetricRegistry metricRegistry;
 
-    public HttpContentProviderFactory(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout, CacheManager cacheManager) {
+    public HttpContentProviderFactory(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout, @NotNull CacheManager cacheManager, @NotNull MetricRegistry metricRegistry) {
         this.octopusUrl = octopusUrl;
         this.apiKey = apiKey;
         this.connectionTimeout = connectionTimeout;
         this.cacheManager = cacheManager;
+        this.metricRegistry = metricRegistry;
     }
 
     public HttpContentProvider getContentProvider() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        return new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout, cacheManager);
+        return new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout, cacheManager, metricRegistry);
     }
 }

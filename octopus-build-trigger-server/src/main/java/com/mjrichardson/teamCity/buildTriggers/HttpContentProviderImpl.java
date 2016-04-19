@@ -1,6 +1,7 @@
 
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.codahale.metrics.*;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -29,23 +30,28 @@ import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.codahale.metrics.MetricRegistry.name;
+
 public class HttpContentProviderImpl implements HttpContentProvider {
     @NotNull
     private static final Logger LOG = Logger.getInstance(HttpContentProviderImpl.class.getName());
-
     private final String octopusUrl;
-    ;
+
     @NotNull
     private String apiKey;
     @NotNull
     private final Integer connectionTimeoutInMilliseconds;
+    @NotNull
     private final CacheManager cacheManager;
+    @NotNull
+    private final MetricRegistry metricRegistry;
 
-    public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeoutInMilliseconds, CacheManager cacheManager) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeoutInMilliseconds, CacheManager cacheManager, MetricRegistry metricRegistry) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         this.octopusUrl = octopusUrl;
         this.apiKey = apiKey;
         this.connectionTimeoutInMilliseconds = connectionTimeoutInMilliseconds;
         this.cacheManager = cacheManager;
+        this.metricRegistry = metricRegistry;
     }
 
     private CloseableHttpClient getHttpClient(@NotNull Integer connectionTimeoutInMilliseconds) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
@@ -74,12 +80,15 @@ public class HttpContentProviderImpl implements HttpContentProvider {
 
     @NotNull
     public String getContent(CacheManager.CacheNames cacheName, @NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+        metricRegistry.meter(name(HttpContentProviderImpl.class, "apiRequests", "hits")).mark();
+        metricRegistry.meter(name(HttpContentProviderImpl.class, "apiRequests", cacheName.name(), "hits")).mark();
         final URI uri = new URL(octopusUrl + uriPath).toURI();
 
         final String cachedResponse = cacheManager.getFromCache(cacheName, uri);
         if (cachedResponse != null)
             return cachedResponse;
 
+        final Timer.Context context = metricRegistry.timer(name(HttpContentProviderImpl.class, "apiRequests", cacheName.name(), "time")).time();
         final HttpGet httpGet = new HttpGet(uri);
         CloseableHttpClient httpClient = getHttpClient(this.connectionTimeoutInMilliseconds);
 
@@ -119,6 +128,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
             LOG.warn("Exception while getting response from " + uri);
             throw e;
         } finally {
+            context.stop();
             httpGet.releaseConnection();
             if (httpClient != null) {
                 try {

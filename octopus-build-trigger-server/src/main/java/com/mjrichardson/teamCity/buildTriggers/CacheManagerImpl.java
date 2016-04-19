@@ -1,28 +1,47 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.ehcache.InstrumentedEhcache;
 import com.intellij.openapi.diagnostic.Logger;
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
+import java.util.HashMap;
 
 //todo: allow modification of cache settings via internal properties
 public class CacheManagerImpl implements CacheManager {
     @NotNull
     private static final Logger LOG = Logger.getInstance(CacheManagerImpl.class.getName());
+    private final MetricRegistry metricRegistry;
     private net.sf.ehcache.CacheManager ehCacheManager;
+    private HashMap<CacheNames, Ehcache> caches;
 
-    public CacheManagerImpl() {
+    public CacheManagerImpl(MetricRegistry metricRegistry) {
         ehCacheManager = net.sf.ehcache.CacheManager.newInstance();
+        this.metricRegistry = metricRegistry;
+        caches = new HashMap<>();
     }
 
-    public String getFromCache(CacheNames cacheName, URI uri) {
+    private synchronized Ehcache getCache(CacheNames cacheName) throws InvalidCacheConfigurationException {
+        if (caches.containsKey(cacheName))
+            return caches.get(cacheName);
+        Cache rawCache = ehCacheManager.getCache(cacheName.name());
+        if (rawCache == null)
+            throw new InvalidCacheConfigurationException(cacheName);
+        Ehcache instrument = InstrumentedEhcache.instrument(metricRegistry, rawCache);
+        caches.put(cacheName, instrument);
+        return instrument;
+    }
+
+    public String getFromCache(CacheNames cacheName, URI uri) throws InvalidCacheConfigurationException {
         LOG.debug(String.format("Getting cached response for '%s' from cache '%s'", uri.toString(), cacheName.name()));
         if (cacheName == CacheNames.NoCache)
             return null;
-        Cache cache = ehCacheManager.getCache(cacheName.name());
+        Ehcache cache = getCache(cacheName);
         Element result = cache.get(uri.toString());
         if (result == null) {
             LOG.debug(String.format("Cached response for '%s' was not found in cache '%s'", uri.toString(), cacheName.name()));
@@ -37,9 +56,7 @@ public class CacheManagerImpl implements CacheManager {
         LOG.debug(String.format("Caching response for '%s' in cache '%s'", uri.toString(), cacheName.name()));
         if (cacheName == CacheNames.NoCache)
             return;
-        Cache cache = ehCacheManager.getCache(cacheName.name());
-        if (cache == null)
-            throw new InvalidCacheConfigurationException(cacheName);
+        Ehcache cache = getCache(cacheName);
         cache.put(new Element(uri.toString(), body));
     }
 }

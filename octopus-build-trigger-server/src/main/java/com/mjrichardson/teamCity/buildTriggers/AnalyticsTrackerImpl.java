@@ -4,6 +4,7 @@ import com.brsanthu.googleanalytics.EventHit;
 import com.brsanthu.googleanalytics.ExceptionHit;
 import com.brsanthu.googleanalytics.GoogleAnalytics;
 import com.brsanthu.googleanalytics.GoogleAnalyticsConfig;
+import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.serverSide.SBuildServer;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
@@ -12,10 +13,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.codahale.metrics.MetricRegistry.name;
+
 public class AnalyticsTrackerImpl implements AnalyticsTracker {
     private final String trackingId;
     @NotNull
     private static final Logger LOG = Logger.getInstance(AnalyticsTrackerImpl.class.getName());
+    @NotNull
+    private final MetricRegistry metricRegistry;
+
     private final String pluginVersion;
     private final String teamCityVersion;
     private final String applicationName = "teamcity-octopus-build-trigger-plugin";
@@ -25,7 +31,8 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     private String octopusVersion = "not-set";
     private String octopusApiVersion = "not-set";
 
-    public AnalyticsTrackerImpl(@NotNull final PluginDescriptor pluginDescriptor, SBuildServer buildServer) {
+    public AnalyticsTrackerImpl(@NotNull final PluginDescriptor pluginDescriptor, SBuildServer buildServer, @NotNull MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
         this.pluginVersion = pluginDescriptor.getPluginVersion();
         this.teamCityVersion = buildServer.getFullServerVersion();
         this.trackingId = pluginDescriptor.getParameterValue("AnalyticsTrackingId");
@@ -44,6 +51,9 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     }
 
     public void postEvent(EventCategory eventCategory, EventAction eventAction){
+
+        metricRegistry.meter(name(AnalyticsTrackerImpl.class, eventCategory.name(), eventAction.name())).mark();
+
         if (ga == null)
             return;
 
@@ -69,6 +79,9 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     }
 
     public void postException(Exception e) {
+
+        metricRegistry.meter(name(AnalyticsTrackerImpl.class, "exception", e.getClass().getName())).mark();
+
         if (ga == null)
             return;
 

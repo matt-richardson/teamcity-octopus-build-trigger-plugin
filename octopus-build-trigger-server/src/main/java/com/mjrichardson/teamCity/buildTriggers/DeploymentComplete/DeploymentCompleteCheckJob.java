@@ -24,6 +24,7 @@
 
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
+import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
@@ -50,8 +51,8 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
     private final AnalyticsTracker analyticsTracker;
     private final DeploymentsProviderFactory deploymentsProviderFactory;
 
-    public DeploymentCompleteCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager) {
-        this(new DeploymentsProviderFactory(analyticsTracker, cacheManager), displayName, buildType, dataStorage, properties, analyticsTracker);
+    public DeploymentCompleteCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
+        this(new DeploymentsProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker);
     }
 
     public DeploymentCompleteCheckJob(DeploymentsProviderFactory deploymentsProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {

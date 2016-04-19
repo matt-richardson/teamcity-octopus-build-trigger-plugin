@@ -24,6 +24,7 @@
 
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
+import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
@@ -48,12 +49,14 @@ public class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrig
     @NotNull
     private static final Logger LOG = Logger.getInstance(DeploymentCompleteAsyncBuildTrigger.class.getName());
     private CacheManager cacheManager;
+    private MetricRegistry metricRegistry;
 
-    public DeploymentCompleteAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker, CacheManager cacheManager) {
+    public DeploymentCompleteAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
         this.displayName = displayName;
         this.pollIntervalInSeconds = pollIntervalInSeconds;
         this.analyticsTracker = analyticsTracker;
         this.cacheManager = cacheManager;
+        this.metricRegistry = metricRegistry;
     }
 
     @NotNull
@@ -77,7 +80,8 @@ public class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrig
                 asyncTriggerParameters.getCustomDataStorage(),
                 asyncTriggerParameters.getTriggerDescriptor().getProperties(),
                 analyticsTracker,
-                cacheManager);
+                cacheManager,
+                metricRegistry);
     }
 
     @NotNull

@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.diagnostic.Logger;
 import jetbrains.buildServer.controllers.BaseController;
@@ -24,17 +25,20 @@ public class ProjectsController extends BaseController {
     private final ObjectMapper objectMapper;
     private final CacheManager cacheManager;
     private static final Logger LOG = Logger.getInstance(ProjectsController.class.getName());
+    private MetricRegistry metricRegistry;
 
     public ProjectsController(SBuildServer server,
                               WebControllerManager webManager,
                               AnalyticsTracker analyticsTracker,
                               ObjectMapper objectMapper,
-                              CacheManager cacheManager) {
+                              CacheManager cacheManager,
+                              MetricRegistry metricRegistry) {
         super(server);
         this.webManager = webManager;
         this.analyticsTracker = analyticsTracker;
         this.objectMapper = objectMapper;
         this.cacheManager = cacheManager;
+        this.metricRegistry = metricRegistry;
     }
 
     @Nullable
@@ -44,7 +48,7 @@ public class ProjectsController extends BaseController {
         String octopusUrl = httpServletRequest.getParameter("octopusUrl");
         String octopusApiKey = httpServletRequest.getParameter("octopusApiKey");
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(octopusUrl, octopusApiKey,
-                OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), cacheManager);
+                OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), cacheManager, metricRegistry);
         HttpContentProvider contentProvider = contentProviderFactory.getContentProvider();
 
         httpServletResponse.setHeader("content-type", "application/json");

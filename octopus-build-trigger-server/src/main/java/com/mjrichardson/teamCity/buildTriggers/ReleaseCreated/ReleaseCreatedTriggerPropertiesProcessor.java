@@ -24,6 +24,7 @@
 
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
+import com.codahale.metrics.MetricRegistry;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
 import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityChecker;
@@ -39,9 +40,11 @@ import java.util.Map;
 class ReleaseCreatedTriggerPropertiesProcessor implements PropertiesProcessor {
 
     private final OctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory;
+    private MetricRegistry metricRegistry;
 
-    public ReleaseCreatedTriggerPropertiesProcessor(CacheManager cacheManager) {
+    public ReleaseCreatedTriggerPropertiesProcessor(CacheManager cacheManager, MetricRegistry metricRegistry) {
         this(new OctopusConnectivityCheckerFactory(cacheManager));
+        this.metricRegistry = metricRegistry;
     }
 
     public ReleaseCreatedTriggerPropertiesProcessor(OctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory) {
@@ -70,7 +73,7 @@ class ReleaseCreatedTriggerPropertiesProcessor implements PropertiesProcessor {
     private void checkConnectivity(Map<String, String> properties, ArrayList<InvalidProperty> invalidProps, String url, String apiKey) {
         try {
             final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
-            final OctopusConnectivityChecker connectivityChecker = octopusConnectivityCheckerFactory.create(url, apiKey, connectionTimeoutInMilliseconds);
+            final OctopusConnectivityChecker connectivityChecker = octopusConnectivityCheckerFactory.create(url, apiKey, connectionTimeoutInMilliseconds, metricRegistry);
 
             final String err = connectivityChecker.checkOctopusConnectivity();
             if (StringUtil.isNotEmpty(err)) {

@@ -24,6 +24,7 @@
 
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
@@ -44,14 +45,18 @@ public final class MachineAddedBuildTriggerService extends BuildTriggerService {
     private final CacheManager cacheManager;
     @NotNull
     private final BuildTriggeringPolicy myPolicy;
+    @NotNull
+    private MetricRegistry metricRegistry;
 
     public MachineAddedBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
                                            @NotNull final CustomAsyncBuildTriggerFactory triggerFactory,
                                            @NotNull final AnalyticsTracker analyticsTracker,
-                                           @NotNull final CacheManager cacheManager) {
+                                           @NotNull final CacheManager cacheManager,
+                                           @NotNull final MetricRegistry metricRegistry) {
         myPluginDescriptor = pluginDescriptor;
         this.analyticsTracker = analyticsTracker;
         this.cacheManager = cacheManager;
+        this.metricRegistry = metricRegistry;
 
         myPolicy = triggerFactory.createBuildTrigger(MachineAddedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
@@ -82,7 +87,7 @@ public final class MachineAddedBuildTriggerService extends BuildTriggerService {
 
     @Override
     public PropertiesProcessor getTriggerPropertiesProcessor() {
-        return new MachineAddedTriggerPropertiesProcessor(cacheManager);
+        return new MachineAddedTriggerPropertiesProcessor(cacheManager, metricRegistry);
     }
 
     @Override
@@ -107,6 +112,6 @@ public final class MachineAddedBuildTriggerService extends BuildTriggerService {
 
     @NotNull
     private MachineAddedAsyncBuildTrigger getBuildTrigger() {
-        return new MachineAddedAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker, cacheManager);
+        return new MachineAddedAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker, cacheManager, metricRegistry);
     }
 }

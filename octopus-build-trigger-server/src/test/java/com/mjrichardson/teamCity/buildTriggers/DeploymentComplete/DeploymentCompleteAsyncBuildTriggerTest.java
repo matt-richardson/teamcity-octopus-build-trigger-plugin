@@ -1,9 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAsyncTriggerParameters;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerDescriptor;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
@@ -25,14 +22,14 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
     public void make_trigger_exception_throws_build_trigger_exception() {
         String displayName = "the display name";
         int pollIntervalInSeconds = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
         sut.makeTriggerException(new ParseException("the exception message"));
     }
 
     public void get_requestor_string_returns_requestor_string_from_deployment_complete_spec() {
         String displayName = "the display name";
         int pollIntervalInSeconds = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
         Environment environment = new Environment("the-env-id", new OctopusDate(2016,4,9), new OctopusDate(2016,4,9), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
 
         String result = sut.getRequestorString(new DeploymentCompleteSpec("the-url", environment));
@@ -43,7 +40,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
     public void poll_interval_returns_passed_in_poll_interval() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
         Integer result = sut.getPollInterval(new FakeAsyncTriggerParameters());
 
         Assert.assertEquals(result, pollIntervalInSeconds);
@@ -52,7 +49,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
     public void create_job_returns_instance_of_deployment_complete_check_job() throws CheckJobCreationException {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
         CheckJob<DeploymentCompleteSpec> result = sut.createJob(new FakeAsyncTriggerParameters());
 
         Assert.assertEquals(result.getClass(), DeploymentCompleteCheckJob.class);
@@ -61,7 +58,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
     public void create_crash_on_submit_result_returns_deployment_complete_spec_check_result() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
         CheckResult<DeploymentCompleteSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"));
 
         Assert.assertTrue(result.hasCheckErrors());
@@ -71,7 +68,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
     public void describe_trigger_returns_description_based_on_properties() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
@@ -85,7 +82,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
     public void describe_trigger_returns_description_based_on_properties_for_successful_deployment() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
@@ -100,7 +97,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
     public void get_properties_returns_expected_properties() {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
-        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager());
+        DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
         Environment environment = new Environment("the-environment-id", new OctopusDate(2016,4,9), new OctopusDate(2016,4,9), "the-release-id", "the-deployment-id", "the-version", "the-project-id");
         DeploymentCompleteSpec spec = new DeploymentCompleteSpec("the-url", environment);
         Map<String, String> result = sut.getProperties(spec);

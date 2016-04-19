@@ -11,7 +11,7 @@ public class FakeReleasesProviderFactory extends ReleasesProviderFactory {
     private final ReleasesProvider releasesProvider;
 
     public FakeReleasesProviderFactory(ReleasesProvider releasesProvider) {
-        super(new FakeAnalyticsTracker(), new FakeCacheManager());
+        super(new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
         this.releasesProvider = releasesProvider;
     }
 

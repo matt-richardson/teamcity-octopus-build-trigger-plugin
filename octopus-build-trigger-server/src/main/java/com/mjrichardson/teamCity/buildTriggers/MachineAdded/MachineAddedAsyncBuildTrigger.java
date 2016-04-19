@@ -24,6 +24,7 @@
 
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.codahale.metrics.MetricRegistry;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
@@ -45,12 +46,14 @@ class MachineAddedAsyncBuildTrigger implements CustomAsyncBuildTrigger<MachineAd
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;
     private final CacheManager cacheManager;
+    private MetricRegistry metricRegistry;
 
-    public MachineAddedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker, CacheManager cacheManager) {
+    public MachineAddedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
         this.displayName = displayName;
         this.pollIntervalInSeconds = pollIntervalInSeconds;
         this.analyticsTracker = analyticsTracker;
         this.cacheManager = cacheManager;
+        this.metricRegistry = metricRegistry;
     }
 
     @NotNull
@@ -74,7 +77,8 @@ class MachineAddedAsyncBuildTrigger implements CustomAsyncBuildTrigger<MachineAd
                 asyncTriggerParameters.getCustomDataStorage(),
                 asyncTriggerParameters.getTriggerDescriptor().getProperties(),
                 analyticsTracker,
-                cacheManager);
+                cacheManager,
+                metricRegistry);
     }
 
     @NotNull

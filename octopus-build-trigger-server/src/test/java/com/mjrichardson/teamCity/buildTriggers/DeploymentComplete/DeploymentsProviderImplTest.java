@@ -4,6 +4,7 @@ import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeContentProviderFactory;
 import com.mjrichardson.teamCity.buildTriggers.*;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -32,7 +33,7 @@ public class DeploymentsProviderImplTest {
 
     @Test(groups = {"needs-real-server"})
     public void get_deployments_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, DeploymentsProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
-        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), new FakeCacheManager());
+        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), new FakeCacheManager(), new FakeMetricRegistry());
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
         Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
