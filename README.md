@@ -49,6 +49,11 @@ If you want to turn on logging, add the following to `<TeamCity server home>\con
 </category>
  ```
 
+# Metrics
+
+Metrics are exposed as a json endpoint at https://your-teamcity-server/octopus-build-trigger/metrics.html, allowing
+you to track and monitor internal stats such as cache hits & misses, outbound calls, bresponse time and more.
+
 # Analytics
 
 This project uses [Google Analytics](https://www.google.co.uk/analytics/) to track feature usage and exceptions.

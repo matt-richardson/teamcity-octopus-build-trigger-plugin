@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 
 import java.security.KeyManagementException;
@@ -10,8 +11,8 @@ public class OctopusConnectivityChecker {
     private static final Logger LOG = Logger.getInstance(OctopusConnectivityChecker.class.getName());
     private HttpContentProvider contentProvider;
 
-    public OctopusConnectivityChecker(String octopusUrl, String apiKey, Integer connectionTimeout, CacheManager cacheManager) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        this(new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout, cacheManager));
+    public OctopusConnectivityChecker(String octopusUrl, String apiKey, Integer connectionTimeout, CacheManager cacheManager, MetricRegistry metricRegistry) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        this(new HttpContentProviderImpl(octopusUrl, apiKey, connectionTimeout, cacheManager, metricRegistry));
     }
 
     OctopusConnectivityChecker(HttpContentProvider contentProvider) {

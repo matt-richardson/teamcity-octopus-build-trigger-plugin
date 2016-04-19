@@ -1,6 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeOctopusConnectivityCheckerFactory;
 import jetbrains.buildServer.serverSide.InvalidProperty;
 import org.testng.Assert;
@@ -16,7 +17,7 @@ import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 @Test
 public class MachineAddedTriggerPropertiesProcessorTests {
     public void returns_error_when_url_is_null() {
-        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(new FakeCacheManager());
+        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(new FakeCacheManager(), new FakeMetricRegistry());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "api key");
         properties.put(OCTOPUS_URL, null);
@@ -29,7 +30,7 @@ public class MachineAddedTriggerPropertiesProcessorTests {
     }
 
     public void returns_error_when_api_key_is_null() {
-        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(new FakeCacheManager());
+        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(new FakeCacheManager(), new FakeMetricRegistry());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, null);
         properties.put(OCTOPUS_URL, "http://example.com");

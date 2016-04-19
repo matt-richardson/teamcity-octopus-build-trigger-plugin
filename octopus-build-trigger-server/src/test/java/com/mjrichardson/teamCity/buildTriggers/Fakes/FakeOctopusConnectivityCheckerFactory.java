@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.Fakes;
 
+import com.codahale.metrics.MetricRegistry;
 import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityChecker;
 import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityCheckerFactory;
 
@@ -24,7 +25,7 @@ public class FakeOctopusConnectivityCheckerFactory extends OctopusConnectivityCh
     }
 
     @Override
-    public OctopusConnectivityChecker create(String url, String apiKey, Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public OctopusConnectivityChecker create(String url, String apiKey, Integer connectionTimeout, MetricRegistry metricRegistry) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         if (this.exception == null)
             return new FakeOctopusConnectivityChecker(url, apiKey, connectionTimeout, connectivityCheckResult);
         throw exception;

@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -9,7 +10,7 @@ import java.net.URISyntaxException;
 @Test
 public class CacheManagerImplTest {
     public void can_use_cache_for_all_cache_names() throws URISyntaxException, InvalidCacheConfigurationException {
-        CacheManager cacheManager = new CacheManagerImpl();
+        CacheManager cacheManager = new CacheManagerImpl(new FakeMetricRegistry());
         for (CacheManager.CacheNames cacheName : CacheManager.CacheNames.values()) {
             if (cacheName == CacheManager.CacheNames.NoCache)
                 continue;
@@ -22,7 +23,7 @@ public class CacheManagerImplTest {
     }
 
     public void can_use_no_cache() throws URISyntaxException, InvalidCacheConfigurationException {
-        CacheManager cacheManager = new CacheManagerImpl();
+        CacheManager cacheManager = new CacheManagerImpl(new FakeMetricRegistry());
         URI uri = new URI("http://example.com/api");
 
         cacheManager.addToCache(CacheManager.CacheNames.NoCache, uri, "a random value");

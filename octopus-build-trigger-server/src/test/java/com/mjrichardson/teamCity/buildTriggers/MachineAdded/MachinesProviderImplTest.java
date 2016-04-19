@@ -4,6 +4,7 @@ import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeContentProviderFactory;
 import com.mjrichardson.teamCity.buildTriggers.*;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -20,7 +21,7 @@ public class MachinesProviderImplTest {
 
     @Test(groups = {"needs-real-server"})
     public void get_machines_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
-        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), new FakeCacheManager());
+        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), new FakeCacheManager(), new FakeMetricRegistry());
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Machines newMachines = MachinesProviderImpl.getMachines();
         Assert.assertNotNull(newMachines);

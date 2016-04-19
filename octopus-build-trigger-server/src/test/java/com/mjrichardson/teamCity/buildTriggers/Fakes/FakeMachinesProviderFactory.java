@@ -11,7 +11,7 @@ public class FakeMachinesProviderFactory extends MachinesProviderFactory {
     private final MachinesProvider machinesProvider;
 
     public FakeMachinesProviderFactory(MachinesProvider machinesProvider) {
-        super(new FakeAnalyticsTracker(), new FakeCacheManager());
+        super(new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
         this.machinesProvider = machinesProvider;
     }
 

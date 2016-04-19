@@ -2,6 +2,7 @@ package com.mjrichardson.teamCity.buildTriggers;
 
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeContentProvider;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -65,7 +66,7 @@ public class OctopusConnectivityCheckerTest {
         final String realOctopusUrl = "http://windows10vm.local/";
         final Integer timeoutInMilliseconds = 30000;
 
-        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(realOctopusUrl, "", timeoutInMilliseconds, new FakeCacheManager());
+        OctopusConnectivityChecker sut = new OctopusConnectivityChecker(realOctopusUrl, "", timeoutInMilliseconds, new FakeCacheManager(), new FakeMetricRegistry());
         String result = sut.checkOctopusConnectivity();
         Assert.assertEquals(result, null);
     }
