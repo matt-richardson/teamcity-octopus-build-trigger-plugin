@@ -14,4 +14,5 @@
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
     <bean id="metricRegistry" class="com.codahale.metrics.MetricRegistry" scope="singleton" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.CacheManagerImpl" scope="singleton" />
+    <bean class="com.mjrichardson.teamCity.buildTriggers.UpdateChecker" scope="singleton" />
 </beans>

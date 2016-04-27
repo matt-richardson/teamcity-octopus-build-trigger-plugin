@@ -124,8 +124,12 @@ $j(document).ready(function() {
     $j(dropdown).attr('data-old-value', $j(dropdown).val())
     window.octopusBuildTrigger.reloadProjectList();
   }
-  else
+  else {
     window.octopusBuildTrigger.checkConnectivity();
+  }
+  if (updateIsAvailable == 'true') {
+    $j('#octopus-plugin-update-notice').show();
+  }
 });
 </script>
 

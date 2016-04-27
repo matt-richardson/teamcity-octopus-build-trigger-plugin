@@ -24,8 +24,13 @@
 
 <%@ include file="/include.jsp" %>
 <%@ page import="com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil" %>
+<%@ page import="com.mjrichardson.teamCity.buildTriggers.UpdateChecker" %>
 <%@ taglib prefix="props" tagdir="/WEB-INF/tags/props" %>
 <jsp:useBean id="propertiesBean" type="jetbrains.buildServer.controllers.BasePropertiesBean" scope="request"/>
+
+<div class="attentionComment clearfix" style="display:none" id="octopus-plugin-update-notice">
+    A new plugin version (<%=UpdateChecker.getLatestVersion()%>) has been released. <a href="<%=UpdateChecker.getUpdateUrl()%>">Upgrade!</a>
+</div>
 
 <tr class="noBorder" >
     <td colspan="2">
@@ -59,6 +64,7 @@
     var projectIdPropertyName = '<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>';
     var octopusUrlPropertyName = '<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>';
     var octopusApiKeyPropertyName = '<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>';
+    var updateIsAvailable = '<%=UpdateChecker.updateIsAvailable%>';
 
     <jsp:include page="octopusBuildTrigger.js" />
 </script>

@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 //todo:check against multiple versions of Octopus
 public class FakeContentProvider implements HttpContentProvider {
@@ -26,7 +29,7 @@ public class FakeContentProvider implements HttpContentProvider {
     }
 
     @Override
-    public String getContent(CacheManager.CacheNames cacheName, String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException {
+    public String getOctopusContent(CacheManager.CacheNames cacheName, String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException {
         requestedUriPath = uriPath;
         if (this.exception != null) {
             //there must be a better way of doing this
@@ -64,6 +67,18 @@ public class FakeContentProvider implements HttpContentProvider {
         } catch (NullPointerException | IOException e) {
             throw new InvalidOctopusUrlException(new URI(s), e);
         }
+    }
+
+    @Override
+    public String getContent(CacheManager.CacheNames cacheName, URI uri) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+        if (this.exception != null) {
+            //there must be a better way of doing this
+            if (exception.getClass() == IOException.class)
+                throw (IOException) exception;
+        }
+        final String resourceName = "/responses/" + uri.getHost() + uri.getPath().replace("?", "/") + ".json";
+        InputStream resource = getClass().getResourceAsStream(resourceName);
+        return IOUtils.toString(resource);
     }
 
     @Override

@@ -43,13 +43,13 @@ public class ReleasesProviderImpl implements ReleasesProvider {
     }
 
     private Releases getReleases(Release oldRelease, HttpContentProvider contentProvider, Project project) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        String releasesResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProjectsReleases, project.releasesApiLink);
+        String releasesResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjectsReleases, project.releasesApiLink);
         ApiProjectReleasesResponse apiProjectReleasesResponse = new ApiProjectReleasesResponse(releasesResponse);
 
         Releases newReleases = apiProjectReleasesResponse.releases;
 
         while (shouldGetNextReleasePage(oldRelease, newReleases, apiProjectReleasesResponse)) {
-            releasesResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProjectsReleases, apiProjectReleasesResponse.nextLink);
+            releasesResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjectsReleases, apiProjectReleasesResponse.nextLink);
             apiProjectReleasesResponse = new ApiProjectReleasesResponse(releasesResponse);
             newReleases.add(apiProjectReleasesResponse.releases);
         }
@@ -57,11 +57,11 @@ public class ReleasesProviderImpl implements ReleasesProvider {
     }
 
     private Project getProject(String projectId, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        String projectsResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink);
+        String projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink);
         ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
         Projects projects = apiProjectsResponse.projects;
         while (shouldGetNextProjectsPage(apiProjectsResponse, projects, projectId)) {
-            projectsResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink);
+            projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink);
             apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
             Projects newProjects = apiProjectsResponse.projects;
             projects.add(newProjects);
@@ -71,7 +71,7 @@ public class ReleasesProviderImpl implements ReleasesProvider {
 
     @NotNull
     private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        final String apiResponse = contentProvider.getContent(CacheManager.CacheNames.ApiRoot, "/api");
+        final String apiResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
         return new ApiRootResponse(apiResponse, analyticsTracker);
     }
 

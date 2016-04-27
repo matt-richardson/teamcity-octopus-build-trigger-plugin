@@ -22,7 +22,7 @@ public class OctopusConnectivityChecker {
     public String checkOctopusConnectivity() {
         try {
             LOG.info("checking connectivity to octopus at " + contentProvider.getUrl());
-            contentProvider.getContent(CacheManager.CacheNames.NoCache, "/api");
+            contentProvider.getOctopusContent(CacheManager.CacheNames.NoCache, "/api");
 
             return null;
 

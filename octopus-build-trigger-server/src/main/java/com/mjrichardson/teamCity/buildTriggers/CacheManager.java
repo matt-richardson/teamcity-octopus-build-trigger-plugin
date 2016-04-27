@@ -16,6 +16,7 @@ public interface CacheManager {
         ApiProgression,
         ApiMachines,
         ApiDeployments,
+        GitHubLatestRelease,
         NoCache
     }
 }

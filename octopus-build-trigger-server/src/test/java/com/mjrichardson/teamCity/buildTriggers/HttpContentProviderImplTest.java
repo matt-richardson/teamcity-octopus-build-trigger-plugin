@@ -23,31 +23,31 @@ public class HttpContentProviderImplTest {
     @Test(expectedExceptions = InvalidOctopusUrlException.class, groups = {"needs-real-server"})
     public void get_response_from_real_server_with_octopus_url_with_invalid_host_throws_exception() throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnexpectedResponseCodeException, IOException, URISyntaxException, InvalidCacheConfigurationException {
         HttpContentProvider contentProvider = new HttpContentProviderImpl("http://octopus.example.com", octopusApiKey, timeoutInMilliseconds, new FakeCacheManager(), new FakeMetricRegistry());
-        contentProvider.getContent(CacheManager.CacheNames.ApiRoot, "/api");
+        contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
     }
 
     @Test(expectedExceptions = InvalidOctopusUrlException.class, groups = {"needs-real-server"})
     public void get_response_from_real_server_with_octopus_url_with_invalid_path_throws_exception() throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnexpectedResponseCodeException, IOException, URISyntaxException, InvalidCacheConfigurationException {
         HttpContentProvider contentProvider = new HttpContentProviderImpl(realOctopusUrl + "/not-an-octopus-instance", octopusApiKey, timeoutInMilliseconds, new FakeCacheManager(), new FakeMetricRegistry());
-        contentProvider.getContent(CacheManager.CacheNames.ApiRoot, "/api");
+        contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
     }
 
     @Test(expectedExceptions = InvalidOctopusApiKeyException.class, groups = {"needs-real-server"})
     public void get_response_from_real_server_with_invalid_octopus_api_key_throws_exception() throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnexpectedResponseCodeException, IOException, URISyntaxException, InvalidCacheConfigurationException {
         HttpContentProvider contentProvider = new HttpContentProviderImpl(realOctopusUrl, "invalid-api-key", timeoutInMilliseconds, new FakeCacheManager(), new FakeMetricRegistry());
-        contentProvider.getContent(CacheManager.CacheNames.ApiProjects, "/api/projects");
+        contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, "/api/projects");
     }
 
     @Test(expectedExceptions = ProjectNotFoundException.class, groups = {"needs-real-server"})
     public void get_response_from_real_server_with_invalid_project_id_throws_exception() throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnexpectedResponseCodeException, IOException, URISyntaxException, InvalidCacheConfigurationException {
         HttpContentProvider contentProvider = new HttpContentProviderImpl(realOctopusUrl, realOctopusApiKey, timeoutInMilliseconds, new FakeCacheManager(), new FakeMetricRegistry());
-        contentProvider.getContent(CacheManager.CacheNames.ApiProjects, "/api/projects/Projects-00");
+        contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, "/api/projects/Projects-00");
     }
 
     @Test(groups = {"needs-real-server"})
     public void get_response_from_real_server_with_from_valid_server() throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnexpectedResponseCodeException, IOException, URISyntaxException, InvalidCacheConfigurationException {
         HttpContentProvider contentProvider = new HttpContentProviderImpl(realOctopusUrl, realOctopusApiKey, timeoutInMilliseconds, new FakeCacheManager(), new FakeMetricRegistry());
-        String result = contentProvider.getContent(CacheManager.CacheNames.ApiRoot, "/api");
+        String result = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
         Assert.assertTrue(result.contains("\"Application\": \"Octopus Deploy\","));
     }
 
@@ -64,7 +64,7 @@ public class HttpContentProviderImplTest {
         String originalValue = cacheManager.getFromCache(CacheManager.CacheNames.ApiRoot, uri);
         Assert.assertEquals(originalValue, null);
         HttpContentProvider contentProvider = new HttpContentProviderImpl(realOctopusUrl, realOctopusApiKey, timeoutInMilliseconds, cacheManager, new FakeMetricRegistry());
-        String result = contentProvider.getContent(CacheManager.CacheNames.ApiRoot, "/api");
+        String result = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
         String newValue = cacheManager.getFromCache(CacheManager.CacheNames.ApiRoot, uri);
         Assert.assertEquals(newValue, result);
     }
@@ -75,7 +75,7 @@ public class HttpContentProviderImplTest {
         final URI uri = new URL(realOctopusUrl + "/api").toURI();
         cacheManager.addToCache(CacheManager.CacheNames.ApiRoot, uri, "cached value");
         HttpContentProvider contentProvider = new HttpContentProviderImpl(realOctopusUrl, realOctopusApiKey, timeoutInMilliseconds, cacheManager, new FakeMetricRegistry());
-        String result = contentProvider.getContent(CacheManager.CacheNames.ApiRoot, "/api");
+        String result = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
         Assert.assertEquals(result, "cached value");
     }
 }

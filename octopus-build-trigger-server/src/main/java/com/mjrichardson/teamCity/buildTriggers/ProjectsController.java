@@ -89,17 +89,17 @@ public class ProjectsController extends BaseController {
 
     @NotNull
     private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        final String apiResponse = contentProvider.getContent(CacheManager.CacheNames.ApiRoot, "/api");
+        final String apiResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
         return new ApiRootResponse(apiResponse, analyticsTracker);
     }
 
     //todo: de-dupe
     private Projects getProjects(HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        String projectsResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink);
+        String projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink);
         ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
         Projects projects = apiProjectsResponse.projects;
         while (shouldGetNextProjectsPage(apiProjectsResponse)) {
-            projectsResponse = contentProvider.getContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink);
+            projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink);
             apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
             Projects newProjects = apiProjectsResponse.projects;
             projects.add(newProjects);

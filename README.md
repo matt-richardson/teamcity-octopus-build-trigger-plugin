@@ -28,7 +28,6 @@ Once a build is triggered, parameters will be passed to the build:
 
 - test older versions of Octopus
 - improve logging
-- show a message when an update is available
 - add mutation testing using something like [Jester](http://jester.sourceforge.net/)
 
 # Logging
@@ -48,6 +47,16 @@ If you want to turn on logging, add the following to `<TeamCity server home>\con
   <appender-ref ref="OCTOPUS_DEPLOY.LOG" />
 </category>
  ```
+
+# Update checks
+
+A check is made once every 24 hours to see if there is a new version available, and if so, shows a banner
+on the trigger dialog suggestion an upgrade.
+
+If you want to disable update checking, you can set the `octopus.build.trigger.update.check.enabled` [internal
+property](https://confluence.jetbrains.com/display/TCD9/Configuring+TeamCity+Server+Startup+Properties#ConfiguringTeamCityServerStartupProperties-TeamCityinternalpropertiesinternal.properties)
+to `false`. This does not require a restart.
+
 
 # Metrics
 

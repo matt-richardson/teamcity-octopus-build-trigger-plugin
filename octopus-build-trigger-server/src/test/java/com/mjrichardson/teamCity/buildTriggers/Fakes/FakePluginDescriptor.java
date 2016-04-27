@@ -7,6 +7,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 
 public class FakePluginDescriptor implements PluginDescriptor {
+    private String pluginVersion = null;
+
     @NotNull
     @Override
     public String getPluginName() {
@@ -34,12 +36,16 @@ public class FakePluginDescriptor implements PluginDescriptor {
     @Nullable
     @Override
     public String getPluginVersion() {
-        return null;
+        return pluginVersion;
     }
 
     @NotNull
     @Override
     public File getPluginRoot() {
         return null;
+    }
+
+    public void setPluginVersion(String pluginVersion) {
+        this.pluginVersion = pluginVersion;
     }
 }

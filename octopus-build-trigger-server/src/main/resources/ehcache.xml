@@ -103,4 +103,15 @@
            memoryStoreEvictionPolicy="LFU"
            transactionalMode="off">
     </cache>
+
+    <cache name="GitHubLatestRelease"
+           maxEntriesLocalHeap="10"
+           maxEntriesLocalDisk="10"
+           eternal="false"
+           diskSpoolBufferSizeMB="20"
+           timeToIdleSeconds="86400"
+           timeToLiveSeconds="86400"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+    </cache>
 </ehcache>
