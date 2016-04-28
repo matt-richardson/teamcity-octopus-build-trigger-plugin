@@ -4,7 +4,8 @@ public interface AnalyticsTracker {
     enum EventCategory {
         MachineAddedTrigger,
         ReleaseCreatedTrigger,
-        DeploymentCompleteTrigger
+        DeploymentCompleteTrigger,
+        DeploymentProcessChangedTrigger
     }
 
     enum EventAction {

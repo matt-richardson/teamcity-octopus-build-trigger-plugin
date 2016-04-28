@@ -60,6 +60,10 @@ public final class OctopusBuildTriggerUtil {
     public static final String BUILD_PROPERTY_DEPLOYMENT_ENVIRONMENT_ID = "octopus.trigger.deployment.environment.id";
     public static final String BUILD_PROPERTY_DEPLOYMENT_SUCCESSFUL = "octopus.trigger.deployment.successful";
 
+    public static final String BUILD_PROPERTY_DEPLOYMENT_PROCESS_VERSION = "octopus.trigger.deployment.process.version";
+    public static final String BUILD_PROPERTY_DEPLOYMENT_PROCESS_PROJECT_ID = "octopus.trigger.deployment.process.project.id";
+
+
     public static Integer getConnectionTimeoutInMilliseconds() {
         //todo: this is logging a warning to console in the tests
         return TeamCityProperties.getInteger(CONNECTION_TIMEOUT_PROP, DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS);

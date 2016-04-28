@@ -7,6 +7,7 @@
     <bean class="com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTriggerService"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.ReleaseCreatedBuildTriggerService"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachineAddedBuildTriggerService"/>
+    <bean class="com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged.DeploymentProcessChangedBuildTriggerService"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.AnalyticsTrackerImpl" scope="singleton" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTriggerFactoryImpl" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.ProjectsController" init-method="register" />

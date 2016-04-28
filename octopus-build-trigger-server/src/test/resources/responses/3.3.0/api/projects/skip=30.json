@@ -1,7 +1,7 @@
 {
   "ItemType": "Project",
   "IsStale": false,
-  "TotalResults": 41,
+  "TotalResults": 42,
   "ItemsPerPage": 30,
   "Items": [
     {
@@ -332,6 +332,39 @@
         "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-101",
         "Web": "/app#/projects/Projects-101",
         "Logo": "/api/projects/Projects-101/logo"
+      }
+    },
+    {
+      "Id": "Projects-181",
+      "VariableSetId": "variableset-Projects-181",
+      "DeploymentProcessId": "deploymentprocess-Projects-181",
+      "IncludedLibraryVariableSetIds": [],
+      "DefaultToSkipIfAlreadyInstalled": false,
+      "VersioningStrategy": {
+        "DonorPackageStepId": null,
+        "Template": "#{Octopus.Version.LastMajor}.#{Octopus.Version.LastMinor}.#{Octopus.Version.NextPatch}"
+      },
+      "ReleaseCreationStrategy": {
+        "ReleaseCreationPackageStepId": null,
+        "ChannelId": null
+      },
+      "Name": "Project with No Process",
+      "Slug": "project-with-no-process",
+      "Description": "",
+      "IsDisabled": false,
+      "ProjectGroupId": "ProjectGroups-1",
+      "LifecycleId": "Lifecycles-1",
+      "AutoCreateRelease": false,
+      "Links": {
+        "Self": "/api/projects/Projects-181",
+        "Releases": "/api/projects/Projects-181/releases{/version}{?skip}",
+        "Channels": "/api/projects/Projects-181/channels",
+        "OrderChannels": "/api/projects/Projects-181/channels/order",
+        "Variables": "/api/variables/variableset-Projects-181",
+        "Progression": "/api/progression/Projects-181",
+        "DeploymentProcess": "/api/deploymentprocesses/deploymentprocess-Projects-181",
+        "Web": "/app#/projects/Projects-181",
+        "Logo": "/api/projects/Projects-181/logo"
       }
     },
     {

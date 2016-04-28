@@ -104,6 +104,17 @@
            transactionalMode="off">
     </cache>
 
+    <cache name="ApiDeploymentProcess"
+           maxEntriesLocalHeap="10000"
+           maxEntriesLocalDisk="100"
+           eternal="false"
+           diskSpoolBufferSizeMB="20"
+           timeToIdleSeconds="60"
+           timeToLiveSeconds="60"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+    </cache>
+
     <cache name="GitHubLatestRelease"
            maxEntriesLocalHeap="10"
            maxEntriesLocalDisk="10"

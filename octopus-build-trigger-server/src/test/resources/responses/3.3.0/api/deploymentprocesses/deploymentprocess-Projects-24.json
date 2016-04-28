@@ -1,0 +1,37 @@
+{
+  "Id": "deploymentprocess-Projects-24",
+  "ProjectId": "Projects-24",
+  "Steps": [
+    {
+      "Id": "569b1a17-0c0c-4b24-bd78-07238248d15c",
+      "Name": "run script",
+      "RequiresPackagesToBeAcquired": false,
+      "Properties": {
+        "Octopus.Action.TargetRoles": "octopus-server"
+      },
+      "Condition": "Success",
+      "StartTrigger": "StartAfterPrevious",
+      "Actions": [
+        {
+          "Id": "4ae05429-376f-44b3-aeb0-2887412b0d99",
+          "Name": "run script",
+          "ActionType": "Octopus.Script",
+          "Environments": [],
+          "Channels": [],
+          "Properties": {
+            "Octopus.Action.Script.Syntax": "PowerShell",
+            "Octopus.Action.Script.ScriptBody": "write-host \"hello\""
+          },
+          "Links": {}
+        }
+      ]
+    }
+  ],
+  "Version": 2,
+  "LastSnapshotId": null,
+  "Links": {
+    "Self": "/api/deploymentprocesses/deploymentprocess-Projects-24",
+    "Project": "/api/projects/Projects-24",
+    "Template": "/api/deploymentprocesses/deploymentprocess-Projects-24/template{?channel,releaseId}"
+  }
+}

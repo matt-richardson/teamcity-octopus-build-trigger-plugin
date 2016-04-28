@@ -1,0 +1,12 @@
+{
+  "Id": "deploymentprocess-Projects-181",
+  "ProjectId": "Projects-181",
+  "Steps": [],
+  "Version": 0,
+  "LastSnapshotId": null,
+  "Links": {
+    "Self": "/api/deploymentprocesses/deploymentprocess-Projects-181",
+    "Project": "/api/projects/Projects-181",
+    "Template": "/api/deploymentprocesses/deploymentprocess-Projects-181/template{?channel,releaseId}"
+  }
+}
