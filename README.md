@@ -7,6 +7,7 @@ A TeamCity plugin that polls Octopus Deploy, and triggers a TeamCity build when:
 - [x] a successful deployment to an environment is complete
 - [x] a release is created
 - [x] a new tentacle is added
+- [x] the release process for a project is changed
 
 # Installation
 
