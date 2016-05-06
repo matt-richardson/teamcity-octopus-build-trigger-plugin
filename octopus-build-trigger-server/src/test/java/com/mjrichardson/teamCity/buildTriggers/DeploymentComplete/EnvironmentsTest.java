@@ -193,40 +193,58 @@ public class EnvironmentsTest {
         Assert.assertEquals(sut.toString(), newEnvironments.toString());
     }
 
-    public void add_or_update_with_multiple_deployments_overwrites_if_latest_deployment_date_is_newer() {
+    public void add_or_update_with_multiple_deployments_overwrites_all_fields_if_latest_deployment_date_is_newer() {
+        Environments existingEnvironments = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 27), "a-different-release-id", "a-different-deployment-id", "a-different-version", "the-project-id"));
+
+        Environments newEnvironments = new Environments();
+        newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 27), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+
+        existingEnvironments.addOrUpdate(newEnvironments);
+
+        Environment result = existingEnvironments.getEnvironment("Environment-1");
+        Assert.assertEquals(result.latestDeployment, new OctopusDate(2016, 2, 29));
+        Assert.assertEquals(result.latestSuccessfulDeployment, new OctopusDate(2016, 2, 27));
+        Assert.assertEquals(result.releaseId, "the-release-id");
+        Assert.assertEquals(result.deploymentId, "the-deployment-id");
+        Assert.assertEquals(result.version, "the-version");
+        Assert.assertEquals(result.projectId, "the-project-id");
+    }
+
+    public void add_or_update_with_multiple_deployments_overwrites_latest_successful_date_only_if_latest_successful_deployment_date_is_newer() {
+        Environments existingEnvironments = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 27), "a-different-release-id", "a-different-deployment-id", "a-different-version", "the-project-id"));
+
         Environments newEnvironments = new Environments();
         newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
-        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 27), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
 
-        Environments sut = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
-        sut.addOrUpdate(newEnvironments);
+        existingEnvironments.addOrUpdate(newEnvironments);
 
-        Assert.assertEquals(sut.getEnvironment("Environment-1").latestDeployment, new OctopusDate(2016, 2, 29));
-        Assert.assertEquals(sut.getEnvironment("Environment-1").latestSuccessfulDeployment, new OctopusDate(2016, 2, 28));
+        Environment result = existingEnvironments.getEnvironment("Environment-1");
+        Assert.assertEquals(result.latestDeployment, new OctopusDate(2016, 2, 29));
+        Assert.assertEquals(result.latestSuccessfulDeployment, new OctopusDate(2016, 2, 28));
+        Assert.assertEquals(result.releaseId, "a-different-release-id");
+        Assert.assertEquals(result.deploymentId, "a-different-deployment-id");
+        Assert.assertEquals(result.version, "a-different-version");
+        Assert.assertEquals(result.projectId, "the-project-id");
     }
 
-    public void add_or_update_with_multiple_deployments_overwrites_if_latest_successful_deployment_date_is_newer() {
-        Environments newEnvironments = new Environments();
-        newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 29), new OctopusDate(2016, 2, 29), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
-        newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
+    public void add_or_update_with_multiple_deployments_does_not_overwrite_if_dates_are_older() {
+        Environments existingEnvironments = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28), "a-different-release-id", "a-different-deployment-id", "a-different-version", "the-project-id"));
 
-        Environments sut = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
-        sut.addOrUpdate(newEnvironments);
-
-        Assert.assertEquals(sut.getEnvironment("Environment-1").latestDeployment, new OctopusDate(2016, 2, 29));
-        Assert.assertEquals(sut.getEnvironment("Environment-1").latestSuccessfulDeployment, new OctopusDate(2016, 2, 29));
-    }
-
-    public void add_or_update_with_multiple_deployments_doesnt_overwrite_if_dates_are_older() {
         Environments newEnvironments = new Environments();
         newEnvironments.addOrUpdate(new Environment("Environment-1", new OctopusDate(2016, 2, 27), new OctopusDate(2016, 2, 27), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
         newEnvironments.addOrUpdate(new Environment("Environment-2", new OctopusDate(2016, 2, 28), new NullOctopusDate(), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
 
-        Environments sut = new Environments(new Environment("Environment-1", new OctopusDate(2016, 2, 28), new OctopusDate(2016, 2, 28), "the-release-id", "the-deployment-id", "the-version", "the-project-id"));
-        sut.addOrUpdate(newEnvironments);
+        existingEnvironments.addOrUpdate(newEnvironments);
 
-        Assert.assertEquals(sut.getEnvironment("Environment-1").latestDeployment, new OctopusDate(2016, 2, 28));
-        Assert.assertEquals(sut.getEnvironment("Environment-1").latestDeployment, new OctopusDate(2016, 2, 28));
+        Environment result = existingEnvironments.getEnvironment("Environment-1");
+        Assert.assertEquals(result.latestDeployment, new OctopusDate(2016, 2, 28));
+        Assert.assertEquals(result.latestSuccessfulDeployment, new OctopusDate(2016, 2, 28));
+        Assert.assertEquals(result.releaseId, "a-different-release-id");
+        Assert.assertEquals(result.deploymentId, "a-different-deployment-id");
+        Assert.assertEquals(result.version, "a-different-version");
+        Assert.assertEquals(result.projectId, "the-project-id");
     }
 
     public void add_or_update_with_single_deployment_that_is_null_does_not_add() {

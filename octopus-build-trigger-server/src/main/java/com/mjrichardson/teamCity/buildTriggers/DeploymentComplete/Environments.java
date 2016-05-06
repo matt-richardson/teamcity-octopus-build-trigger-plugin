@@ -120,16 +120,16 @@ public class Environments implements Iterable<Environment>{
             targetDeployment = new Environment(environmentId, latestDeployment, latestSuccessfulDeployment, releaseId, deploymentId, version, projectId);
             statusMap.add(targetDeployment);
         } else {
-            if (targetDeployment.isLatestDeploymentOlderThan(latestDeployment)) {
-                targetDeployment.latestDeployment = latestDeployment;
-            }
             if (targetDeployment.isLatestSuccessfulDeploymentOlderThen(latestSuccessfulDeployment)) {
                 targetDeployment.latestSuccessfulDeployment = latestSuccessfulDeployment;
             }
-            targetDeployment.projectId = projectId;
-            targetDeployment.deploymentId = deploymentId;
-            targetDeployment.version = version;
-            targetDeployment.releaseId = releaseId;
+            if (targetDeployment.isLatestDeploymentOlderThan(latestDeployment)) {
+                targetDeployment.latestDeployment = latestDeployment;
+                targetDeployment.projectId = projectId;
+                targetDeployment.deploymentId = deploymentId;
+                targetDeployment.version = version;
+                targetDeployment.releaseId = releaseId;
+            }
         }
     }
 
