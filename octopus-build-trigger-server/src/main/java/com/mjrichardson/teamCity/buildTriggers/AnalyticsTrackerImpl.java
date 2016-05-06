@@ -26,7 +26,7 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     private final String teamCityVersion;
     private final String applicationName = "teamcity-octopus-build-trigger-plugin";
     private static final Pattern ipAddressPattern = Pattern.compile("\\d*\\.\\d*\\.\\d*\\.\\d*");
-    private static final Pattern urlPattern = Pattern.compile("(http|https)://(.*?)/");
+    private static final Pattern urlPattern = Pattern.compile("(http|https)://(.*?)(/|:)");
     private GoogleAnalytics ga = null;
     private String octopusVersion = "not-set";
     private String octopusApiVersion = "not-set";
@@ -138,7 +138,7 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
         if (urlMatcher.find())
             url = urlMatcher.group(2);
 
-        Pattern urlPatternWithPort = Pattern.compile("(" + url + ":\\d*) ");
+        Pattern urlPatternWithPort = Pattern.compile("(" + url + ":\\d+)");
 
         Matcher urlPatternMatcher = urlPatternWithPort.matcher(result);
         String urlWithPort = "";
