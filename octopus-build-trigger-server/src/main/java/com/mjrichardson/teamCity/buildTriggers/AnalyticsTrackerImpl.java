@@ -149,7 +149,6 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
         return result
                 .replace(ipAddress, "*****")
                 .replace(urlWithPort, "*****:*****")
-                .replace(url, "*****")
-        ;
+                .replace(url, "*****");
     }
 }
