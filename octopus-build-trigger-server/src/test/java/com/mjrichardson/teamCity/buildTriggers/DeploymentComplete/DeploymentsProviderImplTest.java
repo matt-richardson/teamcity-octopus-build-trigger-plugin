@@ -287,18 +287,6 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(environment, new Environment("Environments-1", new OctopusDate(2016, 3, 9, 22, 26, 43, 504), new NullOctopusDate(), "Releases-244", "Deployments-245", "0.0.31", "Projects-153"));
     }
 
-//    public void get_deployments_when_XXXXXX() throws Exception {
-//        HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
-//        DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
-//        final String oldData = "Environments-167;1970-01-01T00:00:00.000+00:00;1970-01-01T00:00:00.000+00:00;null;null;null;null|Environments-216;2016-05-06T06:24:17.277+00:00;2016-05-06T06:24:17.277+00:00;Releases-5143;Deployments-7367;1.2.0.73-Retry3;Projects-562|Environments-233;2016-05-01T23:00:33.676+00:00;2016-05-01T23:00:33.676+00:00;Releases-5143;Deployments-8405;1.2.0.73-Retry3;Projects-562|Environments-269;2016-05-03T09:45:56.329+00:00;2016-05-03T09:45:56.329+00:00;Releases-5143;Deployments-7368;1.2.0.73-Retry3;Projects-562|Environments-14;2016-04-01T14:15:29.044+00:00;2016-04-01T14:15:29.044+00:00;Releases-5143;Deployments-7392;1.2.0.73-Retry3;Projects-562|Environments-15;2016-04-07T09:07:53.041+00:00;2016-04-07T09:07:53.041+00:00;Releases-5143;Deployments-7491;1.2.0.73-Retry3;Projects-562|Environments-621;2016-04-07T10:57:53.346+00:00;2016-04-07T10:57:53.346+00:00;Releases-5143;Deployments-7960;1.2.0.73-Retry3;Projects-562|Environments-382;2016-05-06T06:43:17.001+00:00;2016-05-06T06:43:17.001+00:00;Releases-9093;Deployments-14231;1.2.159.0;Projects-562";
-//        Environments oldEnvironments = Environments.Parse(oldData);
-//
-//        Environments newEnvironments = deploymentsProviderImpl.getDeployments("Projects-562", oldEnvironments);
-//        Environment environment = newEnvironments.getEnvironment("Environments-216");
-//        Assert.assertNotNull(environment);
-//        Assert.assertEquals(environment, new Environment("Environments-216", new OctopusDate(2016, 5, 6, 9, 42, 45, 373), new OctopusDate(2016, 5, 6, 9, 42, 45, 373), "Releases-9506", "Deployments-14972", "1.2.164.0", "Projects-562"));
-//    }
-
     public void determine_outcome_of_fallback_handles_more_responses() {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
