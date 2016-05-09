@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 public class DeploymentProcessProviderImpl implements DeploymentProcessProvider {
     @NotNull
@@ -22,17 +23,17 @@ public class DeploymentProcessProviderImpl implements DeploymentProcessProvider 
         this.analyticsTracker = analyticsTracker;
     }
 
-    public String getDeploymentProcessVersion(String projectId) throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, DeploymentProcessProviderException {
+    public String getDeploymentProcessVersion(String projectId, UUID correlationId) throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, DeploymentProcessProviderException {
         String url = null;
 
         try {
             HttpContentProvider contentProvider = httpContentProviderFactory.getContentProvider();
             url = contentProvider.getUrl();
-            LOG.debug("Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
+            LOG.debug(String.format("%s: Getting deployments from %s for project id '%s'", correlationId, contentProvider.getUrl(), projectId));
 
-            final ApiRootResponse apiRootResponse = getApiRootResponse(contentProvider);
-            final Project project = getProject(projectId, contentProvider, apiRootResponse);
-            return getDeploymentProcessVersion(project, contentProvider);
+            final ApiRootResponse apiRootResponse = getApiRootResponse(contentProvider, correlationId);
+            final Project project = getProject(projectId, contentProvider, apiRootResponse, correlationId);
+            return getDeploymentProcessVersion(project, contentProvider, correlationId);
 
         } catch (ProjectNotFoundException | InvalidOctopusApiKeyException | InvalidOctopusUrlException e) {
             throw e;
@@ -41,24 +42,24 @@ public class DeploymentProcessProviderImpl implements DeploymentProcessProvider 
         }
     }
 
-    private String getDeploymentProcessVersion(Project project, HttpContentProvider contentProvider) throws IOException, InvalidCacheConfigurationException, NoSuchAlgorithmException, URISyntaxException, KeyStoreException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, ProjectNotFoundException, KeyManagementException, ParseException {
-        String deploymentProcessResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiDeploymentProcess, project.deploymentProcessLink);
+    private String getDeploymentProcessVersion(Project project, HttpContentProvider contentProvider, UUID correlationId) throws IOException, InvalidCacheConfigurationException, NoSuchAlgorithmException, URISyntaxException, KeyStoreException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, ProjectNotFoundException, KeyManagementException, ParseException {
+        String deploymentProcessResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiDeploymentProcess, project.deploymentProcessLink, correlationId);
         ApiDeploymentProcessResponse apiDeploymentProcessResponse = new ApiDeploymentProcessResponse(deploymentProcessResponse);
         return apiDeploymentProcessResponse.version;
     }
 
     @NotNull
-    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        final String apiResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
-        return new ApiRootResponse(apiResponse, analyticsTracker);
+    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        final String apiResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api", correlationId);
+        return new ApiRootResponse(apiResponse, analyticsTracker, correlationId);
     }
 
-    private Project getProject(String projectId, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        String projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink);
+    private Project getProject(String projectId, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        String projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink, correlationId);
         ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
         Projects projects = apiProjectsResponse.projects;
         while (shouldGetNextProjectsPage(apiProjectsResponse, projects, projectId)) {
-            projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink);
+            projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink, correlationId);
             apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
             Projects newProjects = apiProjectsResponse.projects;
             projects.add(newProjects);

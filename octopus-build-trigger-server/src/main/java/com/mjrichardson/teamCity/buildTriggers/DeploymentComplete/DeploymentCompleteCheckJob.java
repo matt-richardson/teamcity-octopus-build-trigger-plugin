@@ -28,19 +28,19 @@ import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
+import com.mjrichardson.teamCity.buildTriggers.CustomCheckJob;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
-import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
-import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
+class DeploymentCompleteCheckJob extends CustomCheckJob<DeploymentCompleteSpec> {
     @NotNull
     private static final Logger LOG = Logger.getInstance(DeploymentCompleteCheckJob.class.getName());
 
@@ -66,8 +66,8 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
 
     @NotNull
     CheckResult<DeploymentCompleteSpec> getCheckResult(String octopusUrl, String octopusApiKey, String octopusProject,
-                                                       Boolean triggerOnlyOnSuccessfulDeployment, CustomDataStorage dataStorage) {
-        LOG.debug("Checking for new deployments for project " + octopusProject + " on server " + octopusUrl);
+                                                       Boolean triggerOnlyOnSuccessfulDeployment, CustomDataStorage dataStorage, UUID correlationId) {
+        LOG.debug(String.format("%s: Checking for new deployments for project %s on server %s", correlationId, octopusProject, octopusUrl));
         final String dataStorageKey = (displayName + "|" + octopusUrl + "|" + octopusProject).toLowerCase();
 
         try {
@@ -77,7 +77,7 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
             final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
             DeploymentsProvider provider = deploymentsProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
 
-            final Environments newEnvironments = provider.getDeployments(octopusProject, oldEnvironments);
+            final Environments newEnvironments = provider.getDeployments(octopusProject, oldEnvironments, correlationId);
 
             //only store that one deployment to one environment has happened here, not multiple environment.
             //otherwise, we could inadvertently miss deployments
@@ -88,10 +88,10 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
             //do not trigger build after first adding trigger (oldEnvironments == null)
             if (oldStoredData == null) {
                 dataStorage.putValue(dataStorageKey, newEnvironments.toString());
-                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.TriggerAdded);
+                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.TriggerAdded, correlationId);
 
-                LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newEnvironments);
-                return DeploymentCompleteSpecCheckResult.createEmptyResult();
+                LOG.debug(String.format("%s: No previous data for server %s, project %s: null -> %s", correlationId, octopusUrl, octopusProject, newEnvironments));
+                return DeploymentCompleteSpecCheckResult.createEmptyResult(correlationId);
             }
 
             if (trimmedEnvironments.equals(oldEnvironments)) {
@@ -101,16 +101,16 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
                     newStoredData = trimmedEnvironments.toString();
                     dataStorage.putValue(dataStorageKey, newStoredData);
 
-                    LOG.debug("Environments have been removed from Octopus: " + deletedEnvironments.toString());
+                    LOG.debug(String.format("%s: Environments have been removed from Octopus: %s", correlationId, deletedEnvironments.toString()));
                 }
-                LOG.debug("oldStoredData was '" + oldStoredData + "'");
-                LOG.debug("trimmedEnvironments was '" + trimmedEnvironments + "'");
+                LOG.debug(String.format("%s: oldStoredData was '%s'", correlationId, oldStoredData));
+                LOG.debug(String.format("%s: trimmedEnvironments was '%s'", correlationId, trimmedEnvironments));
                 if (triggerOnlyOnSuccessfulDeployment)
-                    LOG.info("No new successful deployments on '" + octopusUrl + "' for project '" + octopusProject + "'");
+                    LOG.info(String.format("%s: No new successful deployments on '%s' for project '%s'", correlationId, octopusUrl, octopusProject));
                 else
-                    LOG.info("No new deployments on '" + octopusUrl + "' for project '" + octopusProject + "'");
+                    LOG.info(String.format("%s: No new deployments on '%s' for project '%s'", correlationId, octopusUrl, octopusProject));
 
-                return DeploymentCompleteSpecCheckResult.createEmptyResult();
+                return DeploymentCompleteSpecCheckResult.createEmptyResult(correlationId);
             }
 
             dataStorage.putValue(dataStorageKey, newStoredData);
@@ -119,55 +119,48 @@ class DeploymentCompleteCheckJob implements CheckJob<DeploymentCompleteSpec> {
 
             final Environment environment = trimmedEnvironments.getChangedDeployment(oldEnvironments);
             if (triggerOnlyOnSuccessfulDeployment && !environment.wasLatestDeploymentSuccessful()) {
-                LOG.debug("New deployments found, but they weren't successful, and we are only triggering on successful builds. Server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + trimmedEnvironments);
-                return DeploymentCompleteSpecCheckResult.createEmptyResult();
+                LOG.debug(String.format("%s: New deployments found, but they weren't successful, and we are only triggering on successful builds. Server %s, project %s: null -> %s", correlationId, octopusUrl, octopusProject, trimmedEnvironments));
+                return DeploymentCompleteSpecCheckResult.createEmptyResult(correlationId);
             }
 
-            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.BuildTriggered);
+            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.BuildTriggered, correlationId);
 
             if (triggerOnlyOnSuccessfulDeployment && environment.wasLatestDeploymentSuccessful())
-                LOG.info(String.format("New successful deployment on %s for project %s: %s -> %s", octopusUrl, octopusProject, oldStoredData, trimmedEnvironments));
+                LOG.info(String.format("%s: New successful deployment on %s for project %s: %s -> %s", correlationId, octopusUrl, octopusProject, oldStoredData, trimmedEnvironments));
             else
-                LOG.info(String.format("New deployment on %s for project %s: %s -> %s", octopusUrl, octopusProject, oldStoredData, trimmedEnvironments));
+                LOG.info(String.format("%s: New deployment on %s for project %s: %s -> %s", correlationId, octopusUrl, octopusProject, oldStoredData, trimmedEnvironments));
             final DeploymentCompleteSpec deploymentCompleteSpec = new DeploymentCompleteSpec(octopusUrl, environment);
-            return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec);
+            return DeploymentCompleteSpecCheckResult.createUpdatedResult(deploymentCompleteSpec, correlationId);
         } catch (Exception e) {
-            LOG.error("Failed to check for new deployments completed", e);
+            LOG.error(String.format("%s: Failed to check for new deployments completed", correlationId), e);
 
-            analyticsTracker.postException(e);
-            return DeploymentCompleteSpecCheckResult.createThrowableResult(e);
+            analyticsTracker.postException(e, correlationId);
+            return DeploymentCompleteSpecCheckResult.createThrowableResult(e, correlationId);
         }
     }
 
     @NotNull
-    public CheckResult<DeploymentCompleteSpec> perform() {
-
+    public CheckResult<DeploymentCompleteSpec> perform(UUID correlationId) {
         final String octopusUrl = props.get(OCTOPUS_URL);
         if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
             return DeploymentCompleteSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
-                    displayName, this.buildType));
+                    displayName, this.buildType), correlationId);
         }
 
         final String octopusApiKey = props.get(OCTOPUS_APIKEY);
         if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
             return DeploymentCompleteSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
-                    displayName, this.buildType));
+                    displayName, this.buildType), correlationId);
         }
 
         final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
         if (StringUtil.isEmptyOrSpaces(octopusProject)) {
             return DeploymentCompleteSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty project) in build configuration %s",
-                    displayName, this.buildType));
+                    displayName, this.buildType), correlationId);
         }
 
         final Boolean triggerOnlyOnSuccessfulDeployment = Boolean.parseBoolean(props.get(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT));
 
-        return getCheckResult(octopusUrl, octopusApiKey, octopusProject, triggerOnlyOnSuccessfulDeployment, dataStorage);
-    }
-
-    public boolean allowSchedule(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-        //we always return false here - the AsyncPolledBuildTrigger class handles whether we are busy or not
-        //also, this is inverted, the method should be preventSchedule or something
-        return false;
+        return getCheckResult(octopusUrl, octopusApiKey, octopusProject, triggerOnlyOnSuccessfulDeployment, dataStorage, correlationId);
     }
 }

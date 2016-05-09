@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 public class MachinesProviderImpl implements MachinesProvider {
     @NotNull
@@ -22,17 +23,17 @@ public class MachinesProviderImpl implements MachinesProvider {
         this.analyticsTracker = analyticsTracker;
     }
 
-    public Machines getMachines() throws InvalidOctopusApiKeyException, InvalidOctopusUrlException, MachinesProviderException {
+    public Machines getMachines(UUID correlationId) throws InvalidOctopusApiKeyException, InvalidOctopusUrlException, MachinesProviderException {
         String url = null;
 
         try {
             HttpContentProvider contentProvider = httpContentProviderFactory.getContentProvider();
             url = contentProvider.getUrl();
 
-            LOG.debug("Getting machines from " + contentProvider.getUrl());
+            LOG.debug(String.format("%s: Getting machines from %s", correlationId, contentProvider.getUrl()));
 
-            final ApiRootResponse apiRootResponse = getApiRootResponse(contentProvider);
-            return getMachines(contentProvider, apiRootResponse);
+            final ApiRootResponse apiRootResponse = getApiRootResponse(contentProvider, correlationId);
+            return getMachines(contentProvider, apiRootResponse, correlationId);
 
         } catch (InvalidOctopusApiKeyException | InvalidOctopusUrlException e) {
             throw e;
@@ -41,12 +42,12 @@ public class MachinesProviderImpl implements MachinesProvider {
         }
     }
 
-    private Machines getMachines(HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, ProjectNotFoundException, InvalidCacheConfigurationException {
-        String machinesResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiMachines, apiRootResponse.machinesApiLink);
+    private Machines getMachines(HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, ProjectNotFoundException, InvalidCacheConfigurationException {
+        String machinesResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiMachines, apiRootResponse.machinesApiLink, correlationId);
         ApiMachinesResponse apiMachinesResponse = new ApiMachinesResponse(machinesResponse);
         Machines machines = apiMachinesResponse.machines;
         while (shouldGetNextMachinesPage(apiMachinesResponse, machines)) {
-            machinesResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiMachines, apiMachinesResponse.nextLink);
+            machinesResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiMachines, apiMachinesResponse.nextLink, correlationId);
             apiMachinesResponse = new ApiMachinesResponse(machinesResponse);
             Machines newMachines = apiMachinesResponse.machines;
             machines.add(newMachines);
@@ -55,9 +56,9 @@ public class MachinesProviderImpl implements MachinesProvider {
     }
 
     @NotNull
-    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        final String apiResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
-        return new ApiRootResponse(apiResponse, analyticsTracker);
+    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        final String apiResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api", correlationId);
+        return new ApiRootResponse(apiResponse, analyticsTracker, correlationId);
     }
 
     private boolean shouldGetNextMachinesPage(ApiMachinesResponse apiMachinesResponse, Machines machines) {

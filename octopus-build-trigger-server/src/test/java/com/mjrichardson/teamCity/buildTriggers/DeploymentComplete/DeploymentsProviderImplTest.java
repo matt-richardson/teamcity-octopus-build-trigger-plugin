@@ -12,6 +12,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.util.UUID;
 
 @Test
 public class DeploymentsProviderImplTest {
@@ -36,7 +37,8 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), new FakeCacheManager(), new FakeMetricRegistry());
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments, correlationId);
         Assert.assertNotNull(newEnvironments);
     }
 
@@ -44,7 +46,8 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -64,7 +67,8 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoReleases, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoReleases, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -75,7 +79,8 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoDeployments, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoDeployments, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -88,7 +93,8 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
 
-        deploymentsProviderImpl.getDeployments(ProjectThatDoesNotExist, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        deploymentsProviderImpl.getDeployments(ProjectThatDoesNotExist, oldEnvironments, correlationId);
     }
 
     @Test(expectedExceptions = InvalidOctopusUrlException.class)
@@ -97,7 +103,8 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
 
-        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments, correlationId);
     }
 
     @Test(expectedExceptions = InvalidOctopusUrlException.class)
@@ -106,7 +113,8 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
 
-        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments, correlationId);
     }
 
     @Test(expectedExceptions = InvalidOctopusApiKeyException.class)
@@ -115,7 +123,8 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
 
-        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments, correlationId);
     }
 
     @Test(expectedExceptions = DeploymentsProviderException.class)
@@ -124,14 +133,16 @@ public class DeploymentsProviderImplTest {
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
 
-        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments, correlationId);
     }
 
     public void get_deployments_when_up_to_date() throws Exception {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = Environments.Parse("Environments-1;2016-01-21T13:31:56.022+00:00;2016-01-21T13:31:56.022+00:00;the-release-id;the-deployment-id;the-version;the-project-id");
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithLatestDeploymentSuccessful, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -142,7 +153,8 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoSuccessfulDeployments, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoSuccessfulDeployments, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -153,7 +165,8 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoRecentSuccessfulDeployments, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoRecentSuccessfulDeployments, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -164,7 +177,8 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 2);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -178,7 +192,8 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoReleases, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithNoReleases, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -190,7 +205,8 @@ public class DeploymentsProviderImplTest {
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, analyticsTracker);
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndNoDeploymentsToOneEnvironment, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndNoDeploymentsToOneEnvironment, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 2);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -205,8 +221,9 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, analyticsTracker);
-        Environments oldEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndNoDeploymentsToOneEnvironment, new Environments());
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndNoDeploymentsToOneEnvironment, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments oldEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndNoDeploymentsToOneEnvironment, new Environments(), correlationId);
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndNoDeploymentsToOneEnvironment, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 2);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -223,7 +240,8 @@ public class DeploymentsProviderImplTest {
         final String oldData = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;Releases-69;Deployments-115;0.0.1;Projects-28|" +
                                "Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;Releases-69;Deployments-116;0.0.1;Projects-28";
         Environments oldEnvironments = Environments.Parse(oldData);
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironments, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 2);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -246,7 +264,8 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndMostRecentDeploymentSuccessful, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithMultipleEnvironmentsAndMostRecentDeploymentSuccessful, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 2);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -260,7 +279,8 @@ public class DeploymentsProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Environments oldEnvironments = new Environments();
-        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithManyDeploymentsWhereAllHaveFailed, oldEnvironments);
+        UUID correlationId = UUID.randomUUID();
+        Environments newEnvironments = deploymentsProviderImpl.getDeployments(ProjectWithManyDeploymentsWhereAllHaveFailed, oldEnvironments, correlationId);
         Assert.assertEquals(newEnvironments.size(), 1);
         Environment environment = newEnvironments.getEnvironment("Environments-1");
         Assert.assertNotNull(environment);
@@ -290,7 +310,8 @@ public class DeploymentsProviderImplTest {
         environmentsFromDeploymentsApi.addEnvironment("Environment-1");
         environmentsFromDeploymentsApi.addEnvironment("Environment-2");
 
-        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        UUID correlationId = UUID.randomUUID();
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi, correlationId);
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedMoreEnvironments);
     }
 
@@ -305,7 +326,8 @@ public class DeploymentsProviderImplTest {
         Environments environmentsFromDeploymentsApi = new Environments();
         environmentsFromDeploymentsApi.addEnvironment("Environment-1");
 
-        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        UUID correlationId = UUID.randomUUID();
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi, correlationId);
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedFewerEnvironments);
     }
 
@@ -318,7 +340,8 @@ public class DeploymentsProviderImplTest {
         Environments environmentsFromProgressionApi = Environments.Parse(oldData);
         Environments environmentsFromDeploymentsApi = Environments.Parse(oldData);
 
-        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        UUID correlationId = UUID.randomUUID();
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi, correlationId);
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
     }
 
@@ -332,7 +355,8 @@ public class DeploymentsProviderImplTest {
         final String newData = "Environments-2;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromDeploymentsApi = Environments.Parse(newData);
 
-        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        UUID correlationId = UUID.randomUUID();
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi, correlationId);
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentEnvironments);
     }
 
@@ -346,7 +370,8 @@ public class DeploymentsProviderImplTest {
         final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T15:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
 
-        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        UUID correlationId = UUID.randomUUID();
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi, correlationId);
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
     }
 
@@ -360,7 +385,8 @@ public class DeploymentsProviderImplTest {
         final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T15:00:00.000+00:00;2016-01-20T15:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
 
-        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        UUID correlationId = UUID.randomUUID();
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi, correlationId);
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
     }
 
@@ -374,7 +400,8 @@ public class DeploymentsProviderImplTest {
         final String deploymentsApiResult = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T13:00:00.000+00:00;2016-01-20T13:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environmentsFromDeploymentsApi = Environments.Parse(deploymentsApiResult);
 
-        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi);
+        UUID correlationId = UUID.randomUUID();
+        AnalyticsTracker.EventAction result = deploymentsProviderImpl.determineOutcomeOfFallback(environmentsFromProgressionApi, environmentsFromDeploymentsApi, correlationId);
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedWorseResults);
     }
 }

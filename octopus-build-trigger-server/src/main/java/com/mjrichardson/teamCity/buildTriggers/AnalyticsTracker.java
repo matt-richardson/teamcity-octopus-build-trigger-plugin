@@ -1,5 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import java.util.UUID;
+
 public interface AnalyticsTracker {
     enum EventCategory {
         MachineAddedTrigger,
@@ -21,9 +23,9 @@ public interface AnalyticsTracker {
         FallBackStatusUnknown
     }
 
-    void postEvent(EventCategory eventCategory, EventAction eventAction);
+    void postEvent(EventCategory eventCategory, EventAction eventAction, UUID correlationId);
 
-    void postException(Exception e);
+    void postException(Exception e, UUID correlationId);
 
     void setOctopusVersion(String octopusVersion);
 

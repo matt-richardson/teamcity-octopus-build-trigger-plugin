@@ -4,14 +4,18 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
        default-autowire="constructor">
     <import resource="classpath*:META-INF/spring-server-async-trigger.xml"/>
+
+    <!-- entry points -->
     <bean class="com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteBuildTriggerService"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.ReleaseCreatedBuildTriggerService"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachineAddedBuildTriggerService"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged.DeploymentProcessChangedBuildTriggerService"/>
-    <bean class="com.mjrichardson.teamCity.buildTriggers.AnalyticsTrackerImpl" scope="singleton" />
-    <bean class="com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTriggerFactoryImpl" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.ProjectsController" init-method="register" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.MetricsController" init-method="register" />
+
+    <!-- injected objects -->
+    <bean class="com.mjrichardson.teamCity.buildTriggers.AnalyticsTrackerImpl" scope="singleton" />
+    <bean class="com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTriggerFactoryImpl" />
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
     <bean id="metricRegistry" class="com.codahale.metrics.MetricRegistry" scope="singleton" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.CacheManagerImpl" scope="singleton" />

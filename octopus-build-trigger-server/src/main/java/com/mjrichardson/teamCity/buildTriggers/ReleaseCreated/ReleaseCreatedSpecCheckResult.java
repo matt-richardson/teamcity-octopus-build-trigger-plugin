@@ -24,45 +24,46 @@
 
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
+import com.mjrichardson.teamCity.buildTriggers.CustomCheckResult;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
-import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.buildTriggers.async.DetectionException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
-class ReleaseCreatedSpecCheckResult extends CheckResult<ReleaseCreatedSpec> {
-    private ReleaseCreatedSpecCheckResult() {
-        super();
+class ReleaseCreatedSpecCheckResult extends CustomCheckResult<ReleaseCreatedSpec> {
+    private ReleaseCreatedSpecCheckResult(UUID correlationId) {
+        super(correlationId);
     }
 
-    private ReleaseCreatedSpecCheckResult(@NotNull Collection<ReleaseCreatedSpec> updated, @NotNull Map<ReleaseCreatedSpec, DetectionException> errors) {
-        super(updated, errors);
+    private ReleaseCreatedSpecCheckResult(@NotNull Collection<ReleaseCreatedSpec> updated, @NotNull Map<ReleaseCreatedSpec, DetectionException> errors, UUID correlationId) {
+        super(updated, errors, correlationId);
     }
 
-    private ReleaseCreatedSpecCheckResult(@NotNull Throwable generalError) {
-        super(generalError);
-    }
-
-    @NotNull
-    static ReleaseCreatedSpecCheckResult createEmptyResult() {
-        return new ReleaseCreatedSpecCheckResult();
+    private ReleaseCreatedSpecCheckResult(@NotNull Throwable generalError, UUID correlationId) {
+        super(generalError, correlationId);
     }
 
     @NotNull
-    static ReleaseCreatedSpecCheckResult createUpdatedResult(@NotNull ReleaseCreatedSpec ReleaseCreatedSpec) {
-        return new ReleaseCreatedSpecCheckResult(Collections.singleton(ReleaseCreatedSpec), Collections.<ReleaseCreatedSpec, DetectionException>emptyMap());
+    static ReleaseCreatedSpecCheckResult createEmptyResult(UUID correlationId) {
+        return new ReleaseCreatedSpecCheckResult(correlationId);
     }
 
     @NotNull
-    static ReleaseCreatedSpecCheckResult createThrowableResult(@NotNull Throwable throwable) {
-        return new ReleaseCreatedSpecCheckResult(throwable);
+    static ReleaseCreatedSpecCheckResult createUpdatedResult(@NotNull ReleaseCreatedSpec ReleaseCreatedSpec, UUID correlationId) {
+        return new ReleaseCreatedSpecCheckResult(Collections.singleton(ReleaseCreatedSpec), Collections.<ReleaseCreatedSpec, DetectionException>emptyMap(), correlationId);
     }
 
     @NotNull
-    static ReleaseCreatedSpecCheckResult createErrorResult(@NotNull String error) {
-        return new ReleaseCreatedSpecCheckResult(new BuildTriggerException(error));
+    static ReleaseCreatedSpecCheckResult createThrowableResult(@NotNull Throwable throwable, UUID correlationId) {
+        return new ReleaseCreatedSpecCheckResult(throwable, correlationId);
+    }
+
+    @NotNull
+    static ReleaseCreatedSpecCheckResult createErrorResult(@NotNull String error, UUID correlationId) {
+        return new ReleaseCreatedSpecCheckResult(new BuildTriggerException(error), correlationId);
     }
 }

@@ -29,6 +29,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -81,16 +82,16 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     }
 
     @NotNull
-    public String getOctopusContent(CacheManager.CacheNames cacheName, @NotNull String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+    public String getOctopusContent(CacheManager.CacheNames cacheName, @NotNull String uriPath, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
         final URI uri = new URL(octopusUrl + uriPath).toURI();
 
         HashMap<String,String> headers = new HashMap<>();
         headers.put("X-Octopus-ApiKey", this.apiKey);
 
         try {
-            return getContent(cacheName, uri, headers);
+            return getContent(cacheName, uri, headers, correlationId);
         } catch (UnknownHostException e) {
-            LOG.warn("Unknown host exception while getting response from " + uri);
+            LOG.warn(String.format("%s: Unknown host exception while getting response from %s", correlationId, uri));
             throw new InvalidOctopusUrlException(uri, e);
         }
         catch (UnexpectedResponseCodeException ex) {
@@ -112,16 +113,16 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     }
 
     @NotNull
-    public String getContent(CacheManager.CacheNames cacheName, @NotNull URI uri) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
-        return getContent(cacheName, uri, new HashMap<>());
+    public String getContent(CacheManager.CacheNames cacheName, @NotNull URI uri, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+        return getContent(cacheName, uri, new HashMap<>(), correlationId);
     }
 
     @NotNull
-    private String getContent(CacheManager.CacheNames cacheName, @NotNull URI uri, HashMap<String, String> headers) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+    private String getContent(CacheManager.CacheNames cacheName, @NotNull URI uri, HashMap<String, String> headers, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
         metricRegistry.meter(name(HttpContentProviderImpl.class, "apiRequests", "hits")).mark();
         metricRegistry.meter(name(HttpContentProviderImpl.class, "apiRequests", cacheName.name(), "hits")).mark();
 
-        final String cachedResponse = cacheManager.getFromCache(cacheName, uri);
+        final String cachedResponse = cacheManager.getFromCache(cacheName, uri, correlationId);
         if (cachedResponse != null)
             return cachedResponse;
 
@@ -130,7 +131,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
         CloseableHttpClient httpClient = getHttpClient(this.connectionTimeoutInMilliseconds);
 
         try {
-            LOG.debug("Getting response from url " + uri);
+            LOG.debug(String.format("%s: Getting response from url %s", correlationId, uri));
             final HttpContext httpContext = HttpClientContext.create();
             for (Object key : headers.keySet()) {
                 httpGet.addHeader((String)key, headers.get(key));
@@ -146,11 +147,11 @@ public class HttpContentProviderImpl implements HttpContentProvider {
 
             final HttpEntity entity = response.getEntity();
             final String content = EntityUtils.toString(entity);
-            LOG.debug("request to " + uri + " returned " + content);
-            cacheManager.addToCache(cacheName, uri, content);
+            LOG.debug(String.format("%s: request to %s returned %s", correlationId, uri, content));
+            cacheManager.addToCache(cacheName, uri, content, correlationId);
             return content;
         } catch (Exception e) {
-            LOG.warn("Exception while getting response from " + uri);
+            LOG.warn(String.format("%s: Exception while getting response from %s", correlationId, uri));
             throw e;
         } finally {
             context.stop();
@@ -159,7 +160,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
                 try {
                     httpClient.close();
                 } catch (IOException e) {
-                    LOG.warn("Exception while calling httpClient.close() - not much we can do", e);
+                    LOG.warn(String.format("%s: Exception while calling httpClient.close() - not much we can do", correlationId), e);
                 }
             }
         }

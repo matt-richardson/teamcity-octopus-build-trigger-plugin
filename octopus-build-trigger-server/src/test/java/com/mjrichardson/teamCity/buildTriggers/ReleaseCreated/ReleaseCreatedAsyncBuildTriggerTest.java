@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
@@ -40,7 +41,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
-        Integer result = sut.getPollInterval(new FakeAsyncTriggerParameters());
+        Integer result = sut.getPollIntervalInMilliseconds();
 
         Assert.assertEquals(result, pollIntervalInSeconds);
     }
@@ -49,7 +50,11 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
-        CheckJob<ReleaseCreatedSpec> result = sut.createJob(new FakeAsyncTriggerParameters());
+        UUID correlationId = UUID.randomUUID();
+        CheckJob<ReleaseCreatedSpec> result = sut.createJob("the-build-type",
+                new FakeCustomDataStorage(),
+                new FakeBuildTriggerDescriptor().getProperties(),
+                correlationId);
 
         Assert.assertEquals(result.getClass(), ReleaseCreatedCheckJob.class);
     }
@@ -58,7 +63,8 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
-        CheckResult<ReleaseCreatedSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"));
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<ReleaseCreatedSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"), correlationId);
 
         Assert.assertTrue(result.hasCheckErrors());
         Assert.assertEquals(result.getGeneralError().getMessage(), "the exception message");

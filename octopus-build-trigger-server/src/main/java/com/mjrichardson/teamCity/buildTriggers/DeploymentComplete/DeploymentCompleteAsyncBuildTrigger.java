@@ -29,20 +29,21 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
+import com.mjrichardson.teamCity.buildTriggers.CustomCheckJob;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
-import jetbrains.buildServer.buildTriggers.async.AsyncTriggerParameters;
-import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckJobCreationException;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
+import jetbrains.buildServer.serverSide.CustomDataStorage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-public class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrigger<DeploymentCompleteSpec> {
+public class DeploymentCompleteAsyncBuildTrigger extends CustomAsyncBuildTrigger<DeploymentCompleteSpec> {
     private final String displayName;
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;
@@ -69,24 +70,24 @@ public class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrig
         return deploymentCompleteSpec.getRequestorString();
     }
 
-    public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
+    public int getPollIntervalInMilliseconds() {
         return pollIntervalInSeconds;
     }
 
     @NotNull
-    public CheckJob<DeploymentCompleteSpec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
+    public CustomCheckJob<DeploymentCompleteSpec> createJob(@NotNull String buildType, @NotNull CustomDataStorage dataStorage, @NotNull Map<String, String> properties, @NotNull UUID correlationId) throws CheckJobCreationException {
         return new DeploymentCompleteCheckJob(displayName,
-                asyncTriggerParameters.getBuildType().toString(),
-                asyncTriggerParameters.getCustomDataStorage(),
-                asyncTriggerParameters.getTriggerDescriptor().getProperties(),
+                buildType,
+                dataStorage,
+                properties,
                 analyticsTracker,
                 cacheManager,
                 metricRegistry);
     }
 
     @NotNull
-    public CheckResult<DeploymentCompleteSpec> createCrashOnSubmitResult(@NotNull Throwable throwable) {
-        return DeploymentCompleteSpecCheckResult.createThrowableResult(throwable);
+    public CheckResult<DeploymentCompleteSpec> createCrashOnSubmitResult(@NotNull Throwable throwable, UUID correlationId) {
+        return DeploymentCompleteSpecCheckResult.createThrowableResult(throwable, correlationId);
     }
 
     public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
@@ -102,7 +103,6 @@ public class DeploymentCompleteAsyncBuildTrigger implements CustomAsyncBuildTrig
                 properties.get(OCTOPUS_URL));
     }
 
-    @Override
     public Map<String, String> getProperties(DeploymentCompleteSpec deploymentCompleteSpec) {
         //todo: add deployment name
         //todo: add environment name - needs to remove the fallback though

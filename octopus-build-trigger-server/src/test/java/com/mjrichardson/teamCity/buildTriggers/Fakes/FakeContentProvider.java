@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 //todo:check against multiple versions of Octopus
 public class FakeContentProvider implements HttpContentProvider {
@@ -29,7 +30,7 @@ public class FakeContentProvider implements HttpContentProvider {
     }
 
     @Override
-    public String getOctopusContent(CacheManager.CacheNames cacheName, String uriPath) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException {
+    public String getOctopusContent(CacheManager.CacheNames cacheName, String uriPath, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException {
         requestedUriPath = uriPath;
         if (this.exception != null) {
             //there must be a better way of doing this
@@ -70,7 +71,7 @@ public class FakeContentProvider implements HttpContentProvider {
     }
 
     @Override
-    public String getContent(CacheManager.CacheNames cacheName, URI uri) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+    public String getContent(CacheManager.CacheNames cacheName, URI uri, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
         if (this.exception != null) {
             //there must be a better way of doing this
             if (exception.getClass() == IOException.class)

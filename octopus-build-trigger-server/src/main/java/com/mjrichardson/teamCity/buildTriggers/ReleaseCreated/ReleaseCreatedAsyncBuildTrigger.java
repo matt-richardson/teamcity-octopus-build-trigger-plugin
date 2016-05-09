@@ -28,20 +28,21 @@ import com.codahale.metrics.MetricRegistry;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
+import com.mjrichardson.teamCity.buildTriggers.CustomCheckJob;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
-import jetbrains.buildServer.buildTriggers.async.AsyncTriggerParameters;
-import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckJobCreationException;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
+import jetbrains.buildServer.serverSide.CustomDataStorage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-class ReleaseCreatedAsyncBuildTrigger implements CustomAsyncBuildTrigger<ReleaseCreatedSpec> {
+class ReleaseCreatedAsyncBuildTrigger extends CustomAsyncBuildTrigger<ReleaseCreatedSpec> {
     private final String displayName;
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;
@@ -66,24 +67,24 @@ class ReleaseCreatedAsyncBuildTrigger implements CustomAsyncBuildTrigger<Release
         return releaseCreatedSpec.getRequestorString();
     }
 
-    public int getPollInterval(@NotNull AsyncTriggerParameters parameters) {
+    public int getPollIntervalInMilliseconds() {
         return pollIntervalInSeconds;
     }
 
     @NotNull
-    public CheckJob<ReleaseCreatedSpec> createJob(@NotNull final AsyncTriggerParameters asyncTriggerParameters) throws CheckJobCreationException {
+    public CustomCheckJob<ReleaseCreatedSpec> createJob(@NotNull String buildType, @NotNull CustomDataStorage dataStorage, @NotNull Map<String, String> properties, @NotNull UUID correlationId) throws CheckJobCreationException {
         return new ReleaseCreatedCheckJob(displayName,
-                asyncTriggerParameters.getBuildType().toString(),
-                asyncTriggerParameters.getCustomDataStorage(),
-                asyncTriggerParameters.getTriggerDescriptor().getProperties(),
+                buildType,
+                dataStorage,
+                properties,
                 analyticsTracker,
                 cacheManager,
                 metricRegistry);
     }
 
     @NotNull
-    public CheckResult<ReleaseCreatedSpec> createCrashOnSubmitResult(@NotNull Throwable throwable) {
-        return ReleaseCreatedSpecCheckResult.createThrowableResult(throwable);
+    public CheckResult<ReleaseCreatedSpec> createCrashOnSubmitResult(@NotNull Throwable throwable, UUID correlationId) {
+        return ReleaseCreatedSpecCheckResult.createThrowableResult(throwable, correlationId);
     }
 
     public String describeTrigger(BuildTriggerDescriptor buildTriggerDescriptor) {
@@ -93,7 +94,6 @@ class ReleaseCreatedAsyncBuildTrigger implements CustomAsyncBuildTrigger<Release
                 properties.get(OCTOPUS_URL));
     }
 
-    @Override
     public Map<String, String> getProperties(ReleaseCreatedSpec releaseCreatedSpec) {
         HashMap<String,String> hashMap = new HashMap<>();
         hashMap.put(BUILD_PROPERTY_RELEASE_ID, releaseCreatedSpec.releaseId);

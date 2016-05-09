@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 //todo: this does more than just load the response... refactor.
 public class ApiProgressionResponse {
@@ -17,12 +18,12 @@ public class ApiProgressionResponse {
     public Environments environments;
     public Boolean haveCompleteInformation;
 
-    public ApiProgressionResponse(String progressionResponse) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, IOException {
-        LOG.debug("parsing progression response");
-        this.haveCompleteInformation = Parse(progressionResponse);
+    public ApiProgressionResponse(String progressionResponse, UUID correlationId) throws java.text.ParseException, ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, IOException {
+        LOG.debug(String.format("%s: parsing progression response", correlationId));
+        this.haveCompleteInformation = Parse(progressionResponse, correlationId);
     }
 
-    private boolean Parse(String progressionResponse) throws java.text.ParseException, ParseException {
+    private boolean Parse(String progressionResponse, UUID correlationId) throws java.text.ParseException, ParseException {
         JSONParser parser = new JSONParser();
         Map response = (Map) parser.parse(progressionResponse);
 
@@ -36,18 +37,18 @@ public class ApiProgressionResponse {
         List releasesAndDeployments = (List) response.get("Releases");
 
         if (releasesAndDeployments.size() == 0) {
-            LOG.debug("No releases found in progression api response");
+            LOG.debug(String.format("%s: No releases found in progression api response", correlationId));
             return true;
         }
 
         Boolean foundDeployment = AddDeployments(releasesAndDeployments);
         if (!foundDeployment) {
-            LOG.debug("No deployments found in progression api response");
+            LOG.debug(String.format("%s: No deployments found in progression api response", correlationId));
             return true;
         }
 
         if (this.environments.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment()) {
-            LOG.debug("All deployments have finished successfully - no need to parse deployment response");
+            LOG.debug(String.format("%s: All deployments have finished successfully - no need to parse deployment response", correlationId));
             return true;
         }
 

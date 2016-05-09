@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 @Test
 public class DeploymentProcessProviderImplTest {
@@ -27,21 +28,24 @@ public class DeploymentProcessProviderImplTest {
     public void get_deployment_process_version_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, DeploymentProcessProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), new FakeCacheManager(), new FakeMetricRegistry());
         DeploymentProcessProviderImpl deploymentProcessProviderImpl = new DeploymentProcessProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
-        String newVersion = deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful);
+        UUID correlationId = UUID.randomUUID();
+        String newVersion = deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful, correlationId);
         Assert.assertNotNull(newVersion);
     }
 
     public void get_deployment_process_version() throws ProjectNotFoundException, DeploymentProcessProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentProcessProviderImpl deploymentProcessProviderImpl = new DeploymentProcessProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
-        String newVersion = deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful);
+        UUID correlationId = UUID.randomUUID();
+        String newVersion = deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful, correlationId);
         Assert.assertEquals(newVersion, "2");
     }
 
     public void get_deployment_process_version_for_project_with_no_process() throws ProjectNotFoundException, DeploymentProcessProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentProcessProviderImpl deploymentProcessProviderImpl = new DeploymentProcessProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
-        String newVersion = deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithNoProcess);
+        UUID correlationId = UUID.randomUUID();
+        String newVersion = deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithNoProcess, correlationId);
         Assert.assertEquals(newVersion, "0");
     }
 
@@ -50,7 +54,8 @@ public class DeploymentProcessProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         DeploymentProcessProviderImpl deploymentProcessProviderImpl = new DeploymentProcessProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectThatDoesNotExist);
+        UUID correlationId = UUID.randomUUID();
+        deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectThatDoesNotExist, correlationId);
     }
 
     @Test(expectedExceptions = InvalidOctopusUrlException.class)
@@ -58,7 +63,8 @@ public class DeploymentProcessProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory("http://octopus.example.com", octopusApiKey);
         DeploymentProcessProviderImpl deploymentProcessProviderImpl = new DeploymentProcessProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful);
+        UUID correlationId = UUID.randomUUID();
+        deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful, correlationId);
     }
 
     @Test(expectedExceptions = InvalidOctopusUrlException.class)
@@ -66,7 +72,8 @@ public class DeploymentProcessProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl + "/not-an-octopus-instance", octopusApiKey);
         DeploymentProcessProviderImpl deploymentProcessProviderImpl = new DeploymentProcessProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful);
+        UUID correlationId = UUID.randomUUID();
+        deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful, correlationId);
     }
 
     @Test(expectedExceptions = InvalidOctopusApiKeyException.class)
@@ -74,7 +81,8 @@ public class DeploymentProcessProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, "invalid-api-key");
         DeploymentProcessProviderImpl deploymentProcessProviderImpl = new DeploymentProcessProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful);
+        UUID correlationId = UUID.randomUUID();
+        deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful, correlationId);
     }
 
     @Test(expectedExceptions = DeploymentProcessProviderException.class)
@@ -82,6 +90,7 @@ public class DeploymentProcessProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(new OutOfMemoryError());
         DeploymentProcessProviderImpl deploymentProcessProviderImpl = new DeploymentProcessProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful);
+        UUID correlationId = UUID.randomUUID();
+        deploymentProcessProviderImpl.getDeploymentProcessVersion(ProjectWithLatestDeploymentSuccessful, correlationId);
     }
 }

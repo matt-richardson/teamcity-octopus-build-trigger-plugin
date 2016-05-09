@@ -24,45 +24,46 @@
 
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.mjrichardson.teamCity.buildTriggers.CustomCheckResult;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
-import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.buildTriggers.async.DetectionException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
-class MachineAddedSpecCheckResult extends CheckResult<MachineAddedSpec> {
-    private MachineAddedSpecCheckResult() {
-        super();
+class MachineAddedSpecCheckResult extends CustomCheckResult<MachineAddedSpec> {
+    private MachineAddedSpecCheckResult(UUID correlationId) {
+        super(correlationId);
     }
 
-    private MachineAddedSpecCheckResult(@NotNull Collection<MachineAddedSpec> updated, @NotNull Map<MachineAddedSpec, DetectionException> errors) {
-        super(updated, errors);
+    private MachineAddedSpecCheckResult(@NotNull Collection<MachineAddedSpec> updated, @NotNull Map<MachineAddedSpec, DetectionException> errors, UUID correlationId) {
+        super(updated, errors, correlationId);
     }
 
-    private MachineAddedSpecCheckResult(@NotNull Throwable generalError) {
-        super(generalError);
-    }
-
-    @NotNull
-    static MachineAddedSpecCheckResult createEmptyResult() {
-        return new MachineAddedSpecCheckResult();
+    private MachineAddedSpecCheckResult(@NotNull Throwable generalError, UUID correlationId) {
+        super(generalError, correlationId);
     }
 
     @NotNull
-    static MachineAddedSpecCheckResult createUpdatedResult(@NotNull MachineAddedSpec MachineAddedSpec) {
-        return new MachineAddedSpecCheckResult(Collections.singleton(MachineAddedSpec), Collections.<MachineAddedSpec, DetectionException>emptyMap());
+    static MachineAddedSpecCheckResult createEmptyResult(UUID correlationId) {
+        return new MachineAddedSpecCheckResult(correlationId);
     }
 
     @NotNull
-    static MachineAddedSpecCheckResult createThrowableResult(@NotNull Throwable throwable) {
-        return new MachineAddedSpecCheckResult(throwable);
+    static MachineAddedSpecCheckResult createUpdatedResult(@NotNull MachineAddedSpec MachineAddedSpec, UUID correlationId) {
+        return new MachineAddedSpecCheckResult(Collections.singleton(MachineAddedSpec), Collections.<MachineAddedSpec, DetectionException>emptyMap(), correlationId);
     }
 
     @NotNull
-    static MachineAddedSpecCheckResult createErrorResult(@NotNull String error) {
-        return new MachineAddedSpecCheckResult(new BuildTriggerException(error));
+    static MachineAddedSpecCheckResult createThrowableResult(@NotNull Throwable throwable, UUID correlationId) {
+        return new MachineAddedSpecCheckResult(throwable, correlationId);
+    }
+
+    @NotNull
+    static MachineAddedSpecCheckResult createErrorResult(@NotNull String error, UUID correlationId) {
+        return new MachineAddedSpecCheckResult(new BuildTriggerException(error), correlationId);
     }
 }

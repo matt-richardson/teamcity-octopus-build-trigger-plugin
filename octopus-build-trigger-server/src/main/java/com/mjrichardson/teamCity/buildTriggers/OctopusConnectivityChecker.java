@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 public class OctopusConnectivityChecker {
     private static final Logger LOG = Logger.getInstance(OctopusConnectivityChecker.class.getName());
@@ -19,10 +20,10 @@ public class OctopusConnectivityChecker {
         this.contentProvider = contentProvider;
     }
 
-    public String checkOctopusConnectivity() {
+    public String checkOctopusConnectivity(UUID correlationId) {
         try {
-            LOG.info("checking connectivity to octopus at " + contentProvider.getUrl());
-            contentProvider.getOctopusContent(CacheManager.CacheNames.NoCache, "/api");
+            LOG.info(String.format("%s: checking connectivity to octopus at %s", correlationId, contentProvider.getUrl()));
+            contentProvider.getOctopusContent(CacheManager.CacheNames.NoCache, "/api", correlationId);
 
             return null;
 

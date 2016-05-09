@@ -4,7 +4,8 @@ import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
 
 import java.text.ParseException;
+import java.util.UUID;
 
 public interface MachinesProvider {
-    Machines getMachines() throws MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException;
+    Machines getMachines(UUID correlationId) throws MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException;
 }

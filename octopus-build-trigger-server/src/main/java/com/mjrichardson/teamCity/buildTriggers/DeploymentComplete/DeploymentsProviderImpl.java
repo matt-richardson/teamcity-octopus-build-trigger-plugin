@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 public class DeploymentsProviderImpl implements DeploymentsProvider {
     @NotNull
@@ -22,17 +23,17 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         this.analyticsTracker = analyticsTracker;
     }
 
-    public Environments getDeployments(String projectId, Environments oldEnvironments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
+    public Environments getDeployments(String projectId, Environments oldEnvironments, UUID correlationId) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         String url = null;
 
         try {
             HttpContentProvider contentProvider = httpContentProviderFactory.getContentProvider();
             url = contentProvider.getUrl();
-            LOG.debug("Getting deployments from " + contentProvider.getUrl() + " for project id '" + projectId + "'");
+            LOG.debug(String.format("%s: Getting deployments from %s for project id '%s'", correlationId, contentProvider.getUrl(), projectId));
 
-            final ApiRootResponse apiRootResponse = getApiRootResponse(contentProvider);
-            final Project project = getProject(projectId, contentProvider, apiRootResponse);
-            return getDeployments(projectId, oldEnvironments, contentProvider, apiRootResponse, project);
+            final ApiRootResponse apiRootResponse = getApiRootResponse(contentProvider, correlationId);
+            final Project project = getProject(projectId, contentProvider, apiRootResponse, correlationId);
+            return getDeployments(projectId, oldEnvironments, contentProvider, apiRootResponse, project, correlationId);
 
         } catch (ProjectNotFoundException | InvalidOctopusApiKeyException | InvalidOctopusUrlException e) {
             throw e;
@@ -41,18 +42,18 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         }
     }
 
-    private Environments getDeployments(String projectId, Environments oldEnvironments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, Project project) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, java.text.ParseException, ParseException, InvalidCacheConfigurationException {
-        final String progressionResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProgression, project.progressionApiLink);
-        final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse);
+    private Environments getDeployments(String projectId, Environments oldEnvironments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, Project project, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, java.text.ParseException, ParseException, InvalidCacheConfigurationException {
+        final String progressionResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProgression, project.progressionApiLink, correlationId);
+        final ApiProgressionResponse apiProgressionResponse = new ApiProgressionResponse(progressionResponse, correlationId);
 
         if (apiProgressionResponse.haveCompleteInformation)
             return apiProgressionResponse.environments;
 
-        analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallingBackToDeploymentsApi);
-        Environments environmentsFromDeploymentsApi = getEnvironmentsFromApi(projectId, oldEnvironments, contentProvider, apiRootResponse, apiProgressionResponse);
+        analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, AnalyticsTracker.EventAction.FallingBackToDeploymentsApi, correlationId);
+        Environments environmentsFromDeploymentsApi = getEnvironmentsFromApi(projectId, oldEnvironments, contentProvider, apiRootResponse, apiProgressionResponse, correlationId);
 
-        AnalyticsTracker.EventAction result = determineOutcomeOfFallback(apiProgressionResponse.environments, environmentsFromDeploymentsApi);
-        analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, result);
+        AnalyticsTracker.EventAction result = determineOutcomeOfFallback(apiProgressionResponse.environments, environmentsFromDeploymentsApi, correlationId);
+        analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentCompleteTrigger, result, correlationId);
 
         //try and return the most useful response
         if ((result == AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation) ||
@@ -63,23 +64,23 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         return apiProgressionResponse.environments;
     }
 
-    AnalyticsTracker.EventAction determineOutcomeOfFallback(Environments environmentsFromProgressionApi, Environments environmentsFromDeploymentsApi) {
+    AnalyticsTracker.EventAction determineOutcomeOfFallback(Environments environmentsFromProgressionApi, Environments environmentsFromDeploymentsApi, UUID correlationId) {
         if (environmentsFromProgressionApi.size() < environmentsFromDeploymentsApi.size()) {
-            LOG.info(String.format("Got %d environments from deployments api, but %d environments from progression api.",
-                    environmentsFromDeploymentsApi.size(), environmentsFromProgressionApi.size()));
-            LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
-            LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+            LOG.info(String.format("%s: Got %d environments from deployments api, but %d environments from progression api.",
+                    correlationId, environmentsFromDeploymentsApi.size(), environmentsFromProgressionApi.size()));
+            LOG.debug(String.format("%s: Environments from progression api: %s", correlationId, environmentsFromProgressionApi.toString()));
+            LOG.debug(String.format("%s: Environments from deployments api: %s", correlationId, environmentsFromDeploymentsApi.toString()));
             return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedMoreEnvironments;
         }
         else if (environmentsFromProgressionApi.size() > environmentsFromDeploymentsApi.size()) {
-            LOG.info(String.format("Got %d environments from deployments api, but %d environments from progression api.",
-                    environmentsFromDeploymentsApi.size(), environmentsFromProgressionApi.size()));
-            LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
-            LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+            LOG.info(String.format("%s: Got %d environments from deployments api, but %d environments from progression api.",
+                    correlationId, environmentsFromDeploymentsApi.size(), environmentsFromProgressionApi.size()));
+            LOG.debug(String.format("%s: Environments from progression api: %s", correlationId, environmentsFromProgressionApi.toString()));
+            LOG.debug(String.format("%s: Environments from deployments api: %s", correlationId, environmentsFromDeploymentsApi.toString()));
             return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedFewerEnvironments;
         }
         else if (environmentsFromProgressionApi.equals(environmentsFromDeploymentsApi)) {
-            LOG.info("Fallback to deployments api produced same results");
+            LOG.info(String.format("%s: Fallback to deployments api produced same results", correlationId));
             return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults;
         }
         else
@@ -87,50 +88,50 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
             for (Environment environmentFromProgressionApi : environmentsFromProgressionApi) {
                 Environment environmentFromDeploymentApi = environmentsFromDeploymentsApi.getEnvironment(environmentFromProgressionApi.environmentId);
                 if (environmentFromDeploymentApi.equals(environmentFromProgressionApi)) {
-                    LOG.info(String.format("Environment %s from deployments api is same as the environment from the progression api",
-                            environmentFromDeploymentApi.environmentId));
+                    LOG.info(String.format("%s: Environment %s from deployments api is same as the environment from the progression api",
+                            correlationId, environmentFromDeploymentApi.environmentId));
                 }
                 else if (environmentFromDeploymentApi.getClass() == NullEnvironment.class) {
-                    LOG.info("Got different environments from deployments api and progression api.");
-                    LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
-                    LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+                    LOG.info(String.format("%s: Got different environments from deployments api and progression api.", correlationId));
+                    LOG.debug(String.format("%s: Environments from progression api: %s", correlationId, environmentsFromProgressionApi.toString()));
+                    LOG.debug(String.format("%s: Environments from deployments api: %s", correlationId, environmentsFromDeploymentsApi.toString()));
                     return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentEnvironments;
                 }
                 else if (environmentFromProgressionApi.isLatestSuccessfulDeploymentOlderThen(environmentFromDeploymentApi.latestSuccessfulDeployment)) {
-                    LOG.info(String.format("Environment %s from deployments api has a newer latestSuccessfulDeployment date (%s) than the environment from the progression api (%s)",
-                            environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.latestSuccessfulDeployment, environmentFromProgressionApi.latestSuccessfulDeployment));
-                    LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
-                    LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+                    LOG.info(String.format("%s: Environment %s from deployments api has a newer latestSuccessfulDeployment date (%s) than the environment from the progression api (%s)",
+                            correlationId, environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.latestSuccessfulDeployment, environmentFromProgressionApi.latestSuccessfulDeployment));
+                    LOG.debug(String.format("%s: Environments from progression api: %s", correlationId, environmentsFromProgressionApi.toString()));
+                    LOG.debug(String.format("%s: Environments from deployments api: %s", correlationId, environmentsFromDeploymentsApi.toString()));
                     return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation;
                 }
                 else if (environmentFromProgressionApi.isLatestDeploymentOlderThan(environmentFromDeploymentApi.latestDeployment)) {
-                    LOG.info(String.format("Environment %s from deployments api has a newer latestDeployment date (%s) than the environment from the progression api (%s)",
-                            environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.latestDeployment, environmentFromProgressionApi.latestDeployment));
-                    LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
-                    LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+                    LOG.info(String.format("%s: Environment %s from deployments api has a newer latestDeployment date (%s) than the environment from the progression api (%s)",
+                            correlationId, environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.latestDeployment, environmentFromProgressionApi.latestDeployment));
+                    LOG.debug(String.format("%s: Environments from progression api: %s", correlationId, environmentsFromProgressionApi.toString()));
+                    LOG.debug(String.format("%s: Environments from deployments api: %s", correlationId, environmentsFromDeploymentsApi.toString()));
                     return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation;
                 }
                 else {
-                    LOG.info(String.format("Environment %s from deployments api (%s) is worse than the environment from the progression api (%s)",
-                            environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.toString(), environmentFromProgressionApi.toString()));
-                    LOG.debug("Environments from progression api: " + environmentsFromProgressionApi.toString());
-                    LOG.debug("Environments from deployments api: " + environmentsFromDeploymentsApi.toString());
+                    LOG.info(String.format("%s: Environment %s from deployments api (%s) is worse than the environment from the progression api (%s)",
+                            correlationId, environmentFromDeploymentApi.environmentId, environmentFromDeploymentApi.toString(), environmentFromProgressionApi.toString()));
+                    LOG.debug(String.format("%s: Environments from progression api: %s", correlationId, environmentsFromProgressionApi.toString()));
+                    LOG.debug(String.format("%s: Environments from deployments api: %s", correlationId, environmentsFromDeploymentsApi.toString()));
                     return AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedWorseResults;
                 }
             }
-            LOG.warn("Not expecting to get to this circumstance!");
+            LOG.warn(String.format("%s: Not expecting to get to this circumstance!", correlationId));
             assert false;
         }
         return AnalyticsTracker.EventAction.FallBackStatusUnknown;
     }
 
 
-    private Project getProject(String projectId, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        String projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink);
+    private Project getProject(String projectId, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        String projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink, correlationId);
         ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
         Projects projects = apiProjectsResponse.projects;
         while (shouldGetNextProjectsPage(apiProjectsResponse, projects, projectId)) {
-            projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink);
+            projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink, correlationId);
             apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
             Projects newProjects = apiProjectsResponse.projects;
             projects.add(newProjects);
@@ -139,40 +140,40 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
     }
 
     @NotNull
-    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        final String apiResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
-        return new ApiRootResponse(apiResponse, analyticsTracker);
+    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        final String apiResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api", correlationId);
+        return new ApiRootResponse(apiResponse, analyticsTracker, correlationId);
     }
 
     @NotNull
-    private Environments getEnvironmentsFromApi(String projectId, Environments oldEnvironments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, ApiProgressionResponse apiProgressionResponse) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
-        String deploymentsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiDeployments, apiRootResponse.deploymentsApiLink + "?Projects=" + projectId);
+    private Environments getEnvironmentsFromApi(String projectId, Environments oldEnvironments, HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, ApiProgressionResponse apiProgressionResponse, UUID correlationId) throws URISyntaxException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+        String deploymentsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiDeployments, apiRootResponse.deploymentsApiLink + "?Projects=" + projectId, correlationId);
         ApiDeploymentsResponse response = new ApiDeploymentsResponse(deploymentsResponse);
         Environments result = new Environments();
 
         //we trust that the progression response is going to return the current environments
-        LOG.debug("Setting up initial state based on oldEnvironments (populated from stored data)");
+        LOG.debug(String.format("%s: Setting up initial state based on oldEnvironments (populated from stored data)", correlationId));
         for (Environment environment : apiProgressionResponse.environments) {
             Environment lastKnownEnvironmentState = oldEnvironments.getEnvironment(environment.environmentId);
             if (lastKnownEnvironmentState.getClass() == NullEnvironment.class) {
-                LOG.debug("Adding empty environment '" + environment.environmentId + "' (no known deployments to that environment)");
+                LOG.debug(String.format("%s: Adding empty environment '%s' (no known deployments to that environment)", correlationId, environment.environmentId));
                 result.addEnvironment(environment.environmentId);
             } else {
-                LOG.debug("Adding lastKnownEnvironmentState: '" + lastKnownEnvironmentState.toString() + "'");
+                LOG.debug(String.format("%s: Adding lastKnownEnvironmentState: '%s'", correlationId, lastKnownEnvironmentState.toString()));
                 result.addOrUpdate(lastKnownEnvironmentState);
             }
         }
 
         for (Deployment item : response.deployments) {
-            if (ProcessDeployment(contentProvider, oldEnvironments, result, item))
+            if (ProcessDeployment(contentProvider, oldEnvironments, result, item, correlationId))
                 return result;
         }
 
         while (response.nextLink != null) {
-            deploymentsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiDeployments, response.nextLink);
+            deploymentsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiDeployments, response.nextLink, correlationId);
             response = new ApiDeploymentsResponse(deploymentsResponse);
             for (Deployment item : response.deployments) {
-                if (ProcessDeployment(contentProvider, oldEnvironments, result, item))
+                if (ProcessDeployment(contentProvider, oldEnvironments, result, item, correlationId))
                     return result;
             }
         }
@@ -180,33 +181,33 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         return result;
     }
 
-    private boolean ProcessDeployment(HttpContentProvider contentProvider, Environments oldEnvironments, Environments result, Deployment deployment) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+    private boolean ProcessDeployment(HttpContentProvider contentProvider, Environments oldEnvironments, Environments result, Deployment deployment, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
         Environment lastKnownEnvironmentState = oldEnvironments.getEnvironment(deployment.environmentId);
-        LOG.debug("Found deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "'");
+        LOG.debug(String.format("%s: Found deployment to environment '%s' created at '%s'", correlationId, deployment.environmentId, deployment.createdDate));
 
         if (lastKnownEnvironmentState.isLatestDeploymentOlderThan(deployment.createdDate)) {
-            LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "' was newer than the last known deployment to this environment ('" + lastKnownEnvironmentState.latestDeployment + "')");
+            LOG.debug(String.format("%s: Deployment to environment '%s' created at '%s' was newer than the last known deployment to this environment ('%s')", correlationId, deployment.environmentId, deployment.createdDate, lastKnownEnvironmentState.latestDeployment));
 
-            String taskResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiTask, deployment.taskLink);
+            String taskResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiTask, deployment.taskLink, correlationId);
             ApiTaskResponse task = new ApiTaskResponse(taskResponse);
-            LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "': isCompleted = '" + task.isCompleted + "', finishedSuccessfully = '" + task.finishedSuccessfully + "'");
+            LOG.debug(String.format("%s: Deployment to environment '%s' created at '%s': isCompleted = '%s', finishedSuccessfully = '%s'", correlationId, deployment.environmentId, deployment.createdDate, task.isCompleted, task.finishedSuccessfully));
 
             if (task.isCompleted) {
                 //todo: need some tests around this entire block, including the if
-                String releaseResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRelease, deployment.releaseLink);
+                String releaseResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRelease, deployment.releaseLink, correlationId);
                 ApiReleaseResponse release = new ApiReleaseResponse(releaseResponse);
 
                 Environment environment = Environment.CreateFrom(deployment, task, release);
-                LOG.debug("Updating results based on '" + environment + "'");
+                LOG.debug(String.format("%s: Updating results based on '%s'", correlationId, environment));
                 result.addOrUpdate(environment);
 
                 if (result.haveAllEnvironmentsHadAtLeastOneSuccessfulDeployment()) {
-                    LOG.debug("All deployments have finished successfully - no need to keep iterating");
+                    LOG.debug(String.format("%s: All deployments have finished successfully - no need to keep iterating", correlationId));
                     return true;
                 }
             }
         } else {
-            LOG.debug("Deployment to environment '" + deployment.environmentId + "' created at '" + deployment.createdDate + "' was older than the last known deployment to this environment ('" + lastKnownEnvironmentState.latestDeployment + "'");
+            LOG.debug(String.format("%s: Deployment to environment '%s' created at '%s' was older than the last known deployment to this environment ('%s'", correlationId, deployment.environmentId, deployment.createdDate, lastKnownEnvironmentState.latestDeployment));
         }
         return false;
     }

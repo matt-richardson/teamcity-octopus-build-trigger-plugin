@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -62,15 +63,16 @@ public class UpdateChecker {
     private synchronized void checkForUpdates()  {
         if (!OctopusBuildTriggerUtil.getUpdateCheckEnabled())
             return;
+        UUID correlationId = UUID.randomUUID();
         try {
             String currentVersion = pluginDescriptor.getPluginVersion();
             if (currentVersion == null) {
-                LOG.warn("Update check failed, couldn't get pluginDescriptor.getPluginVersion()");
+                LOG.warn(String.format("%s: Update check failed, couldn't get pluginDescriptor.getPluginVersion()", correlationId));
                 UpdateChecker.updateIsAvailable = false;
                 return;
             }
             String apiResponse = httpContentProvider.getContent(CacheManager.CacheNames.GitHubLatestRelease,
-                    new URI("https://api.github.com/repos/matt-richardson/teamcity-octopus-build-trigger-plugin/releases/latest"));
+                    new URI("https://api.github.com/repos/matt-richardson/teamcity-octopus-build-trigger-plugin/releases/latest"), correlationId);
             GitHubApiReleaseResponse githubApiReleaseResponse = new GitHubApiReleaseResponse(apiResponse);
 
             DefaultArtifactVersion gitHubVersion = new DefaultArtifactVersion(githubApiReleaseResponse.tagName);
@@ -81,10 +83,10 @@ public class UpdateChecker {
             UpdateChecker.updateUrl = githubApiReleaseResponse.htmlUrl;
             UpdateChecker.updateIsAvailable = gitHubVersion.compareTo(pluginVersion) > 0;
 
-            LOG.info("Update check - current version is '" + pluginVersion + "', latest version is '" + gitHubVersion + "' -> update available: " + updateIsAvailable);
+            LOG.info(String.format("%s: Update check - current version is '%s', latest version is '%s' -> update available: %s", correlationId, pluginVersion, gitHubVersion, updateIsAvailable));
         }
         catch (Exception ex) {
-            LOG.warn("Update check failed, pretending no updates available", ex);
+            LOG.warn(String.format("%s: Update check failed, pretending no updates available", correlationId), ex);
             UpdateChecker.updateIsAvailable = false;
         }
     }

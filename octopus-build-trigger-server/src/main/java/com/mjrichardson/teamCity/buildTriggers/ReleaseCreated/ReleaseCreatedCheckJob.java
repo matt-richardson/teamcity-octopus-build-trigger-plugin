@@ -28,20 +28,19 @@ import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
+import com.mjrichardson.teamCity.buildTriggers.CustomCheckJob;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
-import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
-import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-//todo: add correlation id
-class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
+class ReleaseCreatedCheckJob extends CustomCheckJob<ReleaseCreatedSpec> {
     @NotNull
     private static final Logger LOG = Logger.getInstance(ReleaseCreatedCheckJob.class.getName());
 
@@ -66,8 +65,8 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
     }
 
     @NotNull
-    CheckResult<ReleaseCreatedSpec> getCheckResult(String octopusUrl, String octopusApiKey, String octopusProject, CustomDataStorage dataStorage) {
-        LOG.debug("Checking for new releases for project " + octopusProject + " on server " + octopusUrl);
+    CheckResult<ReleaseCreatedSpec> getCheckResult(String octopusUrl, String octopusApiKey, String octopusProject, CustomDataStorage dataStorage, UUID correlationId) {
+        LOG.debug(String.format("%s: Checking for new releases for project %s on server %s", correlationId, octopusProject, octopusUrl));
         final String dataStorageKey = (displayName + "|" + octopusUrl + "|" + octopusProject).toLowerCase();
 
         try {
@@ -76,7 +75,7 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
             final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
 
             ReleasesProvider provider = releasesProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
-            final Releases newReleases = provider.getReleases(octopusProject, oldRelease);
+            final Releases newReleases = provider.getReleases(octopusProject, oldRelease, correlationId);
 
             //only store that one release has happened here, not multiple.
             //otherwise, we could inadvertently miss releases
@@ -89,60 +88,53 @@ class ReleaseCreatedCheckJob implements CheckJob<ReleaseCreatedSpec> {
                 if (oldStoredData == null) {
                     //store the latest releases, so we only trigger for new releases from this point in time
                     dataStorage.putValue(dataStorageKey, newReleases.getLatestRelease().toString());
-                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
+                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.TriggerAdded, correlationId);
 
-                    LOG.debug("No previous releases known for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
-                    return ReleaseCreatedSpecCheckResult.createEmptyResult();
+                    LOG.debug(String.format("%s: No previous releases known for server %s, project %s: null -> %s", correlationId, octopusUrl, octopusProject, newStoredData));
+                    return ReleaseCreatedSpecCheckResult.createEmptyResult(correlationId);
                 }
                 dataStorage.putValue(dataStorageKey, newStoredData);
-                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
+                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.BuildTriggered, correlationId);
 
-                LOG.info("New release " + newRelease.version + " created on " + octopusUrl + " for project " + octopusProject + ": " + oldStoredData + " -> " + newStoredData);
+                LOG.info(String.format("%s: New release %s created on %s for project %s: %s -> %s", correlationId, newRelease.version, octopusUrl, octopusProject, oldStoredData, newStoredData));
                 final ReleaseCreatedSpec releaseCreatedSpec = new ReleaseCreatedSpec(octopusUrl, newRelease);
-                return ReleaseCreatedSpecCheckResult.createUpdatedResult(releaseCreatedSpec);
+                return ReleaseCreatedSpecCheckResult.createUpdatedResult(releaseCreatedSpec, correlationId);
             }
 
-            LOG.debug("oldStoredData was '" + oldStoredData + "'");
-            LOG.debug("newStoredData was '" + newStoredData + "'");
-            LOG.info("No new releases on '" + octopusUrl + "' for project '" + octopusProject + "'");
-            return ReleaseCreatedSpecCheckResult.createEmptyResult();
+            LOG.debug(String.format("%s: oldStoredData was '%s'", correlationId, oldStoredData));
+            LOG.debug(String.format("%s: newStoredData was '%s'", correlationId, newStoredData));
+            LOG.info(String.format("%s: No new releases on '%s' for project '%s'", correlationId, octopusUrl, octopusProject));
+            return ReleaseCreatedSpecCheckResult.createEmptyResult(correlationId);
 
         } catch (Exception e) {
-            LOG.error("Failed to check for new releases created", e);
+            LOG.error(String.format("%s: Failed to check for new releases created", correlationId), e);
 
-            analyticsTracker.postException(e);
+            analyticsTracker.postException(e, correlationId);
 
-            return ReleaseCreatedSpecCheckResult.createThrowableResult(e);
+            return ReleaseCreatedSpecCheckResult.createThrowableResult(e, correlationId);
         }
     }
 
     @NotNull
-    public CheckResult<ReleaseCreatedSpec> perform() {
-
+    public CheckResult<ReleaseCreatedSpec> perform(UUID correlationId) {
         final String octopusUrl = props.get(OCTOPUS_URL);
         if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
             return ReleaseCreatedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
-                    displayName, buildType));
+                    displayName, buildType), correlationId);
         }
 
         final String octopusApiKey = props.get(OCTOPUS_APIKEY);
         if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
             return ReleaseCreatedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
-                    displayName, buildType));
+                    displayName, buildType), correlationId);
         }
 
         final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
         if (StringUtil.isEmptyOrSpaces(octopusProject)) {
             return ReleaseCreatedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty project) in build configuration %s",
-                    displayName, buildType));
+                    displayName, buildType), correlationId);
         }
 
-        return getCheckResult(octopusUrl, octopusApiKey, octopusProject, dataStorage);
-    }
-
-    public boolean allowSchedule(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-        //we always return false here - the AsyncPolledBuildTrigger class handles whether we are busy or not
-        //also, this is inverted, the method should be preventSchedule or something
-        return false;
+        return getCheckResult(octopusUrl, octopusApiKey, octopusProject, dataStorage, correlationId);
     }
 }

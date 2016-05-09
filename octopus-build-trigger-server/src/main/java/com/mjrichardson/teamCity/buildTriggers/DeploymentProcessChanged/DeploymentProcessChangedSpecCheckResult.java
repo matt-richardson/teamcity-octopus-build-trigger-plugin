@@ -24,45 +24,46 @@
 
 package com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged;
 
+import com.mjrichardson.teamCity.buildTriggers.CustomCheckResult;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
-import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.buildTriggers.async.DetectionException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
-class DeploymentProcessChangedSpecCheckResult extends CheckResult<DeploymentProcessChangedSpec> {
-    private DeploymentProcessChangedSpecCheckResult() {
-        super();
+class DeploymentProcessChangedSpecCheckResult extends CustomCheckResult<DeploymentProcessChangedSpec> {
+    private DeploymentProcessChangedSpecCheckResult(UUID correlationId) {
+        super(correlationId);
     }
 
-    private DeploymentProcessChangedSpecCheckResult(@NotNull Collection<DeploymentProcessChangedSpec> updated, @NotNull Map<DeploymentProcessChangedSpec, DetectionException> errors) {
-        super(updated, errors);
+    private DeploymentProcessChangedSpecCheckResult(@NotNull Collection<DeploymentProcessChangedSpec> updated, @NotNull Map<DeploymentProcessChangedSpec, DetectionException> errors, UUID correlationId) {
+        super(updated, errors, correlationId);
     }
 
-    private DeploymentProcessChangedSpecCheckResult(@NotNull Throwable generalError) {
-        super(generalError);
-    }
-
-    @NotNull
-    static DeploymentProcessChangedSpecCheckResult createEmptyResult() {
-        return new DeploymentProcessChangedSpecCheckResult();
+    private DeploymentProcessChangedSpecCheckResult(@NotNull Throwable generalError, UUID correlationId) {
+        super(generalError, correlationId);
     }
 
     @NotNull
-    static DeploymentProcessChangedSpecCheckResult createUpdatedResult(@NotNull DeploymentProcessChangedSpec DeploymentProcessChangedSpec) {
-        return new DeploymentProcessChangedSpecCheckResult(Collections.singleton(DeploymentProcessChangedSpec), Collections.emptyMap());
+    static DeploymentProcessChangedSpecCheckResult createEmptyResult(UUID correlationId) {
+        return new DeploymentProcessChangedSpecCheckResult(correlationId);
     }
 
     @NotNull
-    static DeploymentProcessChangedSpecCheckResult createThrowableResult(@NotNull Throwable throwable) {
-        return new DeploymentProcessChangedSpecCheckResult(throwable);
+    static DeploymentProcessChangedSpecCheckResult createUpdatedResult(@NotNull DeploymentProcessChangedSpec DeploymentProcessChangedSpec, UUID correlationId) {
+        return new DeploymentProcessChangedSpecCheckResult(Collections.singleton(DeploymentProcessChangedSpec), Collections.emptyMap(), correlationId);
     }
 
     @NotNull
-    static DeploymentProcessChangedSpecCheckResult createErrorResult(@NotNull String error) {
-        return new DeploymentProcessChangedSpecCheckResult(new BuildTriggerException(error));
+    static DeploymentProcessChangedSpecCheckResult createThrowableResult(@NotNull Throwable throwable, UUID correlationId) {
+        return new DeploymentProcessChangedSpecCheckResult(throwable, correlationId);
+    }
+
+    @NotNull
+    static DeploymentProcessChangedSpecCheckResult createErrorResult(@NotNull String error, UUID correlationId) {
+        return new DeploymentProcessChangedSpecCheckResult(new BuildTriggerException(error), correlationId);
     }
 }

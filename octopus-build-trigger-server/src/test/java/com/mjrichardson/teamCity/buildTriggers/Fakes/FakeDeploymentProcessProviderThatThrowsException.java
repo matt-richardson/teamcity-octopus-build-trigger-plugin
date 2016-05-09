@@ -7,10 +7,11 @@ import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
 import com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException;
 
 import java.text.ParseException;
+import java.util.UUID;
 
 public class FakeDeploymentProcessProviderThatThrowsException implements DeploymentProcessProvider {
     @Override
-    public String getDeploymentProcessVersion(String octopusProject) throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException, DeploymentProcessProviderException {
+    public String getDeploymentProcessVersion(String octopusProject, UUID correlationId) throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException, DeploymentProcessProviderException {
         throw new ProjectNotFoundException(octopusProject);
     }
 }

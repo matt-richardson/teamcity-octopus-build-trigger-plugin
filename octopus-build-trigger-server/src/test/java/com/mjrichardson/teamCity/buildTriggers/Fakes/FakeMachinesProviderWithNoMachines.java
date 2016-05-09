@@ -6,10 +6,11 @@ import com.mjrichardson.teamCity.buildTriggers.MachineAdded.Machines;
 import com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachinesProvider;
 
 import java.text.ParseException;
+import java.util.UUID;
 
 public class FakeMachinesProviderWithNoMachines implements MachinesProvider {
     @Override
-    public Machines getMachines() throws InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
+    public Machines getMachines(UUID correlationId) throws InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
         return new Machines();
     }
 }

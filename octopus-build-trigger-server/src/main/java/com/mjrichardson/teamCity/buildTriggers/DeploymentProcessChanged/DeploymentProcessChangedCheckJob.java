@@ -28,19 +28,19 @@ import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
+import com.mjrichardson.teamCity.buildTriggers.CustomCheckJob;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
-import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
-import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
-class DeploymentProcessChangedCheckJob implements CheckJob<DeploymentProcessChangedSpec> {
+class DeploymentProcessChangedCheckJob extends CustomCheckJob<DeploymentProcessChangedSpec> {
     @NotNull
     private static final Logger LOG = Logger.getInstance(DeploymentProcessChangedCheckJob.class.getName());
 
@@ -65,8 +65,8 @@ class DeploymentProcessChangedCheckJob implements CheckJob<DeploymentProcessChan
     }
 
     @NotNull
-    CheckResult<DeploymentProcessChangedSpec> getCheckResult(String octopusUrl, String octopusApiKey, String octopusProject, CustomDataStorage dataStorage) {
-        LOG.debug("Checking if deployment process has changed for project " + octopusProject + " on server " + octopusUrl);
+    CheckResult<DeploymentProcessChangedSpec> getCheckResult(String octopusUrl, String octopusApiKey, String octopusProject, CustomDataStorage dataStorage, UUID correlationId) {
+        LOG.debug(String.format("%s: Checking if deployment process has changed for project %s on server %s", correlationId, octopusProject, octopusUrl));
         final String dataStorageKey = (displayName + "|" + octopusUrl + "|" + octopusProject).toLowerCase();
 
         try {
@@ -75,67 +75,60 @@ class DeploymentProcessChangedCheckJob implements CheckJob<DeploymentProcessChan
             final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
             DeploymentProcessProvider provider = deploymentProcessProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
 
-            final String newStoredData = provider.getDeploymentProcessVersion(octopusProject);
+            final String newStoredData = provider.getDeploymentProcessVersion(octopusProject, correlationId);
 
             //do not trigger build after first adding trigger (oldEnvironments == null)
             if (oldStoredData == null) {
                 dataStorage.putValue(dataStorageKey, newStoredData);
-                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentProcessChangedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
+                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentProcessChangedTrigger, AnalyticsTracker.EventAction.TriggerAdded, correlationId);
 
-                LOG.debug("No previous data for server " + octopusUrl + ", project " + octopusProject + ": null" + " -> " + newStoredData);
-                return DeploymentProcessChangedSpecCheckResult.createEmptyResult();
+                LOG.debug(String.format("%s: No previous data for server %s, project %s: null -> %s", correlationId, octopusUrl, octopusProject, newStoredData));
+                return DeploymentProcessChangedSpecCheckResult.createEmptyResult(correlationId);
             }
 
             if (oldStoredData.equals(newStoredData)) {
-                LOG.debug("oldStoredData was '" + oldStoredData + "'");
-                LOG.debug("newStoredData was '" + newStoredData + "'");
-                LOG.info("No changes to deployment process for project '" + octopusProject + "' on '" + octopusUrl + "'");
+                LOG.debug(String.format("%s: oldStoredData was '%s'", correlationId, oldStoredData));
+                LOG.debug(String.format("%s: newStoredData was '%s'", correlationId, newStoredData));
+                LOG.info(String.format("%s: No changes to deployment process for project '%s' on '%s'", correlationId, octopusProject, octopusUrl));
 
-                return DeploymentProcessChangedSpecCheckResult.createEmptyResult();
+                return DeploymentProcessChangedSpecCheckResult.createEmptyResult(correlationId);
             }
 
             dataStorage.putValue(dataStorageKey, newStoredData);
 
-            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentProcessChangedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
+            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.DeploymentProcessChangedTrigger, AnalyticsTracker.EventAction.BuildTriggered, correlationId);
 
-            LOG.info(String.format("Deployment process for project %s on url %s: %s -> %s", octopusProject, octopusUrl, oldStoredData, newStoredData));
+            LOG.info(String.format("%s: Deployment process for project %s on url %s: %s -> %s", correlationId, octopusProject, octopusUrl, oldStoredData, newStoredData));
             final DeploymentProcessChangedSpec DeploymentProcessChangedSpec = new DeploymentProcessChangedSpec(octopusUrl, newStoredData, octopusProject);
-            return DeploymentProcessChangedSpecCheckResult.createUpdatedResult(DeploymentProcessChangedSpec);
+            return DeploymentProcessChangedSpecCheckResult.createUpdatedResult(DeploymentProcessChangedSpec, correlationId);
         } catch (Exception e) {
-            LOG.error("Failed to check for changed deployment process", e);
+            LOG.error(String.format("%s: Failed to check for changed deployment process", correlationId), e);
 
-            analyticsTracker.postException(e);
-            return DeploymentProcessChangedSpecCheckResult.createThrowableResult(e);
+            analyticsTracker.postException(e, correlationId);
+            return DeploymentProcessChangedSpecCheckResult.createThrowableResult(e, correlationId);
         }
     }
 
     @NotNull
-    public CheckResult<DeploymentProcessChangedSpec> perform() {
-
+    public CheckResult<DeploymentProcessChangedSpec> perform(UUID correlationId) {
         final String octopusUrl = props.get(OCTOPUS_URL);
         if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
             return DeploymentProcessChangedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
-                    displayName, this.buildType));
+                    displayName, this.buildType), correlationId);
         }
 
         final String octopusApiKey = props.get(OCTOPUS_APIKEY);
         if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
             return DeploymentProcessChangedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
-                    displayName, this.buildType));
+                    displayName, this.buildType), correlationId);
         }
 
         final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
         if (StringUtil.isEmptyOrSpaces(octopusProject)) {
             return DeploymentProcessChangedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty project) in build configuration %s",
-                    displayName, this.buildType));
+                    displayName, this.buildType), correlationId);
         }
 
-        return getCheckResult(octopusUrl, octopusApiKey, octopusProject, dataStorage);
-    }
-
-    public boolean allowSchedule(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-        //we always return false here - the AsyncPolledBuildTrigger class handles whether we are busy or not
-        //also, this is inverted, the method should be preventSchedule or something
-        return false;
+        return getCheckResult(octopusUrl, octopusApiKey, octopusProject, dataStorage, correlationId);
     }
 }

@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 @Test
 public class ApiRootResponseTest {
@@ -18,7 +19,8 @@ public class ApiRootResponseTest {
                 "    \"Machines\": \"/api/whatsit\"\n" +
                 "  }\n" +
                 "}\n";
-        ApiRootResponse sut = new ApiRootResponse(json, new FakeAnalyticsTracker());
+        UUID correlationId = UUID.randomUUID();
+        ApiRootResponse sut = new ApiRootResponse(json, new FakeAnalyticsTracker(), correlationId);
         Assert.assertEquals(sut.deploymentsApiLink, "/api/flooble");
         Assert.assertEquals(sut.machinesApiLink, "/api/whatsit");
     }
@@ -29,7 +31,8 @@ public class ApiRootResponseTest {
                 "    \"Deployments\": \"/api/deployments{/id}{?skip,take,projects,environments,taskState}\"\n" +
                 "  }\n" +
                 "}\n";
-        ApiRootResponse sut = new ApiRootResponse(json, new FakeAnalyticsTracker());
+        UUID correlationId = UUID.randomUUID();
+        ApiRootResponse sut = new ApiRootResponse(json, new FakeAnalyticsTracker(), correlationId);
         Assert.assertEquals(sut.deploymentsApiLink, "/api/deployments");
     }
 
@@ -39,7 +42,8 @@ public class ApiRootResponseTest {
                 "  }\n" +
                 "}\n";
 
-        ApiRootResponse sut = new ApiRootResponse(json, new FakeAnalyticsTracker());
+        UUID correlationId = UUID.randomUUID();
+        ApiRootResponse sut = new ApiRootResponse(json, new FakeAnalyticsTracker(), correlationId);
         Assert.assertEquals(sut.deploymentsApiLink, "/api/deployments");
         Assert.assertEquals(sut.machinesApiLink, "/api/machines");
     }
@@ -49,7 +53,8 @@ public class ApiRootResponseTest {
         String json = IOUtils.toString(resource);
 
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        new ApiRootResponse(json, analyticsTracker);
+        UUID correlationId = UUID.randomUUID();
+        new ApiRootResponse(json, analyticsTracker, correlationId);
         Assert.assertEquals(analyticsTracker.octopusVersion, "3.3.0-beta0002");
         Assert.assertEquals(analyticsTracker.octopusApiVersion, "3.0.0");
     }

@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
@@ -41,7 +42,7 @@ public class DeploymentProcessChangedAsyncBuildTriggerTest {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         DeploymentProcessChangedAsyncBuildTrigger sut = new DeploymentProcessChangedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
-        Integer result = sut.getPollInterval(new FakeAsyncTriggerParameters());
+        Integer result = sut.getPollIntervalInMilliseconds();
 
         Assert.assertEquals(result, pollIntervalInSeconds);
     }
@@ -50,7 +51,11 @@ public class DeploymentProcessChangedAsyncBuildTriggerTest {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         DeploymentProcessChangedAsyncBuildTrigger sut = new DeploymentProcessChangedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
-        CheckJob<DeploymentProcessChangedSpec> result = sut.createJob(new FakeAsyncTriggerParameters());
+        UUID correlationId = UUID.randomUUID();
+        CheckJob<DeploymentProcessChangedSpec> result = sut.createJob("the-build-type",
+                new FakeCustomDataStorage(),
+                new FakeBuildTriggerDescriptor().getProperties(),
+                correlationId);
 
         Assert.assertEquals(result.getClass(), DeploymentProcessChangedCheckJob.class);
     }
@@ -59,7 +64,8 @@ public class DeploymentProcessChangedAsyncBuildTriggerTest {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         DeploymentProcessChangedAsyncBuildTrigger sut = new DeploymentProcessChangedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
-        CheckResult<DeploymentProcessChangedSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"));
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentProcessChangedSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"), correlationId);
 
         Assert.assertTrue(result.hasCheckErrors());
         Assert.assertEquals(result.getGeneralError().getMessage(), "the exception message");

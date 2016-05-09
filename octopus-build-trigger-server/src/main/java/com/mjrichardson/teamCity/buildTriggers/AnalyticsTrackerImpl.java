@@ -10,6 +10,7 @@ import jetbrains.buildServer.serverSide.SBuildServer;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,19 +51,19 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
         }
     }
 
-    public void postEvent(EventCategory eventCategory, EventAction eventAction){
+    public void postEvent(EventCategory eventCategory, EventAction eventAction, UUID correlationId){
 
         metricRegistry.meter(name(AnalyticsTrackerImpl.class, eventCategory.name(), eventAction.name())).mark();
 
         if (ga == null)
             return;
 
-        checkEnabledState();
+        checkEnabledState(correlationId);
 
         if (!ga.getConfig().isEnabled())
             return;
 
-        LOG.info(String.format("Posting analytics event - %s: %s", eventCategory.name(), eventAction.name()));
+        LOG.info(String.format("%s: Posting analytics event - %s: %s", correlationId, eventCategory.name(), eventAction.name()));
 
         try {
             EventHit request = new EventHit(eventCategory.name(), eventAction.name())
@@ -74,23 +75,23 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
             ga.postAsync(request);
         }
         catch (Throwable e) {
-            LOG.warn("Analytics postEvent failed", e);
+            LOG.warn(String.format("%s: Analytics postEvent failed", correlationId), e);
         }
     }
 
-    public void postException(Exception e) {
+    public void postException(Exception e, UUID correlationId) {
 
         metricRegistry.meter(name(AnalyticsTrackerImpl.class, "exception", e.getClass().getName())).mark();
 
         if (ga == null)
             return;
 
-        checkEnabledState();
+        checkEnabledState(correlationId);
 
         if (!ga.getConfig().isEnabled())
             return;
 
-        LOG.info(String.format("Posting analytics exception - %s", e.getMessage()));
+        LOG.info(String.format("%s: Posting analytics exception - %s", correlationId, e.getMessage()));
 
         try {
             String exceptionDetail = maskException(e);
@@ -103,15 +104,15 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
             ga.postAsync(request);
         }
         catch (Throwable ex) {
-            LOG.warn("Analytics postException failed", ex);
+            LOG.warn(String.format("%s: Analytics postException failed", correlationId), ex);
         }
     }
 
-    private synchronized void checkEnabledState() {
+    private synchronized void checkEnabledState(UUID correlationId) {
         boolean newState = OctopusBuildTriggerUtil.getAnalyticsEnabled();
         boolean oldState = ga.getConfig().isEnabled();
         if (newState != oldState) {
-            LOG.info(String.format("Changing analytics enabled state to %s.", newState));
+            LOG.info(String.format("%s: Changing analytics enabled state to %s.", correlationId, newState));
             ga.getConfig().setEnabled(newState);
         }
     }

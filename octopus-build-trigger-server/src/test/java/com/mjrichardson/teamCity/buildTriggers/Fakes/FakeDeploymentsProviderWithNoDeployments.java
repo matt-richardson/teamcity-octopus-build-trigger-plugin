@@ -11,13 +11,14 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.util.UUID;
 
 public class FakeDeploymentsProviderWithNoDeployments implements DeploymentsProvider {
     public FakeDeploymentsProviderWithNoDeployments() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
     }
 
     @Override
-    public Environments getDeployments(String octopusProject, Environments oldEnvironments) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
+    public Environments getDeployments(String octopusProject, Environments oldEnvironments, UUID correlationId) throws DeploymentsProviderException, ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
         return new Environments();
     }
 }

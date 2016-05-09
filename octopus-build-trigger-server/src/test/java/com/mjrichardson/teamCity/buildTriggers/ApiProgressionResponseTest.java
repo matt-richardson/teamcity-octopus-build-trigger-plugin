@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.UUID;
 
 @Test
 public class ApiProgressionResponseTest {
@@ -20,7 +21,8 @@ public class ApiProgressionResponseTest {
 
     public void can_parse_progression_response_with_no_deployments() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
         final String json = ResourceHandler.getResource("api/progression/" + ProjectWithNoDeployments);
-        ApiProgressionResponse sut = new ApiProgressionResponse(json);
+        UUID correlationId = UUID.randomUUID();
+        ApiProgressionResponse sut = new ApiProgressionResponse(json, correlationId);
         Assert.assertTrue(sut.haveCompleteInformation);
         Assert.assertEquals(sut.environments.size(), 1);
         Environment[] environments = sut.environments.toArray();
@@ -31,7 +33,8 @@ public class ApiProgressionResponseTest {
 
     public void can_parse_progression_response_with_no_releases() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
         final String json = ResourceHandler.getResource("api/progression/" + ProjectWithNoReleases);
-        ApiProgressionResponse sut = new ApiProgressionResponse(json);
+        UUID correlationId = UUID.randomUUID();
+        ApiProgressionResponse sut = new ApiProgressionResponse(json, correlationId);
         Assert.assertTrue(sut.haveCompleteInformation);
         Assert.assertEquals(sut.environments.size(), 1);
         Environment[] environments = sut.environments.toArray();
@@ -42,7 +45,8 @@ public class ApiProgressionResponseTest {
 
     public void can_parse_progression_response_with_no_successful_deployments() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
         final String json = ResourceHandler.getResource("api/progression/" + ProjectWithNoSuccessfulDeployments);
-        ApiProgressionResponse sut = new ApiProgressionResponse(json);
+        UUID correlationId = UUID.randomUUID();
+        ApiProgressionResponse sut = new ApiProgressionResponse(json, correlationId);
         Assert.assertFalse(sut.haveCompleteInformation);
         Assert.assertEquals(sut.environments.size(), 1);
         Environment[] environments = sut.environments.toArray();
@@ -53,7 +57,8 @@ public class ApiProgressionResponseTest {
 
     public void can_parse_progression_response_with_latest_deployment_successful() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
         final String json = ResourceHandler.getResource("api/progression/" + ProjectWithLatestDeploymentSuccessful);
-        ApiProgressionResponse sut = new ApiProgressionResponse(json);
+        UUID correlationId = UUID.randomUUID();
+        ApiProgressionResponse sut = new ApiProgressionResponse(json, correlationId);
         Assert.assertTrue(sut.haveCompleteInformation);
         Assert.assertEquals(sut.environments.size(), 1);
         Environment[] environments = sut.environments.toArray();
@@ -64,7 +69,8 @@ public class ApiProgressionResponseTest {
 
     public void can_parse_progression_response_with_multiple_environments() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
         final String json = ResourceHandler.getResource("api/progression/" + ProjectWithMultipleEnvironments);
-        ApiProgressionResponse sut = new ApiProgressionResponse(json);
+        UUID correlationId = UUID.randomUUID();
+        ApiProgressionResponse sut = new ApiProgressionResponse(json, correlationId);
         Assert.assertTrue(sut.haveCompleteInformation);
         Assert.assertEquals(sut.environments.size(), 2);
         Environment[] environments = sut.environments.toArray();
@@ -78,7 +84,8 @@ public class ApiProgressionResponseTest {
 
     public void can_parse_progression_response_with_multiple_environments_and_most_recent_deployment_successful() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
         final String json = ResourceHandler.getResource("api/progression/" + ProjectWithMultipleEnvironmentsAndMostRecentDeploymentSuccessful);
-        ApiProgressionResponse sut = new ApiProgressionResponse(json);
+        UUID correlationId = UUID.randomUUID();
+        ApiProgressionResponse sut = new ApiProgressionResponse(json, correlationId);
         Assert.assertTrue(sut.haveCompleteInformation);
         Assert.assertEquals(sut.environments.size(), 2);
         Environment[] environments = sut.environments.toArray();
@@ -92,7 +99,8 @@ public class ApiProgressionResponseTest {
 
     public void can_parse_progression_response_with_no_recent_successful_deployments() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
         final String json = ResourceHandler.getResource("api/progression/" + ProjectWithNoRecentSuccessfulDeployments);
-        ApiProgressionResponse sut = new ApiProgressionResponse(json);
+        UUID correlationId = UUID.randomUUID();
+        ApiProgressionResponse sut = new ApiProgressionResponse(json, correlationId);
         Assert.assertTrue(sut.haveCompleteInformation);
         Assert.assertEquals(sut.environments.size(), 1);
         Environment[] environments = sut.environments.toArray();

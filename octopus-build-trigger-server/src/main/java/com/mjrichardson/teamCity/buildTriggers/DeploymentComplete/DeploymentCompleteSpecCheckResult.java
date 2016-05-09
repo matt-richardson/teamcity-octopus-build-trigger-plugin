@@ -24,45 +24,46 @@
 
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
+import com.mjrichardson.teamCity.buildTriggers.CustomCheckResult;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
-import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.buildTriggers.async.DetectionException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
-class DeploymentCompleteSpecCheckResult extends CheckResult<DeploymentCompleteSpec> {
-    private DeploymentCompleteSpecCheckResult() {
-        super();
+class DeploymentCompleteSpecCheckResult extends CustomCheckResult<DeploymentCompleteSpec> {
+    private DeploymentCompleteSpecCheckResult(UUID correlationId) {
+        super(correlationId);
     }
 
-    private DeploymentCompleteSpecCheckResult(@NotNull Collection<DeploymentCompleteSpec> updated, @NotNull Map<DeploymentCompleteSpec, DetectionException> errors) {
-        super(updated, errors);
+    private DeploymentCompleteSpecCheckResult(@NotNull Collection<DeploymentCompleteSpec> updated, @NotNull Map<DeploymentCompleteSpec, DetectionException> errors, UUID correlationId) {
+        super(updated, errors, correlationId);
     }
 
-    private DeploymentCompleteSpecCheckResult(@NotNull Throwable generalError) {
-        super(generalError);
-    }
-
-    @NotNull
-    static DeploymentCompleteSpecCheckResult createEmptyResult() {
-        return new DeploymentCompleteSpecCheckResult();
+    private DeploymentCompleteSpecCheckResult(@NotNull Throwable generalError, UUID correlationId) {
+        super(generalError, correlationId);
     }
 
     @NotNull
-    static DeploymentCompleteSpecCheckResult createUpdatedResult(@NotNull DeploymentCompleteSpec deploymentCompleteSpec) {
-        return new DeploymentCompleteSpecCheckResult(Collections.singleton(deploymentCompleteSpec), Collections.emptyMap());
+    static DeploymentCompleteSpecCheckResult createEmptyResult(UUID correlationId) {
+        return new DeploymentCompleteSpecCheckResult(correlationId);
     }
 
     @NotNull
-    static DeploymentCompleteSpecCheckResult createThrowableResult(@NotNull Throwable throwable) {
-        return new DeploymentCompleteSpecCheckResult(throwable);
+    static DeploymentCompleteSpecCheckResult createUpdatedResult(@NotNull DeploymentCompleteSpec deploymentCompleteSpec, UUID correlationId) {
+        return new DeploymentCompleteSpecCheckResult(Collections.singleton(deploymentCompleteSpec), Collections.emptyMap(), correlationId);
     }
 
     @NotNull
-    static DeploymentCompleteSpecCheckResult createErrorResult(@NotNull String error) {
-        return new DeploymentCompleteSpecCheckResult(new BuildTriggerException(error));
+    static DeploymentCompleteSpecCheckResult createThrowableResult(@NotNull Throwable throwable, UUID correlationId) {
+        return new DeploymentCompleteSpecCheckResult(throwable, correlationId);
+    }
+
+    @NotNull
+    static DeploymentCompleteSpecCheckResult createErrorResult(@NotNull String error, UUID correlationId) {
+        return new DeploymentCompleteSpecCheckResult(new BuildTriggerException(error), correlationId);
     }
 }

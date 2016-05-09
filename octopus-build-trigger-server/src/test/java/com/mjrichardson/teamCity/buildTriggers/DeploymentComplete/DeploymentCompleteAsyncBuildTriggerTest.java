@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
@@ -41,7 +42,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
-        Integer result = sut.getPollInterval(new FakeAsyncTriggerParameters());
+        Integer result = sut.getPollIntervalInMilliseconds();
 
         Assert.assertEquals(result, pollIntervalInSeconds);
     }
@@ -50,7 +51,11 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
-        CheckJob<DeploymentCompleteSpec> result = sut.createJob(new FakeAsyncTriggerParameters());
+        UUID correlationId = UUID.randomUUID();
+        CheckJob<DeploymentCompleteSpec> result = sut.createJob("the-build-type",
+                new FakeCustomDataStorage(),
+                new FakeBuildTriggerDescriptor().getProperties(),
+                correlationId);
 
         Assert.assertEquals(result.getClass(), DeploymentCompleteCheckJob.class);
     }
@@ -59,7 +64,8 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         String displayName = "the display name";
         Integer pollIntervalInSeconds = 100;
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
-        CheckResult<DeploymentCompleteSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"));
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"), correlationId);
 
         Assert.assertTrue(result.hasCheckErrors());
         Assert.assertEquals(result.getGeneralError().getMessage(), "the exception message");

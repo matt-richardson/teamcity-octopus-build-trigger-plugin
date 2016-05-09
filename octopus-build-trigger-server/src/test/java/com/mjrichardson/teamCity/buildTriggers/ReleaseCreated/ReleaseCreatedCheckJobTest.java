@@ -14,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
@@ -35,7 +36,8 @@ public class ReleaseCreatedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, value);
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty url) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -52,7 +54,8 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, value);
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty api key) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -70,7 +73,8 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, value);
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty project) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -87,7 +91,8 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
         Assert.assertNotNull(result.getGeneralError());
@@ -104,7 +109,8 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -122,7 +128,8 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
         //this is when the trigger is created
-        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -140,14 +147,15 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
         //this is when the trigger is created
-        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
 
         releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
         //this is the first check
-        result = sut.perform();
+        result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);
@@ -170,7 +178,8 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
         //this is when the trigger is created
-        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
 
@@ -189,7 +198,8 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);
@@ -209,11 +219,12 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        sut.perform(correlationId);
 
         releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithOneRelease());
         sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<ReleaseCreatedSpec> result = sut.perform();
+        CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -231,7 +242,8 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
-        sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
         Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.BuildTriggered);
         Assert.assertEquals(analyticsTracker.eventCategory, AnalyticsTracker.EventCategory.ReleaseCreatedTrigger);
@@ -249,7 +261,8 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
-        sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 0);
     }
 
@@ -265,7 +278,8 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
         ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
-        sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
         Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.TriggerAdded);
         Assert.assertEquals(analyticsTracker.eventCategory, AnalyticsTracker.EventCategory.ReleaseCreatedTrigger);

@@ -5,6 +5,7 @@ import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityChecker;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 public class FakeOctopusConnectivityChecker extends OctopusConnectivityChecker {
     private String connectivityCheckResult = null;
@@ -15,7 +16,7 @@ public class FakeOctopusConnectivityChecker extends OctopusConnectivityChecker {
     }
 
     @Override
-    public String checkOctopusConnectivity() {
+    public String checkOctopusConnectivity(UUID correlationId) {
         return this.connectivityCheckResult;
     }
 }

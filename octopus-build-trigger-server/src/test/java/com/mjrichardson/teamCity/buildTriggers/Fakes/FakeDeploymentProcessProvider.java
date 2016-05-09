@@ -7,12 +7,13 @@ import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
 import com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException;
 
 import java.text.ParseException;
+import java.util.UUID;
 
 public class FakeDeploymentProcessProvider implements DeploymentProcessProvider {
     private String version = "17";
 
     @Override
-    public String getDeploymentProcessVersion(String octopusProject) throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException, DeploymentProcessProviderException {
+    public String getDeploymentProcessVersion(String octopusProject, UUID correlationId) throws ProjectNotFoundException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException, DeploymentProcessProviderException {
         return version;
     }
 

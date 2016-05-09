@@ -8,10 +8,11 @@ import com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachinesProvider;
 import com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachinesProviderException;
 
 import java.text.ParseException;
+import java.util.UUID;
 
 public class FakeMachinesProviderWithOneMachine implements MachinesProvider {
     @Override
-    public Machines getMachines() throws MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
+    public Machines getMachines(UUID correlationId) throws MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, ParseException {
         Machine machine = new Machine("Machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" });
         Machines machines = new Machines();
         machines.add(machine);

@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 @Test
 public class MachinesProviderImplTest {
@@ -23,7 +24,8 @@ public class MachinesProviderImplTest {
     public void get_machines_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), new FakeCacheManager(), new FakeMetricRegistry());
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
-        Machines newMachines = MachinesProviderImpl.getMachines();
+        UUID correlationId = UUID.randomUUID();
+        Machines newMachines = MachinesProviderImpl.getMachines(correlationId);
         Assert.assertNotNull(newMachines);
     }
 
@@ -31,7 +33,8 @@ public class MachinesProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Machines oldMachines = new Machines();
-        Machines newMachines = MachinesProviderImpl.getMachines();
+        UUID correlationId = UUID.randomUUID();
+        Machines newMachines = MachinesProviderImpl.getMachines(correlationId);
         Assert.assertEquals(newMachines.size(), 1);
         Machine machine = newMachines.getNextMachine(oldMachines);
         Assert.assertNotNull(machine);
@@ -46,7 +49,8 @@ public class MachinesProviderImplTest {
         //      then we can enable this test again
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
-        Machines newMachines = MachinesProviderImpl.getMachines();
+        UUID correlationId = UUID.randomUUID();
+        Machines newMachines = MachinesProviderImpl.getMachines(correlationId);
         Assert.assertEquals(newMachines.size(), 0);
     }
 
@@ -55,7 +59,8 @@ public class MachinesProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory("http://octopus.example.com", octopusApiKey);
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        MachinesProviderImpl.getMachines();
+        UUID correlationId = UUID.randomUUID();
+        MachinesProviderImpl.getMachines(correlationId);
     }
 
     @Test(expectedExceptions = InvalidOctopusUrlException.class)
@@ -63,7 +68,8 @@ public class MachinesProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl + "/not-an-octopus-instance", octopusApiKey);
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        MachinesProviderImpl.getMachines();
+        UUID correlationId = UUID.randomUUID();
+        MachinesProviderImpl.getMachines(correlationId);
     }
 
     @Test(expectedExceptions = InvalidOctopusApiKeyException.class)
@@ -71,7 +77,8 @@ public class MachinesProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, "invalid-api-key");
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        MachinesProviderImpl.getMachines();
+        UUID correlationId = UUID.randomUUID();
+        MachinesProviderImpl.getMachines(correlationId);
     }
 
     @Test(expectedExceptions = MachinesProviderException.class)
@@ -79,7 +86,8 @@ public class MachinesProviderImplTest {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(new OutOfMemoryError());
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
-        MachinesProviderImpl.getMachines();
+        UUID correlationId = UUID.randomUUID();
+        MachinesProviderImpl.getMachines(correlationId);
     }
 
     public void get_machines_when_up_to_date() throws Exception {
@@ -87,7 +95,8 @@ public class MachinesProviderImplTest {
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
         Machines oldMachines = Machines.Parse((new Machine("Machines-1", "Octopus Server", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
-        Machines newMachines = MachinesProviderImpl.getMachines();
+        UUID correlationId = UUID.randomUUID();
+        Machines newMachines = MachinesProviderImpl.getMachines(correlationId);
         Assert.assertEquals(newMachines.size(), 1);
         Machine machine = newMachines.getNextMachine(oldMachines);
         Assert.assertNotNull(machine);
@@ -103,7 +112,8 @@ public class MachinesProviderImplTest {
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
 
         Machines oldMachines = Machines.Parse((new Machine("Machines-1", "Octopus Server", new String[] { "env-id" }, new String[]{ "role-name" }).toString()));
-        Machines newMachines = MachinesProviderImpl.getMachines();
+        UUID correlationId = UUID.randomUUID();
+        Machines newMachines = MachinesProviderImpl.getMachines(correlationId);
         Assert.assertEquals(newMachines.size(), 1);
         Machine machine = newMachines.getNextMachine(oldMachines);
         Assert.assertNotNull(machine);

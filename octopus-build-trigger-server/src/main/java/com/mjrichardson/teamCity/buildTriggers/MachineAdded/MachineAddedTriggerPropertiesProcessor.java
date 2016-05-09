@@ -36,6 +36,7 @@ import jetbrains.buildServer.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 class MachineAddedTriggerPropertiesProcessor implements PropertiesProcessor {
 
@@ -65,17 +66,18 @@ class MachineAddedTriggerPropertiesProcessor implements PropertiesProcessor {
         }
 
         if (invalidProps.size() == 0) {
-            checkConnectivity(invalidProps, url, apiKey);
+            UUID correlationId = UUID.randomUUID();
+            checkConnectivity(invalidProps, url, apiKey, correlationId);
         }
         return invalidProps;
     }
 
-    private void checkConnectivity(ArrayList<InvalidProperty> invalidProps, String url, String apiKey) {
+    private void checkConnectivity(ArrayList<InvalidProperty> invalidProps, String url, String apiKey, UUID correlationId) {
         try {
             final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
             final OctopusConnectivityChecker connectivityChecker = octopusConnectivityCheckerFactory.create(url, apiKey, connectionTimeoutInMilliseconds, metricRegistry);
 
-            final String err = connectivityChecker.checkOctopusConnectivity();
+            final String err = connectivityChecker.checkOctopusConnectivity(correlationId);
             if (StringUtil.isNotEmpty(err)) {
                 invalidProps.add(new InvalidProperty(OctopusBuildTriggerUtil.OCTOPUS_URL, err));
             }

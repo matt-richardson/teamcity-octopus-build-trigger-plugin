@@ -28,20 +28,20 @@ import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
+import com.mjrichardson.teamCity.buildTriggers.CustomCheckJob;
 import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
-import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
-import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_APIKEY;
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
 
-class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
+class MachineAddedCheckJob extends CustomCheckJob<MachineAddedSpec> {
     @NotNull
     private static final Logger LOG = Logger.getInstance(MachineAddedCheckJob.class.getName());
 
@@ -66,8 +66,8 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
     }
 
     @NotNull
-    CheckResult<MachineAddedSpec> getCheckResult(String octopusUrl, String octopusApiKey, CustomDataStorage dataStorage) {
-        LOG.debug("Checking for new machines for on server " + octopusUrl);
+    CheckResult<MachineAddedSpec> getCheckResult(String octopusUrl, String octopusApiKey, CustomDataStorage dataStorage, UUID correlationId) {
+        LOG.debug(String.format("%s: Checking for new machines for on server %s", correlationId, octopusUrl));
         final String dataStorageKey = (displayName + "|" + octopusUrl).toLowerCase();
 
         try {
@@ -76,7 +76,7 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
             final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
 
             MachinesProvider provider = MachinesProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
-            final Machines newMachines = provider.getMachines();
+            final Machines newMachines = provider.getMachines(correlationId);
 
             //only store that one machine was added here, not multiple.
             //otherwise, we could inadvertently miss new machines
@@ -91,61 +91,54 @@ class MachineAddedCheckJob implements CheckJob<MachineAddedSpec> {
                     newStoredData = trimmedMachines.toString();
                     dataStorage.putValue(dataStorageKey, newStoredData);
 
-                    LOG.debug("Machines have been removed from Octopus: " + deletedMachines.toString());
+                    LOG.debug(String.format("%s: Machines have been removed from Octopus: %s", correlationId, deletedMachines.toString()));
                 }
 
-                LOG.debug("oldStoredData was '" + oldStoredData + "'");
-                LOG.debug("newStoredData was '" + newStoredData + "'");
-                LOG.info("No new machines on '" + octopusUrl + "'");
-                return MachineAddedSpecCheckResult.createEmptyResult();
+                LOG.debug(String.format("%s: oldStoredData was '%s'", correlationId, oldStoredData));
+                LOG.debug(String.format("%s: newStoredData was '%s'", correlationId, newStoredData));
+                LOG.info(String.format("%s: No new machines on '%s'", correlationId, octopusUrl));
+                return MachineAddedSpecCheckResult.createEmptyResult(correlationId);
             }
 
             //do not trigger build after first adding trigger (oldMachines == null)
             if (oldStoredData == null) {
                 //store all existing machines, so we only trigger on new ones added after this point
                 dataStorage.putValue(dataStorageKey, newMachines.toString());
-                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.TriggerAdded);
+                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.TriggerAdded, correlationId);
 
-                LOG.debug("No previously known machines known for server " + octopusUrl + ": null" + " -> " + newStoredData);
-                return MachineAddedSpecCheckResult.createEmptyResult();
+                LOG.debug(String.format("%s: No previously known machines known for server %s: null -> %s", correlationId, octopusUrl, newStoredData));
+                return MachineAddedSpecCheckResult.createEmptyResult(correlationId);
             }
             dataStorage.putValue(dataStorageKey, newStoredData);
 
-            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.BuildTriggered);
+            analyticsTracker.postEvent(AnalyticsTracker.EventCategory.MachineAddedTrigger, AnalyticsTracker.EventAction.BuildTriggered, correlationId);
 
-            LOG.info("New Machine " + newMachine.name + " created on " + octopusUrl + ": " + oldStoredData + " -> " + newStoredData);
+            LOG.info(String.format("%s: New Machine %s created on %s: %s -> %s", correlationId, newMachine.name, octopusUrl, oldStoredData, newStoredData));
             final MachineAddedSpec MachineAddedSpec = new MachineAddedSpec(octopusUrl, newMachine);
-            return MachineAddedSpecCheckResult.createUpdatedResult(MachineAddedSpec);
+            return MachineAddedSpecCheckResult.createUpdatedResult(MachineAddedSpec, correlationId);
         } catch (Exception e) {
-            LOG.error("Failed to check for new machines added", e);
+            LOG.error(String.format("%s: Failed to check for new machines added", correlationId), e);
 
-            analyticsTracker.postException(e);
+            analyticsTracker.postException(e, correlationId);
 
-            return MachineAddedSpecCheckResult.createThrowableResult(e);
+            return MachineAddedSpecCheckResult.createThrowableResult(e, correlationId);
         }
     }
 
     @NotNull
-    public CheckResult<MachineAddedSpec> perform() {
-
+    public CheckResult<MachineAddedSpec> perform(UUID correlationId) {
         final String octopusUrl = props.get(OCTOPUS_URL);
         if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
             return MachineAddedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
-                    displayName, buildType));
+                    displayName, buildType), correlationId);
         }
 
         final String octopusApiKey = props.get(OCTOPUS_APIKEY);
         if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
             return MachineAddedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
-                    displayName, buildType));
+                    displayName, buildType), correlationId);
         }
 
-        return getCheckResult(octopusUrl, octopusApiKey, dataStorage);
-    }
-
-    public boolean allowSchedule(@NotNull BuildTriggerDescriptor buildTriggerDescriptor) {
-        //we always return false here - the AsyncPolledBuildTrigger class handles whether we are busy or not
-        //also, this is inverted, the method should be preventSchedule or something
-        return false;
+        return getCheckResult(octopusUrl, octopusApiKey, dataStorage, correlationId);
     }
 }

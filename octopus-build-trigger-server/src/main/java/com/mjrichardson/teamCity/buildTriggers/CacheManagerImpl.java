@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.UUID;
 
 //todo: allow modification of cache settings via internal properties
 public class CacheManagerImpl implements CacheManager {
@@ -37,23 +38,23 @@ public class CacheManagerImpl implements CacheManager {
         return instrument;
     }
 
-    public String getFromCache(CacheNames cacheName, URI uri) throws InvalidCacheConfigurationException {
-        LOG.debug(String.format("Getting cached response for '%s' from cache '%s'", uri.toString(), cacheName.name()));
+    public String getFromCache(CacheNames cacheName, URI uri, UUID correlationId) throws InvalidCacheConfigurationException {
+        LOG.debug(String.format("%s: Getting cached response for '%s' from cache '%s'", correlationId, uri.toString(), cacheName.name()));
         if (cacheName == CacheNames.NoCache)
             return null;
         Ehcache cache = getCache(cacheName);
         Element result = cache.get(uri.toString());
         if (result == null) {
-            LOG.debug(String.format("Cached response for '%s' was not found in cache '%s'", uri.toString(), cacheName.name()));
+            LOG.debug(String.format("%s: Cached response for '%s' was not found in cache '%s'", correlationId, uri.toString(), cacheName.name()));
             return null;
         }
-        LOG.debug(String.format("Cached response for '%s' was retrieved from cache '%s'", uri.toString(), cacheName.name()));
+        LOG.debug(String.format("%s: Cached response for '%s' was retrieved from cache '%s'", correlationId, uri.toString(), cacheName.name()));
         return result.getObjectValue().toString();
     }
 
-    public void addToCache(CacheNames cacheName, URI uri, String body) throws InvalidCacheConfigurationException {
+    public void addToCache(CacheNames cacheName, URI uri, String body, UUID correlationId) throws InvalidCacheConfigurationException {
         //todo: check property for cache enabled
-        LOG.debug(String.format("Caching response for '%s' in cache '%s'", uri.toString(), cacheName.name()));
+        LOG.debug(String.format("%s: Caching response for '%s' in cache '%s'", correlationId, uri.toString(), cacheName.name()));
         if (cacheName == CacheNames.NoCache)
             return;
         Ehcache cache = getCache(cacheName);

@@ -11,13 +11,15 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 @Test
 public class OctopusConnectivityCheckerTest {
     public void check_octopus_connectivity_returns_null_when_content_provider_returns_content() {
         FakeContentProvider contentProvider = new FakeContentProvider("http://fake-url", "API-KEY");
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
-        Assert.assertEquals(sut.checkOctopusConnectivity(), null);
+        UUID correlationId = UUID.randomUUID();
+        Assert.assertEquals(sut.checkOctopusConnectivity(correlationId), null);
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -25,7 +27,8 @@ public class OctopusConnectivityCheckerTest {
         Exception exception = new InvalidOctopusApiKeyException(403, "Invalid api key");
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
-        Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
+        UUID correlationId = UUID.randomUUID();
+        Assert.assertEquals(sut.checkOctopusConnectivity(correlationId), exception.getMessage());
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -33,7 +36,8 @@ public class OctopusConnectivityCheckerTest {
         Exception exception = new InvalidOctopusUrlException(new URI("http://example.org"));
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
-        Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
+        UUID correlationId = UUID.randomUUID();
+        Assert.assertEquals(sut.checkOctopusConnectivity(correlationId), exception.getMessage());
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -41,7 +45,8 @@ public class OctopusConnectivityCheckerTest {
         Exception exception = new UnexpectedResponseCodeException(451, "unexpected response");
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
-        Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
+        UUID correlationId = UUID.randomUUID();
+        Assert.assertEquals(sut.checkOctopusConnectivity(correlationId), exception.getMessage());
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -49,7 +54,8 @@ public class OctopusConnectivityCheckerTest {
         Exception exception = new ProjectNotFoundException("Projects-61");
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
-        Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
+        UUID correlationId = UUID.randomUUID();
+        Assert.assertEquals(sut.checkOctopusConnectivity(correlationId), exception.getMessage());
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -57,7 +63,8 @@ public class OctopusConnectivityCheckerTest {
         Throwable exception = new OutOfMemoryError();
         FakeContentProvider contentProvider = new FakeContentProvider(exception);
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(contentProvider);
-        Assert.assertEquals(sut.checkOctopusConnectivity(), exception.getMessage());
+        UUID correlationId = UUID.randomUUID();
+        Assert.assertEquals(sut.checkOctopusConnectivity(correlationId), exception.getMessage());
         Assert.assertEquals(contentProvider.requestedUriPath, "/api");
     }
 
@@ -67,7 +74,8 @@ public class OctopusConnectivityCheckerTest {
         final Integer timeoutInMilliseconds = 30000;
 
         OctopusConnectivityChecker sut = new OctopusConnectivityChecker(realOctopusUrl, "", timeoutInMilliseconds, new FakeCacheManager(), new FakeMetricRegistry());
-        String result = sut.checkOctopusConnectivity();
+        UUID correlationId = UUID.randomUUID();
+        String result = sut.checkOctopusConnectivity(correlationId);
         Assert.assertEquals(result, null);
     }
 }

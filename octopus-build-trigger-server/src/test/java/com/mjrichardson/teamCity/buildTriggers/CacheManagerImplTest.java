@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 @Test
 public class CacheManagerImplTest {
@@ -16,8 +17,9 @@ public class CacheManagerImplTest {
                 continue;
             String expectedValue = cacheName.name() + "|cache content";
             URI uri = new URI("http://example.com/api");
-            cacheManager.addToCache(cacheName, uri, expectedValue);
-            String actualValue = cacheManager.getFromCache(cacheName, uri);
+            UUID correlationId = UUID.randomUUID();
+            cacheManager.addToCache(cacheName, uri, expectedValue, correlationId);
+            String actualValue = cacheManager.getFromCache(cacheName, uri, correlationId);
             Assert.assertEquals(actualValue, expectedValue);
         }
     }
@@ -26,8 +28,9 @@ public class CacheManagerImplTest {
         CacheManager cacheManager = new CacheManagerImpl(new FakeMetricRegistry());
         URI uri = new URI("http://example.com/api");
 
-        cacheManager.addToCache(CacheManager.CacheNames.NoCache, uri, "a random value");
-        String actualValue = cacheManager.getFromCache(CacheManager.CacheNames.NoCache, uri);
+        UUID correlationId = UUID.randomUUID();
+        cacheManager.addToCache(CacheManager.CacheNames.NoCache, uri, "a random value", correlationId);
+        String actualValue = cacheManager.getFromCache(CacheManager.CacheNames.NoCache, uri, correlationId);
         Assert.assertEquals(actualValue, null);
     }
 }

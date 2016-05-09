@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 public class ProjectsController extends BaseController {
     private final WebControllerManager webManager;
@@ -44,7 +45,8 @@ public class ProjectsController extends BaseController {
     @Nullable
     @Override
     protected ModelAndView doHandle(@NotNull HttpServletRequest httpServletRequest, @NotNull HttpServletResponse httpServletResponse) throws Exception {
-        LOG.info("ProjectsController.doHandle() called");
+        UUID correlationId = UUID.randomUUID();
+        LOG.info(String.format("%s: ProjectsController.doHandle() called", correlationId));
         String octopusUrl = httpServletRequest.getParameter("octopusUrl");
         String octopusApiKey = httpServletRequest.getParameter("octopusApiKey");
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(octopusUrl, octopusApiKey,
@@ -53,25 +55,25 @@ public class ProjectsController extends BaseController {
 
         httpServletResponse.setHeader("content-type", "application/json");
         try {
-            LOG.debug("Getting projects from " + contentProvider.getUrl());
-            final ApiRootResponse apiRootResponse = getApiRootResponse(contentProvider);
-            final Projects projects = getProjects(contentProvider, apiRootResponse);
+            LOG.debug(String.format("%s: Getting projects from %s", correlationId, contentProvider.getUrl()));
+            final ApiRootResponse apiRootResponse = getApiRootResponse(contentProvider, correlationId);
+            final Projects projects = getProjects(contentProvider, apiRootResponse, correlationId);
             objectMapper.writeValue(httpServletResponse.getOutputStream(), projects.toArray());
         }
         catch (InvalidOctopusApiKeyException ex) {
-            LOG.warn("Invalid octopus api key exception, connecting to " + octopusUrl);
+            LOG.warn(String.format("%s: Invalid octopus api key exception, connecting to %s", correlationId, octopusUrl));
             objectMapper.writeValue(httpServletResponse.getOutputStream(), new ErrorMessage("ApiKey", "Invalid API Key"));
         }
         catch (InvalidOctopusUrlException ex) {
-            LOG.warn("Invalid octopus url exception, connecting to " + octopusUrl);
+            LOG.warn(String.format("%s: Invalid octopus url exception, connecting to %s", correlationId, octopusUrl));
             objectMapper.writeValue(httpServletResponse.getOutputStream(), new ErrorMessage("Url", "Invalid Octopus Url"));
         }
         catch (UnexpectedResponseCodeException ex) {
-            LOG.warn("Unexpected response code exception, connecting to " + octopusUrl, ex);
+            LOG.warn(String.format("%s: Unexpected response code exception, connecting to %s", correlationId, octopusUrl), ex);
             objectMapper.writeValue(httpServletResponse.getOutputStream(), new ErrorMessage("Url", "Unexpected response code - " + ex.code));
         }
         catch (Exception ex) {
-            LOG.warn("Unexpected exception, connecting to " + octopusUrl, ex);
+            LOG.warn(String.format("%s: Unexpected exception, connecting to %s", correlationId, octopusUrl), ex);
             objectMapper.writeValue(httpServletResponse.getOutputStream(), new ErrorMessage("Url", "Unexpected exception"));
         }
 
@@ -88,18 +90,18 @@ public class ProjectsController extends BaseController {
     }
 
     @NotNull
-    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        final String apiResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api");
-        return new ApiRootResponse(apiResponse, analyticsTracker);
+    private ApiRootResponse getApiRootResponse(HttpContentProvider contentProvider, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        final String apiResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiRoot, "/api", correlationId);
+        return new ApiRootResponse(apiResponse, analyticsTracker, correlationId);
     }
 
     //todo: de-dupe
-    private Projects getProjects(HttpContentProvider contentProvider, ApiRootResponse apiRootResponse) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
-        String projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink);
+    private Projects getProjects(HttpContentProvider contentProvider, ApiRootResponse apiRootResponse, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ParseException, InvalidCacheConfigurationException {
+        String projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiRootResponse.projectsApiLink, correlationId);
         ApiProjectsResponse apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
         Projects projects = apiProjectsResponse.projects;
         while (shouldGetNextProjectsPage(apiProjectsResponse)) {
-            projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink);
+            projectsResponse = contentProvider.getOctopusContent(CacheManager.CacheNames.ApiProjects, apiProjectsResponse.nextLink, correlationId);
             apiProjectsResponse = new ApiProjectsResponse(projectsResponse);
             Projects newProjects = apiProjectsResponse.projects;
             projects.add(newProjects);

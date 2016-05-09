@@ -1,11 +1,12 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
 import java.net.URI;
+import java.util.UUID;
 
 public interface CacheManager {
-    String getFromCache(CacheNames cacheName, URI uri) throws InvalidCacheConfigurationException;
+    String getFromCache(CacheNames cacheName, URI uri, UUID correlationId) throws InvalidCacheConfigurationException;
 
-    void addToCache(CacheNames cacheName, URI uri, String body) throws InvalidCacheConfigurationException;
+    void addToCache(CacheNames cacheName, URI uri, String body, UUID correlationId) throws InvalidCacheConfigurationException;
 
     enum CacheNames {
         ApiRoot,

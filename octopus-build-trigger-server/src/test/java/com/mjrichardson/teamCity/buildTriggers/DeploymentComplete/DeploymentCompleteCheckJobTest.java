@@ -14,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
 
@@ -35,7 +36,8 @@ public class DeploymentCompleteCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, value);
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty url) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -52,7 +54,8 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, value);
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty api key) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -70,7 +73,8 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, value);
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty project) in build configuration the-build-type");
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
@@ -87,7 +91,8 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertTrue(result.hasCheckErrors());
         Assert.assertNotNull(result.getGeneralError());
@@ -104,7 +109,8 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -123,7 +129,8 @@ public class DeploymentCompleteCheckJobTest {
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
 
         //this is when the trigger is created
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -142,7 +149,8 @@ public class DeploymentCompleteCheckJobTest {
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
 
         //this is when the trigger is created
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
 
@@ -150,7 +158,7 @@ public class DeploymentCompleteCheckJobTest {
         deploymentsProviderFactory = new FakeDeploymentsProviderFactory(new FakeDeploymentsProviderWithOneDeployment());
         sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
 
-        result = sut.perform();
+        result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);
@@ -173,10 +181,11 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, octopusProject);
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
 
-        sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        sut.perform(correlationId);
         String key = displayName + "|" + octopusUrl + "|" + octopusProject;
 
-        Assert.assertEquals(dataStorage.getValue(key), deploymentsProvider.getDeployments(octopusProject, new Environments()).toString());
+        Assert.assertEquals(dataStorage.getValue(key), deploymentsProvider.getDeployments(octopusProject, new Environments(), correlationId).toString());
     }
 
     public void perform_returns_empty_result_if_new_deployment_but_it_failed_when_only_triggering_on_successful_builds() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
@@ -191,7 +200,8 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -208,7 +218,8 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "false");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);
@@ -228,7 +239,8 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);
@@ -248,11 +260,12 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        sut.perform(correlationId);
 
         deploymentsProviderFactory = new FakeDeploymentsProviderFactory(new FakeDeploymentsProviderWithOneDeployment());
         sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
     }
@@ -271,7 +284,8 @@ public class DeploymentCompleteCheckJobTest {
 
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
-        sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
         Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.BuildTriggered);
         Assert.assertEquals(analyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
@@ -289,7 +303,8 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
-        sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 0);
     }
 
@@ -306,7 +321,8 @@ public class DeploymentCompleteCheckJobTest {
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
 
-        sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
         Assert.assertEquals(analyticsTracker.eventAction, AnalyticsTracker.EventAction.TriggerAdded);
         Assert.assertEquals(analyticsTracker.eventCategory, AnalyticsTracker.EventCategory.DeploymentCompleteTrigger);
@@ -329,7 +345,8 @@ public class DeploymentCompleteCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, octopusProject);
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         DeploymentCompleteCheckJob sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        CheckResult<DeploymentCompleteSpec> result = sut.perform();
+        UUID correlationId = UUID.randomUUID();
+        CheckResult<DeploymentCompleteSpec> result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 1);
@@ -340,7 +357,7 @@ public class DeploymentCompleteCheckJobTest {
         deploymentsProviderFactory = new FakeDeploymentsProviderFactory(deploymentsProvider);
 
         sut = new DeploymentCompleteCheckJob(deploymentsProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
-        result = sut.perform();
+        result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
         Assert.assertEquals(result.getUpdated().size(), 0);
