@@ -38,13 +38,13 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
     @NotNull
     private static final Logger LOG = Logger.getInstance(ReleaseCreatedBuildTriggerService.class.getName());
     @NotNull
-    private final PluginDescriptor myPluginDescriptor;
+    private final PluginDescriptor pluginDescriptor;
     @NotNull
     private final AnalyticsTracker analyticsTracker;
     @NotNull
     private final CacheManager cacheManager;
     @NotNull
-    private final BuildTriggeringPolicy myPolicy;
+    private final BuildTriggeringPolicy buildTriggeringPolicy;
     @NotNull
     private final MetricRegistry metricRegistry;
 
@@ -53,11 +53,11 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
                                              @NotNull final AnalyticsTracker analyticsTracker,
                                              @NotNull final CacheManager cacheManager,
                                              @NotNull final MetricRegistry metricRegistry) {
-        myPluginDescriptor = pluginDescriptor;
+        this.pluginDescriptor = pluginDescriptor;
         this.analyticsTracker = analyticsTracker;
         this.cacheManager = cacheManager;
         this.metricRegistry = metricRegistry;
-        myPolicy = triggerFactory.createBuildTrigger(ReleaseCreatedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
+        buildTriggeringPolicy = triggerFactory.createBuildTrigger(ReleaseCreatedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
 
     @NotNull
@@ -81,7 +81,7 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
     @NotNull
     @Override
     public BuildTriggeringPolicy getBuildTriggeringPolicy() {
-        return myPolicy;
+        return buildTriggeringPolicy;
     }
 
     @Override
@@ -91,7 +91,7 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
 
     @Override
     public String getEditParametersUrl() {
-        return myPluginDescriptor.getPluginResourcesPath("editOctopusReleaseCreatedTrigger.jsp");
+        return pluginDescriptor.getPluginResourcesPath("editOctopusReleaseCreatedTrigger.jsp");
     }
 
     @Override

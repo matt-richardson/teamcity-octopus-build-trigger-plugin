@@ -38,25 +38,26 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
     @NotNull
     private static final Logger LOG = Logger.getInstance(DeploymentCompleteBuildTriggerService.class.getName());
     @NotNull
-    private final PluginDescriptor myPluginDescriptor;
+    private final PluginDescriptor pluginDescriptor;
     @NotNull
     private final AnalyticsTracker analyticsTracker;
     @NotNull
     private final CacheManager cacheManager;
     @NotNull
-    private final BuildTriggeringPolicy myPolicy;
-    private MetricRegistry metricRegistry;
+    private final BuildTriggeringPolicy buildTriggeringPolicy;
+    @NotNull
+    private final MetricRegistry metricRegistry;
 
     public DeploymentCompleteBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
                                                  @NotNull final CustomAsyncBuildTriggerFactory triggerFactory,
                                                  @NotNull final AnalyticsTracker analyticsTracker,
                                                  @NotNull final CacheManager cacheManager,
                                                  @NotNull final MetricRegistry metricRegistry) {
-        myPluginDescriptor = pluginDescriptor;
+        this.pluginDescriptor = pluginDescriptor;
         this.analyticsTracker = analyticsTracker;
         this.cacheManager = cacheManager;
         this.metricRegistry = metricRegistry;
-        myPolicy = triggerFactory.createBuildTrigger(DeploymentCompleteSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
+        buildTriggeringPolicy = triggerFactory.createBuildTrigger(DeploymentCompleteSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
 
     @NotNull
@@ -80,7 +81,7 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
     @NotNull
     @Override
     public BuildTriggeringPolicy getBuildTriggeringPolicy() {
-        return myPolicy;
+        return buildTriggeringPolicy;
     }
 
     @Override
@@ -90,7 +91,7 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
 
     @Override
     public String getEditParametersUrl() {
-        return myPluginDescriptor.getPluginResourcesPath("editOctopusDeploymentCompleteTrigger.jsp");
+        return pluginDescriptor.getPluginResourcesPath("editOctopusDeploymentCompleteTrigger.jsp");
     }
 
     @Override
