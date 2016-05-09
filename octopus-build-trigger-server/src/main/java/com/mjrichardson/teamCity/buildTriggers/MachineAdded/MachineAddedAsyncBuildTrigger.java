@@ -47,7 +47,7 @@ class MachineAddedAsyncBuildTrigger extends CustomAsyncBuildTrigger<MachineAdded
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;
     private final CacheManager cacheManager;
-    private MetricRegistry metricRegistry;
+    private final MetricRegistry metricRegistry;
 
     public MachineAddedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
         this.displayName = displayName;

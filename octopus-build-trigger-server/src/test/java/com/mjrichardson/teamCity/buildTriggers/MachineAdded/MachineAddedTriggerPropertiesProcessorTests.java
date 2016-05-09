@@ -45,7 +45,8 @@ public class MachineAddedTriggerPropertiesProcessorTests {
     public void returns_error_if_connectivity_checker_returns_error() {
         String connectivityCheckResult = "connectivity error";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
-        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
+        FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
+        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_URL, "api key");
@@ -60,7 +61,8 @@ public class MachineAddedTriggerPropertiesProcessorTests {
     public void returns_error_if_connectivity_checker_throws_exception() {
         NoSuchAlgorithmException exception = new NoSuchAlgorithmException("the exception message");
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(exception);
-        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
+        FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
+        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_URL, "api key");
@@ -75,7 +77,8 @@ public class MachineAddedTriggerPropertiesProcessorTests {
     public void returns_empty_result_if_everything_is_valid() {
         String connectivityCheckResult = "";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
-        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
+        FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
+        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_URL, "api key");

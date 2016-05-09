@@ -47,7 +47,8 @@ public class DeploymentCompleteTriggerPropertiesProcessorTests {
     public void returns_error_if_connectivity_checker_returns_error() {
         String connectivityCheckResult = "connectivity error";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
-        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
+        FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
+        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "project-id");
@@ -63,7 +64,8 @@ public class DeploymentCompleteTriggerPropertiesProcessorTests {
     public void returns_error_if_project_is_invalid() {
         String connectivityCheckResult = "";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
-        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
+        FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
+        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "");
@@ -79,7 +81,8 @@ public class DeploymentCompleteTriggerPropertiesProcessorTests {
     public void returns_error_if_connectivity_checker_throws_exception() {
         NoSuchAlgorithmException exception = new NoSuchAlgorithmException("the exception message");
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(exception);
-        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
+        FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
+        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
@@ -95,7 +98,8 @@ public class DeploymentCompleteTriggerPropertiesProcessorTests {
     public void returns_empty_result_if_everything_is_valid() {
         String connectivityCheckResult = "";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
-        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory);
+        FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
+        DeploymentCompleteTriggerPropertiesProcessor processor = new DeploymentCompleteTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");

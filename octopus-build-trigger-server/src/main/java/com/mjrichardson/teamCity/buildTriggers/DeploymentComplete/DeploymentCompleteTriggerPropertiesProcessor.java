@@ -41,15 +41,15 @@ import java.util.UUID;
 class DeploymentCompleteTriggerPropertiesProcessor implements PropertiesProcessor {
 
     private final OctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory;
-    private MetricRegistry metricRegistry;
+    private final MetricRegistry metricRegistry;
 
     public DeploymentCompleteTriggerPropertiesProcessor(CacheManager cacheManager, MetricRegistry metricRegistry) {
-        this(new OctopusConnectivityCheckerFactory(cacheManager));
-        this.metricRegistry = metricRegistry;
+        this(new OctopusConnectivityCheckerFactory(cacheManager), metricRegistry);
     }
 
-    public DeploymentCompleteTriggerPropertiesProcessor(OctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory) {
+    public DeploymentCompleteTriggerPropertiesProcessor(OctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory, MetricRegistry metricRegistry) {
         this.octopusConnectivityCheckerFactory = octopusConnectivityCheckerFactory;
+        this.metricRegistry = metricRegistry;
     }
 
     public Collection<InvalidProperty> process(Map<String, String> properties) {

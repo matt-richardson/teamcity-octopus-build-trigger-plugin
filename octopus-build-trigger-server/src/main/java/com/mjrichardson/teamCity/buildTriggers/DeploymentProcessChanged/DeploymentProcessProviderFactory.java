@@ -13,7 +13,7 @@ public class DeploymentProcessProviderFactory {
 
     private final AnalyticsTracker analyticsTracker;
     private final CacheManager cacheManager;
-    private MetricRegistry metricRegistry;
+    private final MetricRegistry metricRegistry;
 
     public DeploymentProcessProviderFactory(AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
         this.analyticsTracker = analyticsTracker;

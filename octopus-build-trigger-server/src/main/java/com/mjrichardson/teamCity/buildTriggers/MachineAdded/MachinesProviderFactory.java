@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 public class MachinesProviderFactory {
     private final AnalyticsTracker analyticsTracker;
     private final CacheManager cacheManager;
-    private MetricRegistry metricRegistry;
+    private final MetricRegistry metricRegistry;
 
     public MachinesProviderFactory(AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
         this.analyticsTracker = analyticsTracker;

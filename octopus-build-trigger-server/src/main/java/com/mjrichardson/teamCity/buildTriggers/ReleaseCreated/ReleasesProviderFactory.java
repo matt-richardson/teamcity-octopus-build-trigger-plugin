@@ -10,9 +10,9 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
 public class ReleasesProviderFactory {
-    private AnalyticsTracker analyticsTracker;
+    private final AnalyticsTracker analyticsTracker;
     private final CacheManager cacheManager;
-    private MetricRegistry metricRegistry;
+    private final MetricRegistry metricRegistry;
 
     public ReleasesProviderFactory(AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
         this.analyticsTracker = analyticsTracker;
