@@ -47,8 +47,6 @@ public class DeploymentCompleteAsyncBuildTrigger extends CustomAsyncBuildTrigger
     private final String displayName;
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;
-    @NotNull
-    private static final Logger LOG = Logger.getInstance(DeploymentCompleteAsyncBuildTrigger.class.getName());
     private CacheManager cacheManager;
     private MetricRegistry metricRegistry;
 

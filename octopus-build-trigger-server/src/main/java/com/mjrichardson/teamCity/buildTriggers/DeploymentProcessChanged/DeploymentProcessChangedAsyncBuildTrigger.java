@@ -25,7 +25,6 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged;
 
 import com.codahale.metrics.MetricRegistry;
-import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
@@ -47,8 +46,6 @@ public class DeploymentProcessChangedAsyncBuildTrigger extends CustomAsyncBuildT
     private final String displayName;
     private final int pollIntervalInSeconds;
     private final AnalyticsTracker analyticsTracker;
-    @NotNull
-    private static final Logger LOG = Logger.getInstance(DeploymentProcessChangedAsyncBuildTrigger.class.getName());
     private CacheManager cacheManager;
     private MetricRegistry metricRegistry;
 
