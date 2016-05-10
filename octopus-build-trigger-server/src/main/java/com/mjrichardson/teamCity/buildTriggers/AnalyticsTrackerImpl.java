@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 import static com.codahale.metrics.MetricRegistry.name;
 
 public class AnalyticsTrackerImpl implements AnalyticsTracker {
-    private final String trackingId;
     @NotNull
     private static final Logger LOG = Logger.getInstance(AnalyticsTrackerImpl.class.getName());
     @NotNull
@@ -36,7 +35,7 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
         this.metricRegistry = metricRegistry;
         this.pluginVersion = pluginDescriptor.getPluginVersion();
         this.teamCityVersion = buildServer.getFullServerVersion();
-        this.trackingId = pluginDescriptor.getParameterValue("AnalyticsTrackingId");
+        String trackingId = pluginDescriptor.getParameterValue("AnalyticsTrackingId");
 
         boolean enabled = OctopusBuildTriggerUtil.isAnalyticsEnabled();
         LOG.info(String.format("AnalyticsTrackerImpl instantiated for plugin version %s in teamcity version %s. Tracking enabled: %s.",
