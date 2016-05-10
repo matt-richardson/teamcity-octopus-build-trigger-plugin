@@ -38,7 +38,7 @@ public class Release implements Comparable<Release> {
     }
 
     public static Release Parse(String pair) throws NeedToDeleteAndRecreateTrigger {
-        if (pair == null || pair == "") {
+        if (pair == null || pair.equals("")) {
             return new NullRelease();
         }
         final Integer DONT_REMOVE_EMPTY_VALUES = -1;
