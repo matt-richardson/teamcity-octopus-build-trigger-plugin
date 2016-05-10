@@ -61,7 +61,7 @@ public class UpdateChecker {
     }
 
     private synchronized void checkForUpdates()  {
-        if (!OctopusBuildTriggerUtil.getUpdateCheckEnabled())
+        if (!OctopusBuildTriggerUtil.isUpdateCheckEnabled())
             return;
         UUID correlationId = UUID.randomUUID();
         try {

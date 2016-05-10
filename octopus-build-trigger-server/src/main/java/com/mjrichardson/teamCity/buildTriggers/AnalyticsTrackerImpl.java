@@ -38,7 +38,7 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
         this.teamCityVersion = buildServer.getFullServerVersion();
         this.trackingId = pluginDescriptor.getParameterValue("AnalyticsTrackingId");
 
-        boolean enabled = OctopusBuildTriggerUtil.getAnalyticsEnabled();
+        boolean enabled = OctopusBuildTriggerUtil.isAnalyticsEnabled();
         LOG.info(String.format("AnalyticsTrackerImpl instantiated for plugin version %s in teamcity version %s. Tracking enabled: %s.",
                 pluginVersion, teamCityVersion, enabled));
         try {
@@ -109,7 +109,7 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     }
 
     private synchronized void checkEnabledState(UUID correlationId) {
-        boolean newState = OctopusBuildTriggerUtil.getAnalyticsEnabled();
+        boolean newState = OctopusBuildTriggerUtil.isAnalyticsEnabled();
         boolean oldState = ga.getConfig().isEnabled();
         if (newState != oldState) {
             LOG.info(String.format("%s: Changing analytics enabled state to %s.", correlationId, newState));

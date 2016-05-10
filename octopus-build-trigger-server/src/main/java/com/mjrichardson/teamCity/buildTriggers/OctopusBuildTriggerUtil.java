@@ -32,15 +32,15 @@ public final class OctopusBuildTriggerUtil {
     public static final String OCTOPUS_PROJECT_ID = "octopus.build.trigger.project.url";
     public static final String OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT = "octopus.build.trigger.only.on.successful.deployment";
 
-    public static final String POLL_INTERVAL_PROP = "octopus.build.trigger.poll.interval.in.seconds";
-    public static final Integer DEFAULT_POLL_INTERVAL_IN_SECONDS = 30;
+    private static final String POLL_INTERVAL_PROP = "octopus.build.trigger.poll.interval.in.seconds";
+    private static final Integer DEFAULT_POLL_INTERVAL_IN_SECONDS = 30;
 
     private static final String UPDATE_CHECK_ENABLED = "octopus.build.trigger.update.check.enabled";
+    private static final String ANALYTICS_ENABLED = "octopus.build.trigger.analytics.enabled";
 
     private static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout.in.milliseconds";
     private static final Integer DEFAULT_CONNECTION_TIMEOUT_IN_MILLISECONDS = 30 * 1000;
 
-    public static final String ANALYTICS_ENABLED_PROP = "octopus.build.trigger.analytics.enabled";
 
     public static final String BUILD_PROPERTY_MACHINE_NAME = "octopus.trigger.machine.name";
     public static final String BUILD_PROPERTY_MACHINE_ID = "octopus.trigger.machine.id";
@@ -74,11 +74,12 @@ public final class OctopusBuildTriggerUtil {
         return TeamCityProperties.getInteger(POLL_INTERVAL_PROP, DEFAULT_POLL_INTERVAL_IN_SECONDS);
     }
 
-    public static boolean getAnalyticsEnabled() {
-        return TeamCityProperties.getBooleanOrTrue(ANALYTICS_ENABLED_PROP);
+    public static boolean isAnalyticsEnabled() {
+        //todo: this is logging a warning to console in the tests
+        return TeamCityProperties.getBooleanOrTrue(ANALYTICS_ENABLED);
     }
 
-    public static boolean getUpdateCheckEnabled() {
+    public static boolean isUpdateCheckEnabled() {
         //todo: this is logging a warning to console in the tests
         return TeamCityProperties.getBooleanOrTrue(UPDATE_CHECK_ENABLED);
     }
