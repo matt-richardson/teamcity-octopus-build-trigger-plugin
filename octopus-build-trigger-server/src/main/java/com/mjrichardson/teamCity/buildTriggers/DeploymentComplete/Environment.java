@@ -68,7 +68,8 @@ public class Environment {
     }
 
     public static Environment Parse(String toStringRepresentation) throws NeedToDeleteAndRecreateTrigger {
-        final String[] split = toStringRepresentation.split(";");
+        final Integer DONT_REMOVE_EMPTY_VALUES = -1;
+        final String[] split = toStringRepresentation.split(";", DONT_REMOVE_EMPTY_VALUES);
 
         if (split.length < 4)
             throw new NeedToDeleteAndRecreateTrigger();
