@@ -25,7 +25,6 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.codahale.metrics.MetricRegistry;
-import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
