@@ -36,6 +36,7 @@ public final class OctopusBuildTriggerUtil {
     private static final Integer DEFAULT_POLL_INTERVAL_IN_SECONDS = 30;
 
     private static final String UPDATE_CHECK_ENABLED = "octopus.build.trigger.update.check.enabled";
+    private static final String CACHE_ENABLED = "octopus.build.trigger.cache.enabled";
     private static final String ANALYTICS_ENABLED = "octopus.build.trigger.analytics.enabled";
 
     private static final String CONNECTION_TIMEOUT_PROP = "octopus.build.trigger.connection.timeout.in.milliseconds";
@@ -82,5 +83,10 @@ public final class OctopusBuildTriggerUtil {
     public static boolean isUpdateCheckEnabled() {
         //todo: this is logging a warning to console in the tests
         return TeamCityProperties.getBooleanOrTrue(UPDATE_CHECK_ENABLED);
+    }
+
+    public static boolean isCacheEnabled() {
+        //todo: this is logging a warning to console in the tests
+        return TeamCityProperties.getBooleanOrTrue(CACHE_ENABLED);
     }
 }

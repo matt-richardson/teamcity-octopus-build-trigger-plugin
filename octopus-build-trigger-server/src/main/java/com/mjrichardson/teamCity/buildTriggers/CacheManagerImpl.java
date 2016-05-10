@@ -39,6 +39,10 @@ public class CacheManagerImpl implements CacheManager {
     }
 
     public String getFromCache(CacheNames cacheName, URI uri, UUID correlationId) throws InvalidCacheConfigurationException {
+        if (!OctopusBuildTriggerUtil.isCacheEnabled()) {
+            LOG.debug(String.format("%s: Skipping getting cached response for '%s' from cache '%s' as cache is disabled", correlationId, uri.toString(), cacheName.name()));
+            return null;
+        }
         LOG.debug(String.format("%s: Getting cached response for '%s' from cache '%s'", correlationId, uri.toString(), cacheName.name()));
         if (cacheName == CacheNames.NoCache)
             return null;
@@ -53,7 +57,10 @@ public class CacheManagerImpl implements CacheManager {
     }
 
     public void addToCache(CacheNames cacheName, URI uri, String body, UUID correlationId) throws InvalidCacheConfigurationException {
-        //todo: check property for cache enabled
+        if (!OctopusBuildTriggerUtil.isCacheEnabled()) {
+            LOG.debug(String.format("%s: Skipping caching response for '%s' in cache '%s' as cache is disabled", correlationId, uri.toString(), cacheName.name()));
+            return;
+        }
         LOG.debug(String.format("%s: Caching response for '%s' in cache '%s'", correlationId, uri.toString(), cacheName.name()));
         if (cacheName == CacheNames.NoCache)
             return;
