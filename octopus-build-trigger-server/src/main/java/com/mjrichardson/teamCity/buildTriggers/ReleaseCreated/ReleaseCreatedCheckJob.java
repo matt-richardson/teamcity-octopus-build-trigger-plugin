@@ -82,17 +82,17 @@ class ReleaseCreatedCheckJob extends CustomCheckJob<ReleaseCreatedSpec> {
             final Release newRelease = newReleases.getNextRelease(oldRelease);
             final String newStoredData = newRelease.toString();
 
-            //todo: this needs to change to plain old equals
-            if (!newRelease.toString().equals(oldStoredData)) {
-                //do not trigger build after first adding trigger (oldReleases == null)
-                if (oldStoredData == null) {
-                    //store the latest releases, so we only trigger for new releases from this point in time
-                    dataStorage.putValue(dataStorageKey, newReleases.getLatestRelease().toString());
-                    analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.TriggerAdded, correlationId);
+            //do not trigger build after first adding trigger (oldReleases == null)
+            if (oldStoredData == null) {
+                //store the latest releases, so we only trigger for new releases from this point in time
+                dataStorage.putValue(dataStorageKey, newReleases.getLatestRelease().toString());
+                analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.TriggerAdded, correlationId);
 
-                    LOG.debug(String.format("%s: No previous releases known for server %s, project %s: null -> %s", correlationId, octopusUrl, octopusProject, newStoredData));
-                    return ReleaseCreatedSpecCheckResult.createEmptyResult(correlationId);
-                }
+                LOG.debug(String.format("%s: No previous releases known for server %s, project %s: null -> %s", correlationId, octopusUrl, octopusProject, newStoredData));
+                return ReleaseCreatedSpecCheckResult.createEmptyResult(correlationId);
+            }
+
+            if (!newRelease.equals(oldRelease)) {
                 dataStorage.putValue(dataStorageKey, newStoredData);
                 analyticsTracker.postEvent(AnalyticsTracker.EventCategory.ReleaseCreatedTrigger, AnalyticsTracker.EventAction.BuildTriggered, correlationId);
 
