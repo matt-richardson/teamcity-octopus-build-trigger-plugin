@@ -24,7 +24,7 @@ public class ReleaseTest {
         Assert.assertEquals(sut.releaseId, "Releases-91");
         Assert.assertEquals(sut.version, "1.0.0");
         Assert.assertEquals(sut.projectId, "Projects-1");
-        Assert.assertEquals(sut.assembledDate, new OctopusDate(2016, 01, 21, 13, 32, 59, 991));
+        Assert.assertEquals(sut.assembledDate, new OctopusDate(2016, 1, 21, 13, 32, 59, 991));
     }
 
     public void to_string_formats_correctly() throws NeedToDeleteAndRecreateTrigger {
@@ -65,7 +65,7 @@ public class ReleaseTest {
         Release sut = Release.Parse(map);
         Assert.assertEquals(sut.releaseId, "Releases-21");
         Assert.assertEquals(sut.version, "1.0.3");
-        Assert.assertEquals(sut.assembledDate, new OctopusDate(2016, 01, 20, 14, 32, 59, 991));
+        Assert.assertEquals(sut.assembledDate, new OctopusDate(2016, 1, 20, 14, 32, 59, 991));
         Assert.assertEquals(sut.projectId, "Projects-2");
     }
 
