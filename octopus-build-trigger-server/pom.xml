@@ -43,13 +43,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jetbrains.teamcity</groupId>
-            <artifactId>tests-support</artifactId>
-            <version>${teamcity-version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>jetbrains.buildServer.buildTriggers.async</groupId>
             <artifactId>async-trigger</artifactId>
             <version>1.0</version>
