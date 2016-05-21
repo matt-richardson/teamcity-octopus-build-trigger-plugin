@@ -20,4 +20,5 @@
     <bean id="metricRegistry" class="com.codahale.metrics.MetricRegistry" scope="singleton" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.CacheManagerImpl" scope="singleton" />
     <bean class="com.mjrichardson.teamCity.buildTriggers.UpdateChecker" scope="singleton" />
+    <bean class="com.mjrichardson.teamCity.buildTriggers.BuildTriggerProperties" scope="singleton" />
 </beans>

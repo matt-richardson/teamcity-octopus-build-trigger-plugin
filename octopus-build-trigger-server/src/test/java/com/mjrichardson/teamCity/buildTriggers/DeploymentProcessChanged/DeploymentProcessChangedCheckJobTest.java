@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.*;
 
 @Test
 public class DeploymentProcessChangedCheckJobTest {
@@ -35,7 +35,7 @@ public class DeploymentProcessChangedCheckJobTest {
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, value);
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty url) in build configuration the-build-type");
@@ -53,7 +53,7 @@ public class DeploymentProcessChangedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, value);
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty api key) in build configuration the-build-type");
@@ -72,7 +72,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, value);
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty project) in build configuration the-build-type");
@@ -90,7 +90,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -108,7 +108,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -126,7 +126,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
 
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
@@ -146,7 +146,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
 
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
@@ -158,7 +158,7 @@ public class DeploymentProcessChangedCheckJobTest {
         FakeDeploymentProcessProvider deploymentProcessProvider = new FakeDeploymentProcessProvider();
         deploymentProcessProvider.setVersion("18");
         DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(deploymentProcessProvider);
-        sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
 
         result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
@@ -180,7 +180,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         String octopusProject = "the-project-id";
         properties.put(OCTOPUS_PROJECT_ID, octopusProject);
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
 
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
@@ -199,7 +199,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
@@ -221,7 +221,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
 
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
@@ -240,7 +240,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 0);
@@ -257,7 +257,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
 
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
@@ -281,7 +281,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         Assert.assertFalse(sut.allowSchedule(new FakeBuildTriggerDescriptor()));
     }
 }

@@ -25,10 +25,7 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.codahale.metrics.MetricRegistry;
-import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
-import com.mjrichardson.teamCity.buildTriggers.CacheManager;
-import com.mjrichardson.teamCity.buildTriggers.CustomAsyncBuildTrigger;
-import com.mjrichardson.teamCity.buildTriggers.CustomCheckJob;
+import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import jetbrains.buildServer.buildTriggers.async.CheckJobCreationException;
@@ -40,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.*;
 
 class ReleaseCreatedAsyncBuildTrigger extends CustomAsyncBuildTrigger<ReleaseCreatedSpec> {
     private final String displayName;
@@ -48,13 +45,15 @@ class ReleaseCreatedAsyncBuildTrigger extends CustomAsyncBuildTrigger<ReleaseCre
     private final AnalyticsTracker analyticsTracker;
     private final CacheManager cacheManager;
     private final MetricRegistry metricRegistry;
+    private final BuildTriggerProperties buildTriggerProperties;
 
-    public ReleaseCreatedAsyncBuildTrigger(String displayName, int pollIntervalInSeconds, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
+    public ReleaseCreatedAsyncBuildTrigger(String displayName, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
         this.displayName = displayName;
-        this.pollIntervalInSeconds = pollIntervalInSeconds;
+        this.pollIntervalInSeconds = buildTriggerProperties.getPollInterval();
         this.analyticsTracker = analyticsTracker;
         this.cacheManager = cacheManager;
         this.metricRegistry = metricRegistry;
+        this.buildTriggerProperties = buildTriggerProperties;
     }
 
     @NotNull
@@ -79,7 +78,8 @@ class ReleaseCreatedAsyncBuildTrigger extends CustomAsyncBuildTrigger<ReleaseCre
                 properties,
                 analyticsTracker,
                 cacheManager,
-                metricRegistry);
+                metricRegistry,
+                buildTriggerProperties);
     }
 
     @NotNull

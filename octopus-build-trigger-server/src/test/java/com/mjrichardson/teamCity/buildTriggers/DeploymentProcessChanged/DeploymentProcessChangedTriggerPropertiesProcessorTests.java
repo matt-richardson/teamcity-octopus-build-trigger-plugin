@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged;
 
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerProperties;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeOctopusConnectivityCheckerFactory;
@@ -12,12 +13,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.*;
 
 @Test
 public class DeploymentProcessChangedTriggerPropertiesProcessorTests {
     public void returns_error_when_url_is_null() {
-        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(new FakeCacheManager(), new FakeMetricRegistry());
+        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "api key");
         properties.put(OCTOPUS_PROJECT_ID, "project-id");
@@ -31,7 +32,7 @@ public class DeploymentProcessChangedTriggerPropertiesProcessorTests {
     }
 
     public void returns_error_when_api_key_is_null() {
-        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(new FakeCacheManager(), new FakeMetricRegistry());
+        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, null);
         properties.put(OCTOPUS_PROJECT_ID, "project-id");
@@ -48,7 +49,7 @@ public class DeploymentProcessChangedTriggerPropertiesProcessorTests {
         String connectivityCheckResult = "connectivity error";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
         FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
-        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
+        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry, new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "project-id");
@@ -65,7 +66,7 @@ public class DeploymentProcessChangedTriggerPropertiesProcessorTests {
         String connectivityCheckResult = "";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
         FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
-        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
+        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry, new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "");
@@ -82,7 +83,7 @@ public class DeploymentProcessChangedTriggerPropertiesProcessorTests {
         NoSuchAlgorithmException exception = new NoSuchAlgorithmException("the exception message");
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(exception);
         FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
-        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
+        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry, new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
@@ -99,7 +100,7 @@ public class DeploymentProcessChangedTriggerPropertiesProcessorTests {
         String connectivityCheckResult = "";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
         FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
-        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
+        DeploymentProcessChangedTriggerPropertiesProcessor processor = new DeploymentProcessChangedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry, new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");

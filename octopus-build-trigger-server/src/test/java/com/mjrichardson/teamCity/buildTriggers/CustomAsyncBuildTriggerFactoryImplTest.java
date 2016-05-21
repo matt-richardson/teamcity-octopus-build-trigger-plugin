@@ -3,10 +3,7 @@ package com.mjrichardson.teamCity.buildTriggers;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteAsyncBuildTrigger;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentCompleteSpec;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeServiceLocator;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
 import jetbrains.buildServer.ServiceLocator;
 import jetbrains.buildServer.buildTriggers.async.JobStatusStorageHolder;
 import jetbrains.buildServer.buildTriggers.async.impl.JobStatusStorageHolderImpl;
@@ -28,8 +25,7 @@ public class CustomAsyncBuildTriggerFactoryImplTest {
 
         AnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
         String displayName = "display-name";
-        int pollInterval = OctopusBuildTriggerUtil.getPollInterval();
-        CustomAsyncBuildTrigger<DeploymentCompleteSpec> trigger = new DeploymentCompleteAsyncBuildTrigger(displayName, pollInterval, analyticsTracker, new FakeCacheManager(), new FakeMetricRegistry());
+        CustomAsyncBuildTrigger<DeploymentCompleteSpec> trigger = new DeploymentCompleteAsyncBuildTrigger(displayName, analyticsTracker, new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         Logger logger = Logger.getInstance(DeploymentCompleteAsyncBuildTrigger.class.getName());
         Integer invocationInterval = 60 * 1000;
 

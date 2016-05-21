@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerProperties;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeContentProvider;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakePluginDescriptor;
 import org.json.simple.parser.ParseException;
@@ -18,7 +19,7 @@ public class UpdateCheckerTest {
         FakePluginDescriptor pluginDescriptor = new FakePluginDescriptor();
         pluginDescriptor.setPluginVersion("1.0-SNAPSHOT");
         HttpContentProvider httpContentProvider = new FakeContentProvider(null, null);
-        UpdateChecker checker = new UpdateChecker(pluginDescriptor, httpContentProvider);
+        UpdateChecker checker = new UpdateChecker(pluginDescriptor, httpContentProvider, new FakeBuildTriggerProperties());
         Assert.assertTrue(checker.isUpdateAvailable());
         Assert.assertEquals(checker.getCurrentVersion(), pluginDescriptor.getPluginVersion());
         Assert.assertEquals(checker.getLatestVersion(), "2.2.0+build.129");
@@ -29,7 +30,7 @@ public class UpdateCheckerTest {
         FakePluginDescriptor pluginDescriptor = new FakePluginDescriptor();
         pluginDescriptor.setPluginVersion("1.0.0");
         HttpContentProvider httpContentProvider = new FakeContentProvider(null, null);
-        UpdateChecker checker = new UpdateChecker(pluginDescriptor, httpContentProvider);
+        UpdateChecker checker = new UpdateChecker(pluginDescriptor, httpContentProvider, new FakeBuildTriggerProperties());
         Assert.assertTrue(checker.isUpdateAvailable());
         Assert.assertEquals(checker.getCurrentVersion(), pluginDescriptor.getPluginVersion());
         Assert.assertEquals(checker.getLatestVersion(), "2.2.0+build.129");
@@ -40,7 +41,7 @@ public class UpdateCheckerTest {
         FakePluginDescriptor pluginDescriptor = new FakePluginDescriptor();
         pluginDescriptor.setPluginVersion("10.0.0");
         HttpContentProvider httpContentProvider = new FakeContentProvider(null, null);
-        UpdateChecker checker = new UpdateChecker(pluginDescriptor, httpContentProvider);
+        UpdateChecker checker = new UpdateChecker(pluginDescriptor, httpContentProvider, new FakeBuildTriggerProperties());
         Assert.assertFalse(checker.isUpdateAvailable());
         Assert.assertEquals(checker.getCurrentVersion(), pluginDescriptor.getPluginVersion());
         Assert.assertEquals(checker.getLatestVersion(), "2.2.0+build.129");
@@ -51,7 +52,7 @@ public class UpdateCheckerTest {
         FakePluginDescriptor pluginDescriptor = new FakePluginDescriptor();
         pluginDescriptor.setPluginVersion("10.0.0");
         HttpContentProvider httpContentProvider = new FakeContentProvider(new IOException("Expected exception"));
-        UpdateChecker checker = new UpdateChecker(pluginDescriptor, httpContentProvider);
+        UpdateChecker checker = new UpdateChecker(pluginDescriptor, httpContentProvider, new FakeBuildTriggerProperties());
         Assert.assertFalse(checker.isUpdateAvailable());
     }
 }

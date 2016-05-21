@@ -1,10 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeContentProviderFactory;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
 import com.mjrichardson.teamCity.buildTriggers.*;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -27,7 +24,7 @@ public class ReleasesProviderImplTest {
 
     @Test(groups = {"needs-real-server"})
     public void get_releases_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, ReleasesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
-        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), new FakeCacheManager(), new FakeMetricRegistry());
+        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, new FakeBuildTriggerProperties(), new FakeCacheManager(), new FakeMetricRegistry());
         ReleasesProviderImpl ReleasesProviderImpl = new ReleasesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         Release oldRelease = new NullRelease();
         UUID correlationId = UUID.randomUUID();

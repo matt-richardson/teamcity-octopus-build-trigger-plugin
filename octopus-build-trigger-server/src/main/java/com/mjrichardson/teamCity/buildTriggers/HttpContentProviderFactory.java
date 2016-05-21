@@ -20,10 +20,10 @@ public class HttpContentProviderFactory {
     @NotNull
     private MetricRegistry metricRegistry;
 
-    public HttpContentProviderFactory(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeout, @NotNull CacheManager cacheManager, @NotNull MetricRegistry metricRegistry) {
+    public HttpContentProviderFactory(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull BuildTriggerProperties buildTriggerProperties, @NotNull CacheManager cacheManager, @NotNull MetricRegistry metricRegistry) {
         this.octopusUrl = octopusUrl;
         this.apiKey = apiKey;
-        this.connectionTimeout = connectionTimeout;
+        this.connectionTimeout = buildTriggerProperties.getConnectionTimeoutInMilliseconds();
         this.cacheManager = cacheManager;
         this.metricRegistry = metricRegistry;
     }

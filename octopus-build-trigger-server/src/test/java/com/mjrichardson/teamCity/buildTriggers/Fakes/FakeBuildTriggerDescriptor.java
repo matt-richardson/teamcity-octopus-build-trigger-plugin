@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID;
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.OCTOPUS_PROJECT_ID;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.OCTOPUS_URL;
 
 public class FakeBuildTriggerDescriptor implements BuildTriggerDescriptor {
 

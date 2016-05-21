@@ -20,8 +20,10 @@ public class CacheManagerImpl implements CacheManager {
     private final MetricRegistry metricRegistry;
     private net.sf.ehcache.CacheManager ehCacheManager;
     private HashMap<CacheNames, Ehcache> caches;
+    private BuildTriggerProperties buildTriggerProperties;
 
-    public CacheManagerImpl(MetricRegistry metricRegistry) {
+    public CacheManagerImpl(MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
+        this.buildTriggerProperties = buildTriggerProperties;
         ehCacheManager = net.sf.ehcache.CacheManager.newInstance();
         this.metricRegistry = metricRegistry;
         caches = new HashMap<>();
@@ -39,7 +41,7 @@ public class CacheManagerImpl implements CacheManager {
     }
 
     public String getFromCache(CacheNames cacheName, URI uri, UUID correlationId) throws InvalidCacheConfigurationException {
-        if (!OctopusBuildTriggerUtil.isCacheEnabled()) {
+        if (!buildTriggerProperties.isCacheEnabled()) {
             LOG.debug(String.format("%s: Skipping getting cached response for '%s' from cache '%s' as cache is disabled", correlationId, uri.toString(), cacheName.name()));
             return null;
         }
@@ -57,7 +59,7 @@ public class CacheManagerImpl implements CacheManager {
     }
 
     public void addToCache(CacheNames cacheName, URI uri, String body, UUID correlationId) throws InvalidCacheConfigurationException {
-        if (!OctopusBuildTriggerUtil.isCacheEnabled()) {
+        if (!buildTriggerProperties.isCacheEnabled()) {
             LOG.debug(String.format("%s: Skipping caching response for '%s' in cache '%s' as cache is disabled", correlationId, uri.toString(), cacheName.name()));
             return;
         }

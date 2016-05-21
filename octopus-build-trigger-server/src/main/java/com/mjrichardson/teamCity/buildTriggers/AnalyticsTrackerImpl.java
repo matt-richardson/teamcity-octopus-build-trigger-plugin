@@ -27,17 +27,19 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     private final String applicationName = "teamcity-octopus-build-trigger-plugin";
     private static final Pattern ipAddressPattern = Pattern.compile("\\d*\\.\\d*\\.\\d*\\.\\d*");
     private static final Pattern urlPattern = Pattern.compile("(http|https)://(.*?)(/|:)");
+    private final BuildTriggerProperties buildTriggerProperties;
     private GoogleAnalytics ga = null;
     private String octopusVersion = "not-set";
     private String octopusApiVersion = "not-set";
 
-    public AnalyticsTrackerImpl(@NotNull final PluginDescriptor pluginDescriptor, SBuildServer buildServer, @NotNull MetricRegistry metricRegistry) {
+    public AnalyticsTrackerImpl(@NotNull final PluginDescriptor pluginDescriptor, SBuildServer buildServer, @NotNull MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
         this.metricRegistry = metricRegistry;
+        this.buildTriggerProperties = buildTriggerProperties;
         this.pluginVersion = pluginDescriptor.getPluginVersion();
         this.teamCityVersion = buildServer.getFullServerVersion();
         String trackingId = pluginDescriptor.getParameterValue("AnalyticsTrackingId");
 
-        boolean enabled = OctopusBuildTriggerUtil.isAnalyticsEnabled();
+        boolean enabled = this.buildTriggerProperties.isAnalyticsEnabled();
         LOG.info(String.format("AnalyticsTrackerImpl instantiated for plugin version %s in teamcity version %s. Tracking enabled: %s.",
                 pluginVersion, teamCityVersion, enabled));
         try {
@@ -108,7 +110,7 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     }
 
     private synchronized void checkEnabledState(UUID correlationId) {
-        boolean newState = OctopusBuildTriggerUtil.isAnalyticsEnabled();
+        boolean newState = buildTriggerProperties.isAnalyticsEnabled();
         boolean oldState = ga.getConfig().isEnabled();
         if (newState != oldState) {
             LOG.info(String.format("%s: Changing analytics enabled state to %s.", correlationId, newState));

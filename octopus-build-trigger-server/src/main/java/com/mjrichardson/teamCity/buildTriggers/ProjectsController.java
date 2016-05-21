@@ -27,19 +27,22 @@ public class ProjectsController extends BaseController {
     private final CacheManager cacheManager;
     private static final Logger LOG = Logger.getInstance(ProjectsController.class.getName());
     private MetricRegistry metricRegistry;
+    private final BuildTriggerProperties buildTriggerProperties;
 
     public ProjectsController(SBuildServer server,
                               WebControllerManager webManager,
                               AnalyticsTracker analyticsTracker,
                               ObjectMapper objectMapper,
                               CacheManager cacheManager,
-                              MetricRegistry metricRegistry) {
+                              MetricRegistry metricRegistry,
+                              BuildTriggerProperties buildTriggerProperties) {
         super(server);
         this.webManager = webManager;
         this.analyticsTracker = analyticsTracker;
         this.objectMapper = objectMapper;
         this.cacheManager = cacheManager;
         this.metricRegistry = metricRegistry;
+        this.buildTriggerProperties = buildTriggerProperties;
     }
 
     @Nullable
@@ -50,7 +53,7 @@ public class ProjectsController extends BaseController {
         String octopusUrl = httpServletRequest.getParameter("octopusUrl");
         String octopusApiKey = httpServletRequest.getParameter("octopusApiKey");
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(octopusUrl, octopusApiKey,
-                OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), cacheManager, metricRegistry);
+                buildTriggerProperties, cacheManager, metricRegistry);
         HttpContentProvider contentProvider = contentProviderFactory.getContentProvider();
 
         httpServletResponse.setHeader("content-type", "application/json");

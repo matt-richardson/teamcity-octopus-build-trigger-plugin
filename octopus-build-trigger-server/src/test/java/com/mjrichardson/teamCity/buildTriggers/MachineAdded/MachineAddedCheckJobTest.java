@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.*;
 
 @Test
 public class MachineAddedCheckJobTest {
@@ -37,7 +37,7 @@ public class MachineAddedCheckJobTest {
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, value);
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty url) in build configuration the-build-type");
@@ -55,7 +55,7 @@ public class MachineAddedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, value);
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty api key) in build configuration the-build-type");
@@ -73,7 +73,7 @@ public class MachineAddedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -90,7 +90,7 @@ public class MachineAddedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -107,7 +107,7 @@ public class MachineAddedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
@@ -125,7 +125,7 @@ public class MachineAddedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
@@ -133,7 +133,7 @@ public class MachineAddedCheckJobTest {
         Assert.assertFalse(result.hasCheckErrors());
 
         machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
-        sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is the first check
         result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
@@ -154,7 +154,7 @@ public class MachineAddedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
@@ -176,7 +176,7 @@ public class MachineAddedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithOneMachine());
         String displayName = "the-display-name";
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, "the-build-type", dataStorage, properties, new FakeAnalyticsTracker());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, "the-build-type", dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -194,7 +194,7 @@ public class MachineAddedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
@@ -214,7 +214,7 @@ public class MachineAddedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
@@ -232,7 +232,7 @@ public class MachineAddedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 0);
@@ -248,7 +248,7 @@ public class MachineAddedCheckJobTest {
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker);
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
 
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
@@ -272,7 +272,7 @@ public class MachineAddedCheckJobTest {
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         Assert.assertFalse(sut.allowSchedule(new FakeBuildTriggerDescriptor()));
     }
 }

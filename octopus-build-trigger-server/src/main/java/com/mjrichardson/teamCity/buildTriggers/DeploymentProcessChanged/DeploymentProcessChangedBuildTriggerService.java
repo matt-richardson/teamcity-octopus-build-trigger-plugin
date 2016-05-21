@@ -47,16 +47,20 @@ public final class DeploymentProcessChangedBuildTriggerService extends BuildTrig
     private final BuildTriggeringPolicy buildTriggeringPolicy;
     @NotNull
     private MetricRegistry metricRegistry;
+    @NotNull
+    private final BuildTriggerProperties buildTriggerProperties;
 
     public DeploymentProcessChangedBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
-                                                 @NotNull final CustomAsyncBuildTriggerFactory triggerFactory,
-                                                 @NotNull final AnalyticsTracker analyticsTracker,
-                                                 @NotNull final CacheManager cacheManager,
-                                                 @NotNull final MetricRegistry metricRegistry) {
+                                                       @NotNull final CustomAsyncBuildTriggerFactory triggerFactory,
+                                                       @NotNull final AnalyticsTracker analyticsTracker,
+                                                       @NotNull final CacheManager cacheManager,
+                                                       @NotNull final MetricRegistry metricRegistry,
+                                                       @NotNull final BuildTriggerProperties buildTriggerProperties) {
         this.pluginDescriptor = pluginDescriptor;
         this.analyticsTracker = analyticsTracker;
         this.cacheManager = cacheManager;
         this.metricRegistry = metricRegistry;
+        this.buildTriggerProperties = buildTriggerProperties;
         buildTriggeringPolicy = triggerFactory.createBuildTrigger(DeploymentProcessChangedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
 
@@ -86,7 +90,7 @@ public final class DeploymentProcessChangedBuildTriggerService extends BuildTrig
 
     @Override
     public PropertiesProcessor getTriggerPropertiesProcessor() {
-        return new DeploymentProcessChangedTriggerPropertiesProcessor(cacheManager, metricRegistry);
+        return new DeploymentProcessChangedTriggerPropertiesProcessor(cacheManager, metricRegistry, buildTriggerProperties);
     }
 
     @Override
@@ -106,11 +110,11 @@ public final class DeploymentProcessChangedBuildTriggerService extends BuildTrig
 
     @NotNull
     private int getPollInterval() {
-        return OctopusBuildTriggerUtil.getPollInterval();
+        return buildTriggerProperties.getPollInterval();
     }
 
     @NotNull
     private DeploymentProcessChangedAsyncBuildTrigger getBuildTrigger() {
-        return new DeploymentProcessChangedAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker, cacheManager, metricRegistry);
+        return new DeploymentProcessChangedAsyncBuildTrigger(getDisplayName(), analyticsTracker, cacheManager, metricRegistry, buildTriggerProperties);
     }
 }

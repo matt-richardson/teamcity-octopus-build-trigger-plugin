@@ -26,10 +26,7 @@ package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
 import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
-import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
-import com.mjrichardson.teamCity.buildTriggers.CacheManager;
-import com.mjrichardson.teamCity.buildTriggers.CustomCheckJob;
-import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
+import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import jetbrains.buildServer.util.StringUtil;
@@ -38,8 +35,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_APIKEY;
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.OCTOPUS_URL;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.OCTOPUS_APIKEY;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.OCTOPUS_URL;
 
 class MachineAddedCheckJob extends CustomCheckJob<MachineAddedSpec> {
     @NotNull
@@ -51,18 +48,20 @@ class MachineAddedCheckJob extends CustomCheckJob<MachineAddedSpec> {
     private final CustomDataStorage dataStorage;
     private final Map<String, String> props;
     private final AnalyticsTracker analyticsTracker;
+    private final BuildTriggerProperties buildTriggerProperties;
 
-    public MachineAddedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
-        this(new MachinesProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker);
+    public MachineAddedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
+        this(new MachinesProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker, buildTriggerProperties);
     }
 
-    public MachineAddedCheckJob(MachinesProviderFactory MachinesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
+    public MachineAddedCheckJob(MachinesProviderFactory MachinesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, BuildTriggerProperties buildTriggerProperties) {
         this.MachinesProviderFactory = MachinesProviderFactory;
         this.displayName = displayName;
         this.buildType = buildType;
         this.dataStorage = dataStorage;
         this.props = properties;
         this.analyticsTracker = analyticsTracker;
+        this.buildTriggerProperties = buildTriggerProperties;
     }
 
     @NotNull
@@ -73,9 +72,8 @@ class MachineAddedCheckJob extends CustomCheckJob<MachineAddedSpec> {
         try {
             String oldStoredData = dataStorage.getValue(dataStorageKey);
             final Machines oldMachines = Machines.Parse(oldStoredData);
-            final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
 
-            MachinesProvider provider = MachinesProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
+            MachinesProvider provider = MachinesProviderFactory.getProvider(octopusUrl, octopusApiKey, buildTriggerProperties);
             final Machines newMachines = provider.getMachines(correlationId);
 
             //only store that one machine was added here, not multiple.

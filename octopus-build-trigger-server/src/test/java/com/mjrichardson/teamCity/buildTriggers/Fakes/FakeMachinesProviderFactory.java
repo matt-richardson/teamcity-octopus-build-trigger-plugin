@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.Fakes;
 
+import com.mjrichardson.teamCity.buildTriggers.BuildTriggerProperties;
 import com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachinesProvider;
 import com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachinesProviderFactory;
 
@@ -16,7 +17,7 @@ public class FakeMachinesProviderFactory extends MachinesProviderFactory {
     }
 
     @Override
-    public MachinesProvider getProvider(String octopusUrl, String octopusApiKey, Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public MachinesProvider getProvider(String octopusUrl, String octopusApiKey, BuildTriggerProperties buildTriggerProperties) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         return this.machinesProvider;
     }
 }

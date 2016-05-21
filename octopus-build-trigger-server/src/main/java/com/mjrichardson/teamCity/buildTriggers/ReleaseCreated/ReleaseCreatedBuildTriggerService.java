@@ -47,17 +47,21 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
     private final BuildTriggeringPolicy buildTriggeringPolicy;
     @NotNull
     private final MetricRegistry metricRegistry;
+    @NotNull
+    private final BuildTriggerProperties buildTriggerProperties;
 
     public ReleaseCreatedBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
                                              @NotNull final CustomAsyncBuildTriggerFactory triggerFactory,
                                              @NotNull final AnalyticsTracker analyticsTracker,
                                              @NotNull final CacheManager cacheManager,
-                                             @NotNull final MetricRegistry metricRegistry) {
+                                             @NotNull final MetricRegistry metricRegistry,
+                                             @NotNull final BuildTriggerProperties buildTriggerProperties) {
         this.pluginDescriptor = pluginDescriptor;
         this.analyticsTracker = analyticsTracker;
         this.cacheManager = cacheManager;
         this.metricRegistry = metricRegistry;
-        buildTriggeringPolicy = triggerFactory.createBuildTrigger(ReleaseCreatedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
+        this.buildTriggerProperties = buildTriggerProperties;
+        this.buildTriggeringPolicy = triggerFactory.createBuildTrigger(ReleaseCreatedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
 
     @NotNull
@@ -86,7 +90,7 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
 
     @Override
     public PropertiesProcessor getTriggerPropertiesProcessor() {
-        return new ReleaseCreatedTriggerPropertiesProcessor(cacheManager, metricRegistry);
+        return new ReleaseCreatedTriggerPropertiesProcessor(cacheManager, metricRegistry, buildTriggerProperties);
     }
 
     @Override
@@ -106,11 +110,11 @@ public final class ReleaseCreatedBuildTriggerService extends BuildTriggerService
 
     @NotNull
     private int getPollInterval() {
-        return OctopusBuildTriggerUtil.getPollInterval();
+        return buildTriggerProperties.getPollInterval();
     }
 
     @NotNull
     private ReleaseCreatedAsyncBuildTrigger getBuildTrigger() {
-        return new ReleaseCreatedAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker, cacheManager, metricRegistry);
+        return new ReleaseCreatedAsyncBuildTrigger(getDisplayName(), analyticsTracker, cacheManager, metricRegistry, buildTriggerProperties);
     }
 }

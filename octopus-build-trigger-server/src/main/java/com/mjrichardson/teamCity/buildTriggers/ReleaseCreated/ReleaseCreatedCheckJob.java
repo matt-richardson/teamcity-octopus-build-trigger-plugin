@@ -26,10 +26,7 @@ package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
-import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
-import com.mjrichardson.teamCity.buildTriggers.CacheManager;
-import com.mjrichardson.teamCity.buildTriggers.CustomCheckJob;
-import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
+import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import jetbrains.buildServer.util.StringUtil;
@@ -38,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.*;
 
 class ReleaseCreatedCheckJob extends CustomCheckJob<ReleaseCreatedSpec> {
     @NotNull
@@ -50,18 +47,20 @@ class ReleaseCreatedCheckJob extends CustomCheckJob<ReleaseCreatedSpec> {
     private final CustomDataStorage dataStorage;
     private final Map<String, String> props;
     private final AnalyticsTracker analyticsTracker;
+    private final BuildTriggerProperties buildTriggerProperties;
 
-    public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
-        this(new ReleasesProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker);
+    public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
+        this(new ReleasesProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker, buildTriggerProperties);
     }
 
-    public ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
+    public ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, BuildTriggerProperties buildTriggerProperties) {
         this.releasesProviderFactory = releasesProviderFactory;
         this.displayName = displayName;
         this.buildType = buildType;
         this.dataStorage = dataStorage;
         this.props = properties;
         this.analyticsTracker = analyticsTracker;
+        this.buildTriggerProperties = buildTriggerProperties;
     }
 
     @NotNull
@@ -72,9 +71,8 @@ class ReleaseCreatedCheckJob extends CustomCheckJob<ReleaseCreatedSpec> {
         try {
             String oldStoredData = dataStorage.getValue(dataStorageKey);
             final Release oldRelease = Release.Parse(oldStoredData);
-            final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
 
-            ReleasesProvider provider = releasesProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
+            ReleasesProvider provider = releasesProviderFactory.getProvider(octopusUrl, octopusApiKey, buildTriggerProperties);
             final Releases newReleases = provider.getReleases(octopusProject, oldRelease, correlationId);
 
             //only store that one release has happened here, not multiple.

@@ -1,10 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeContentProviderFactory;
+import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
 import com.mjrichardson.teamCity.buildTriggers.*;
-import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -22,7 +19,7 @@ public class MachinesProviderImplTest {
 
     @Test(groups = {"needs-real-server"})
     public void get_machines_from_real_server() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, MachinesProviderException, InvalidOctopusApiKeyException, InvalidOctopusUrlException {
-        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), new FakeCacheManager(), new FakeMetricRegistry());
+        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(realOctopusUrl, realOctopusApiKey, new FakeBuildTriggerProperties(), new FakeCacheManager(), new FakeMetricRegistry());
         MachinesProviderImpl MachinesProviderImpl = new MachinesProviderImpl(contentProviderFactory, new FakeAnalyticsTracker());
         UUID correlationId = UUID.randomUUID();
         Machines newMachines = MachinesProviderImpl.getMachines(correlationId);

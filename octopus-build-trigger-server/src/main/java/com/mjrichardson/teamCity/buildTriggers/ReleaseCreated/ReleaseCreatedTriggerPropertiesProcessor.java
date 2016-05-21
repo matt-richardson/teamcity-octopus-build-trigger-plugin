@@ -25,10 +25,7 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.codahale.metrics.MetricRegistry;
-import com.mjrichardson.teamCity.buildTriggers.CacheManager;
-import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
-import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityChecker;
-import com.mjrichardson.teamCity.buildTriggers.OctopusConnectivityCheckerFactory;
+import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.serverSide.InvalidProperty;
 import jetbrains.buildServer.serverSide.PropertiesProcessor;
 import jetbrains.buildServer.util.StringUtil;
@@ -42,27 +39,29 @@ class ReleaseCreatedTriggerPropertiesProcessor implements PropertiesProcessor {
 
     private final OctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory;
     private final MetricRegistry metricRegistry;
+    private final BuildTriggerProperties buildTriggerProperties;
 
-    public ReleaseCreatedTriggerPropertiesProcessor(CacheManager cacheManager, MetricRegistry metricRegistry) {
-        this(new OctopusConnectivityCheckerFactory(cacheManager), metricRegistry);
+    public ReleaseCreatedTriggerPropertiesProcessor(CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
+        this(new OctopusConnectivityCheckerFactory(cacheManager), metricRegistry, buildTriggerProperties);
     }
 
-    public ReleaseCreatedTriggerPropertiesProcessor(OctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory, MetricRegistry metricRegistry) {
+    public ReleaseCreatedTriggerPropertiesProcessor(OctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
         this.octopusConnectivityCheckerFactory = octopusConnectivityCheckerFactory;
         this.metricRegistry = metricRegistry;
+        this.buildTriggerProperties = buildTriggerProperties;
     }
 
     public Collection<InvalidProperty> process(Map<String, String> properties) {
         final ArrayList<InvalidProperty> invalidProps = new ArrayList<>();
 
-        final String url = properties.get(OctopusBuildTriggerUtil.OCTOPUS_URL);
+        final String url = properties.get(BuildTriggerConstants.OCTOPUS_URL);
         if (StringUtil.isEmptyOrSpaces(url)) {
-            invalidProps.add(new InvalidProperty(OctopusBuildTriggerUtil.OCTOPUS_URL, "URL must be specified"));
+            invalidProps.add(new InvalidProperty(BuildTriggerConstants.OCTOPUS_URL, "URL must be specified"));
         }
 
-        final String apiKey = properties.get(OctopusBuildTriggerUtil.OCTOPUS_APIKEY);
+        final String apiKey = properties.get(BuildTriggerConstants.OCTOPUS_APIKEY);
         if (StringUtil.isEmptyOrSpaces(apiKey)) {
-            invalidProps.add(new InvalidProperty(OctopusBuildTriggerUtil.OCTOPUS_APIKEY, "API Key must be specified"));
+            invalidProps.add(new InvalidProperty(BuildTriggerConstants.OCTOPUS_APIKEY, "API Key must be specified"));
         }
 
         if (invalidProps.size() == 0) {
@@ -74,20 +73,20 @@ class ReleaseCreatedTriggerPropertiesProcessor implements PropertiesProcessor {
 
     private void checkConnectivity(Map<String, String> properties, ArrayList<InvalidProperty> invalidProps, String url, String apiKey, UUID correlationId) {
         try {
-            final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
+            final Integer connectionTimeoutInMilliseconds = buildTriggerProperties.getConnectionTimeoutInMilliseconds();
             final OctopusConnectivityChecker connectivityChecker = octopusConnectivityCheckerFactory.create(url, apiKey, connectionTimeoutInMilliseconds, metricRegistry);
 
             final String err = connectivityChecker.checkOctopusConnectivity(correlationId);
             if (StringUtil.isNotEmpty(err)) {
-                invalidProps.add(new InvalidProperty(OctopusBuildTriggerUtil.OCTOPUS_URL, err));
+                invalidProps.add(new InvalidProperty(BuildTriggerConstants.OCTOPUS_URL, err));
             }
 
-            final String project = properties.get(OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID);
+            final String project = properties.get(BuildTriggerConstants.OCTOPUS_PROJECT_ID);
             if (StringUtil.isEmptyOrSpaces(project)) {
-                invalidProps.add(new InvalidProperty(OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID, "Project must be specified"));
+                invalidProps.add(new InvalidProperty(BuildTriggerConstants.OCTOPUS_PROJECT_ID, "Project must be specified"));
             }
         } catch (Exception e) {
-            invalidProps.add(new InvalidProperty(OctopusBuildTriggerUtil.OCTOPUS_URL, e.getMessage()));
+            invalidProps.add(new InvalidProperty(BuildTriggerConstants.OCTOPUS_URL, e.getMessage()));
         }
     }
 }

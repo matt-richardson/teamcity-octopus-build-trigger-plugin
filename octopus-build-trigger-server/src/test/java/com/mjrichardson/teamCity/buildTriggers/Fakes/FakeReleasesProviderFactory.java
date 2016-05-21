@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.Fakes;
 
+import com.mjrichardson.teamCity.buildTriggers.BuildTriggerProperties;
 import com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.ReleasesProvider;
 import com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.ReleasesProviderFactory;
 
@@ -16,7 +17,7 @@ public class FakeReleasesProviderFactory extends ReleasesProviderFactory {
     }
 
     @Override
-    public ReleasesProvider getProvider(String octopusUrl, String octopusApiKey, Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public ReleasesProvider getProvider(String octopusUrl, String octopusApiKey, BuildTriggerProperties buildTriggerProperties) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         return this.releasesProvider;
     }
 }

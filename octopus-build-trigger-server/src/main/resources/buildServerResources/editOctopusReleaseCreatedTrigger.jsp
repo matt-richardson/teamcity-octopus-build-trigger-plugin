@@ -23,7 +23,7 @@
   --%>
 
 <%@ include file="/include.jsp" %>
-<%@ page import="com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil" %>
+<%@ page import="com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants" %>
 <%@ page import="com.mjrichardson.teamCity.buildTriggers.UpdateChecker" %>
 <%@ taglib prefix="props" tagdir="/WEB-INF/tags/props" %>
 <jsp:useBean id="propertiesBean" type="jetbrains.buildServer.controllers.BasePropertiesBean" scope="request"/>
@@ -39,41 +39,41 @@
 </tr>
 
 <tr class="noBorder" >
-    <th nowrap="nowrap"><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>">Octopus Url: <l:star/></label></th>
+    <th nowrap="nowrap"><label for="<%=BuildTriggerConstants.OCTOPUS_URL%>">Octopus Url: <l:star/></label></th>
     <td nowrap="nowrap">
-      <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>" className="longField" onchange="window.octopusBuildTrigger.reloadProjectList();" />
+      <props:textProperty name="<%=BuildTriggerConstants.OCTOPUS_URL%>" className="longField" onchange="window.octopusBuildTrigger.reloadProjectList();" />
       <span class="smallNote">
           e.g. https://example.org
       </span>
-       <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>"></span>
+       <span class="error" id="error_<%=BuildTriggerConstants.OCTOPUS_URL%>"></span>
     </td>
 </tr>
 
 <tr class="noBorder" >
-    <th nowrap="nowrap"><label for="<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>">API Key: <l:star/></label></th>
+    <th nowrap="nowrap"><label for="<%=BuildTriggerConstants.OCTOPUS_APIKEY%>">API Key: <l:star/></label></th>
     <td nowrap="nowrap">
-       <props:textProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>" className="longField" onchange="window.octopusBuildTrigger.reloadProjectList();" />
-       <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>"></span>
+       <props:textProperty name="<%=BuildTriggerConstants.OCTOPUS_APIKEY%>" className="longField" onchange="window.octopusBuildTrigger.reloadProjectList();" />
+       <span class="error" id="error_<%=BuildTriggerConstants.OCTOPUS_APIKEY%>"></span>
     </td>
 </tr>
 
 <tr class="noBorder" >
     <th nowrap="nowrap">
-        <label for="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>">Project: </label>
+        <label for="<%=BuildTriggerConstants.OCTOPUS_PROJECT_ID%>">Project: </label>
         <img src="/img/spinner.gif" id="octopus-build-trigger-busy" style="display:none;vertical-align:middle;float:right" title="loading..." />
     </th>
     <td nowrap="nowrap">
-      <props:selectProperty name="<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>">
+      <props:selectProperty name="<%=BuildTriggerConstants.OCTOPUS_PROJECT_ID%>">
         <props:option value="${propertiesBean.properties['octopus.build.trigger.project.url']}"></props:option>
       </props:selectProperty>
-      <span class="error" id="error_<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>"></span>
+      <span class="error" id="error_<%=BuildTriggerConstants.OCTOPUS_PROJECT_ID%>"></span>
     </td>
 </tr>
 
 <script type="text/javascript">
-    var projectIdPropertyName = '<%=OctopusBuildTriggerUtil.OCTOPUS_PROJECT_ID%>';
-    var octopusUrlPropertyName = '<%=OctopusBuildTriggerUtil.OCTOPUS_URL%>';
-    var octopusApiKeyPropertyName = '<%=OctopusBuildTriggerUtil.OCTOPUS_APIKEY%>';
+    var projectIdPropertyName = '<%=BuildTriggerConstants.OCTOPUS_PROJECT_ID%>';
+    var octopusUrlPropertyName = '<%=BuildTriggerConstants.OCTOPUS_URL%>';
+    var octopusApiKeyPropertyName = '<%=BuildTriggerConstants.OCTOPUS_APIKEY%>';
     var updateIsAvailable = '<%=UpdateChecker.updateIsAvailable%>';
 
     <jsp:include page="octopusBuildTrigger.js" />

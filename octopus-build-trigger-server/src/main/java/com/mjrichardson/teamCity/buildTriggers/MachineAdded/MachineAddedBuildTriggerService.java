@@ -47,16 +47,20 @@ public final class MachineAddedBuildTriggerService extends BuildTriggerService {
     private final BuildTriggeringPolicy buildTriggeringPolicy;
     @NotNull
     private MetricRegistry metricRegistry;
+    @NotNull
+    private final BuildTriggerProperties buildTriggerProperties;
 
     public MachineAddedBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
                                            @NotNull final CustomAsyncBuildTriggerFactory triggerFactory,
                                            @NotNull final AnalyticsTracker analyticsTracker,
                                            @NotNull final CacheManager cacheManager,
-                                           @NotNull final MetricRegistry metricRegistry) {
+                                           @NotNull final MetricRegistry metricRegistry,
+                                           @NotNull final BuildTriggerProperties buildTriggerProperties) {
         this.pluginDescriptor = pluginDescriptor;
         this.analyticsTracker = analyticsTracker;
         this.cacheManager = cacheManager;
         this.metricRegistry = metricRegistry;
+        this.buildTriggerProperties = buildTriggerProperties;
 
         buildTriggeringPolicy = triggerFactory.createBuildTrigger(MachineAddedSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
@@ -87,7 +91,7 @@ public final class MachineAddedBuildTriggerService extends BuildTriggerService {
 
     @Override
     public PropertiesProcessor getTriggerPropertiesProcessor() {
-        return new MachineAddedTriggerPropertiesProcessor(cacheManager, metricRegistry);
+        return new MachineAddedTriggerPropertiesProcessor(cacheManager, metricRegistry, buildTriggerProperties);
     }
 
     @Override
@@ -107,11 +111,11 @@ public final class MachineAddedBuildTriggerService extends BuildTriggerService {
 
     @NotNull
     private int getPollInterval() {
-        return OctopusBuildTriggerUtil.getPollInterval();
+        return buildTriggerProperties.getPollInterval();
     }
 
     @NotNull
     private MachineAddedAsyncBuildTrigger getBuildTrigger() {
-        return new MachineAddedAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker, cacheManager, metricRegistry);
+        return new MachineAddedAsyncBuildTrigger(getDisplayName(), analyticsTracker, cacheManager, metricRegistry, buildTriggerProperties);
     }
 }

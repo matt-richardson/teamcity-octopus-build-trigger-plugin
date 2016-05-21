@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.Fakes;
 
+import com.mjrichardson.teamCity.buildTriggers.BuildTriggerProperties;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged.DeploymentProcessProvider;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged.DeploymentProcessProviderFactory;
 
@@ -16,7 +17,7 @@ public class FakeDeploymentProcessProviderFactory extends DeploymentProcessProvi
     }
 
     @Override
-    public DeploymentProcessProvider getProvider(String octopusUrl, String octopusApiKey, Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public DeploymentProcessProvider getProvider(String octopusUrl, String octopusApiKey, BuildTriggerProperties buildTriggerProperties) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         return deploymentProcessProvider;
     }
 }

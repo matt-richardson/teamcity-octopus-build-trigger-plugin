@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.*;
 
 @Test
 public class MachineAddedAsyncBuildTriggerTest {
@@ -21,15 +21,13 @@ public class MachineAddedAsyncBuildTriggerTest {
             expectedExceptionsMessageRegExp = "the display name failed with error: the exception message")
     public void make_trigger_exception_throws_build_trigger_exception() {
         String displayName = "the display name";
-        int pollIntervalInSeconds = 100;
-        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
+        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         sut.makeTriggerException(new ParseException("the exception message"));
     }
 
     public void get_requestor_string_returns_requestor_string_from_deployment_complete_spec() {
         String displayName = "the display name";
-        int pollIntervalInSeconds = 100;
-        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
+        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         Machine machine = new Machine("the-machine-id", "the-machine-name", new String[] { "env-id" }, new String[]{ "role-name" });
         String result = sut.getRequestorString(new MachineAddedSpec("the-url", machine));
 
@@ -38,17 +36,16 @@ public class MachineAddedAsyncBuildTriggerTest {
 
     public void poll_interval_returns_passed_in_poll_interval() {
         String displayName = "the display name";
-        Integer pollIntervalInSeconds = 100;
-        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
-        Integer result = sut.getPollIntervalInMilliseconds();
+        FakeBuildTriggerProperties buildTriggerProperties = new FakeBuildTriggerProperties();
+        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), buildTriggerProperties);
+        int result = sut.getPollIntervalInMilliseconds();
 
-        Assert.assertEquals(result, pollIntervalInSeconds);
+        Assert.assertEquals(result, buildTriggerProperties.getPollInterval());
     }
 
     public void create_job_returns_instance_of_deployment_complete_check_job() throws CheckJobCreationException {
         String displayName = "the display name";
-        Integer pollIntervalInSeconds = 100;
-        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
+        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckJob<MachineAddedSpec> result = sut.createJob("the-build-type",
                 new FakeCustomDataStorage(),
@@ -60,8 +57,7 @@ public class MachineAddedAsyncBuildTriggerTest {
 
     public void create_crash_on_submit_result_returns_deployment_complete_spec_check_result() {
         String displayName = "the display name";
-        Integer pollIntervalInSeconds = 100;
-        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
+        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.createCrashOnSubmitResult(new ParseException("the exception message"), correlationId);
 
@@ -71,8 +67,7 @@ public class MachineAddedAsyncBuildTriggerTest {
 
     public void describe_trigger_returns_description_based_on_properties() {
         String displayName = "the display name";
-        Integer pollIntervalInSeconds = 100;
-        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
+        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
@@ -85,8 +80,7 @@ public class MachineAddedAsyncBuildTriggerTest {
 
     public void describe_trigger_returns_description_based_on_properties2() {
         String displayName = "the display name";
-        Integer pollIntervalInSeconds = 100;
-        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
+        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(OCTOPUS_PROJECT_ID, "the-project");
@@ -100,8 +94,7 @@ public class MachineAddedAsyncBuildTriggerTest {
 
     public void get_properties_returns_expected_properties() {
         String displayName = "the display name";
-        Integer pollIntervalInSeconds = 100;
-        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, pollIntervalInSeconds, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry());
+        MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
 
         String[] environmentIds = new String[1];
         environmentIds[0] = "environment-1";

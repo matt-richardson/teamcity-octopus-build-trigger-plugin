@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
+import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerProperties;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeOctopusConnectivityCheckerFactory;
@@ -12,12 +13,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.*;
 
 @Test
 public class MachineAddedTriggerPropertiesProcessorTests {
     public void returns_error_when_url_is_null() {
-        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(new FakeCacheManager(), new FakeMetricRegistry());
+        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "api key");
         properties.put(OCTOPUS_URL, null);
@@ -30,7 +31,7 @@ public class MachineAddedTriggerPropertiesProcessorTests {
     }
 
     public void returns_error_when_api_key_is_null() {
-        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(new FakeCacheManager(), new FakeMetricRegistry());
+        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, null);
         properties.put(OCTOPUS_URL, "http://example.com");
@@ -46,7 +47,7 @@ public class MachineAddedTriggerPropertiesProcessorTests {
         String connectivityCheckResult = "connectivity error";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
         FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
-        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
+        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry, new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_URL, "api key");
@@ -62,7 +63,7 @@ public class MachineAddedTriggerPropertiesProcessorTests {
         NoSuchAlgorithmException exception = new NoSuchAlgorithmException("the exception message");
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(exception);
         FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
-        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
+        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry, new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_URL, "api key");
@@ -78,7 +79,7 @@ public class MachineAddedTriggerPropertiesProcessorTests {
         String connectivityCheckResult = "";
         FakeOctopusConnectivityCheckerFactory octopusConnectivityCheckerFactory = new FakeOctopusConnectivityCheckerFactory(connectivityCheckResult);
         FakeMetricRegistry metricsRegistry = new FakeMetricRegistry();
-        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry);
+        MachineAddedTriggerPropertiesProcessor processor = new MachineAddedTriggerPropertiesProcessor(octopusConnectivityCheckerFactory, metricsRegistry, new FakeBuildTriggerProperties());
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_APIKEY, "API-KEY");
         properties.put(OCTOPUS_URL, "api key");

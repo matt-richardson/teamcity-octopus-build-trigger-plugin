@@ -47,17 +47,21 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
     private final BuildTriggeringPolicy buildTriggeringPolicy;
     @NotNull
     private final MetricRegistry metricRegistry;
+    @NotNull
+    private final BuildTriggerProperties buildTriggerProperties;
 
     public DeploymentCompleteBuildTriggerService(@NotNull final PluginDescriptor pluginDescriptor,
                                                  @NotNull final CustomAsyncBuildTriggerFactory triggerFactory,
                                                  @NotNull final AnalyticsTracker analyticsTracker,
                                                  @NotNull final CacheManager cacheManager,
-                                                 @NotNull final MetricRegistry metricRegistry) {
+                                                 @NotNull final MetricRegistry metricRegistry,
+                                                 @NotNull final BuildTriggerProperties buildTriggerProperties) {
         this.pluginDescriptor = pluginDescriptor;
         this.analyticsTracker = analyticsTracker;
         this.cacheManager = cacheManager;
         this.metricRegistry = metricRegistry;
-        buildTriggeringPolicy = triggerFactory.createBuildTrigger(DeploymentCompleteSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
+        this.buildTriggerProperties = buildTriggerProperties;
+        this.buildTriggeringPolicy = triggerFactory.createBuildTrigger(DeploymentCompleteSpec.class, getAsyncBuildTrigger(), LOG, getPollInterval());
     }
 
     @NotNull
@@ -86,7 +90,7 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
 
     @Override
     public PropertiesProcessor getTriggerPropertiesProcessor() {
-        return new DeploymentCompleteTriggerPropertiesProcessor(cacheManager, metricRegistry);
+        return new DeploymentCompleteTriggerPropertiesProcessor(cacheManager, metricRegistry, buildTriggerProperties);
     }
 
     @Override
@@ -106,11 +110,11 @@ public final class DeploymentCompleteBuildTriggerService extends BuildTriggerSer
 
     @NotNull
     private int getPollInterval() {
-        return OctopusBuildTriggerUtil.getPollInterval();
+        return buildTriggerProperties.getPollInterval();
     }
 
     @NotNull
     private DeploymentCompleteAsyncBuildTrigger getBuildTrigger() {
-        return new DeploymentCompleteAsyncBuildTrigger(getDisplayName(), getPollInterval(), analyticsTracker, cacheManager, metricRegistry);
+        return new DeploymentCompleteAsyncBuildTrigger(getDisplayName(), analyticsTracker, cacheManager, metricRegistry, buildTriggerProperties);
     }
 }

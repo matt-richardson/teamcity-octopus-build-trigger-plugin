@@ -26,10 +26,7 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
-import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
-import com.mjrichardson.teamCity.buildTriggers.CacheManager;
-import com.mjrichardson.teamCity.buildTriggers.CustomCheckJob;
-import com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil;
+import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
 import jetbrains.buildServer.util.StringUtil;
@@ -38,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.mjrichardson.teamCity.buildTriggers.OctopusBuildTriggerUtil.*;
+import static com.mjrichardson.teamCity.buildTriggers.BuildTriggerConstants.*;
 
 class DeploymentCompleteCheckJob extends CustomCheckJob<DeploymentCompleteSpec> {
     @NotNull
@@ -50,18 +47,20 @@ class DeploymentCompleteCheckJob extends CustomCheckJob<DeploymentCompleteSpec> 
     private final Map<String, String> props;
     private final AnalyticsTracker analyticsTracker;
     private final DeploymentsProviderFactory deploymentsProviderFactory;
+    private final BuildTriggerProperties buildTriggerProperties;
 
-    public DeploymentCompleteCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry) {
-        this(new DeploymentsProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker);
+    public DeploymentCompleteCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
+        this(new DeploymentsProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker, buildTriggerProperties);
     }
 
-    public DeploymentCompleteCheckJob(DeploymentsProviderFactory deploymentsProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker) {
+    public DeploymentCompleteCheckJob(DeploymentsProviderFactory deploymentsProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, BuildTriggerProperties buildTriggerProperties) {
         this.deploymentsProviderFactory = deploymentsProviderFactory;
         this.displayName = displayName;
         this.buildType = buildType;
         this.dataStorage = dataStorage;
         this.props = properties;
         this.analyticsTracker = analyticsTracker;
+        this.buildTriggerProperties = buildTriggerProperties;
     }
 
     @NotNull
@@ -74,8 +73,7 @@ class DeploymentCompleteCheckJob extends CustomCheckJob<DeploymentCompleteSpec> 
             final String oldStoredData = dataStorage.getValue(dataStorageKey);
             final Environments oldEnvironments = Environments.Parse(oldStoredData);
 
-            final Integer connectionTimeoutInMilliseconds = OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds();
-            DeploymentsProvider provider = deploymentsProviderFactory.getProvider(octopusUrl, octopusApiKey, connectionTimeoutInMilliseconds);
+            DeploymentsProvider provider = deploymentsProviderFactory.getProvider(octopusUrl, octopusApiKey, buildTriggerProperties);
 
             final Environments newEnvironments = provider.getDeployments(octopusProject, oldEnvironments, correlationId);
 

@@ -30,21 +30,25 @@ public class UpdateChecker {
     private static String latestVersion;
     private static String currentVersion;
     public static boolean updateIsAvailable;
+    private final BuildTriggerProperties buildTriggerProperties;
 
     //used by spring
-    public UpdateChecker(@NotNull final PluginDescriptor pluginDescriptor, CacheManager cacheManager, MetricRegistry metricRegistry) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, InvalidCacheConfigurationException, IOException, UnexpectedResponseCodeException, ParseException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
+    public UpdateChecker(@NotNull final PluginDescriptor pluginDescriptor, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, InvalidCacheConfigurationException, IOException, UnexpectedResponseCodeException, ParseException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(null, null,
-                OctopusBuildTriggerUtil.getConnectionTimeoutInMilliseconds(), cacheManager, metricRegistry);
+                buildTriggerProperties, cacheManager, metricRegistry);
         HttpContentProvider contentProvider = contentProviderFactory.getContentProvider();
         this.pluginDescriptor = pluginDescriptor;
         this.httpContentProvider = contentProvider;
+        this.buildTriggerProperties = buildTriggerProperties;
         setupScheduledTask();
     }
 
     UpdateChecker(@NotNull final PluginDescriptor pluginDescriptor,
-                  @NotNull final HttpContentProvider httpContentProvider) throws IOException, InvalidCacheConfigurationException, NoSuchAlgorithmException, URISyntaxException, KeyStoreException, ParseException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, ProjectNotFoundException, KeyManagementException {
+                  @NotNull final HttpContentProvider httpContentProvider,
+                  @NotNull final BuildTriggerProperties buildTriggerProperties) throws IOException, InvalidCacheConfigurationException, NoSuchAlgorithmException, URISyntaxException, KeyStoreException, ParseException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, ProjectNotFoundException, KeyManagementException {
         this.pluginDescriptor = pluginDescriptor;
         this.httpContentProvider = httpContentProvider;
+        this.buildTriggerProperties = buildTriggerProperties;
         setupScheduledTask();
     }
 
@@ -61,7 +65,7 @@ public class UpdateChecker {
     }
 
     private synchronized void checkForUpdates()  {
-        if (!OctopusBuildTriggerUtil.isUpdateCheckEnabled())
+        if (!buildTriggerProperties.isUpdateCheckEnabled())
             return;
         UUID correlationId = UUID.randomUUID();
         try {

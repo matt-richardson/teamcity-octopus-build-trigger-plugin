@@ -2,6 +2,7 @@ package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.codahale.metrics.MetricRegistry;
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.BuildTriggerProperties;
 import com.mjrichardson.teamCity.buildTriggers.CacheManager;
 import com.mjrichardson.teamCity.buildTriggers.HttpContentProviderFactory;
 
@@ -20,8 +21,8 @@ public class ReleasesProviderFactory {
         this.metricRegistry = metricRegistry;
     }
 
-    public ReleasesProvider getProvider(String octopusUrl, String octopusApiKey, Integer connectionTimeout) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(octopusUrl, octopusApiKey, connectionTimeout, cacheManager, metricRegistry);
+    public ReleasesProvider getProvider(String octopusUrl, String octopusApiKey, BuildTriggerProperties buildTriggerProperties) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(octopusUrl, octopusApiKey, buildTriggerProperties, cacheManager, metricRegistry);
         return new ReleasesProviderImpl(contentProviderFactory, analyticsTracker);
     }
 }
