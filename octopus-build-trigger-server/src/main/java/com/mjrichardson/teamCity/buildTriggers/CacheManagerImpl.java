@@ -4,6 +4,9 @@ package com.mjrichardson.teamCity.buildTriggers;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ehcache.InstrumentedEhcache;
 import com.intellij.openapi.diagnostic.Logger;
+import jetbrains.buildServer.serverSide.BuildServerAdapter;
+import jetbrains.buildServer.serverSide.BuildServerListener;
+import jetbrains.buildServer.util.EventDispatcher;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
@@ -21,9 +24,12 @@ public class CacheManagerImpl implements CacheManager {
     private net.sf.ehcache.CacheManager ehCacheManager;
     private HashMap<CacheNames, Ehcache> caches;
     private BuildTriggerProperties buildTriggerProperties;
+    @NotNull
+    private final EventDispatcher<BuildServerListener> eventDispatcher;
 
-    public CacheManagerImpl(MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
+    public CacheManagerImpl(MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties, @NotNull EventDispatcher<BuildServerListener> eventDispatcher) {
         this.buildTriggerProperties = buildTriggerProperties;
+        this.eventDispatcher = eventDispatcher;
         ehCacheManager = net.sf.ehcache.CacheManager.newInstance();
         this.metricRegistry = metricRegistry;
         caches = new HashMap<>();
@@ -35,9 +41,16 @@ public class CacheManagerImpl implements CacheManager {
         Cache rawCache = ehCacheManager.getCache(cacheName.name());
         if (rawCache == null)
             throw new InvalidCacheConfigurationException(cacheName);
-        Ehcache instrument = InstrumentedEhcache.instrument(metricRegistry, rawCache);
-        caches.put(cacheName, instrument);
-        return instrument;
+        Ehcache instrumentedCache = InstrumentedEhcache.instrument(metricRegistry, rawCache);
+        eventDispatcher.addListener(new BuildServerAdapter() {
+            public void serverShutdown() {
+                LOG.debug("Server shutdown initiated - shutting down ehCacheManager");
+                ehCacheManager.shutdown();
+                LOG.debug("Server shutdown initiated - ehCacheManager shutdown complete");
+            }
+        });
+        caches.put(cacheName, instrumentedCache);
+        return instrumentedCache;
     }
 
     public String getFromCache(CacheNames cacheName, URI uri, UUID correlationId) throws InvalidCacheConfigurationException {
