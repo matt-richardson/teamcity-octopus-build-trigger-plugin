@@ -24,15 +24,19 @@ public class CacheManagerImpl implements CacheManager {
     private net.sf.ehcache.CacheManager ehCacheManager;
     private HashMap<CacheNames, Ehcache> caches;
     private BuildTriggerProperties buildTriggerProperties;
-    @NotNull
-    private final EventDispatcher<BuildServerListener> eventDispatcher;
 
     public CacheManagerImpl(MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties, @NotNull EventDispatcher<BuildServerListener> eventDispatcher) {
         this.buildTriggerProperties = buildTriggerProperties;
-        this.eventDispatcher = eventDispatcher;
-        ehCacheManager = net.sf.ehcache.CacheManager.newInstance();
+        this.ehCacheManager = net.sf.ehcache.CacheManager.newInstance();
+        eventDispatcher.addListener(new BuildServerAdapter() {
+            public void serverShutdown() {
+                LOG.debug("Server shutdown initiated - shutting down ehCacheManager");
+                ehCacheManager.shutdown();
+                LOG.debug("Server shutdown initiated - ehCacheManager shutdown complete");
+            }
+        });
         this.metricRegistry = metricRegistry;
-        caches = new HashMap<>();
+        this.caches = new HashMap<>();
     }
 
     private synchronized Ehcache getCache(CacheNames cacheName) throws InvalidCacheConfigurationException {
@@ -42,13 +46,7 @@ public class CacheManagerImpl implements CacheManager {
         if (rawCache == null)
             throw new InvalidCacheConfigurationException(cacheName);
         Ehcache instrumentedCache = InstrumentedEhcache.instrument(metricRegistry, rawCache);
-        eventDispatcher.addListener(new BuildServerAdapter() {
-            public void serverShutdown() {
-                LOG.debug("Server shutdown initiated - shutting down ehCacheManager");
-                ehCacheManager.shutdown();
-                LOG.debug("Server shutdown initiated - ehCacheManager shutdown complete");
-            }
-        });
+
         caches.put(cacheName, instrumentedCache);
         return instrumentedCache;
     }
