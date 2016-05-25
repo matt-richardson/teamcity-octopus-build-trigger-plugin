@@ -24,6 +24,7 @@ public class CacheManagerImpl implements CacheManager {
     private net.sf.ehcache.CacheManager ehCacheManager;
     private HashMap<CacheNames, Ehcache> caches;
     private BuildTriggerProperties buildTriggerProperties;
+    private boolean cacheAlive;
 
     public CacheManagerImpl(MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties, @NotNull EventDispatcher<BuildServerListener> eventDispatcher) {
         this.buildTriggerProperties = buildTriggerProperties;
@@ -32,9 +33,11 @@ public class CacheManagerImpl implements CacheManager {
             public void serverShutdown() {
                 LOG.debug("Server shutdown initiated - shutting down ehCacheManager");
                 ehCacheManager.shutdown();
+                cacheAlive = false;
                 LOG.debug("Server shutdown initiated - ehCacheManager shutdown complete");
             }
         });
+        this.cacheAlive = true;
         this.metricRegistry = metricRegistry;
         this.caches = new HashMap<>();
     }
@@ -59,6 +62,10 @@ public class CacheManagerImpl implements CacheManager {
         LOG.debug(String.format("%s: Getting cached response for '%s' from cache '%s'", correlationId, uri.toString(), cacheName.name()));
         if (cacheName == CacheNames.NoCache)
             return null;
+        if (!this.cacheAlive) {
+            LOG.debug("%s: Attempted to get something from the cache after it was shutdown - ignoring.");
+            return null;
+        }
         Ehcache cache = getCache(cacheName);
         Element result = cache.get(uri.toString());
         if (result == null) {
@@ -77,6 +84,10 @@ public class CacheManagerImpl implements CacheManager {
         LOG.debug(String.format("%s: Caching response for '%s' in cache '%s'", correlationId, uri.toString(), cacheName.name()));
         if (cacheName == CacheNames.NoCache)
             return;
+        if (!this.cacheAlive) {
+            LOG.debug("%s: Attempted to add something to the cache after it was shutdown - ignoring.");
+            return;
+        }
         Ehcache cache = getCache(cacheName);
         cache.put(new Element(uri.toString(), body));
     }
