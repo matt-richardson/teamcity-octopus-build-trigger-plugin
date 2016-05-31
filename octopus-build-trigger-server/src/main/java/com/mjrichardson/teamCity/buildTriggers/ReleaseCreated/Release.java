@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +37,7 @@ public class Release implements Comparable<Release> {
         return new Release(releaseId, assembledDate, version, projectId);
     }
 
-    public static Release Parse(String pair) throws NeedToDeleteAndRecreateTrigger {
+    public static Release Parse(String pair) throws NeedToDeleteAndRecreateTriggerException {
         if (pair == null || pair.equals("")) {
             return new NullRelease();
         }
@@ -48,7 +48,7 @@ public class Release implements Comparable<Release> {
         final String version = split[2];
 
         if (split.length < 4)
-            throw new NeedToDeleteAndRecreateTrigger();
+            throw new NeedToDeleteAndRecreateTriggerException();
 
         final String projectId = split[3];
 

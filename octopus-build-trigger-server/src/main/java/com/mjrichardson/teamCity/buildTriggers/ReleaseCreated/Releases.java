@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
 import jetbrains.buildServer.util.StringUtil;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class Releases {
         this.statusMap = new ArrayList<>();
     }
 
-    public static Releases Parse(String data) throws NeedToDeleteAndRecreateTrigger {
+    public static Releases Parse(String data) throws NeedToDeleteAndRecreateTriggerException {
         Releases releases = new Releases();
 
         if (!StringUtil.isEmptyOrSpaces(data)) {

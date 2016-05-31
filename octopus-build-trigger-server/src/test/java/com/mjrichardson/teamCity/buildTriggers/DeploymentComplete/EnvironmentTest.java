@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
 import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import org.testng.Assert;
@@ -115,13 +115,13 @@ public class EnvironmentTest {
         Assert.assertEquals(sut.projectId, "Project-8");
     }
 
-    @Test(expectedExceptions = NeedToDeleteAndRecreateTrigger.class)
-    public void parse_string_throws_exception_if_format_is_different() throws NeedToDeleteAndRecreateTrigger {
+    @Test(expectedExceptions = NeedToDeleteAndRecreateTriggerException.class)
+    public void parse_string_throws_exception_if_format_is_different() throws NeedToDeleteAndRecreateTriggerException {
         //the format changed (we added another 4 fields (releaseId, deploymentId, version, projectId)), so it needs to be deleted and recreated
         Environment.Parse("env-id;2015-12-09T14:10:11.000+00:00;2015-12-12T09:04:03.000+00:00");
     }
 
-    public void parse_string_populates_object_correctly() throws NeedToDeleteAndRecreateTrigger {
+    public void parse_string_populates_object_correctly() throws NeedToDeleteAndRecreateTriggerException {
         Environment sut = Environment.Parse("Environment-1;2016-2-26T17:58:13.537+00:00;2016-2-26T17:58:13.537+00:00;Release-1;Deployment-1;1.0.1;Project-8");
         Assert.assertEquals(sut.environmentId, "Environment-1");
         Assert.assertEquals(sut.latestDeployment, new OctopusDate(2016, 2, 26, 17, 58, 13, 537));

@@ -316,7 +316,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedFewerEnvironments);
     }
 
-    public void determine_outcome_of_fallback_handles_identical_responses() throws ParseException, NeedToDeleteAndRecreateTrigger {
+    public void determine_outcome_of_fallback_handles_identical_responses() throws ParseException, NeedToDeleteAndRecreateTriggerException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
@@ -330,7 +330,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedSameResults);
     }
 
-    public void determine_outcome_of_fallback_handles_different_environments() throws ParseException, NeedToDeleteAndRecreateTrigger {
+    public void determine_outcome_of_fallback_handles_different_environments() throws ParseException, NeedToDeleteAndRecreateTriggerException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
@@ -345,7 +345,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedDifferentEnvironments);
     }
 
-    public void determine_outcome_of_fallback_handles_response_with_newer_latest_deployment_date() throws ParseException, NeedToDeleteAndRecreateTrigger {
+    public void determine_outcome_of_fallback_handles_response_with_newer_latest_deployment_date() throws ParseException, NeedToDeleteAndRecreateTriggerException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
@@ -360,7 +360,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
     }
 
-    public void determine_outcome_of_fallback_handles_response_with_newer_successful_latest_deployment_date() throws ParseException, NeedToDeleteAndRecreateTrigger {
+    public void determine_outcome_of_fallback_handles_response_with_newer_successful_latest_deployment_date() throws ParseException, NeedToDeleteAndRecreateTriggerException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);
@@ -375,7 +375,7 @@ public class DeploymentsProviderImplTest {
         Assert.assertEquals(result, AnalyticsTracker.EventAction.FallBackToDeploymentsApiProducedBetterInformation);
     }
 
-    public void determine_outcome_of_fallback_handles_response_with_older_latest_deployment_date() throws ParseException, NeedToDeleteAndRecreateTrigger {
+    public void determine_outcome_of_fallback_handles_response_with_older_latest_deployment_date() throws ParseException, NeedToDeleteAndRecreateTriggerException {
         HttpContentProviderFactory contentProviderFactory = new FakeContentProviderFactory(octopusUrl, octopusApiKey);
         FakeAnalyticsTracker fakeAnalyticsTracker = new FakeAnalyticsTracker();
         DeploymentsProviderImpl deploymentsProviderImpl = new DeploymentsProviderImpl(contentProviderFactory, fakeAnalyticsTracker);

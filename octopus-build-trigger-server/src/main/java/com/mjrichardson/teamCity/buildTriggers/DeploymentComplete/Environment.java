@@ -67,12 +67,12 @@ public class Environment {
         return String.format("%s;%s;%s;%s;%s;%s;%s", environmentId, latestDeployment, latestSuccessfulDeployment, releaseId, deploymentId, version, projectId);
     }
 
-    public static Environment Parse(String toStringRepresentation) throws NeedToDeleteAndRecreateTrigger {
+    public static Environment Parse(String toStringRepresentation) throws NeedToDeleteAndRecreateTriggerException {
         final Integer DONT_REMOVE_EMPTY_VALUES = -1;
         final String[] split = toStringRepresentation.split(";", DONT_REMOVE_EMPTY_VALUES);
 
         if (split.length < 4)
-            throw new NeedToDeleteAndRecreateTrigger();
+            throw new NeedToDeleteAndRecreateTriggerException();
 
         final String environmentId = split[0];
         final OctopusDate latestDeployment = OctopusDate.Parse(split[1]);

@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -78,7 +78,7 @@ public class MachinesTest {
         Assert.assertEquals(machine, firstNewMachine);
     }
 
-    public void to_array_converts_machines_to_array_successfully() throws NeedToDeleteAndRecreateTrigger {
+    public void to_array_converts_machines_to_array_successfully() throws NeedToDeleteAndRecreateTriggerException {
         final Machine oldMachine = new Machine("machine-2", "MachineTwo", new String[] { "env-id" }, new String[]{ "role-name" });
         final Machine newMachine = new Machine("machine-3", "MachineThree", new String[] { "env-id" }, new String[]{ "role-name" });
         Machines machines = Machines.Parse(String.format("%s|%s", oldMachine.toString(), newMachine.toString()));

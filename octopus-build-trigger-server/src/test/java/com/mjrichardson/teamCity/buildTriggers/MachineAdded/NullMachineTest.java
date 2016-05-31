@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -12,7 +12,7 @@ public class NullMachineTest {
         Assert.assertEquals(sut.name, "");
     }
 
-    public void can_parse_to_null_machine() throws NeedToDeleteAndRecreateTrigger {
+    public void can_parse_to_null_machine() throws NeedToDeleteAndRecreateTriggerException {
         Machine sut = Machine.Parse(new NullMachine().toString());
         Assert.assertEquals(sut.getClass(), NullMachine.class);
     }

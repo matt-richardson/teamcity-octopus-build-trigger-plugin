@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class Machine implements Comparable<Machine> {
         return new Machine(id, name, environmentIds.toArray(new String[0]), roleIds.toArray(new String[0]));
     }
 
-    public static Machine Parse(String pair) throws NeedToDeleteAndRecreateTrigger {
+    public static Machine Parse(String pair) throws NeedToDeleteAndRecreateTriggerException {
         if (pair == null || pair.equals("")) {
             return new NullMachine();
         }
@@ -56,7 +56,7 @@ public class Machine implements Comparable<Machine> {
         final String[] split = pair.split(";", DONT_REMOVE_EMPTY_VALUES);
 
         if (split.length < 4)
-            throw new NeedToDeleteAndRecreateTrigger();
+            throw new NeedToDeleteAndRecreateTriggerException();
 
         final String id = split[0];
         final String name = split[1];

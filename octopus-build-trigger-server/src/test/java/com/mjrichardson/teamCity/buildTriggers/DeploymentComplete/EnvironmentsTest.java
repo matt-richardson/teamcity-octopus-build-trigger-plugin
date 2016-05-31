@@ -143,7 +143,7 @@ public class EnvironmentsTest {
         newEnvironments.getChangedDeployment(oldEnvironments);
     }
 
-    public void to_array_converts_deployments_to_array_successfully() throws ParseException, NeedToDeleteAndRecreateTrigger {
+    public void to_array_converts_deployments_to_array_successfully() throws ParseException, NeedToDeleteAndRecreateTriggerException {
         final String data = "Environments-1;2016-01-19T14:00:00.000+00:00;2016-01-19T00:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id|Environments-21;2016-01-20T14:00:00.000+00:00;2016-01-20T14:00:00.000+00:00;the-release-id;the-deployment-id;the-version;the-project-id";
         Environments environments = Environments.Parse(data);
         Environment[] array = environments.toArray();

@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
 import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -14,7 +14,7 @@ public class NullReleaseTest {
         Assert.assertEquals(sut.version, "");
     }
 
-    public void can_parse_to_null_release() throws NeedToDeleteAndRecreateTrigger {
+    public void can_parse_to_null_release() throws NeedToDeleteAndRecreateTriggerException {
         Release sut = Release.Parse(new NullRelease().toString());
         Assert.assertEquals(sut.getClass(), NullRelease.class);
     }

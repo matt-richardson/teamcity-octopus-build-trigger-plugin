@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTrigger;
+import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -10,40 +10,40 @@ import java.util.List;
 
 @Test
 public class MachineTest {
-    public void can_parse_empty_string_to_null_machine() throws NeedToDeleteAndRecreateTrigger {
+    public void can_parse_empty_string_to_null_machine() throws NeedToDeleteAndRecreateTriggerException {
         Machine sut = Machine.Parse("");
         Assert.assertEquals(sut.getClass(), NullMachine.class);
     }
 
-    public void can_parse_null_string_to_null_machine() throws NeedToDeleteAndRecreateTrigger {
+    public void can_parse_null_string_to_null_machine() throws NeedToDeleteAndRecreateTriggerException {
         Machine sut = Machine.Parse((String)null);
         Assert.assertEquals(sut.getClass(), NullMachine.class);
     }
 
-    public void can_parse_valid_string_to_machine() throws NeedToDeleteAndRecreateTrigger {
+    public void can_parse_valid_string_to_machine() throws NeedToDeleteAndRecreateTriggerException {
         Machine sut = Machine.Parse("Machines-91;MachineNinetyOne;env-1,env-2;role-one,role-two");
         Assert.assertEquals(sut.id, "Machines-91");
         Assert.assertEquals(sut.name, "MachineNinetyOne");
     }
 
-    public void to_string_formats_correctly() throws NeedToDeleteAndRecreateTrigger {
+    public void to_string_formats_correctly() throws NeedToDeleteAndRecreateTriggerException {
         Machine sut = Machine.Parse("Machines-91;MachineNinetyOne;env-1,env-2;role-one,role-two");
         Assert.assertEquals(sut.toString(), "Machines-91;MachineNinetyOne;env-1,env-2;role-one,role-two");
     }
 
-    public void compare_returns_1_when_passed_machine_has_lower_id() throws NeedToDeleteAndRecreateTrigger {
+    public void compare_returns_1_when_passed_machine_has_lower_id() throws NeedToDeleteAndRecreateTriggerException {
         Machine machine1 = Machine.Parse("Machines-1;MachineOne;env-1,env-2;role-one,role-two");
         Machine machine2 = Machine.Parse("Machines-2;MachineTwo;env-1,env-2;role-one,role-two");
         Assert.assertEquals(machine2.compareTo(machine1), 1);
     }
 
-    public void compare_returns_0_when_passed_machine_has_same_id() throws NeedToDeleteAndRecreateTrigger {
+    public void compare_returns_0_when_passed_machine_has_same_id() throws NeedToDeleteAndRecreateTriggerException {
         Machine machine1 = Machine.Parse("Machines-1;MachineOne;env-1,env-2;role-one,role-two");
         Machine machine2 = Machine.Parse("Machines-1;MachineOneAgain;env-1,env-2;role-one,role-two");
         Assert.assertEquals(machine1.compareTo(machine2), 0);
     }
 
-    public void compare_returns_minus_1_when_passed_machine_has_higher_id() throws NeedToDeleteAndRecreateTrigger {
+    public void compare_returns_minus_1_when_passed_machine_has_higher_id() throws NeedToDeleteAndRecreateTriggerException {
         Machine machine1 = Machine.Parse("Machines-3;MachineOne;env-1,env-2;role-one,role-two");
         Machine machine2 = Machine.Parse("Machines-21;MachineTwo;env-1,env-2;role-one,role-two");
         Assert.assertEquals(machine1.compareTo(machine2), -1);
