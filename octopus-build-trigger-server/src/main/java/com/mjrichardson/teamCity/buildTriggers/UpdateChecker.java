@@ -2,6 +2,9 @@ package com.mjrichardson.teamCity.buildTriggers;
 
 import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
+import jetbrains.buildServer.serverSide.BuildServerAdapter;
+import jetbrains.buildServer.serverSide.BuildServerListener;
+import jetbrains.buildServer.util.EventDispatcher;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jetbrains.annotations.NotNull;
@@ -31,9 +34,16 @@ public class UpdateChecker {
     private static String currentVersion;
     public static boolean updateIsAvailable;
     private final BuildTriggerProperties buildTriggerProperties;
+    @NotNull
+    private final EventDispatcher<BuildServerListener> eventDispatcher;
 
     //used by spring
-    public UpdateChecker(@NotNull final PluginDescriptor pluginDescriptor, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, InvalidCacheConfigurationException, IOException, UnexpectedResponseCodeException, ParseException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
+    public UpdateChecker(@NotNull final PluginDescriptor pluginDescriptor,
+                         CacheManager cacheManager,
+                         MetricRegistry metricRegistry,
+                         BuildTriggerProperties buildTriggerProperties,
+                         @NotNull EventDispatcher<BuildServerListener> eventDispatcher) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, InvalidCacheConfigurationException, IOException, UnexpectedResponseCodeException, ParseException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
+        this.eventDispatcher = eventDispatcher;
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(null, null,
                 buildTriggerProperties, cacheManager, metricRegistry);
         HttpContentProvider contentProvider = contentProviderFactory.getContentProvider();
@@ -45,19 +55,23 @@ public class UpdateChecker {
 
     UpdateChecker(@NotNull final PluginDescriptor pluginDescriptor,
                   @NotNull final HttpContentProvider httpContentProvider,
-                  @NotNull final BuildTriggerProperties buildTriggerProperties) throws IOException, InvalidCacheConfigurationException, NoSuchAlgorithmException, URISyntaxException, KeyStoreException, ParseException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, ProjectNotFoundException, KeyManagementException {
+                  @NotNull final BuildTriggerProperties buildTriggerProperties,
+                  @NotNull EventDispatcher<BuildServerListener> eventDispatcher) throws IOException, InvalidCacheConfigurationException, NoSuchAlgorithmException, URISyntaxException, KeyStoreException, ParseException, InvalidOctopusUrlException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, ProjectNotFoundException, KeyManagementException {
         this.pluginDescriptor = pluginDescriptor;
         this.httpContentProvider = httpContentProvider;
         this.buildTriggerProperties = buildTriggerProperties;
+        this.eventDispatcher = eventDispatcher;
         setupScheduledTask();
     }
 
     private void setupScheduledTask() throws IOException, InvalidCacheConfigurationException, NoSuchAlgorithmException, URISyntaxException, InvalidOctopusApiKeyException, ParseException, InvalidOctopusUrlException, UnexpectedResponseCodeException, KeyStoreException, ProjectNotFoundException, KeyManagementException {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
+        eventDispatcher.addListener(new BuildServerAdapter() {
+            public void serverShutdown() {
+                LOG.debug("Server shutdown initiated - shutting down updateChecker");
                 if(scheduler != null) {
                     scheduler.shutdown();
                 }
+                LOG.debug("Server shutdown initiated - updateChecker shutdown complete");
             }
         });
         scheduler.scheduleAtFixedRate(() -> checkForUpdates(), 60, 60, TimeUnit.MINUTES);
