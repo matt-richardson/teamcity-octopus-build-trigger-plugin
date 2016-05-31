@@ -26,7 +26,7 @@ public class ProjectsController extends BaseController {
     private final ObjectMapper objectMapper;
     private final CacheManager cacheManager;
     private static final Logger LOG = Logger.getInstance(ProjectsController.class.getName());
-    private MetricRegistry metricRegistry;
+    private final MetricRegistry metricRegistry;
     private final BuildTriggerProperties buildTriggerProperties;
 
     public ProjectsController(SBuildServer server,
