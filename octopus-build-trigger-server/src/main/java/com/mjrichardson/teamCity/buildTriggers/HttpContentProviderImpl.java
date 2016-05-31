@@ -39,9 +39,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     @NotNull
     private static final Logger LOG = Logger.getInstance(HttpContentProviderImpl.class.getName());
     private final String octopusUrl;
-
-    @NotNull
-    private String apiKey;
+    private final String apiKey;
     @NotNull
     private final Integer connectionTimeoutInMilliseconds;
     @NotNull
@@ -49,7 +47,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
     @NotNull
     private final MetricRegistry metricRegistry;
 
-    public HttpContentProviderImpl(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull Integer connectionTimeoutInMilliseconds, CacheManager cacheManager, MetricRegistry metricRegistry) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public HttpContentProviderImpl(String octopusUrl, String apiKey, @NotNull Integer connectionTimeoutInMilliseconds, CacheManager cacheManager, MetricRegistry metricRegistry) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         this.octopusUrl = octopusUrl;
         this.apiKey = apiKey;
         this.connectionTimeoutInMilliseconds = connectionTimeoutInMilliseconds;

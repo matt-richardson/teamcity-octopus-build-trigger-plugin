@@ -8,10 +8,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
 public class HttpContentProviderFactory {
-
-    @NotNull
+    //todo: add test to ensure this can be loaded via spring
     private final String octopusUrl;
-    @NotNull
     private final String apiKey;
     @NotNull
     private final Integer connectionTimeout;
@@ -20,7 +18,7 @@ public class HttpContentProviderFactory {
     @NotNull
     private MetricRegistry metricRegistry;
 
-    public HttpContentProviderFactory(@NotNull String octopusUrl, @NotNull String apiKey, @NotNull BuildTriggerProperties buildTriggerProperties, @NotNull CacheManager cacheManager, @NotNull MetricRegistry metricRegistry) {
+    public HttpContentProviderFactory(String octopusUrl, String apiKey, @NotNull BuildTriggerProperties buildTriggerProperties, @NotNull CacheManager cacheManager, @NotNull MetricRegistry metricRegistry) {
         this.octopusUrl = octopusUrl;
         this.apiKey = apiKey;
         this.connectionTimeout = buildTriggerProperties.getConnectionTimeoutInMilliseconds();
