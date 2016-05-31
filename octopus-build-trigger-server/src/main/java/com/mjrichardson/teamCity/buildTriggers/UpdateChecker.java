@@ -6,6 +6,7 @@ import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidCacheConfigurat
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
+import com.mjrichardson.teamCity.buildTriggers.Model.GitHubApiReleaseResponse;
 import jetbrains.buildServer.serverSide.BuildServerAdapter;
 import jetbrains.buildServer.serverSide.BuildServerListener;
 import jetbrains.buildServer.util.EventDispatcher;

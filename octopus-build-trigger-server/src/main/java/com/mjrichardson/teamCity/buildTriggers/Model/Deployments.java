@@ -1,9 +1,8 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Model;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-//todo: move under 'Model' namespace?
 public class Deployments implements Iterable<Deployment> {
     private ArrayList<Deployment> statusMap;
 

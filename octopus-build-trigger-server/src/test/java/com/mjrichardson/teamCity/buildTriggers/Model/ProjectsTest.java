@@ -1,6 +1,8 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Model;
 
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
+import com.mjrichardson.teamCity.buildTriggers.Model.Project;
+import com.mjrichardson.teamCity.buildTriggers.Model.Projects;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

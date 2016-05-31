@@ -1,8 +1,13 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Model;
 
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
+import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
+import com.mjrichardson.teamCity.buildTriggers.Model.ApiDeploymentsResponse;
+import com.mjrichardson.teamCity.buildTriggers.Model.Deployment;
+import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
+import com.mjrichardson.teamCity.buildTriggers.ResourceHandler;
 import org.json.simple.parser.ParseException;
 import org.testng.Assert;
 import org.testng.annotations.Test;

@@ -7,6 +7,9 @@ import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidCacheConfigurat
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
+import com.mjrichardson.teamCity.buildTriggers.Model.ApiProjectsResponse;
+import com.mjrichardson.teamCity.buildTriggers.Model.ApiRootResponse;
+import com.mjrichardson.teamCity.buildTriggers.Model.Projects;
 import jetbrains.buildServer.controllers.BaseController;
 import jetbrains.buildServer.serverSide.SBuildServer;
 import jetbrains.buildServer.web.openapi.WebControllerManager;

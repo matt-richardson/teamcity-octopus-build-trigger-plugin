@@ -1,4 +1,4 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Model;
 
 import com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.Release;
 import com.mjrichardson.teamCity.buildTriggers.ReleaseCreated.Releases;

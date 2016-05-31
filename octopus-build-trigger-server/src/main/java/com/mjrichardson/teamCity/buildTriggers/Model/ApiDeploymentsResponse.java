@@ -1,7 +1,8 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Model;
 
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
+import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
 import jetbrains.buildServer.serverSide.ProjectNotFoundException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

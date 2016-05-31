@@ -1,6 +1,7 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Model;
 
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeAnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.Model.ApiRootResponse;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.parser.ParseException;
 import org.testng.Assert;

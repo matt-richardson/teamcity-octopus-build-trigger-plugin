@@ -3,6 +3,8 @@ package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.*;
+import com.mjrichardson.teamCity.buildTriggers.Model.ApiMachinesResponse;
+import com.mjrichardson.teamCity.buildTriggers.Model.ApiRootResponse;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.parser.ParseException;
 

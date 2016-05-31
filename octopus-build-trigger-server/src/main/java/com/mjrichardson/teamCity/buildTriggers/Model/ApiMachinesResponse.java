@@ -1,4 +1,4 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Model;
 
 import com.mjrichardson.teamCity.buildTriggers.MachineAdded.Machine;
 import com.mjrichardson.teamCity.buildTriggers.MachineAdded.Machines;

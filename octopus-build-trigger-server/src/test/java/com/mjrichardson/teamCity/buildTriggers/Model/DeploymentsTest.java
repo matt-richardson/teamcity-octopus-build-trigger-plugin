@@ -1,5 +1,7 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Model;
 
+import com.mjrichardson.teamCity.buildTriggers.Model.Deployment;
+import com.mjrichardson.teamCity.buildTriggers.Model.Deployments;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

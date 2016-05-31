@@ -1,6 +1,7 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Model;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 

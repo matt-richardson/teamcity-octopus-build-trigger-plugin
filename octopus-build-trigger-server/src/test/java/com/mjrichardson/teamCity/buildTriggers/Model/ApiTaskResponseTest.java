@@ -1,5 +1,7 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Model;
 
+import com.mjrichardson.teamCity.buildTriggers.Model.ApiTaskResponse;
+import com.mjrichardson.teamCity.buildTriggers.ResourceHandler;
 import org.json.simple.parser.ParseException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
