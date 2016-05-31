@@ -126,16 +126,17 @@ public class HttpContentProviderImpl implements HttpContentProvider {
 
         final Timer.Context context = metricRegistry.timer(name(HttpContentProviderImpl.class, "apiRequests", cacheName.name(), "time")).time();
         final HttpGet httpGet = new HttpGet(uri);
-        CloseableHttpClient httpClient = getHttpClient(this.connectionTimeoutInMilliseconds);
+        final CloseableHttpClient httpClient = getHttpClient(this.connectionTimeoutInMilliseconds);
+        CloseableHttpResponse response = null;
 
         try {
             LOG.debug(String.format("%s: Getting response from url %s", correlationId, uri));
-            final HttpContext httpContext = HttpClientContext.create();
             for (Object key : headers.keySet()) {
                 httpGet.addHeader((String)key, headers.get(key));
             }
 
-            final CloseableHttpResponse response = httpClient.execute(httpGet, httpContext);
+            final HttpContext httpContext = HttpClientContext.create();
+            response = httpClient.execute(httpGet, httpContext);
 
             final int statusCode = response.getStatusLine().getStatusCode();
 
@@ -159,6 +160,14 @@ public class HttpContentProviderImpl implements HttpContentProvider {
                     httpClient.close();
                 } catch (IOException e) {
                     LOG.warn(String.format("%s: Exception while calling httpClient.close() - not much we can do", correlationId), e);
+                }
+            }
+            if (response != null) {
+                try {
+                    response.close();
+                }
+                catch (IOException e) {
+                    LOG.warn(String.format("%s: Exception while calling response.close() - not much we can do", correlationId), e);
                 }
             }
         }
