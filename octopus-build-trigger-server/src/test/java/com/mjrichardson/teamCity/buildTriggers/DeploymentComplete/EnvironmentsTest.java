@@ -1,6 +1,8 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.mjrichardson.teamCity.buildTriggers.*;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.NeedToDeleteAndRecreateTriggerException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.NoChangedEnvironmentsException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

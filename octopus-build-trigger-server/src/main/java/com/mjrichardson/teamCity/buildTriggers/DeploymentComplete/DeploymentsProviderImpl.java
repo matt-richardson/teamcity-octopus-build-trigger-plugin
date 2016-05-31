@@ -2,6 +2,7 @@ package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.*;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.*;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.parser.ParseException;
 
@@ -181,7 +182,7 @@ public class DeploymentsProviderImpl implements DeploymentsProvider {
         return result;
     }
 
-    private boolean ProcessDeployment(HttpContentProvider contentProvider, Environments oldEnvironments, Environments result, Deployment deployment, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
+    private boolean ProcessDeployment(HttpContentProvider contentProvider, Environments oldEnvironments, Environments result, Deployment deployment, UUID correlationId) throws IOException, UnexpectedResponseCodeException, InvalidOctopusApiKeyException, InvalidOctopusUrlException, URISyntaxException, jetbrains.buildServer.serverSide.ProjectNotFoundException, ParseException, ProjectNotFoundException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InvalidCacheConfigurationException {
         Environment lastKnownEnvironmentState = oldEnvironments.getEnvironment(deployment.environmentId);
         LOG.debug(String.format("%s: Found deployment to environment '%s' created at '%s'", correlationId, deployment.environmentId, deployment.createdDate));
 

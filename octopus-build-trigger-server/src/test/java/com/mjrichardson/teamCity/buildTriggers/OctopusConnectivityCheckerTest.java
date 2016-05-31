@@ -1,5 +1,8 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeCacheManager;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeContentProvider;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;

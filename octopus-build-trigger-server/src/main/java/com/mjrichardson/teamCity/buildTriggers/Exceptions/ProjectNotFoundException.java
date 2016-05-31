@@ -1,4 +1,4 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Exceptions;
 
 public class ProjectNotFoundException extends Exception {
     public final String projectIdOrName;

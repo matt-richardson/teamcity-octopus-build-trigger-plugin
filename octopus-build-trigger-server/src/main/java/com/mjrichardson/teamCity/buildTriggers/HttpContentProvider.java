@@ -1,5 +1,10 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidCacheConfigurationException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;

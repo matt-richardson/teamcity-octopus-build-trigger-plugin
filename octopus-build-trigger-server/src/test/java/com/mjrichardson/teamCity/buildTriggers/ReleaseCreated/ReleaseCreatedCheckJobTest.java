@@ -1,6 +1,9 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
 import com.mjrichardson.teamCity.buildTriggers.*;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.ReleasesProviderException;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;

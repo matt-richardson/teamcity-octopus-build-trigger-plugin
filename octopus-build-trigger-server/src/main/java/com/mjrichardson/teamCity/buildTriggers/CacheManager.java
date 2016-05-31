@@ -1,5 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidCacheConfigurationException;
+
 import java.net.URI;
 import java.util.UUID;
 

@@ -1,5 +1,8 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged;
 
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.DeploymentProcessProviderException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import org.testng.Assert;

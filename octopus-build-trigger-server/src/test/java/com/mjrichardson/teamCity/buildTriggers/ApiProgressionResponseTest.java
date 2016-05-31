@@ -1,6 +1,8 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environment;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

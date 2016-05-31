@@ -3,11 +3,11 @@ package com.mjrichardson.teamCity.buildTriggers.Fakes;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environment;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environments;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentsProvider;
-import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.DeploymentsProviderException;
-import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.DeploymentsProviderException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
-import com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;

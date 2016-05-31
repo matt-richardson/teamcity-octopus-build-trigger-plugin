@@ -1,10 +1,10 @@
 package com.mjrichardson.teamCity.buildTriggers.Fakes;
 
 import com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged.DeploymentProcessProvider;
-import com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged.DeploymentProcessProviderException;
-import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.DeploymentProcessProviderException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
-import com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
 
 import java.text.ParseException;
 import java.util.UUID;

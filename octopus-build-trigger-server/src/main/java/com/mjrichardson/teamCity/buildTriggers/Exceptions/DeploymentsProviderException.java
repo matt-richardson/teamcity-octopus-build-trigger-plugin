@@ -1,4 +1,4 @@
-package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
+package com.mjrichardson.teamCity.buildTriggers.Exceptions;
 
 public class DeploymentsProviderException extends Exception {
 

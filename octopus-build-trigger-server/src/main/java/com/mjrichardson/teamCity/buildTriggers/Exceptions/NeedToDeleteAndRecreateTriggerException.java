@@ -1,4 +1,4 @@
-package com.mjrichardson.teamCity.buildTriggers;
+package com.mjrichardson.teamCity.buildTriggers.Exceptions;
 
 public class NeedToDeleteAndRecreateTriggerException extends Exception {
     public NeedToDeleteAndRecreateTriggerException() {

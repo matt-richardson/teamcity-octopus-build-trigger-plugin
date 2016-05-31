@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.NeedToDeleteAndRecreateTriggerException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

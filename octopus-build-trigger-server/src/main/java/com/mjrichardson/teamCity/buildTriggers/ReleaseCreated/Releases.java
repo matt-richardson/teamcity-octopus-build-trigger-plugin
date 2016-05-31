@@ -1,6 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers.ReleaseCreated;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.NeedToDeleteAndRecreateTriggerException;
 import jetbrains.buildServer.util.StringUtil;
 
 import java.util.ArrayList;

@@ -1,8 +1,9 @@
 package com.mjrichardson.teamCity.buildTriggers.MachineAdded;
 
 import com.mjrichardson.teamCity.buildTriggers.AnalyticsTracker;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.MachinesProviderException;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.*;
-import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;

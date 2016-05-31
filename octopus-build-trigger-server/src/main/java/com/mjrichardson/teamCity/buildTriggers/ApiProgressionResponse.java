@@ -3,6 +3,8 @@ package com.mjrichardson.teamCity.buildTriggers;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environment;
 import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environments;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 

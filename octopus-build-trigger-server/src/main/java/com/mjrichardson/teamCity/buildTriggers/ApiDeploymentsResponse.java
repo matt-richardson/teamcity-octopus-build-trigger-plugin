@@ -1,5 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
 import jetbrains.buildServer.serverSide.ProjectNotFoundException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -16,7 +18,7 @@ public class ApiDeploymentsResponse {
     public final Deployments deployments;
     public String nextLink;
 
-    public ApiDeploymentsResponse(String deploymentsResponse) throws URISyntaxException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException, com.mjrichardson.teamCity.buildTriggers.ProjectNotFoundException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, UnexpectedResponseCodeException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public ApiDeploymentsResponse(String deploymentsResponse) throws URISyntaxException, IOException, ParseException, java.text.ParseException, ProjectNotFoundException, com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException, InvalidOctopusUrlException, InvalidOctopusApiKeyException, UnexpectedResponseCodeException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         this.deployments = new Deployments();
 
         JSONParser parser = new JSONParser();

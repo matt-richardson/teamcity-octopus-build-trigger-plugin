@@ -2,6 +2,7 @@ package com.mjrichardson.teamCity.buildTriggers;
 
 import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;

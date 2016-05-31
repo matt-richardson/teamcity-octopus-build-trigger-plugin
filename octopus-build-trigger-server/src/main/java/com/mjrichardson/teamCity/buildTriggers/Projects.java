@@ -1,5 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.ProjectNotFoundException;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 

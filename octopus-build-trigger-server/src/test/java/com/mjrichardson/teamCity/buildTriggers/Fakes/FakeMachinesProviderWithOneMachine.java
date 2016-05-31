@@ -1,11 +1,11 @@
 package com.mjrichardson.teamCity.buildTriggers.Fakes;
 
-import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusApiKeyException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
 import com.mjrichardson.teamCity.buildTriggers.MachineAdded.Machine;
 import com.mjrichardson.teamCity.buildTriggers.MachineAdded.Machines;
 import com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachinesProvider;
-import com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachinesProviderException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.MachinesProviderException;
 
 import java.text.ParseException;
 import java.util.UUID;

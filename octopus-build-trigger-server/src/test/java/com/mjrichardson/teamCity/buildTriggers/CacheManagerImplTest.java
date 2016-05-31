@@ -1,5 +1,6 @@
 package com.mjrichardson.teamCity.buildTriggers;
 
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidCacheConfigurationException;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeBuildTriggerProperties;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeEventDispatcher;
 import com.mjrichardson.teamCity.buildTriggers.Fakes.FakeMetricRegistry;

@@ -1,4 +1,4 @@
-package com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged;
+package com.mjrichardson.teamCity.buildTriggers.Exceptions;
 
 public class DeploymentProcessProviderException extends Exception {
 

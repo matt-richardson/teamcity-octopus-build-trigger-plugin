@@ -1,6 +1,8 @@
-package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
+package com.mjrichardson.teamCity.buildTriggers.Exceptions;
 
-class NoChangedEnvironmentsException extends Exception {
+import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environments;
+
+public class NoChangedEnvironmentsException extends Exception {
     public NoChangedEnvironmentsException(Environments oldEnvironments, Environments newEnvironments) {
         super(String.format("Didn't find any differences between '%s' and '%s'.",
                 oldEnvironments.toString(), newEnvironments.toString()));

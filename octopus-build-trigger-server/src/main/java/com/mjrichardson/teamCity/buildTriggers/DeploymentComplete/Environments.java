@@ -1,6 +1,7 @@
 package com.mjrichardson.teamCity.buildTriggers.DeploymentComplete;
 
-import com.mjrichardson.teamCity.buildTriggers.NeedToDeleteAndRecreateTriggerException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.NeedToDeleteAndRecreateTriggerException;
+import com.mjrichardson.teamCity.buildTriggers.Exceptions.NoChangedEnvironmentsException;
 import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import jetbrains.buildServer.util.StringUtil;
