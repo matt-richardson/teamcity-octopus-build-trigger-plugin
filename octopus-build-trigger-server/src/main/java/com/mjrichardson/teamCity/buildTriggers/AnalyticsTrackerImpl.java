@@ -131,25 +131,29 @@ public class AnalyticsTrackerImpl implements AnalyticsTracker {
     static String maskException(Exception e) {
         String result = e.toString();
         Matcher ipAddressMatcher = ipAddressPattern.matcher(result);
-        String ipAddress = "";
+        String ipAddress = null;
         if (ipAddressMatcher.find())
             ipAddress = ipAddressMatcher.group(0);
 
         Matcher urlMatcher = urlPattern.matcher(result);
-        String url = "";
+        String url = null;
         if (urlMatcher.find())
             url = urlMatcher.group(2);
 
         Pattern urlPatternWithPort = Pattern.compile("(" + url + ":\\d+)");
 
         Matcher urlPatternMatcher = urlPatternWithPort.matcher(result);
-        String urlWithPort = "";
+        String urlWithPort = null;
         if (urlPatternMatcher.find())
             urlWithPort = urlPatternMatcher.group(1);
 
-        return result
-                .replace(ipAddress, "*****")
-                .replace(urlWithPort, "*****:*****")
-                .replace(url, "*****");
+        if (ipAddress != null)
+            result = result.replace(ipAddress, "*****");
+        if (urlWithPort != null)
+            result = result.replace(urlWithPort, "*****:*****");
+        if (url != null)
+            result = result.replace(url, "*****");
+
+        return result;
     }
 }
