@@ -8,6 +8,22 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Downloads/TeamCity/webapps/ROOT/WEB-INF/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <NATIVE>
+          <root url="file://$USER_HOME$/Downloads/TeamCity/webapps/ROOT/WEB-INF/lib" />
+        </NATIVE>
+        <SOURCES>
+          <root url="file://$USER_HOME$/Downloads/TeamCity/webapps/ROOT/WEB-INF/lib" />
+        </SOURCES>
+        <jarDirectory url="file://$USER_HOME$/Downloads/TeamCity/webapps/ROOT/WEB-INF/lib" recursive="false" />
+        <jarDirectory url="file://$USER_HOME$/Downloads/TeamCity/webapps/ROOT/WEB-INF/lib" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
   <component name="POM File Configuration" pomFile="" />
 </module>

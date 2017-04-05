@@ -100,6 +100,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.testng:testng:6.9.8" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.beanshell:bsh:2.0b4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.beust:jcommander:1.48" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:3.2.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.brsanthu:google-analytics-java:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.5" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.4.0" level="project" />
@@ -112,6 +113,22 @@
     <orderEntry type="library" name="Maven: org.apache.maven:maven-artifact:3.3.9" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:3.0.22" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Downloads/TeamCity/webapps/ROOT/WEB-INF/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <NATIVE>
+          <root url="file://$USER_HOME$/Downloads/TeamCity/webapps/ROOT/WEB-INF/lib" />
+        </NATIVE>
+        <SOURCES>
+          <root url="file://$USER_HOME$/Downloads/TeamCity/webapps/ROOT/WEB-INF/lib" />
+        </SOURCES>
+        <jarDirectory url="file://$USER_HOME$/Downloads/TeamCity/webapps/ROOT/WEB-INF/lib" recursive="false" />
+        <jarDirectory url="file://$USER_HOME$/Downloads/TeamCity/webapps/ROOT/WEB-INF/lib" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
   <component name="POM File Configuration" pomFile="" />
 </module>

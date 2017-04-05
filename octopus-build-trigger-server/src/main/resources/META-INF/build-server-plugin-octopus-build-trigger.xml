@@ -11,7 +11,7 @@
     <bean class="com.mjrichardson.teamCity.buildTriggers.MachineAdded.MachineAddedBuildTriggerService"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.DeploymentProcessChanged.DeploymentProcessChangedBuildTriggerService"/>
     <bean class="com.mjrichardson.teamCity.buildTriggers.ProjectsController" init-method="register" />
-    <bean class="com.mjrichardson.teamCity.buildTriggers.MetricsController" init-method="register" />
+    <!--<bean class="com.mjrichardson.teamCity.buildTriggers.MetricsController" init-method="register" />-->
 
     <!-- injected objects -->
     <bean class="com.mjrichardson.teamCity.buildTriggers.AnalyticsTrackerImpl" scope="singleton" />
