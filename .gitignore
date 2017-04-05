@@ -5,3 +5,4 @@ target/
 octopus-build-trigger-server/target/
 build/target/
 
+.vagrant

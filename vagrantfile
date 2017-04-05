@@ -1,0 +1,67 @@
+# -*- mode: ruby -*-
+
+VAGRANT_FILE_API_VERSION = "2"
+
+$run_test_scenario_script = <<SCRIPT
+  write-output "##teamcity[blockOpened name='Testing Scenario {scenario_name}']"
+  $env:TEAMCITY_PROJECT_NAME="#{ENV['TEAMCITY_PROJECT_NAME']}"
+  set-location c:/temp/tests
+  write-host "executing bundle.bat _1.14.4_ exec rspec Spec/{scenario_name}_spec.rb --format documentation"
+  C:/tools/ruby23/bin/bundle.bat _1.14.4_ exec rspec Spec/{scenario_name}_spec.rb --format documentation
+  write-output "##teamcity[blockClosed name='Testing Scenario {scenario_name}']"
+  exit $LASTEXITCODE
+SCRIPT
+
+Vagrant.configure(VAGRANT_FILE_API_VERSION) do |config|
+
+  hostname = "vagrantdsc.local"
+  config.vm.guest = :windows
+  config.vm.communicator = "winrm"
+
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  if Vagrant.has_plugin?("vagrant-multi-hostsupdater")
+    config.multihostsupdater.aliases = {ip_address => [hostname]}
+  end
+
+  config.vm.provider "virtualbox" do |v, override|
+    v.gui = true
+    v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    v.customize ["modifyvm", :id, "--audio", "none"]
+    v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    v.customize ["modifyvm", :id, "--usb", "off"]
+    override.vm.box = "octopusdeploy/dsc-test-server"
+    override.vm.box_version = "0.1.0"
+    override.vm.network :forwarded_port, guest: 5985, host: 5985, id: "winrm", auto_correct: true
+    override.vm.network :forwarded_port, guest: 80,   host: 8000, id: "web"
+    override.vm.network :forwarded_port, guest: 443, host: 8443,  id: "ssl"
+    override.vm.network :forwarded_port, guest: 22, host: 9222,  id: "ssh"
+  end
+
+  config.vm.provision "dsc" do |dsc|
+    dsc.configuration_file  = "OctopusServer.ps1"
+    dsc.configuration_data_file  = "Tests/DSCConfiguration.psd1"
+    dsc.manifests_path = "tests"
+    dsc.abort_on_dsc_failure = true
+    dsc.module_install = ["OctopusDSC"]
+  end
+
+  config.vm.provision "shell", path: "tests/configure-octopus-for-first-use.ps1"
+
+  config.vm.provision "dsc" do |dsc|
+    dsc.configuration_file  = "OctopusTentacle.ps1"
+    dsc.configuration_data_file  = "Tests/DSCConfiguration.psd1"
+    dsc.manifests_path = "tests"
+    dsc.abort_on_dsc_failure = true
+    dsc.module_install = ["OctopusDSC"]
+  end
+
+  config.vm.provision "shell", path: "tests/install-teamcity.ps1"
+  config.vm.provision "file", source: "tests/configure-teamcity-for-first-use.csx", destination: "c:\\temp"
+  config.vm.provision "shell", path: "tests/configure-teamcity-for-first-use.ps1"
+  config.vm.provision "shell", path: "tests/install-teamcity-agent.ps1"
+  config.vm.provision "shell", path: "tests/install-teamcity-plugin.ps1"
+  config.vm.provision "file", source: "tests/configure-teamcity.csx", destination: "c:\\temp"
+  config.vm.provision "shell", path: "tests/configure-teamcity.ps1"
+
+end
