@@ -9,6 +9,10 @@ A TeamCity plugin that polls Octopus Deploy, and triggers a TeamCity build when:
 - [x] a new tentacle is added
 - [x] the release process for a project is changed
 
+# Important note
+
+This plugin was written before [Octopus Subscriptions](https://octopus.com/docs/administration/subscriptions) was available. It is highly recommended that you use subscriptions where possible rather than this plugin, as this plugin adds reasonable load to your Octopus server due to the way it calls the API.
+
 # Installation
 
 Download the [latest release](https://github.com/matt-richardson/teamcity-octopus-build-trigger-plugin/releases/latest), and drop it into your [<TeamCity Data Directory>](https://confluence.jetbrains.com/display/TCD9/TeamCity+Data+Directory)/plugins folder. Restart TeamCity.
