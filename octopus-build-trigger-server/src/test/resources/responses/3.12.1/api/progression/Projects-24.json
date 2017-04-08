@@ -1,0 +1,94 @@
+{
+  "Environments": [
+    {
+      "Id": "Environments-1",
+      "Name": "Env1"
+    }
+  ],
+  "ChannelEnvironments": {
+    "Channels-8": []
+  },
+  "Releases": [
+    {
+      "Release": {
+        "Id": "Releases-1",
+        "Assembled": "2017-04-08T19:57:38.908+00:00",
+        "ReleaseNotes": null,
+        "ProjectId": "Projects-24",
+        "ChannelId": "Channels-8",
+        "ProjectVariableSetSnapshotId": "variableset-Projects-24-s-0-9WY86",
+        "LibraryVariableSetSnapshotIds": [],
+        "ProjectDeploymentProcessSnapshotId": "deploymentprocess-Projects-24-s-1-MSQP2",
+        "SelectedPackages": [],
+        "Version": "0.0.1",
+        "Links": {
+          "Self": "/api/releases/Releases-1{?force}",
+          "Project": "/api/projects/Projects-24",
+          "Progression": "/api/releases/Releases-1/progression",
+          "Deployments": "/api/releases/Releases-1/deployments{?skip}",
+          "DeploymentTemplate": "/api/releases/Releases-1/deployments/template",
+          "Artifacts": "/api/artifacts?regarding=Releases-1",
+          "ProjectVariableSnapshot": "/api/variables/variableset-Projects-24-s-0-9WY86",
+          "ProjectDeploymentProcessSnapshot": "/api/deploymentprocesses/deploymentprocess-Projects-24-s-1-MSQP2",
+          "Web": "/app#/releases/Releases-1",
+          "SnapshotVariables": "/api/releases/Releases-1/snapshot-variables",
+          "Defects": "/api/releases/Releases-1/defects",
+          "ReportDefect": "/api/releases/Releases-1/defects",
+          "ResolveDefect": "/api/releases/Releases-1/defects/resolve"
+        }
+      },
+      "Channel": {
+        "Id": "Channels-8",
+        "Name": "Default",
+        "Description": null,
+        "ProjectId": "Projects-24",
+        "LifecycleId": null,
+        "IsDefault": true,
+        "Rules": [],
+        "TenantTags": [],
+        "Links": {
+          "Self": "/api/channels/Channels-8",
+          "Releases": "/api/channels/Channels-8/releases",
+          "Project": "/api/projects/Projects-24"
+        }
+      },
+      "Deployments": {
+        "Environments-1": [
+          {
+            "Id": "Deployments-1",
+            "ProjectId": "Projects-24",
+            "EnvironmentId": "Environments-1",
+            "ReleaseId": "Releases-1",
+            "DeploymentId": "Deployments-1",
+            "TaskId": "ServerTasks-7",
+            "TenantId": null,
+            "ChannelId": null,
+            "ReleaseVersion": "0.0.1",
+            "Created": "2017-04-08T19:57:44.997+00:00",
+            "QueueTime": "2017-04-08T19:57:44.991+00:00",
+            "CompletedTime": "2017-04-08T19:57:49.903+00:00",
+            "State": "Success",
+            "HasPendingInterruptions": false,
+            "HasWarningsOrErrors": false,
+            "ErrorMessage": "",
+            "Duration": "5 seconds",
+            "IsCurrent": true,
+            "IsPrevious": false,
+            "IsCompleted": true,
+            "Links": {
+              "Self": "/api/deployments/Deployments-1",
+              "Release": "/api/releases/Releases-1",
+              "Tenant": "/api/tenants/",
+              "Task": "/api/tasks/ServerTasks-7"
+            }
+          }
+        ]
+      },
+      "NextDeployments": [],
+      "HasUnresolvedDefect": false,
+      "ReleaseRetentionPeriod": null,
+      "TentacleRetentionPeriod": null
+    }
+  ],
+  "Links": {}
+}

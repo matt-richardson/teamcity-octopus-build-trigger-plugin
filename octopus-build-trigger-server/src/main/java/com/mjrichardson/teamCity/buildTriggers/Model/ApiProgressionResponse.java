@@ -6,6 +6,7 @@ import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environments;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
 import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
+import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -66,7 +67,14 @@ public class ApiProgressionResponse {
             Map deps = (Map) releaseAndDeploymentPairMap.get("Deployments");
             for (Object key : deps.keySet()) {
                 foundDeployment = true;
-                Environment environment = Environment.Parse((Map) deps.get(key));
+                Object env = deps.get(key);
+                Environment environment;
+
+                if (env instanceof org.json.simple.JSONArray)
+                    environment = Environment.Parse((Map) ((JSONArray) env).get(0));
+                else
+                    environment = Environment.Parse((Map) env);
+
                 environments.addOrUpdate(environment);
             }
         }

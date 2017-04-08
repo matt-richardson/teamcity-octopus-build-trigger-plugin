@@ -4,7 +4,6 @@ import com.mjrichardson.teamCity.buildTriggers.DeploymentComplete.Environment;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.InvalidOctopusApiKeyException;
 import com.mjrichardson.teamCity.buildTriggers.Exceptions.UnexpectedResponseCodeException;
 import com.mjrichardson.teamCity.buildTriggers.InvalidOctopusUrlException;
-import com.mjrichardson.teamCity.buildTriggers.Model.ApiProgressionResponse;
 import com.mjrichardson.teamCity.buildTriggers.NullOctopusDate;
 import com.mjrichardson.teamCity.buildTriggers.OctopusDate;
 import com.mjrichardson.teamCity.buildTriggers.ResourceHandler;
@@ -114,5 +113,17 @@ public class ApiProgressionResponseTest {
         Assert.assertEquals(environments[0].environmentId, "Environments-1");
         Assert.assertEquals(environments[0].latestDeployment, new OctopusDate(2016, 1, 21, 14, 18, 1, 887));
         Assert.assertEquals(environments[0].latestSuccessfulDeployment, new OctopusDate(2016, 1, 21, 13, 35, 27, 179));
+    }
+
+    public void can_parse_progression_response_with_latest_deployment_successful_3_12_1() throws IOException, ParseException, org.json.simple.parser.ParseException, UnexpectedResponseCodeException, URISyntaxException, InvalidOctopusUrlException, InvalidOctopusApiKeyException {
+        final String json = ResourceHandler.getResource("3.12.1", "api/progression/" + ProjectWithLatestDeploymentSuccessful);
+        UUID correlationId = UUID.randomUUID();
+        ApiProgressionResponse sut = new ApiProgressionResponse(json, correlationId);
+        Assert.assertTrue(sut.haveCompleteInformation);
+        Assert.assertEquals(sut.environments.size(), 1);
+        Environment[] environments = sut.environments.toArray();
+        Assert.assertEquals(environments[0].environmentId, "Environments-1");
+        Assert.assertEquals(environments[0].latestDeployment, new OctopusDate(2017, 4, 8, 19, 57, 44, 997));
+        Assert.assertEquals(environments[0].latestSuccessfulDeployment, new OctopusDate(2017, 4, 8, 19, 57, 44, 997));
     }
 }
