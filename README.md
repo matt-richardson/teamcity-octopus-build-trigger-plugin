@@ -36,8 +36,8 @@ Once a build is triggered, parameters will be passed to the build:
 If you want to turn on logging, add the following to `<TeamCity server home>\conf\teamcity-server-log4j.xml`:
 
 ```xml
-<appender name="OCTOPUS_DEPLOY.LOG" class="jetbrains.buildServer.util.TCRollingFileAppender">
-  <param name="file" value="${teamcity_logs}teamcity-octopusDeploy.log" />
+<appender name="TEAMCITY_OCTOPUS_DEPLOY_BUILD_TRIGGER_PLUGIN.LOG" class="jetbrains.buildServer.util.TCRollingFileAppender">
+  <param name="file" value="${teamcity_logs}teamcity-octopus-deploy-build-trigger-plugin.log" />
   <param name="maxBackupIndex" value="3" />
   <layout class="org.apache.log4j.PatternLayout">
     <param name="ConversionPattern" value="[%d] %6p - %c - %m %n" />
@@ -45,7 +45,7 @@ If you want to turn on logging, add the following to `<TeamCity server home>\con
 </appender>
 <category name="com.mjrichardson.teamCity.buildTriggers" additivity="false">
   <priority value="DEBUG" />
-  <appender-ref ref="OCTOPUS_DEPLOY.LOG" />
+  <appender-ref ref="TEAMCITY_OCTOPUS_DEPLOY_BUILD_TRIGGER_PLUGIN.LOG" />
 </category>
  ```
 
