@@ -56,6 +56,10 @@ Vagrant.configure(VAGRANT_FILE_API_VERSION) do |config|
     dsc.module_install = ["OctopusDSC"]
   end
 
+  config.vm.provision "shell", path: "tests/configure-octopus.ps1"
+
+  config.vm.provision "file", source: "tests/TeamCityConfiguration.zip", destination: "c:\\TeamCityConfiguration.zip"
+
   config.vm.provision "shell", path: "tests/install-teamcity.ps1"
   config.vm.provision "file", source: "tests/configure-teamcity-for-first-use.csx", destination: "c:\\temp"
   config.vm.provision "shell", path: "tests/configure-teamcity-for-first-use.ps1"
@@ -63,5 +67,8 @@ Vagrant.configure(VAGRANT_FILE_API_VERSION) do |config|
   config.vm.provision "shell", path: "tests/install-teamcity-plugin.ps1"
   config.vm.provision "file", source: "tests/configure-teamcity.csx", destination: "c:\\temp"
   config.vm.provision "shell", path: "tests/configure-teamcity.ps1"
+
+  #trigger project
+  #run tests
 
 end

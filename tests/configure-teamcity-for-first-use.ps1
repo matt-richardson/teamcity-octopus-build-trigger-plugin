@@ -17,6 +17,8 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 set-location "c:\temp"
 scriptcs -install Selenium.WebDriver
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+scriptcs -install Selenium.Support
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 scriptcs configure-teamcity-for-first-use.csx
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
