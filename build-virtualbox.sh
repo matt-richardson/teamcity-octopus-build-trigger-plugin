@@ -39,7 +39,14 @@ check_plugin_installed "vagrant-dsc"
 check_plugin_installed "vagrant-winrm"
 check_plugin_installed "vagrant-winrm-syncedfolders"
 
-echo "Running 'vagrant up --provider virtualbox'"
-time vagrant up --provider virtualbox # --debug &> vagrant.log
+mvn package -DfinalName=octopus-build-trigger-0.0.0-local -DfinalVersion=0.0.0-local
+
+if [[ $(vagrant status) =~ "running (virtualbox)" ]]; then
+  echo "Running 'vagrant reload --provision'"
+  time vagrant reload --provision # --debug &> vagrant.log
+else
+  echo "Running 'vagrant up --provider virtualbox'"
+  time vagrant up --provider virtualbox # --debug &> vagrant.log
+fi
 
 echo "Dont forget to run 'vagrant destroy -f' when you have finished"

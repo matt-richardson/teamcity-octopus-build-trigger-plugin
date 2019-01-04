@@ -28,7 +28,9 @@ import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
+import jetbrains.buildServer.parameters.ValueResolver;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
+import jetbrains.buildServer.serverSide.SBuildType;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,17 +46,17 @@ class MachineAddedCheckJob extends CustomCheckJob<MachineAddedSpec> {
 
     private final MachinesProviderFactory MachinesProviderFactory;
     private final String displayName;
-    private final String buildType;
+    private final SBuildType buildType;
     private final CustomDataStorage dataStorage;
     private final Map<String, String> props;
     private final AnalyticsTracker analyticsTracker;
     private final BuildTriggerProperties buildTriggerProperties;
 
-    public MachineAddedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
+    public MachineAddedCheckJob(String displayName, SBuildType buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
         this(new MachinesProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker, buildTriggerProperties);
     }
 
-    public MachineAddedCheckJob(MachinesProviderFactory MachinesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, BuildTriggerProperties buildTriggerProperties) {
+    public MachineAddedCheckJob(MachinesProviderFactory MachinesProviderFactory, String displayName, SBuildType buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, BuildTriggerProperties buildTriggerProperties) {
         this.MachinesProviderFactory = MachinesProviderFactory;
         this.displayName = displayName;
         this.buildType = buildType;
@@ -125,13 +127,14 @@ class MachineAddedCheckJob extends CustomCheckJob<MachineAddedSpec> {
 
     @NotNull
     public CheckResult<MachineAddedSpec> perform(UUID correlationId) {
-        final String octopusUrl = props.get(OCTOPUS_URL);
+        ValueResolver resolver = this.buildType.getValueResolver();
+        final String octopusUrl = resolveValue(resolver, props.get(OCTOPUS_URL));
         if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
             return MachineAddedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
                     displayName, buildType), correlationId);
         }
 
-        final String octopusApiKey = props.get(OCTOPUS_APIKEY);
+        final String octopusApiKey = resolveValue(resolver, props.get(OCTOPUS_APIKEY));
         if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
             return MachineAddedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
                     displayName, buildType), correlationId);

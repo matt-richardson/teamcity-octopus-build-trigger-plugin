@@ -51,7 +51,7 @@ public class DeploymentProcessChangedAsyncBuildTriggerTest {
         String displayName = "the display name";
         DeploymentProcessChangedAsyncBuildTrigger sut = new DeploymentProcessChangedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
-        CheckJob<DeploymentProcessChangedSpec> result = sut.createJob("the-build-type",
+        CheckJob<DeploymentProcessChangedSpec> result = sut.createJob(new FakeBuildType(),
                 new FakeCustomDataStorage(),
                 new FakeBuildTriggerDescriptor().getProperties(),
                 correlationId);

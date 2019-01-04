@@ -2,6 +2,7 @@ package com.mjrichardson.teamCity.buildTriggers;
 
 import jetbrains.buildServer.buildTriggers.async.*;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
+import jetbrains.buildServer.serverSide.SBuildType;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +13,7 @@ public abstract class CustomAsyncBuildTrigger<TItem> implements AsyncBuildTrigge
     public abstract Map<String, String> getProperties(TItem item);
     public abstract CheckResult<TItem> createCrashOnSubmitResult(@NotNull Throwable throwable, UUID correlationId);
     public abstract int getPollIntervalInMilliseconds();
-    public abstract CustomCheckJob<TItem> createJob(@NotNull String buildType, @NotNull CustomDataStorage dataStorage, @NotNull Map<String, String> properties, @NotNull UUID correlationId) throws CheckJobCreationException;
+    public abstract CustomCheckJob<TItem> createJob(@NotNull SBuildType buildType, @NotNull CustomDataStorage dataStorage, @NotNull Map<String, String> properties, @NotNull UUID correlationId) throws CheckJobCreationException;
 
     //override these methods - we dont actually use them, as we have overridden the caller to call the other methods above
     @Deprecated

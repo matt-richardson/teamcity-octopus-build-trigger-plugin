@@ -49,7 +49,7 @@ public class DeploymentCompleteAsyncBuildTriggerTest {
         String displayName = "the display name";
         DeploymentCompleteAsyncBuildTrigger sut = new DeploymentCompleteAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
-        CheckJob<DeploymentCompleteSpec> result = sut.createJob("the-build-type",
+        CheckJob<DeploymentCompleteSpec> result = sut.createJob(new FakeBuildType(),
                 new FakeCustomDataStorage(),
                 new FakeBuildTriggerDescriptor().getProperties(),
                 correlationId);

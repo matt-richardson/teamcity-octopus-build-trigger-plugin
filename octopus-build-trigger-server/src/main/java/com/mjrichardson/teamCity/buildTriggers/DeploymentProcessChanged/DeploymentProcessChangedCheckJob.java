@@ -28,7 +28,9 @@ import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
+import jetbrains.buildServer.parameters.ValueResolver;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
+import jetbrains.buildServer.serverSide.SBuildType;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,18 +44,18 @@ class DeploymentProcessChangedCheckJob extends CustomCheckJob<DeploymentProcessC
     private static final Logger LOG = Logger.getInstance(DeploymentProcessChangedCheckJob.class.getName());
 
     private final String displayName;
-    private final String buildType;
+    private final SBuildType buildType;
     private final CustomDataStorage dataStorage;
     private final Map<String, String> props;
     private final AnalyticsTracker analyticsTracker;
     private final DeploymentProcessProviderFactory deploymentProcessProviderFactory;
     private final BuildTriggerProperties buildTriggerProperties;
 
-    public DeploymentProcessChangedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
+    public DeploymentProcessChangedCheckJob(String displayName, SBuildType buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
         this(new DeploymentProcessProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker, buildTriggerProperties);
     }
 
-    public DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory deploymentProcessProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, BuildTriggerProperties buildTriggerProperties) {
+    public DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory deploymentProcessProviderFactory, String displayName, SBuildType buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, BuildTriggerProperties buildTriggerProperties) {
         this.deploymentProcessProviderFactory = deploymentProcessProviderFactory;
         this.displayName = displayName;
         this.buildType = buildType;
@@ -109,19 +111,20 @@ class DeploymentProcessChangedCheckJob extends CustomCheckJob<DeploymentProcessC
 
     @NotNull
     public CheckResult<DeploymentProcessChangedSpec> perform(UUID correlationId) {
-        final String octopusUrl = props.get(OCTOPUS_URL);
+        ValueResolver resolver = this.buildType.getValueResolver();
+        final String octopusUrl = resolveValue(resolver, props.get(OCTOPUS_URL));
         if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
             return DeploymentProcessChangedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
                     displayName, this.buildType), correlationId);
         }
 
-        final String octopusApiKey = props.get(OCTOPUS_APIKEY);
+        final String octopusApiKey = resolveValue(resolver, props.get(OCTOPUS_APIKEY));
         if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
             return DeploymentProcessChangedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
                     displayName, this.buildType), correlationId);
         }
 
-        final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
+        final String octopusProject = resolveValue(resolver, props.get(OCTOPUS_PROJECT_ID));
         if (StringUtil.isEmptyOrSpaces(octopusProject)) {
             return DeploymentProcessChangedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty project) in build configuration %s",
                     displayName, this.buildType), correlationId);

@@ -31,6 +31,7 @@ import jetbrains.buildServer.buildTriggers.BuildTriggerException;
 import jetbrains.buildServer.buildTriggers.async.CheckJobCreationException;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
+import jetbrains.buildServer.serverSide.SBuildType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -71,7 +72,7 @@ public class DeploymentProcessChangedAsyncBuildTrigger extends CustomAsyncBuildT
     }
 
     @NotNull
-    public CustomCheckJob<DeploymentProcessChangedSpec> createJob(@NotNull String buildType, @NotNull CustomDataStorage dataStorage, @NotNull Map<String, String> properties, @NotNull UUID correlationId) throws CheckJobCreationException {
+    public CustomCheckJob<DeploymentProcessChangedSpec> createJob(@NotNull SBuildType buildType, @NotNull CustomDataStorage dataStorage, @NotNull Map<String, String> properties, @NotNull UUID correlationId) throws CheckJobCreationException {
         return new DeploymentProcessChangedCheckJob(displayName,
                 buildType,
                 dataStorage,

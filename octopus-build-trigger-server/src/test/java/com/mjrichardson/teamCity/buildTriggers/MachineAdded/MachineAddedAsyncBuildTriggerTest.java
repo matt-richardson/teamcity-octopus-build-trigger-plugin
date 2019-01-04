@@ -47,7 +47,7 @@ public class MachineAddedAsyncBuildTriggerTest {
         String displayName = "the display name";
         MachineAddedAsyncBuildTrigger sut = new MachineAddedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
-        CheckJob<MachineAddedSpec> result = sut.createJob("the-build-type",
+        CheckJob<MachineAddedSpec> result = sut.createJob(new FakeBuildType(),
                 new FakeCustomDataStorage(),
                 new FakeBuildTriggerDescriptor().getProperties(),
                 correlationId);

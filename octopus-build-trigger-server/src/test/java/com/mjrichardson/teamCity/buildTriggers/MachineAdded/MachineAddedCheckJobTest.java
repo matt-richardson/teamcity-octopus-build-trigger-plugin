@@ -33,12 +33,11 @@ public class MachineAddedCheckJobTest {
     public void perform_returns_an_error_result_if_octopus_url_is_invalid(String value) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithNoMachines());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, value);
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty url) in build configuration the-build-type");
@@ -50,13 +49,12 @@ public class MachineAddedCheckJobTest {
     public void perform_returns_an_error_result_if_octopus_api_key_is_invalid(String value) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithNoMachines());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, value);
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty api key) in build configuration the-build-type");
@@ -67,14 +65,13 @@ public class MachineAddedCheckJobTest {
     public void perform_returns_an_error_result_if_exception_occurs() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderThatThrowsExceptions());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -85,13 +82,12 @@ public class MachineAddedCheckJobTest {
     public void perform_returns_empty_result_if_no_new_machines_available() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithOneMachine());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("Machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -102,13 +98,12 @@ public class MachineAddedCheckJobTest {
         //this situation is when trigger is first setup
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
@@ -120,13 +115,12 @@ public class MachineAddedCheckJobTest {
         //this situation is when trigger is first setup
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithNoMachines());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
@@ -134,7 +128,7 @@ public class MachineAddedCheckJobTest {
         Assert.assertFalse(result.hasCheckErrors());
 
         machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
-        sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is the first check
         result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
@@ -149,13 +143,12 @@ public class MachineAddedCheckJobTest {
         FakeMachinesProviderWithTwoMachines machinesProvider = new FakeMachinesProviderWithTwoMachines();
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(machinesProvider);
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
@@ -177,7 +170,7 @@ public class MachineAddedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithOneMachine());
         String displayName = "the-display-name";
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, "the-build-type", dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -189,13 +182,12 @@ public class MachineAddedCheckJobTest {
     public void perform_returns_updated_result_if_new_machine() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<MachineAddedSpec> result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
@@ -208,14 +200,13 @@ public class MachineAddedCheckJobTest {
     public void perform_logs_analytics_if_new_machine() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
@@ -226,14 +217,13 @@ public class MachineAddedCheckJobTest {
     public void perform_does_not_log_analytics_if_no_new_machines() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithOneMachine());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("Machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 0);
@@ -242,14 +232,13 @@ public class MachineAddedCheckJobTest {
     public void perform_logs_analytics_if_a_new_trigger_is_added() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithTwoMachines());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
 
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
@@ -267,13 +256,12 @@ public class MachineAddedCheckJobTest {
 
         MachinesProviderFactory machinesProviderFactory = new FakeMachinesProviderFactory(new FakeMachinesProviderWithNoMachines());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Machine("machine-1", "MachineOne", new String[] { "env-id" }, new String[]{ "role-name" })).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
-        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        MachineAddedCheckJob sut = new MachineAddedCheckJob(machinesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         Assert.assertFalse(sut.allowSchedule(new FakeBuildTriggerDescriptor()));
     }
 }

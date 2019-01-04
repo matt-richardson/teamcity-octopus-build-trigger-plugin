@@ -33,12 +33,11 @@ public class DeploymentProcessChangedCheckJobTest {
     public void perform_returns_an_error_result_if_octopus_url_is_invalid(String value) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, value);
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty url) in build configuration the-build-type");
@@ -50,13 +49,12 @@ public class DeploymentProcessChangedCheckJobTest {
     public void perform_returns_an_error_result_if_octopus_apikey_is_invalid(String value) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, value);
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty api key) in build configuration the-build-type");
@@ -68,14 +66,13 @@ public class DeploymentProcessChangedCheckJobTest {
     public void perform_returns_an_error_result_if_octopus_project_id_is_invalid(String value) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, value);
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty project) in build configuration the-build-type");
@@ -86,14 +83,13 @@ public class DeploymentProcessChangedCheckJobTest {
     public void perform_returns_an_error_result_if_exception_occurs() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProviderThatThrowsException());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -104,14 +100,13 @@ public class DeploymentProcessChangedCheckJobTest {
     public void perform_returns_empty_result_if_same_version() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage("17");
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -122,14 +117,13 @@ public class DeploymentProcessChangedCheckJobTest {
         //this situation is when trigger is first setup
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
 
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
@@ -142,14 +136,13 @@ public class DeploymentProcessChangedCheckJobTest {
         //this situation is when trigger is first setup
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
 
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
@@ -161,7 +154,7 @@ public class DeploymentProcessChangedCheckJobTest {
         FakeDeploymentProcessProvider deploymentProcessProvider = new FakeDeploymentProcessProvider();
         deploymentProcessProvider.setVersion("18");
         DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(deploymentProcessProvider);
-        sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
 
         result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
@@ -174,7 +167,6 @@ public class DeploymentProcessChangedCheckJobTest {
     public void perform_returns_empty_result_if_no_previous_data_stored_and_stores_all_known_environments() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, ProjectNotFoundException, DeploymentProcessProviderException, InvalidOctopusApiKeyException, ParseException, InvalidOctopusUrlException {
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
@@ -183,7 +175,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         String octopusProject = "the-project-id";
         properties.put(OCTOPUS_PROJECT_ID, octopusProject);
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
 
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
@@ -195,14 +187,13 @@ public class DeploymentProcessChangedCheckJobTest {
     public void perform_returns_updated_result_if_deployment_process_changed() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage("16");
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<DeploymentProcessChangedSpec> result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
@@ -215,7 +206,6 @@ public class DeploymentProcessChangedCheckJobTest {
     public void perform_logs_analytics_if_deployment_process_changed() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage("16");
 
         Map<String, String> properties = new HashMap<>();
@@ -224,7 +214,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
 
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
@@ -235,7 +225,6 @@ public class DeploymentProcessChangedCheckJobTest {
     public void perform_does_not_log_analytics_if_no_changes_detected() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage("17");
 
         Map<String, String> properties = new HashMap<>();
@@ -243,7 +232,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 0);
@@ -252,7 +241,6 @@ public class DeploymentProcessChangedCheckJobTest {
     public void perform_logs_analytics_if_a_new_trigger_is_added() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
@@ -260,7 +248,7 @@ public class DeploymentProcessChangedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
 
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
@@ -277,14 +265,13 @@ public class DeploymentProcessChangedCheckJobTest {
 
         DeploymentProcessProviderFactory DeploymentProcessProviderFactory = new FakeDeploymentProcessProviderFactory(new FakeDeploymentProcessProvider());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage("17");
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        DeploymentProcessChangedCheckJob sut = new DeploymentProcessChangedCheckJob(DeploymentProcessProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         Assert.assertFalse(sut.allowSchedule(new FakeBuildTriggerDescriptor()));
     }
 }

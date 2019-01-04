@@ -31,8 +31,7 @@ Vagrant.configure(VAGRANT_FILE_API_VERSION) do |config|
     v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
     v.customize ["modifyvm", :id, "--usb", "off"]
     override.vm.box = "OctopusDeploy/dsc-test-server-windows-2012-r2"
-    override.vm.box_url = "https://s3-ap-southeast-2.amazonaws.com/octopus-vagrant-boxes/vagrant/json/OctopusDeploy/dsc-test-server-windows-2012-r2.json"
-    override.vm.network :forwarded_port, guest: 5985, host: 5985, id: "winrm", auto_correct: true
+    override.vm.box_url = "https://s3-ap-southeast-2.amazonaws.com/octopus-vagrant-boxes/vagrant/json/OctopusDeploy/virtualbox/dsc-test-server-windows-2012-r2.json"    override.vm.network :forwarded_port, guest: 5985, host: 5985, id: "winrm", auto_correct: true
     override.vm.network :forwarded_port, guest: 80,   host: 8000, id: "web"
     override.vm.network :forwarded_port, guest: 443, host: 8443,  id: "ssl"
     override.vm.network :forwarded_port, guest: 22, host: 9222,  id: "ssh"
@@ -59,6 +58,7 @@ Vagrant.configure(VAGRANT_FILE_API_VERSION) do |config|
   config.vm.provision "shell", path: "tests/configure-octopus.ps1"
 
   config.vm.provision "file", source: "tests/TeamCityConfiguration.zip", destination: "c:\\TeamCityConfiguration.zip"
+  config.vm.provision "file", source: "target/octopus-build-trigger.zip", destination: "c:\\octopus-build-trigger.zip"
 
   config.vm.provision "shell", path: "tests/install-teamcity.ps1"
   config.vm.provision "file", source: "tests/configure-teamcity-for-first-use.csx", destination: "c:\\temp"

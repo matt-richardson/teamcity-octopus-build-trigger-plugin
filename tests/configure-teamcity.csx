@@ -72,56 +72,59 @@ Console.WriteLine("Clicking on 'Versioned Settings'");
 wait.Until(ExpectedConditions.ElementToBeClickable(By.LinkText("Versioned Settings")));
 driver.FindElement(By.LinkText("Versioned Settings")).Click();
 
-Console.WriteLine("Clicking on 'Enabled'");
-driver.FindElement(By.Id("enabled")).Click();
-
-Console.WriteLine(" - waiting until 'Apply' button is clickable");
-wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"versionedSettingSaveRow\"]/td/input[1]")));
-Console.WriteLine(" - waiting until 'Project Settings VCS Root' is visible");
-wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("-ufd-teamcity-ui-settingsVcsRootId")));
-
-Console.WriteLine("Choosing VCS Root 'TeamCityConfiguration'");
-driver.FindElement(By.Id("-ufd-teamcity-ui-settingsVcsRootId")).Click();
-driver.FindElement(By.Id("-ufd-teamcity-ui-settingsVcsRootId")).Clear();
-driver.FindElement(By.Id("-ufd-teamcity-ui-settingsVcsRootId")).SendKeys("TeamCityConfiguration");
-driver.FindElement(By.Id("buildSettingsModeAlwaysCurrent")).Click();
-
-Console.WriteLine("Clicking 'Apply' button");
-driver.FindElement(By.XPath("//*[@id=\"versionedSettingSaveRow\"]/td/input[1]")).Click();
-
-// Console.WriteLine(" - waiting for import confirm box");
-// wait.Until(ExpectedConditions.AlertIsPresent());
-// var alert = driver.SwitchTo().Alert();
-//alert.Accept();
-
-Console.WriteLine(" - waiting for 'Existing Project Settings Detected' dialog to appear");
-wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"nonEmptyDirConfirmDialog\"]/div[2]/div[2]/input[3]")));
-
-Console.WriteLine("Clicking 'Import settings from VCS' button");
-driver.FindElement(By.XPath("//*[@id=\"nonEmptyDirConfirmDialog\"]/div[2]/div[2]/input[3]")).Click();
-
-Console.WriteLine(" - waiting for settings to import");
-while(true)
+Console.WriteLine("Checking if versioned settings already enabled");
+if (driver.FindElement(By.Id("enabled")).Selected)
 {
-  //todo: add timeout
-  try {
-    var element = driver.FindElement(By.XPath("//*[@id=\"versionedSettingsStatusInner\"]/table/tbody/tr[1]/td[2]/span"));
-    if (element.Text.Contains("Changes from VCS are applied to project settings"))
-      break;
-  }
-  catch (NoSuchElementException e)
-  {
-    Console.WriteLine("Status element doesn't exist yet - retrying.");
-    //do nothing - teamcity is replacing the element every second or so
-  }
-  catch (StaleElementReferenceException ex)
-  {
-    Console.WriteLine("DOM changed under us - retrying.");
-    //do nothing - teamcity is replacing the element every second or so
-  }
-  System.Threading.Thread.Sleep(100);
+  Console.WriteLine("Versioned settings already enabled.");
 }
+else
+{
+  Console.WriteLine("Clicking on 'Enabled'");
+  driver.FindElement(By.Id("enabled")).Click();
 
-Console.WriteLine("Configuration Imported");
-//driver.Close();
-//driver.Quit();
+  Console.WriteLine(" - waiting until 'Apply' button is clickable");
+  wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"versionedSettingSaveRow\"]/td/input[1]")));
+  Console.WriteLine(" - waiting until 'Project Settings VCS Root' is visible");
+  wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("-ufd-teamcity-ui-settingsVcsRootId")));
+
+  Console.WriteLine("Choosing VCS Root 'TeamCityConfiguration'");
+  driver.FindElement(By.Id("-ufd-teamcity-ui-settingsVcsRootId")).Click();
+  driver.FindElement(By.Id("-ufd-teamcity-ui-settingsVcsRootId")).Clear();
+  driver.FindElement(By.Id("-ufd-teamcity-ui-settingsVcsRootId")).SendKeys("TeamCityConfiguration");
+  driver.FindElement(By.Id("buildSettingsModeAlwaysCurrent")).Click();
+
+  Console.WriteLine("Clicking 'Apply' button");
+  driver.FindElement(By.XPath("//*[@id=\"versionedSettingSaveRow\"]/td/input[1]")).Click();
+
+  Console.WriteLine(" - waiting for 'Existing Project Settings Detected' dialog to appear");
+  wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"nonEmptyDirConfirmDialog\"]/div[2]/div[2]/input[3]")));
+
+  Console.WriteLine("Clicking 'Import settings from VCS' button");
+  driver.FindElement(By.XPath("//*[@id=\"nonEmptyDirConfirmDialog\"]/div[2]/div[2]/input[3]")).Click();
+
+  Console.WriteLine(" - waiting for settings to import");
+  while(true)
+  {
+    //todo: add timeout
+    try {
+      var element = driver.FindElement(By.XPath("//*[@id=\"versionedSettingsStatusInner\"]/table/tbody/tr[1]/td[2]/span"));
+      if (element.Text.Contains("Changes from VCS are applied to project settings"))
+        break;
+    }
+    catch (NoSuchElementException e)
+    {
+      //do nothing - teamcity is replacing the element every second or so
+      Console.WriteLine("Status element doesn't exist yet - retrying.");
+    }
+    catch (StaleElementReferenceException ex)
+    {
+      //do nothing - teamcity is replacing the element every second or so
+      Console.WriteLine("DOM changed under us - retrying.");
+    }
+    System.Threading.Thread.Sleep(100);
+  }
+
+  Console.WriteLine("Configuration Imported");
+}
+driver.Close();
+driver.Quit();

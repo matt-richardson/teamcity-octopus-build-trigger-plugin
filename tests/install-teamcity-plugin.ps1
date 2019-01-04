@@ -1,11 +1,18 @@
 
+function Test-ShouldCopyFile {
+  if (-not (Test-Path $destination)) {
+    return $true
+  }
+
+  return ((Get-FileHash $source).Hash -ne (Get-FileHash $destination).Hash)
+}
+
+write-host "Installing plugin"
 $destination = "C:\ProgramData\JetBrains\TeamCity\plugins\octopus-build-trigger.zip"
+$source = "c:\octopus-build-trigger.zip"
 
-write-host "Downloading plugin from github"
-if (-not (Test-Path $destination)) {
-  $url = "https://github.com/matt-richardson/teamcity-octopus-build-trigger-plugin/releases/download/2.5.1%2Bbuild.143/octopus-build-trigger.zip"
-  Invoke-webrequest $url -outfile $destination
-
+if (Test-ShouldCopyFile) {
+  Copy-Item $source $destination
   Restart-Service "TeamCity"
 }
 else {

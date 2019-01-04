@@ -93,7 +93,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
         try {
             return getContent(cacheName, uri, headers, correlationId);
         } catch (UnknownHostException e) {
-            LOG.warn(String.format("%s: Unknown host exception while getting response from %s", correlationId, uri));
+            LOG.warn(String.format("%s: Unknown host exception while getting response from %s", correlationId, uri), e);
             throw new InvalidOctopusUrlException(uri, e);
         }
         catch (UnexpectedResponseCodeException ex) {
@@ -154,7 +154,7 @@ public class HttpContentProviderImpl implements HttpContentProvider {
             cacheManager.addToCache(cacheName, uri, content, correlationId);
             return content;
         } catch (Exception e) {
-            LOG.warn(String.format("%s: Exception while getting response from %s", correlationId, uri));
+            LOG.warn(String.format("%s: Exception while getting response from %s", correlationId, uri), e);
             throw e;
         } finally {
             context.stop();

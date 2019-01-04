@@ -5,8 +5,11 @@ write-host "Installing teamcity server"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 write-host "Expanding teamcity configuration git repository"
-Expand-Archive c:\TeamCityConfiguration.zip -DestinationPath c:\
+if (-not (Test-Path c:\TeamCityConfiguration))
+{
+  Expand-Archive c:\TeamCityConfiguration.zip -DestinationPath c:\
 
-#remove rubbish that mac has left behind
-Get-ChildItem 'C:\TeamCityConfiguration' -filter '.DS_Store' -Recurse | Remove-item
-Remove-Item 'C:\__MACOSX' -Recurse -Force
+  #remove rubbish that mac has left behind
+  Get-ChildItem 'C:\TeamCityConfiguration' -filter '.DS_Store' -Recurse | Remove-item
+  Remove-Item 'C:\__MACOSX' -Recurse -Force
+}

@@ -33,12 +33,11 @@ public class ReleaseCreatedCheckJobTest {
     public void perform_returns_an_error_result_if_octopus_url_is_invalid(String value) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithNoReleases());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, value);
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty url) in build configuration the-build-type");
@@ -50,13 +49,12 @@ public class ReleaseCreatedCheckJobTest {
     public void perform_returns_an_error_result_if_octopus_apikey_is_invalid(String value) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithNoReleases());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, value);
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty api key) in build configuration the-build-type");
@@ -68,14 +66,13 @@ public class ReleaseCreatedCheckJobTest {
     public void perform_returns_an_error_result_if_octopus_project_id_is_invalid(String value) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithNoReleases());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, value);
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertEquals(result.getGeneralError().getMessage(), "the-display-name settings are invalid (empty project) in build configuration the-build-type");
@@ -86,14 +83,13 @@ public class ReleaseCreatedCheckJobTest {
     public void perform_returns_an_error_result_if_exception_occurs() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderThatThrowsExceptions());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -104,14 +100,13 @@ public class ReleaseCreatedCheckJobTest {
     public void perform_returns_empty_result_if_no_new_releases_available() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithOneRelease());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
@@ -122,14 +117,13 @@ public class ReleaseCreatedCheckJobTest {
         //this situation is when trigger is first setup
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
         CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
@@ -141,14 +135,13 @@ public class ReleaseCreatedCheckJobTest {
         //this situation is when trigger is first setup
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithNoReleases());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(OCTOPUS_URL, "the-url");
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
         CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
@@ -156,7 +149,7 @@ public class ReleaseCreatedCheckJobTest {
         Assert.assertFalse(result.hasCheckErrors());
 
         releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
-        sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is the first check
         result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
@@ -171,7 +164,6 @@ public class ReleaseCreatedCheckJobTest {
         FakeReleasesProviderWithTwoReleases releasesProvider = new FakeReleasesProviderWithTwoReleases();
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(releasesProvider);
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
@@ -179,7 +171,7 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         //this is when the trigger is created
         UUID correlationId = UUID.randomUUID();
         CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
@@ -192,7 +184,6 @@ public class ReleaseCreatedCheckJobTest {
     public void perform_returns_updated_result_if_new_release() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
@@ -200,7 +191,7 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertTrue(result.updatesDetected());
@@ -213,7 +204,6 @@ public class ReleaseCreatedCheckJobTest {
     public void perform_returns_empty_result_if_release_deleted() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
@@ -221,12 +211,12 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
 
         releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithOneRelease());
-        sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         CheckResult<ReleaseCreatedSpec> result = sut.perform(correlationId);
         Assert.assertFalse(result.updatesDetected());
         Assert.assertFalse(result.hasCheckErrors());
@@ -235,7 +225,6 @@ public class ReleaseCreatedCheckJobTest {
     public void perform_logs_analytics_if_new_release() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
@@ -244,7 +233,7 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_PROJECT_ID, "Project-1");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
@@ -255,7 +244,6 @@ public class ReleaseCreatedCheckJobTest {
     public void perform_does_not_log_analytics_if_no_new_releases() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithOneRelease());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
@@ -263,7 +251,7 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 0);
@@ -272,7 +260,6 @@ public class ReleaseCreatedCheckJobTest {
     public void perform_logs_analytics_if_a_new_trigger_is_added() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithTwoReleases());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage();
 
         Map<String, String> properties = new HashMap<>();
@@ -280,7 +267,7 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         FakeAnalyticsTracker analyticsTracker = new FakeAnalyticsTracker();
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, analyticsTracker, new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
         sut.perform(correlationId);
         Assert.assertEquals(analyticsTracker.receivedPostCount, 1);
@@ -296,7 +283,6 @@ public class ReleaseCreatedCheckJobTest {
 
         ReleasesProviderFactory releasesProviderFactory = new FakeReleasesProviderFactory(new FakeReleasesProviderWithNoReleases());
         String displayName = "the-display-name";
-        String buildType = "the-build-type";
         CustomDataStorage dataStorage = new FakeCustomDataStorage((new Release("release-1", new OctopusDate(2016, 3, 1), "1.0.0", "the-project-id")).toString());
 
         Map<String, String> properties = new HashMap<>();
@@ -304,7 +290,7 @@ public class ReleaseCreatedCheckJobTest {
         properties.put(OCTOPUS_APIKEY, "the-api-key");
         properties.put(OCTOPUS_PROJECT_ID, "the-project-id");
         properties.put(OCTOPUS_TRIGGER_ONLY_ON_SUCCESSFUL_DEPLOYMENT, "true");
-        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, buildType, dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
+        ReleaseCreatedCheckJob sut = new ReleaseCreatedCheckJob(releasesProviderFactory, displayName, new FakeBuildType(), dataStorage, properties, new FakeAnalyticsTracker(), new FakeBuildTriggerProperties());
         Assert.assertFalse(sut.allowSchedule(new FakeBuildTriggerDescriptor()));
     }
 }

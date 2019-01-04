@@ -14,7 +14,7 @@ before_install:
 - mvn versions:set -DnewVersion=$RELEASE_VERSION
 install:
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -U
-script: 
+script:
 - mvn package -DfinalName=octopus-build-trigger-$RELEASE_VERSION -DfinalVersion=$RELEASE_VERSION
 branches:
   except:

@@ -28,7 +28,9 @@ import com.codahale.metrics.MetricRegistry;
 import com.intellij.openapi.diagnostic.Logger;
 import com.mjrichardson.teamCity.buildTriggers.*;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
+import jetbrains.buildServer.parameters.ValueResolver;
 import jetbrains.buildServer.serverSide.CustomDataStorage;
+import jetbrains.buildServer.serverSide.SBuildType;
 import jetbrains.buildServer.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,17 +45,17 @@ class ReleaseCreatedCheckJob extends CustomCheckJob<ReleaseCreatedSpec> {
 
     private final ReleasesProviderFactory releasesProviderFactory;
     private final String displayName;
-    private final String buildType;
+    private final SBuildType buildType;
     private final CustomDataStorage dataStorage;
     private final Map<String, String> props;
     private final AnalyticsTracker analyticsTracker;
     private final BuildTriggerProperties buildTriggerProperties;
 
-    public ReleaseCreatedCheckJob(String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
+    public ReleaseCreatedCheckJob(String displayName, SBuildType buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, CacheManager cacheManager, MetricRegistry metricRegistry, BuildTriggerProperties buildTriggerProperties) {
         this(new ReleasesProviderFactory(analyticsTracker, cacheManager, metricRegistry), displayName, buildType, dataStorage, properties, analyticsTracker, buildTriggerProperties);
     }
 
-    public ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, String buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, BuildTriggerProperties buildTriggerProperties) {
+    public ReleaseCreatedCheckJob(ReleasesProviderFactory releasesProviderFactory, String displayName, SBuildType buildType, CustomDataStorage dataStorage, Map<String, String> properties, AnalyticsTracker analyticsTracker, BuildTriggerProperties buildTriggerProperties) {
         this.releasesProviderFactory = releasesProviderFactory;
         this.displayName = displayName;
         this.buildType = buildType;
@@ -115,19 +117,20 @@ class ReleaseCreatedCheckJob extends CustomCheckJob<ReleaseCreatedSpec> {
 
     @NotNull
     public CheckResult<ReleaseCreatedSpec> perform(UUID correlationId) {
-        final String octopusUrl = props.get(OCTOPUS_URL);
+        ValueResolver resolver = this.buildType.getValueResolver();
+        final String octopusUrl = resolveValue(resolver, props.get(OCTOPUS_URL));
         if (StringUtil.isEmptyOrSpaces(octopusUrl)) {
             return ReleaseCreatedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty url) in build configuration %s",
                     displayName, buildType), correlationId);
         }
 
-        final String octopusApiKey = props.get(OCTOPUS_APIKEY);
+        final String octopusApiKey = resolveValue(resolver, props.get(OCTOPUS_APIKEY));
         if (StringUtil.isEmptyOrSpaces(octopusApiKey)) {
             return ReleaseCreatedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty api key) in build configuration %s",
                     displayName, buildType), correlationId);
         }
 
-        final String octopusProject = props.get(OCTOPUS_PROJECT_ID);
+        final String octopusProject = resolveValue(resolver, props.get(OCTOPUS_PROJECT_ID));
         if (StringUtil.isEmptyOrSpaces(octopusProject)) {
             return ReleaseCreatedSpecCheckResult.createErrorResult(String.format("%s settings are invalid (empty project) in build configuration %s",
                     displayName, buildType), correlationId);

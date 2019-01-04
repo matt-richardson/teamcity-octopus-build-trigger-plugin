@@ -3,6 +3,7 @@ package com.mjrichardson.teamCity.buildTriggers;
 import jetbrains.buildServer.buildTriggers.BuildTriggerDescriptor;
 import jetbrains.buildServer.buildTriggers.async.CheckJob;
 import jetbrains.buildServer.buildTriggers.async.CheckResult;
+import jetbrains.buildServer.parameters.ValueResolver;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,5 +26,11 @@ public abstract class CustomCheckJob<TItem> implements CheckJob<TItem> {
         //we always return false here - the AsyncPolledBuildTrigger class handles whether we are busy or not
         //also, this is inverted, the method should be preventSchedule or something
         return false;
+    }
+
+    protected String resolveValue(ValueResolver resolver, String s) {
+        if (s == null)
+            return s;
+        return resolver.resolve(s).getResult();
     }
 }

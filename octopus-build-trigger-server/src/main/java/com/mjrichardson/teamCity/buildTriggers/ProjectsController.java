@@ -11,7 +11,10 @@ import com.mjrichardson.teamCity.buildTriggers.Model.ApiProjectsResponse;
 import com.mjrichardson.teamCity.buildTriggers.Model.ApiRootResponse;
 import com.mjrichardson.teamCity.buildTriggers.Model.Projects;
 import jetbrains.buildServer.controllers.BaseController;
+import jetbrains.buildServer.parameters.ValueResolver;
+import jetbrains.buildServer.serverSide.ProjectManager;
 import jetbrains.buildServer.serverSide.SBuildServer;
+import jetbrains.buildServer.serverSide.SProject;
 import jetbrains.buildServer.web.openapi.WebControllerManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,6 +62,18 @@ public class ProjectsController extends BaseController {
         LOG.info(String.format("%s: ProjectsController.doHandle() called", correlationId));
         String octopusUrl = httpServletRequest.getParameter("octopusUrl");
         String octopusApiKey = httpServletRequest.getParameter("octopusApiKey");
+
+        ProjectManager projectManager = this.myServer.getProjectManager();
+        SProject rootProject = projectManager.findProjectById("_Root");
+        ValueResolver resolver = rootProject.getValueResolver();
+
+        if (octopusApiKey != null) {
+            octopusApiKey = resolver.resolve(octopusApiKey).getResult();
+        }
+        if (octopusUrl != null) {
+            octopusUrl = resolver.resolve(octopusUrl).getResult();
+        }
+
         HttpContentProviderFactory contentProviderFactory = new HttpContentProviderFactory(octopusUrl, octopusApiKey,
                 buildTriggerProperties, cacheManager, metricRegistry);
         HttpContentProvider contentProvider = contentProviderFactory.getContentProvider();

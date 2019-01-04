@@ -48,7 +48,7 @@ public class ReleaseCreatedAsyncBuildTriggerTest {
         String displayName = "the display name";
         ReleaseCreatedAsyncBuildTrigger sut = new ReleaseCreatedAsyncBuildTrigger(displayName, new FakeAnalyticsTracker(), new FakeCacheManager(), new FakeMetricRegistry(), new FakeBuildTriggerProperties());
         UUID correlationId = UUID.randomUUID();
-        CheckJob<ReleaseCreatedSpec> result = sut.createJob("the-build-type",
+        CheckJob<ReleaseCreatedSpec> result = sut.createJob(new FakeBuildType(),
                 new FakeCustomDataStorage(),
                 new FakeBuildTriggerDescriptor().getProperties(),
                 correlationId);

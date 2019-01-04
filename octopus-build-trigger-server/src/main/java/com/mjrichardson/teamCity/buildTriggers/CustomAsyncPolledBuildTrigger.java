@@ -128,13 +128,13 @@ public class CustomAsyncPolledBuildTrigger<TItem> extends AsyncPolledBuildTrigge
 
             if(isToStartNewCheck) {
                 UUID correlationId = UUID.randomUUID();
-                CustomCheckJob<TItem> job = this.asyncBuildTrigger.createJob(buildType.toString(), storage, triggerDescriptor.getProperties(), correlationId);
+                CustomCheckJob<TItem> job = this.asyncBuildTrigger.createJob(buildType, storage, triggerDescriptor.getProperties(), correlationId);
                 if(!job.allowSchedule(triggerDescriptor)) {
                     this.submitCheckJob(this.storage.getOrCreateJobStatus(buildType, triggerDescriptor), job, correlationId);
                 }
             }
         } catch (CheckJobCreationException ex) {
-            log.warn(String.format("%s; Build type: %s", ex.getMessage(), LogUtil.describe(buildType)));
+            log.warn(String.format("%s; Build type: %s", ex.getMessage(), LogUtil.describe(buildType)), ex);
             log.debug(ex);
             if(ex.isReportable()) {
                 throw new BuildTriggerException(ex.getMessage(), ex);
