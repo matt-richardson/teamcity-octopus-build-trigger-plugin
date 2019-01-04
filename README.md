@@ -1,3 +1,7 @@
+# No longer maintained
+
+Please note this plugin is no longer maintaned. Please use [Octopus Subscriptions](https://octopus.com/docs/administration/subscriptions) instead to trigger TeamCity.
+
 # teamcity-octopus-build-trigger-plugin
 
 [![Build Status](https://travis-ci.org/matt-richardson/teamcity-octopus-build-trigger-plugin.svg?branch=master)](https://travis-ci.org/matt-richardson/teamcity-octopus-build-trigger-plugin)
@@ -11,7 +15,7 @@ A TeamCity plugin that polls Octopus Deploy, and triggers a TeamCity build when:
 
 # Important note
 
-This plugin was written before [Octopus Subscriptions](https://octopus.com/docs/administration/subscriptions) was available. It is highly recommended that you use subscriptions where possible rather than this plugin, as this plugin adds reasonable load to your Octopus server due to the way it calls the API.
+This plugin was written before [Octopus Subscriptions](https://octopus.com/docs/administration/subscriptions) became available. It is highly recommended that you use subscriptions where possible rather than this plugin, as this plugin adds reasonable load to your Octopus server due to the way it calls the API.
 
 # Installation
 
